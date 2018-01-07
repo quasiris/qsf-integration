@@ -10,7 +10,7 @@ import java.util.*;
 /**
  * Created by mki on 13.11.16.
  */
-public class SaqlParserTest {
+public class QsfqlParserTest {
 
 
     @Test
@@ -122,8 +122,8 @@ public class SaqlParserTest {
             String[] paramSplitted = param.split("=");
             addParameter(parameter,paramSplitted[0],paramSplitted[1]);
         }
-        SaqlParser saqlParser = new SaqlParser(parameter);
-        SearchQuery query = saqlParser.getQuery();
+        QsfqlParser qsfqlParser = new QsfqlParser(parameter);
+        SearchQuery query = qsfqlParser.getQuery();
         return query;
     }
 

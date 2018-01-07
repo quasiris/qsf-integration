@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 /**
  * Created by mki on 13.11.16.
  */
-public class SaqlParser {
+public class QsfqlParser {
 
     private static final Pattern filterPattern = Pattern.compile("f\\.([^\\.]+)(.*)");
 
@@ -21,7 +21,7 @@ public class SaqlParser {
 
     private SearchQuery query = null;
 
-    public SaqlParser(Map<String, String[]> parameters) {
+    public QsfqlParser(Map<String, String[]> parameters) {
         this.parameters = parameters;
     }
 
