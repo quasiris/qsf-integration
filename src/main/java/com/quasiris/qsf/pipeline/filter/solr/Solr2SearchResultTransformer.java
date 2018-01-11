@@ -37,7 +37,7 @@ public class Solr2SearchResultTransformer extends Solr2SearchResultMappingTransf
                 facetReseultCount = facetReseultCount + facetValue.getCount();
             }
             facet.setResultCount(facetReseultCount);
-            searchResult.getFacets().add(facet);
+            searchResult.addFacet(facet);
         }
     }
 
