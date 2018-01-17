@@ -1,11 +1,15 @@
 package com.quasiris.qsf.query.parser;
 
 import com.google.common.base.Strings;
-import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.RangeFilterValue;
+import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.Sort;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +19,6 @@ import java.util.regex.Pattern;
 public class QsfqlParser {
 
     private static final Pattern filterPattern = Pattern.compile("f\\.([^\\.]+)(.*)");
-
 
     private Map<String, String[]> parameters;
 
@@ -28,14 +31,37 @@ public class QsfqlParser {
 
     SearchQuery parse() {
         SearchQuery query = new SearchQuery();
-        query.setQ(getParameter("q"));
-        query.setRequestId(getParameter("requestId", UUID.randomUUID().toString()));
-        query.setPage(getParameterAsInt("page", query.getPage()));
-        query.setRows(getParameterAsInt("rows", query.getRows()));
-        query.setDebug(getParameterAsBoolean("debug", query.isDebug()));
-
+        parseMeta(query);
+        parseQuery(query);
+        parsePaging(query);
+        parseSort(query);
         parseFilter(query);
         return query;
+    }
+
+
+    void parseMeta(SearchQuery query) {
+        query.setRequestId(getParameter("requestId", UUID.randomUUID().toString()));
+        query.setDebug(getParameterAsBoolean("debug", query.isDebug()));
+    }
+
+    void parseQuery(SearchQuery query) {
+        query.setQ(getParameter("q"));
+    }
+
+    void parsePaging(SearchQuery query) {
+        query.setPage(getParameterAsInt("page", query.getPage()));
+        query.setRows(getParameterAsInt("rows", query.getRows()));
+    }
+
+    void parseSort(SearchQuery query) {
+        String sortValue = getParameter("sort");
+        if(Strings.isNullOrEmpty(sortValue)) {
+            return;
+        }
+        Sort sort = new Sort();
+        sort.setSort(sortValue);
+        query.setSort(sort);
 
     }
 
@@ -47,13 +73,15 @@ public class QsfqlParser {
                 String[] filterValues = parameters.get(name);
                 String filterType = m.group(2);
                 if(Strings.isNullOrEmpty(filterType)) {
-                    SearchFilter<String> searchFilter = new SearchFilter<>();
+                    SearchFilter searchFilter = new SearchFilter();
                     searchFilter.setName(filterName);
                     searchFilter.setValues(Arrays.asList(filterValues));
                     query.getSearchFilterList().add(searchFilter);
                 } else if (".range".equals(filterType)) {
-                    SearchFilter<RangeFilterValue<Number>> searchFilter = new SearchFilter<>();
+                    //SearchFilter<RangeFilterValue<Number>> searchFilter = new SearchFilter<>();
+                    SearchFilter searchFilter = new SearchFilter();
                     RangeFilterValue<Number> rangeFilterValue = new RangeFilterValue<>();
+
                     for(String value : filterValues) {
                         String[] valueSplitted = value.split(Pattern.quote(","));
                         if(valueSplitted.length != 2) {
@@ -78,11 +106,8 @@ public class QsfqlParser {
                         }
                     }
 
-
-
-
                     searchFilter.setName(filterName);
-                    searchFilter.getValues().add(rangeFilterValue);
+                    searchFilter.setRangeValue(rangeFilterValue);
                     query.getSearchFilterList().add(searchFilter);
                 }
 
@@ -120,6 +145,19 @@ public class QsfqlParser {
         return value;
     }
 
+    Long getParameterAsLong(String name) {
+        String value = getParameter(name);
+        if(value == null) {
+            return null;
+        }
+        try {
+            Long longValue = Long.parseLong(value);
+            return longValue;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     Integer getParameterAsInt(String name) {
         String value = getParameter(name);
         if(value == null) {
@@ -131,6 +169,14 @@ public class QsfqlParser {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    Long getParameterAsLong(String name, Long defaultValue) {
+        Long value = getParameterAsLong(name);
+        if(value == null) {
+            return defaultValue;
+        }
+        return value;
     }
 
     Integer getParameterAsInt(String name, Integer defaultValue) {

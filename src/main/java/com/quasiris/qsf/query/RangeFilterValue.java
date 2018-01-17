@@ -5,6 +5,15 @@ package com.quasiris.qsf.query;
  */
 public class RangeFilterValue<T> {
 
+
+    public RangeFilterValue() {
+    }
+
+    public RangeFilterValue(T minValue, T maxValue) {
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+    }
+
     private T minValue;
     private T maxValue;
 

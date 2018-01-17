@@ -16,9 +16,9 @@ public class SearchQuery {
 
     private Sort sort;
 
-    private int page = 1;
+    private Integer page;
 
-    private int rows = 20;
+    private Integer rows;
 
     private boolean debug = false;
 
@@ -38,19 +38,19 @@ public class SearchQuery {
         this.requestId = requestId;
     }
 
-    public int getPage() {
+    public Integer getPage() {
         return page;
     }
 
-    public void setPage(int page) {
+    public void setPage(Integer page) {
         this.page = page;
     }
 
-    public int getRows() {
+    public Integer getRows() {
         return rows;
     }
 
-    public void setRows(int rows) {
+    public void setRows(Integer rows) {
         this.rows = rows;
     }
 
@@ -68,5 +68,13 @@ public class SearchQuery {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public Sort getSort() {
+        return sort;
+    }
+
+    public void setSort(Sort sort) {
+        this.sort = sort;
     }
 }

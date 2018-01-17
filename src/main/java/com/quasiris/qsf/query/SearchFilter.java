@@ -1,12 +1,11 @@
 package com.quasiris.qsf.query;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by mki on 11.11.16.
  */
-public class SearchFilter<T> {
+public class SearchFilter {
 
     private Operator operator = Operator.OR;
 
@@ -16,14 +15,15 @@ public class SearchFilter<T> {
 
     private String name;
 
-    private List<T> values = new ArrayList<T>();
+    private List<String> values;
 
+    private RangeFilterValue<?> rangeValue;
 
-    public List<T> getValues() {
+    public List<String> getValues() {
         return values;
     }
 
-    public void setValues(List<T> values) {
+    public void setValues(List<String> values) {
         this.values = values;
     }
 
@@ -59,6 +59,23 @@ public class SearchFilter<T> {
         this.exclude = exclude;
     }
 
+    public <T> RangeFilterValue getRangeValue(Class<T> type ) {
+        return (RangeFilterValue<T>) rangeValue;
+    }
+
+    public RangeFilterValue<String> rangeValue( ) {
+        return (RangeFilterValue<String>) rangeValue;
+    }
+
+    public void setRangeValue(String min, String max) {
+        this.rangeValue = new RangeFilterValue<>(min,max);
+    }
+
+    public void setRangeValue(RangeFilterValue<?> rangeValue) {
+        this.rangeValue = rangeValue;
+    }
+
+
     @Override
     public String toString() {
         return "SearchFilter{" +
@@ -67,6 +84,7 @@ public class SearchFilter<T> {
                 ", id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", values=" + values +
+                ", rangeFilterValue=" + rangeValue +
                 '}';
     }
 }
