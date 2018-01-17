@@ -16,8 +16,11 @@ public class RequestParser {
 
 
     public  static Map<String, String> getRequestParameter(PipelineContainer pipelineContainer) {
+        Map<String, String> replaceMap = new HashMap<>();
+        if(pipelineContainer.getRequest() == null) {
+            return replaceMap;
+        }
         synchronized (pipelineContainer.getRequest()) {
-            Map<String, String> replaceMap = new HashMap<>();
             Enumeration<String> parameterName = pipelineContainer.getRequest().getParameterNames();
             while (parameterName.hasMoreElements()) {
                 String name = parameterName.nextElement();

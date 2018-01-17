@@ -1,5 +1,6 @@
 package com.quasiris.qsf.test;
 
+import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.util.JsonUtil;
 
 /**
@@ -14,5 +15,10 @@ public class AbstractPipelineTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void print(PipelineContainer pipelineContainer) {
+        print(pipelineContainer.getSearchQuery());
+        print(pipelineContainer.getSearchResults());
     }
 }

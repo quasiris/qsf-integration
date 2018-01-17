@@ -3,11 +3,12 @@ package com.quasiris.qsf.pipeline;
 import com.quasiris.qsf.mock.Mockfactory;
 import com.quasiris.qsf.pipeline.filter.solr.MockSolrClient;
 import com.quasiris.qsf.pipeline.filter.solr.SolrFilterBuilder;
+import com.quasiris.qsf.pipeline.filter.solr.SolrParameterQueryTransformer;
+import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.Facet;
 import com.quasiris.qsf.response.FacetValue;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.test.AbstractPipelineTest;
-import com.quasiris.qsf.response.Document;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,15 +20,34 @@ import javax.servlet.http.HttpServletRequest;
 public class SolrPipelineTest extends AbstractPipelineTest {
 
 
+    private boolean debug = false;
+
+    @Test
+    //@Ignore
+    public void debug() throws Exception {
+        this.debug = true;
+        try {
+            testSolrPipeline();
+        } catch (PipelineContainerDebugException e) {
+            System.out.println(e.getDebugStack());
+        } catch (PipelineContainerException e) {
+            System.out.println(e.getErrorMessage());
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+
     @Test
     public void testSolrPipeline() throws Exception {
         MockSolrClient mockSolrClient = Mockfactory.createSolrClient("http://localhost:8983/solr/gettingstarted");
-
+        //mockSolrClient.setRecord(true);
         Pipeline pipeline = PipelineBuilder.create().
                 pipeline("products").
                 timeout(1000L).
                 filter(SolrFilterBuilder.create().
                         solrClient(mockSolrClient).
+                        queryTransformer(SolrParameterQueryTransformer.class).
                         param("q","${q}").
                         param("fq","cat:*").
                         param("sort","id asc").
@@ -58,6 +78,7 @@ public class SolrPipelineTest extends AbstractPipelineTest {
         HttpServletRequest httpServletRequest = Mockfactory.createHttpServletRequest("http://localhost?q=*:*&foo=bar");
 
         PipelineContainer pipelineContainer = PipelineExecuter.create().
+                debug(debug).
                 pipeline(pipeline).
                 httpRequest(httpServletRequest).
                 execute();

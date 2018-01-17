@@ -13,6 +13,10 @@ public class SolrFilterBuilder {
 
     private SolrParameterQueryTransformer solrParameterQueryTransformer;
 
+    private SolrQsfqlQueryTransformer solrQsfqlQueryTransformer;
+
+    private Class<?> queryTransformer = SolrQsfqlQueryTransformer.class;
+
     public static SolrFilterBuilder create() {
         SolrFilterBuilder builder = new SolrFilterBuilder();
         builder.solrFilter = new SolrFilter();
@@ -36,18 +40,22 @@ public class SolrFilterBuilder {
         return this;
     }
     public SolrFilter build() {
-        if(mappingTransformer != null) {
-            solrFilter.setSearchResultTransformer(mappingTransformer);
+
+        if(queryTransformer.equals(SolrQsfqlQueryTransformer.class)) {
+            solrFilter.setQueryTransformer(solrQsfqlQueryTransformer);
+        } else if(queryTransformer.equals(SolrParameterQueryTransformer.class)) {
+            solrFilter.setQueryTransformer(solrParameterQueryTransformer);
         }
 
-        if(solrParameterQueryTransformer != null) {
-            solrFilter.setQueryTransformer(solrParameterQueryTransformer);
+        if(mappingTransformer != null) {
+            solrFilter.setSearchResultTransformer(mappingTransformer);
         }
         return solrFilter;
     }
 
     public SolrFilterBuilder param(String name, String value) {
         getSolrParameterQueryTransformer().addParam(name,value);
+        getSolrQsfqlQueryTransformer().addParam(name,value);
         return this;
     }
 
@@ -63,6 +71,17 @@ public class SolrFilterBuilder {
             solrParameterQueryTransformer = new SolrParameterQueryTransformer();
         }
         return solrParameterQueryTransformer;
+    }
+
+    public SolrQsfqlQueryTransformer getSolrQsfqlQueryTransformer() {
+        if(solrQsfqlQueryTransformer == null) {
+            solrQsfqlQueryTransformer = new SolrQsfqlQueryTransformer();
+        }
+        return solrQsfqlQueryTransformer;
+    }
+
+    public void setSolrQsfqlQueryTransformer(SolrQsfqlQueryTransformer solrQsfqlQueryTransformer) {
+        this.solrQsfqlQueryTransformer = solrQsfqlQueryTransformer;
     }
 
     public SolrFilterBuilder mapField(String from, String to) {
@@ -82,15 +101,24 @@ public class SolrFilterBuilder {
 
 
     public SolrFilterBuilder mapFilter(String from, String to) {
+        getSolrQsfqlQueryTransformer().addFilterMapping(from, to);
         return this;
     }
 
     public SolrFilterBuilder queryTransformer(QueryTransformerIF queryTransformer) {
-        if(queryTransformer instanceof SolrParameterQueryTransformer) {
+        if( queryTransformer instanceof SolrQsfqlQueryTransformer) {
+            this.solrQsfqlQueryTransformer = (SolrQsfqlQueryTransformer) queryTransformer;
+        } else if(queryTransformer instanceof SolrParameterQueryTransformer) {
             this.solrParameterQueryTransformer = (SolrParameterQueryTransformer) queryTransformer;
         } else {
             throw new IllegalArgumentException("The query transformer " + queryTransformer.getClass().getName() + " is not supported.");
         }
+
+        return this;
+    }
+
+    public SolrFilterBuilder queryTransformer(Class<?> queryTransformer) {
+        this.queryTransformer = queryTransformer;
 
         return this;
     }

@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.solr;
 
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.web.RequestParser;
+import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.util.PrintUtil;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -16,15 +17,37 @@ public class SolrParameterQueryTransformer implements QueryTransformerIF {
     private Map<String, List<String>> parameters;
     private Set<String> fieldList = new HashSet<>();
 
+    private PipelineContainer pipelineContainer;
+
+    private SearchQuery searchQuery;
+    private SolrQuery solrQuery;
+
     @Override
     public SolrQuery transform(PipelineContainer pipelineContainer) {
-        SolrQuery solrQuery = new SolrQuery();
+        this.pipelineContainer = pipelineContainer;
+        this.searchQuery = pipelineContainer.getSearchQuery();
+        this.solrQuery = new SolrQuery();
 
+        transformParameter();
+        transformFieldlist();
+
+        return solrQuery;
+    }
+
+    public void transformFieldlist() {
+        for(String fieldName:fieldList) {
+            solrQuery.addField(fieldName);
+        }
+    }
+
+    public void transformParameter() {
+        if(parameters == null) {
+            return;
+        }
         Map<String, String> replaceMap = RequestParser.getRequestParameter(pipelineContainer);
         for(Map.Entry<String, String> param :pipelineContainer.getParameters().entrySet()) {
             replaceMap.put("param." + param.getKey(), param.getValue());
         }
-
 
         StrSubstitutor strSubstitutor = new StrSubstitutor(replaceMap);
 
@@ -34,12 +57,6 @@ public class SolrParameterQueryTransformer implements QueryTransformerIF {
                 solrQuery.add(parameter.getKey(),replacedValue);
             }
         }
-
-        for(String fieldName:fieldList) {
-            solrQuery.addField(fieldName);
-        }
-
-        return solrQuery;
     }
 
     public StringBuilder print(String indent) {
@@ -63,7 +80,25 @@ public class SolrParameterQueryTransformer implements QueryTransformerIF {
 
     public void addFieldListValue(String fieldName) {
         fieldList.add(fieldName);
+    }
 
+    public PipelineContainer getPipelineContainer() {
+        return pipelineContainer;
+    }
 
+    public SearchQuery getSearchQuery() {
+        return searchQuery;
+    }
+
+    public SolrQuery getSolrQuery() {
+        return solrQuery;
+    }
+
+    public Map<String, List<String>> getParameters() {
+        return parameters;
+    }
+
+    public Set<String> getFieldList() {
+        return fieldList;
     }
 }

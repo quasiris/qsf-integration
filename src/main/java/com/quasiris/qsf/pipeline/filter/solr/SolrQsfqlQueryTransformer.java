@@ -3,7 +3,6 @@ package com.quasiris.qsf.pipeline.filter.solr;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.query.SearchQuery;
 import org.apache.solr.client.solrj.SolrQuery;
 
 import java.util.HashMap;
@@ -13,7 +12,7 @@ import java.util.Map;
 /**
  * Created by mki on 18.11.17.
  */
-public class SolrQsfqlQueryTransformer implements QueryTransformerIF {
+public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer implements QueryTransformerIF {
 
 
     private Map<String, String> sortMapping = new HashMap<>();
@@ -23,33 +22,30 @@ public class SolrQsfqlQueryTransformer implements QueryTransformerIF {
     private Integer defaultPage = 1;
 
 
-    private SearchQuery searchQuery;
-    private SolrQuery solrQuery;
-
     @Override
     public SolrQuery transform(PipelineContainer pipelineContainer) {
-        searchQuery = pipelineContainer.getSearchQuery();
-        solrQuery = new SolrQuery();
+        super.transform(pipelineContainer);
+
         transformQuery();
         transformSort();
         transformFilters();
         transformPaging();
 
 
-        return solrQuery;
+        return getSolrQuery();
     }
 
     public void transformQuery() {
-        String query = searchQuery.getQ();
-        solrQuery.setQuery(query);
+        String query = getSearchQuery().getQ();
+        getSolrQuery().setQuery(query);
     }
 
     public void transformSort() {
         String sort = null;
-        if(searchQuery.getSort() == null) {
+        if(getSearchQuery().getSort() == null) {
             sort = sortMapping.get(defaultSort);
         } else {
-            sort = sortMapping.get(searchQuery.getSort().getSort());
+            sort = sortMapping.get(getSearchQuery().getSort().getSort());
             if(sort == null) {
                 sort = sortMapping.get(defaultSort);
             }
@@ -57,13 +53,13 @@ public class SolrQsfqlQueryTransformer implements QueryTransformerIF {
         if(sort == null) {
             return;
         }
-        solrQuery.setParam("sort", sort);
+        getSolrQuery().setParam("sort", sort);
 
     }
 
     public void transformFilters() {
-        List<SearchFilter> searchFilterList = searchQuery.getSearchFilterList();
-        for (SearchFilter searchFilter : searchQuery.getSearchFilterList()) {
+        List<SearchFilter> searchFilterList = getSearchQuery().getSearchFilterList();
+        for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
             transformFilter(searchFilter);
         }
 
@@ -79,15 +75,15 @@ public class SolrQsfqlQueryTransformer implements QueryTransformerIF {
         if(Strings.isNullOrEmpty(firstValue)) {
             return;
         }
-        solrQuery.addFilterQuery(solrField + ":" + firstValue);
+        getSolrQuery().addFilterQuery(solrField + ":" + firstValue);
     }
 
     public void transformPaging() {
-        Integer page = searchQuery.getPage();
+        Integer page = getSearchQuery().getPage();
         if(page == null) {
             page = defaultPage;
         }
-        Integer rows = searchQuery.getRows();
+        Integer rows = getSearchQuery().getRows();
         if(rows == null) {
             rows = defaultRows;
         }
@@ -95,8 +91,8 @@ public class SolrQsfqlQueryTransformer implements QueryTransformerIF {
 
         int start = (page - 1) * rows;
 
-        solrQuery.setStart(start);
-        solrQuery.setRows(rows);
+        getSolrQuery().setStart(start);
+        getSolrQuery().setRows(rows);
 
 
     }
@@ -112,22 +108,6 @@ public class SolrQsfqlQueryTransformer implements QueryTransformerIF {
 
     public void addFilterMapping(String from, String to) {
         filterMapping.put(from, to);
-    }
-
-    public SearchQuery getSearchQuery() {
-        return searchQuery;
-    }
-
-    public void setSearchQuery(SearchQuery searchQuery) {
-        this.searchQuery = searchQuery;
-    }
-
-    public SolrQuery getSolrQuery() {
-        return solrQuery;
-    }
-
-    public void setSolrQuery(SolrQuery solrQuery) {
-        this.solrQuery = solrQuery;
     }
 
     public Map<String, String> getSortMapping() {
