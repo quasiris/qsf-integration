@@ -6,7 +6,6 @@ import com.quasiris.qsf.query.SearchFilter;
 import org.apache.solr.client.solrj.SolrQuery;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,7 +57,6 @@ public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer imp
     }
 
     public void transformFilters() {
-        List<SearchFilter> searchFilterList = getSearchQuery().getSearchFilterList();
         for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
             transformFilter(searchFilter);
         }
@@ -75,7 +73,12 @@ public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer imp
         if(Strings.isNullOrEmpty(firstValue)) {
             return;
         }
-        getSolrQuery().addFilterQuery(solrField + ":" + firstValue);
+        StringBuilder solrFilter  = new StringBuilder();
+        if(searchFilter.isExclude()) {
+            solrFilter.append("{!tag=").append(searchFilter.getId()).append("}");
+        }
+        solrFilter.append(solrField).append(":").append(firstValue);
+        getSolrQuery().addFilterQuery(solrFilter.toString());
     }
 
     public void transformPaging() {

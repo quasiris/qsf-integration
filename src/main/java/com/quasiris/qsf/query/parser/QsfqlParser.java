@@ -74,6 +74,7 @@ public class QsfqlParser {
                 String filterType = m.group(2);
                 if(Strings.isNullOrEmpty(filterType)) {
                     SearchFilter searchFilter = new SearchFilter();
+                    searchFilter.setId(filterName);
                     searchFilter.setName(filterName);
                     searchFilter.setValues(Arrays.asList(filterValues));
                     query.getSearchFilterList().add(searchFilter);

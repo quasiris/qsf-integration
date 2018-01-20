@@ -35,8 +35,7 @@ public class SolrQsfqlQueryTransformerTest {
         SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
         transformer.addFilterMapping("brand", "brandSolrField");
         SolrQuery solrQuery = transform(transformer,  "f.brand=foo");
-        Assert.assertEquals("brandSolrField:foo", solrQuery.getFilterQueries()[0]);
-
+        Assert.assertEquals("{!tag=brand}brandSolrField:foo", solrQuery.getFilterQueries()[0]);
     }
 
     @Test

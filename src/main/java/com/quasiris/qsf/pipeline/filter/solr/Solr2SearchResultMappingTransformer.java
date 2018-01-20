@@ -23,6 +23,7 @@ public class Solr2SearchResultMappingTransformer implements SearchResultTransfor
     private Map<String, String> resultFields = new HashMap<>();
     private Map<String, String> facetMapping = new HashMap<>();
     private Map<String, String> facetNameMapping = new HashMap<>();
+    private String filterPrefix = "";
 
     public Solr2SearchResultMappingTransformer() {
 
@@ -65,7 +66,7 @@ public class Solr2SearchResultMappingTransformer implements SearchResultTransfor
             for(FacetField.Count count: facetField.getValues()) {
                 FacetValue facetValue = new FacetValue(count.getName(), count.getCount());
                 facetReseultCount = facetReseultCount + facetValue.getCount();
-                facetValue.setFilter(id + "=" + EncodingUtil.encode(count.getName()));
+                facetValue.setFilter(filterPrefix + id + "=" + EncodingUtil.encode(count.getName()));
                 facet.getValues().add(facetValue);
             }
             facet.setResultCount(facetReseultCount);
@@ -140,12 +141,17 @@ public class Solr2SearchResultMappingTransformer implements SearchResultTransfor
         resultFields.put(resultFieldName, value);
     }
 
+    public void filterPrefix(String filterPrefix) {
+        this.filterPrefix=filterPrefix;
+    }
+
     public StringBuilder print(String indent) {
         StringBuilder printer = new StringBuilder();
         PrintUtil.printMap(printer,indent, "fieldMapping", fieldMapping);
         PrintUtil.printMap(printer,indent, "resultFields", resultFields);
         PrintUtil.printMap(printer,indent, "facetMapping", facetMapping);
         PrintUtil.printMap(printer,indent, "facetNameMapping", facetNameMapping);
+        PrintUtil.printKeyValue(printer, indent,"filterPrefix", filterPrefix);
         return printer;
     }
 }

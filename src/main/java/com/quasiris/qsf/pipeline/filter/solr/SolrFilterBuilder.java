@@ -138,5 +138,20 @@ public class SolrFilterBuilder {
         return this;
     }
 
+    public SolrFilterBuilder filterPrefix(String filterPrefix) {
+        getMappingTransformer().filterPrefix(filterPrefix);
+        return this;
+    }
+
+    public SolrFilterBuilder mapSort(String from, String to) {
+        getSolrQsfqlQueryTransformer().addSortMapping(from, to);
+        return this;
+    }
+
+    public SolrFilterBuilder defaultSort(String defaultSort) {
+        getSolrQsfqlQueryTransformer().setDefaultSort(defaultSort);
+        return this;
+    }
+
 
 }
