@@ -65,7 +65,17 @@ public class ElasticFilter extends AbstractFilter {
             Document document = new Document();
             while (it.hasNext()) {
                 Map.Entry<String, JsonNode> entry = it.next();
-                document.getDocument().put(entry.getKey(), entry.getValue());
+
+                JsonNode jsonNode = entry.getValue();
+                Object value = null;
+                if(jsonNode.isTextual()) {
+                    value = jsonNode.textValue();
+                } else if( jsonNode.isNumber()) {
+                    value = jsonNode.numberValue();
+                } else {
+                    value = jsonNode;
+                }
+                document.getDocument().put(entry.getKey(), value);
             }
 
             for(Map.Entry<String, List<String>> entry : hit.getHighlight().entrySet()) {
