@@ -50,8 +50,16 @@ public class QsfqlParser {
     }
 
     void parsePaging(SearchQuery query) {
-        query.setPage(getParameterAsInt("page", query.getPage()));
-        query.setRows(getParameterAsInt("rows", query.getRows()));
+        Integer page = getParameterAsInt("page", query.getPage());
+        if(page != null && page < 1) {
+            page = 1;
+        }
+        Integer rows = getParameterAsInt("rows", query.getRows());
+        if(rows != null && rows < 0) {
+            rows = 0;
+        }
+        query.setPage(page);
+        query.setRows(rows);
     }
 
     void parseSort(SearchQuery query) {

@@ -27,14 +27,14 @@ public class SearchResult{
 
     private Long total;
 
-    private Long page;
-
     private Float maxScore;
 
     private List<Facet> facets;
 
     private Integer facetCount;
 
+
+    private Paging paging;
 
     public String getName() {
         return name;
@@ -109,14 +109,6 @@ public class SearchResult{
         this.total = total;
     }
 
-    public Long getPage() {
-        return page;
-    }
-
-    public void setPage(Long page) {
-        this.page = page;
-    }
-
     public Float getMaxScore() {
         return maxScore;
     }
@@ -166,6 +158,19 @@ public class SearchResult{
         this.facetCount = facetCount;
     }
 
+
+    public void initDocuments() {
+        this.documents = new ArrayList<>();
+    }
+
+    public Paging getPaging() {
+        return paging;
+    }
+
+    public void setPaging(Paging paging) {
+        this.paging = paging;
+    }
+
     @Override
     public String toString() {
         return "SearchResult{" +
@@ -177,14 +182,10 @@ public class SearchResult{
                 ", time=" + time +
                 ", debug='" + debug + '\'' +
                 ", total=" + total +
-                ", page=" + page +
                 ", maxScore=" + maxScore +
                 ", facets=" + facets +
                 ", facetCount=" + facetCount +
+                ", paging=" + paging +
                 '}';
-    }
-
-    public void initDocuments() {
-        this.documents = new ArrayList<>();
     }
 }
