@@ -15,6 +15,8 @@ public class Facet {
 
     private String id;
 
+    private String filterName;
+
     private Long count;
 
     private Long resultCount;
@@ -59,6 +61,14 @@ public class Facet {
 
     public void setResultCount(Long resultCount) {
         this.resultCount = resultCount;
+    }
+
+    public String getFilterName() {
+        return filterName;
+    }
+
+    public void setFilterName(String filterName) {
+        this.filterName = filterName;
     }
 
     @Override

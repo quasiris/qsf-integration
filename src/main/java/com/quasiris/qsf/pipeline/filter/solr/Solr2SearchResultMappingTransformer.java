@@ -57,6 +57,7 @@ public class Solr2SearchResultMappingTransformer implements SearchResultTransfor
 
             String id = facetMapping.get(facetField.getName());
             facet.setId(id);
+            facet.setFilterName(filterPrefix + id);
 
             String name = facetNameMapping.get(id);
             facet.setName(name);

@@ -28,6 +28,7 @@ public class Solr2SearchResultTransformer extends Solr2SearchResultMappingTransf
             Facet facet = new Facet();
             facet.setId(facetField.getName());
             facet.setName(facetField.getName());
+            facet.setFilterName(facetField.getName());
 
             facet.setCount(Long.valueOf(facetField.getValues().size()));
             Long facetReseultCount = 0L;
