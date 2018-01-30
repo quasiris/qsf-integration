@@ -18,6 +18,8 @@ public class Paging {
     private Integer pageCount;
     private Integer currentPage;
 
+    private Integer rows;
+
     public Page getFirstPage() {
         return firstPage;
     }
@@ -66,6 +68,14 @@ public class Paging {
         this.currentPage = currentPage;
     }
 
+    public Integer getRows() {
+        return rows;
+    }
+
+    public void setRows(Integer rows) {
+        this.rows = rows;
+    }
+
     @Override
     public String toString() {
         return "Paging{" +
@@ -75,6 +85,7 @@ public class Paging {
                 ", previousPage=" + previousPage +
                 ", pageCount=" + pageCount +
                 ", currentPage=" + currentPage +
+                ", rows=" + rows +
                 '}';
     }
 }

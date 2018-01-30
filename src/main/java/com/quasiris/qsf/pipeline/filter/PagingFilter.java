@@ -55,6 +55,8 @@ public class PagingFilter extends AbstractFilter {
         paging.setNextPage(createPage(Math.min(pageCount.intValue(), (currentPage+1)), currentPage));
         paging.setPreviousPage(createPage(Math.max(1, (currentPage-1)), currentPage));
 
+        paging.setRows(rows);
+
         return paging;
     }
 
