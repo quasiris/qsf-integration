@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -19,12 +20,19 @@ import java.io.IOException;
 public class StandardElasticClient implements  ElasticClientIF {
     private static Logger LOG = LoggerFactory.getLogger(StandardElasticClient.class);
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     public ElasticResult request(String elasticUrl, String request) throws IOException {
         LOG.debug("elastic request: " + request);
         String response = post(elasticUrl, request);
-        ObjectMapper objectMapper = new ObjectMapper();
         ElasticResult elasticResult = objectMapper.readValue(response, ElasticResult.class);
         return elasticResult;
+    }
+
+    @Override
+    public ElasticResult request(String elasticBaseUrl, JsonNode jsonNode) throws IOException {
+        String request = objectMapper.writeValueAsString(jsonNode);
+        return request(elasticBaseUrl, request);
     }
 
 

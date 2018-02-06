@@ -1,13 +1,13 @@
 {
-  "took" : 5,
+  "took" : 14,
   "hits" : {
     "total" : 9,
-    "max_score" : 1.4609935,
+    "max_score" : 1.460119,
     "hits" : [ {
-      "_index" : "quantum",
-      "_type" : "quantum",
-      "_id" : "af2e0f70-c6eb-4774-be22-415d278f02a8",
-      "_score" : 1.4609935,
+      "_index" : "osm",
+      "_type" : "osm",
+      "_id" : "5867dac0-6968-4ca1-a341-d72096c9711f",
+      "_score" : 1.460119,
       "_source" : {
         "tagkey_is_in:iso_3166_2" : "DE-HE",
         "lon" : "8.651177",
@@ -15,13 +15,13 @@
         "tagkey_name:sr" : "Дармштат",
         "tagkey_openGeoDB:loc_id" : 15443,
         "tagkey_ref:LOCODE" : "DEDAR",
+        "latlon" : "49.872775,8.651177",
         "id" : 240074718,
         "place" : "city",
         "tagkey_name" : "Darmstadt",
         "tagkey_openGeoDB:postal_codes" : "64283,64285,64287,64289,64291,64293,64295,64297",
         "lat" : "49.872775",
         "tagkey_name:ru" : "Дармштадт",
-        "laton" : "49.872775,8.651177",
         "tagkey_place" : "city",
         "tagkey_name:nds" : "Darmstadt",
         "tagkey_population" : 154002,
@@ -44,33 +44,14 @@
         "name" : [ "<em>Darmstadt</em>" ]
       }
     }, {
-      "_index" : "quantum",
-      "_type" : "quantum",
-      "_id" : "2110f437-b4fc-48c8-a676-958a2a3e4358",
-      "_score" : 0.7769176,
-      "_source" : {
-        "tagkey_ref" : 200,
-        "laton" : "49.883176,8.6507225",
-        "tagkey_place" : "suburb",
-        "name" : "Darmstadt-Nord",
-        "lon" : "8.6507225",
-        "id" : 958260474,
-        "place" : "suburb",
-        "tagkey_name" : "Darmstadt-Nord",
-        "lat" : "49.883176"
-      },
-      "highlight" : {
-        "name" : [ "<em>Darmstadt</em>-Nord" ]
-      }
-    }, {
-      "_index" : "quantum",
-      "_type" : "quantum",
-      "_id" : "a5a699bc-4ac9-4f01-8d88-dade12b35054",
-      "_score" : 0.7703664,
+      "_index" : "osm",
+      "_type" : "osm",
+      "_id" : "4dc22e7f-33a3-4887-95d4-5e5027c63026",
+      "_score" : 0.7573538,
       "_source" : {
         "tagkey_ref" : 100,
-        "laton" : "49.8727478,8.6511983",
         "tagkey_place" : "suburb",
+        "latlon" : "49.8727478,8.6511983",
         "name" : "Darmstadt-Mitte",
         "lon" : "8.6511983",
         "id" : 958260411,
@@ -82,14 +63,14 @@
         "name" : [ "<em>Darmstadt</em>-Mitte" ]
       }
     }, {
-      "_index" : "quantum",
-      "_type" : "quantum",
-      "_id" : "b1182a14-f707-4fa5-8b2b-545bedfce994",
-      "_score" : 0.6949753,
+      "_index" : "osm",
+      "_type" : "osm",
+      "_id" : "16ed775d-cbf7-473a-8f3f-5b2c668ec349",
+      "_score" : 0.739895,
       "_source" : {
         "tagkey_ref" : 300,
-        "laton" : "49.8735755,8.672461",
         "tagkey_place" : "suburb",
+        "latlon" : "49.8735755,8.672461",
         "name" : "Darmstadt-Ost",
         "lon" : "8.672461",
         "id" : 958121890,
@@ -101,14 +82,14 @@
         "name" : [ "<em>Darmstadt</em>-Ost" ]
       }
     }, {
-      "_index" : "quantum",
-      "_type" : "quantum",
-      "_id" : "a045e987-52d6-480e-a5b5-2676d11eb775",
-      "_score" : 0.6949753,
+      "_index" : "osm",
+      "_type" : "osm",
+      "_id" : "d16f60d2-3077-4a13-877b-83f03b5cd09d",
+      "_score" : 0.739895,
       "_source" : {
         "tagkey_ref" : 500,
-        "laton" : "49.8590836,8.6371938",
         "tagkey_place" : "suburb",
+        "latlon" : "49.8590836,8.6371938",
         "name" : "Darmstadt-West",
         "lon" : "8.6371938",
         "id" : 958260491,
@@ -120,12 +101,30 @@
         "name" : [ "<em>Darmstadt</em>-West" ]
       }
     }, {
-      "_index" : "quantum",
-      "_type" : "quantum",
-      "_id" : "3a700a19-fbda-401b-a935-8b872a5fb4f2",
-      "_score" : 0.66574275,
+      "_index" : "osm",
+      "_type" : "osm",
+      "_id" : "19ee0038-6179-4f86-9c70-1e0261c6e315",
+      "_score" : 0.689411,
       "_source" : {
-        "laton" : "50.0671842,6.5994758",
+        "tagkey_ref" : 200,
+        "tagkey_place" : "suburb",
+        "latlon" : "49.883176,8.6507225",
+        "name" : "Darmstadt-Nord",
+        "lon" : "8.6507225",
+        "id" : 958260474,
+        "place" : "suburb",
+        "tagkey_name" : "Darmstadt-Nord",
+        "lat" : "49.883176"
+      },
+      "highlight" : {
+        "name" : [ "<em>Darmstadt</em>-Nord" ]
+      }
+    }, {
+      "_index" : "osm",
+      "_type" : "osm",
+      "_id" : "6674a863-bbd1-4bc3-9d25-547d69286f44",
+      "_score" : 0.6175267,
+      "_source" : {
         "tagkey_place" : "village",
         "tagkey_population" : 305,
         "tagkey_openGeoDB:combination_of_public_administration" : "Verbandsgemeinde Kyllburg",
@@ -136,6 +135,7 @@
         "tagkey_openGeoDB:loc_id" : 23552,
         "tagkey_is_in" : "Bitburg-Prüm,Trier,Rheinland-Pfalz,Bundesrepublik Deutschland,Europe",
         "tagkey_openGeoDB:license_plate_code" : "BIT",
+        "latlon" : "50.0671842,6.5994758",
         "name" : "Sankt Thomas",
         "id" : 240105077,
         "place" : "village",
@@ -147,15 +147,15 @@
         "name" : [ "Sankt <em>Thomas</em>" ]
       }
     }, {
-      "_index" : "quantum",
-      "_type" : "quantum",
-      "_id" : "5cbf441f-ca88-48b6-b8b8-94b1fcdc38f8",
-      "_score" : 0.6488125,
+      "_index" : "osm",
+      "_type" : "osm",
+      "_id" : "0aca12b0-7881-4675-ab34-51db1ee55214",
+      "_score" : 0.6140387,
       "_source" : {
         "tagkey_is_in" : "Zeulenroda",
-        "laton" : "50.6338024,11.973924",
         "tagkey_place" : "suburb",
         "tagkey_nat_name" : "Doktor-Wilhelm-Külz-Siedlung",
+        "latlon" : "50.6338024,11.973924",
         "name" : "Dr.-Wilhelm-Külz-Siedlung",
         "lon" : "11.973924",
         "id" : 319888414,
@@ -168,19 +168,19 @@
         "name" : [ "<em>Dr</em>.-Wilhelm-Külz-Siedlung" ]
       }
     }, {
-      "_index" : "quantum",
-      "_type" : "quantum",
-      "_id" : "c2ccc7ec-9ba4-4e6c-b1a6-a011036a008d",
-      "_score" : 0.6379815,
+      "_index" : "osm",
+      "_type" : "osm",
+      "_id" : "f0aa38b6-2499-4300-a375-d2dbc85d495d",
+      "_score" : 0.601529,
       "_source" : {
         "tagkey_ref" : 308,
-        "laton" : "51.4829792,11.9886894",
         "tagkey_place" : "suburb",
         "tagkey_population" : 156,
         "lon" : "11.9886894",
         "tagkey_wikipedia" : "de:Gebiet der DR (Halle)",
         "tagkey_alt_name" : "Gebiet der Deutschen Reichsbahn",
         "tagkey_source:name" : "http://www.halle.de/VeroeffentlichungenBinaries/597/706/stadtteilkatalog_2012.pdf",
+        "latlon" : "51.4829792,11.9886894",
         "name" : "Gebiet der DR",
         "id" : 2630447713,
         "place" : "suburb",
@@ -192,15 +192,15 @@
         "name" : [ "Gebiet der <em>DR</em>" ]
       }
     }, {
-      "_index" : "quantum",
-      "_type" : "quantum",
-      "_id" : "be1f076d-d435-4d42-a3ae-d1fe77df5e29",
-      "_score" : 0.5745337,
+      "_index" : "osm",
+      "_type" : "osm",
+      "_id" : "1eef7731-7928-462f-891e-b0c5e5b73054",
+      "_score" : 0.5056253,
       "_source" : {
         "tagkey_is_in" : "Miesbach,Miesbach,Oberbayern,Bayern,Bundesrepublik Deutschland,Europe",
-        "laton" : "47.7830258,11.7891524",
         "tagkey_place" : "village",
         "tagkey_postal_code" : 83714,
+        "latlon" : "47.7830258,11.7891524",
         "name" : "Müller am Baum",
         "lon" : "11.7891524",
         "id" : 391323536,
@@ -212,5 +212,56 @@
         "name" : [ "<em>Müller</em> am Baum" ]
       }
     } ]
+  },
+  "aggregations" : {
+    "places" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 0,
+      "buckets" : [ {
+        "key" : "suburb",
+        "doc_count" : 6
+      }, {
+        "key" : "village",
+        "doc_count" : 2
+      }, {
+        "key" : "city",
+        "doc_count" : 1
+      } ]
+    },
+    "tag" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 4,
+      "buckets" : [ {
+        "key" : "bundesrepublik",
+        "doc_count" : 3
+      }, {
+        "key" : "deutschland",
+        "doc_count" : 3
+      }, {
+        "key" : "europe",
+        "doc_count" : 3
+      }, {
+        "key" : "bayern",
+        "doc_count" : 1
+      }, {
+        "key" : "bitburg",
+        "doc_count" : 1
+      }, {
+        "key" : "darmstadt",
+        "doc_count" : 1
+      }, {
+        "key" : "hessen",
+        "doc_count" : 1
+      }, {
+        "key" : "miesbach",
+        "doc_count" : 1
+      }, {
+        "key" : "oberbayern",
+        "doc_count" : 1
+      }, {
+        "key" : "pfalz",
+        "doc_count" : 1
+      } ]
+    }
   }
 }

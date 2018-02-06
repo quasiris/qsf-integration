@@ -1,16 +1,15 @@
 package com.quasiris.qsf.pipeline.filter;
 
-import com.quasiris.qsf.pipeline.Pipeline;
-import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilter;
-import com.quasiris.qsf.test.AbstractPipelineTest;
 import com.quasiris.qsf.mock.Mockfactory;
-import com.quasiris.qsf.pipeline.PipelineBuilder;
-import com.quasiris.qsf.pipeline.PipelineContainer;
-import com.quasiris.qsf.pipeline.PipelineExecuter;
+import com.quasiris.qsf.pipeline.*;
+import com.quasiris.qsf.pipeline.filter.elastic.Elastic2SearchResultMappingTransformer;
+import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilter;
+import com.quasiris.qsf.pipeline.filter.elastic.ElasticParameterQueryTransformer;
 import com.quasiris.qsf.pipeline.filter.elastic.MockElasticClient;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,6 +20,15 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class SearchIntentLocationTest extends AbstractPipelineTest {
 
+    @Test
+    public void debug() throws Exception {
+        try {
+            testSearchIntentLocation();
+        } catch (PipelineContainerException e) {
+            System.out.println(e.getErrorMessage());
+        }
+    }
+
 
     @Test
     public void testSearchIntentLocation() throws Exception {
@@ -30,15 +38,26 @@ public class SearchIntentLocationTest extends AbstractPipelineTest {
 
         ElasticFilter elasticFilter = new ElasticFilter();
         elasticFilter.setResultSetId("locationLookup");
-        elasticFilter.setElasticBaseUrl("http://localhost:9214/quantum");
-        elasticFilter.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
+        elasticFilter.setElasticBaseUrl("http://localhost:9214/osm");
         elasticFilter.setElasticClient(mockElasticClient);
+
+
+        ElasticParameterQueryTransformer queryTransformer = new ElasticParameterQueryTransformer();
+        queryTransformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
+
+        queryTransformer.addAggregation("places", "place");
+        queryTransformer.addAggregation("tag", "tagkey_is_in");
+
+        elasticFilter.setQueryTransformer(queryTransformer);
+
+        Elastic2SearchResultMappingTransformer searchResultTransformer = new Elastic2SearchResultMappingTransformer();
+        elasticFilter.setSearchResultTransformer(searchResultTransformer);
 
         SearchIntentLocationFilter searchIntentLocationFilter = new SearchIntentLocationFilter();
 
         Pipeline pipeline = PipelineBuilder.create().
                 pipeline("locationLookup").
-                timeout(1000L).
+                timeout(10000000L).
                     filter(qsqlRequestFilter).
                     filter(elasticFilter).
                     filter(searchIntentLocationFilter).
@@ -68,6 +87,10 @@ public class SearchIntentLocationTest extends AbstractPipelineTest {
         Assert.assertEquals(2, document.getFieldCount());
         Assert.assertEquals("Darmstadt", document.getFieldValue("location"));
         Assert.assertEquals("Dr. Thomas Müller", document.getFieldValue("other"));
+
+        SearchResult locationLookup = pipelineContainer.getSearchResult("locationLookup");
+        Assert.assertEquals("places", locationLookup.getFacets().get(0).getName());
+
 
     }
 }

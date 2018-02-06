@@ -192,5 +192,75 @@
         "lat": "51.8184594"
       }
     }]
+  },
+  "aggregations": {
+    "places": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "village",
+          "doc_count": 7427
+        },
+        {
+          "key": "suburb",
+          "doc_count": 1718
+        },
+        {
+          "key": "town",
+          "doc_count": 918
+        },
+        {
+          "key": "city",
+          "doc_count": 29
+        }
+      ]
+    },
+    "tag": {
+      "doc_count_error_upper_bound": 114,
+      "sum_other_doc_count": 23882,
+      "buckets": [
+        {
+          "key": "deutschland",
+          "doc_count": 7051
+        },
+        {
+          "key": "europe",
+          "doc_count": 7050
+        },
+        {
+          "key": "bundesrepublik",
+          "doc_count": 7034
+        },
+        {
+          "key": "bayern",
+          "doc_count": 1535
+        },
+        {
+          "key": "kreis",
+          "doc_count": 1211
+        },
+        {
+          "key": "regierungsbezirk",
+          "doc_count": 1139
+        },
+        {
+          "key": "niedersachsen",
+          "doc_count": 1047
+        },
+        {
+          "key": "nordrhein",
+          "doc_count": 949
+        },
+        {
+          "key": "westfalen",
+          "doc_count": 949
+        },
+        {
+          "key": "baden",
+          "doc_count": 944
+        }
+      ]
+    }
   }
 }
