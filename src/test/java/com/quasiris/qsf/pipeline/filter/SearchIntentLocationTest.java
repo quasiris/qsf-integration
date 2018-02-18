@@ -2,9 +2,7 @@ package com.quasiris.qsf.pipeline.filter;
 
 import com.quasiris.qsf.mock.Mockfactory;
 import com.quasiris.qsf.pipeline.*;
-import com.quasiris.qsf.pipeline.filter.elastic.Elastic2SearchResultMappingTransformer;
-import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilter;
-import com.quasiris.qsf.pipeline.filter.elastic.ElasticParameterQueryTransformer;
+import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilterBuilder;
 import com.quasiris.qsf.pipeline.filter.elastic.MockElasticClient;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.response.Document;
@@ -34,33 +32,28 @@ public class SearchIntentLocationTest extends AbstractPipelineTest {
     public void testSearchIntentLocation() throws Exception {
         MockElasticClient mockElasticClient = new MockElasticClient();
         //mockElasticClient.setRecord(true);
-        QSQLRequestFilter qsqlRequestFilter = new QSQLRequestFilter();
-
-        ElasticFilter elasticFilter = new ElasticFilter();
-        elasticFilter.setResultSetId("locationLookup");
-        elasticFilter.setElasticBaseUrl("http://localhost:9214/osm");
-        elasticFilter.setElasticClient(mockElasticClient);
-
-
-        ElasticParameterQueryTransformer queryTransformer = new ElasticParameterQueryTransformer();
-        queryTransformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
-
-        queryTransformer.addAggregation("places", "place");
-        queryTransformer.addAggregation("tag", "tagkey_is_in");
-
-        elasticFilter.setQueryTransformer(queryTransformer);
-
-        Elastic2SearchResultMappingTransformer searchResultTransformer = new Elastic2SearchResultMappingTransformer();
-        elasticFilter.setSearchResultTransformer(searchResultTransformer);
-
-        SearchIntentLocationFilter searchIntentLocationFilter = new SearchIntentLocationFilter();
 
         Pipeline pipeline = PipelineBuilder.create().
                 pipeline("locationLookup").
-                timeout(10000000L).
-                    filter(qsqlRequestFilter).
-                    filter(elasticFilter).
-                    filter(searchIntentLocationFilter).
+                timeout(4000000L).
+                filter(new QSQLRequestFilter()).
+                filter(ElasticFilterBuilder.create().
+                        client(mockElasticClient).
+                        baseUrl("http://localhost:9214/osm").
+                        profile("classpath://com/quasiris/qsf/elastic/profiles/location.json").
+                        addAggregation("places", "place").
+                        addAggregation("tag", "tagkey_is_in").
+                        //filterPrefix("f.").
+                        //mapFilter("farbe", "attrFarbe").
+                        //mapField("url","url").
+                        //mapFacet("facetAttrFarbe", "farbe").
+                        //mapFacetName("farbe", "Farbe").
+                        defaultSort("nameAZ").
+                        mapSort("nameAZ", "[{ \"name\" : \"desc\" }]").
+                        mapSort("nameZA", "[{ \"name\" : \"asc\" }]").
+                        resultSetId("locationLookup").
+                        build()).
+                filter(new SearchIntentLocationFilter()).
                 build();
 
         Assert.assertNotNull(pipeline.print(""));

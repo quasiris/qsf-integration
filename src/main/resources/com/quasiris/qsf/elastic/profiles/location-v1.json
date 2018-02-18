@@ -1,0 +1,96 @@
+{
+  "size": 10,
+  "query": {
+    "filtered": {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "dis_max": {
+                "queries": [
+                  {
+                    "query_string": {
+                      "_name": "dismax",
+                      "query": "${q}",
+                      "default_operator": "OR",
+                      "fields": [
+                        "name"
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "bool": {
+                "should": [
+                  {
+                    "term": {
+                      "place": "city"
+                    }
+                  },
+                  {
+                    "term": {
+                      "place": "suburb"
+                    }
+                  },
+                  {
+                    "term": {
+                      "place": "town"
+                    }
+                  },
+                  {
+                    "term": {
+                      "place": "village"
+                    }
+                  },
+                  {
+                    "term": {
+                      "place": "residential"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "filter": {
+        "bool": {
+          "must": {
+            "term": {
+              "place": "city"
+            }
+          }
+        }
+      }
+    }
+  },
+  "highlight": {
+    "fields": {
+      "name": {
+        "fragment_size": 150,
+        "number_of_fragments": 3,
+        "no_match_size": 150
+      }
+    }
+  },
+  "aggs": {
+    "places": {
+      "terms": {
+        "field": "place"
+      }
+    },
+    "tag": {
+      "terms": {
+        "field": "tagkey_is_in"
+      }
+    }
+  },
+  "sort": [
+    {
+      "name": "desc"
+    }
+  ],
+  "from": 0
+}

@@ -20,6 +20,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     private Integer defaultRows = 10;
     private Integer defaultPage = 1;
 
+    private Integer elasticVersion = 6;
+
 
     @Override
     public ObjectNode transform(PipelineContainer pipelineContainer) {
@@ -59,9 +61,16 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         }
     }
 
-    // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
-    // TODO implement range queries
     public void transformFilters() {
+        if(elasticVersion < 2) {
+            transformFiltersVersionOlder2();
+            return;
+        }
+        transformFiltersCurrentVersion();
+    }
+
+
+    public void transformFiltersVersionOlder2() {
         ArrayNode filters = getObjectMapper().createArrayNode();
         for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
             ObjectNode filter = transformFilter(searchFilter);
@@ -69,7 +78,35 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 filters.add(filter);
             }
         }
-        ObjectNode query = (ObjectNode) getElasticQuery().get("query");
+        if(filters.size() == 0) {
+            return;
+        }
+
+        ObjectNode must = getObjectMapper().createObjectNode();
+        must.set("must", filters);
+
+        ObjectNode bool = getObjectMapper().createObjectNode();
+        bool.set("bool", must);
+        ObjectNode query = (ObjectNode) getElasticQuery().get("query").get("filtered");
+        query.set("filter", bool);
+
+    }
+
+
+    // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
+    // TODO implement range queries
+    public void transformFiltersCurrentVersion() {
+        ArrayNode filters = getObjectMapper().createArrayNode();
+        for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
+            ObjectNode filter = transformFilter(searchFilter);
+            if(filter != null) {
+                filters.add(filter);
+            }
+        }
+        if(filters.size() == 0) {
+            return;
+        }
+        ObjectNode query = (ObjectNode) getElasticQuery().get("query").get("bool");
         query.set("filter", filters);
 
     }
@@ -165,4 +202,11 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         this.defaultPage = defaultPage;
     }
 
+    public Integer getElasticVersion() {
+        return elasticVersion;
+    }
+
+    public void setElasticVersion(Integer elasticVersion) {
+        this.elasticVersion = elasticVersion;
+    }
 }

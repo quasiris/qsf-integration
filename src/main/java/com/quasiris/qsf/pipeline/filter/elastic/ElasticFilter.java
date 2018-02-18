@@ -18,7 +18,7 @@ public class ElasticFilter extends AbstractFilter {
 
     private static Logger LOG = LoggerFactory.getLogger(ElasticFilter.class);
 
-    private String elasticBaseUrl;
+    private String baseUrl;
 
     private String resultSetId;
 
@@ -34,7 +34,7 @@ public class ElasticFilter extends AbstractFilter {
         if(pipelineContainer.isDebugEnabled()) {
             pipelineContainer.debug(elasticQuery);
         }
-        ElasticResult elasticResult = elasticClient.request(elasticBaseUrl + "/_search", elasticQuery);
+        ElasticResult elasticResult = elasticClient.request(baseUrl + "/_search", elasticQuery);
         pipelineContainer.debug(elasticResult);
         SearchResult searchResult = searchResultTransformer.transform(elasticResult);
         pipelineContainer.putSearchResult(resultSetId,searchResult);
@@ -42,21 +42,20 @@ public class ElasticFilter extends AbstractFilter {
         return pipelineContainer;
     }
 
-
     @Override
     public StringBuilder print(String indent) {
         StringBuilder printer =  super.print(indent);
-        PrintUtil.printKeyValue(printer, indent, "elasticBaseUrl", getElasticBaseUrl());
+        PrintUtil.printKeyValue(printer, indent, "baseUrl", getBaseUrl());
         PrintUtil.printKeyValue(printer, indent, "resultSetId", getResultSetId());
         return printer;
     }
 
-    public String getElasticBaseUrl() {
-        return elasticBaseUrl;
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
-    public void setElasticBaseUrl(String elasticBaseUrl) {
-        this.elasticBaseUrl = elasticBaseUrl;
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     public String getResultSetId() {

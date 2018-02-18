@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -42,13 +43,20 @@ public class StandardElasticClient implements  ElasticClientIF {
 
         StringEntity entity = new StringEntity(postString, "UTF-8");
         httpPost.setEntity(entity);
-        // httpPost.setHeader("Content-Type",contentType);
+        httpPost.setHeader("Content-Type","application/json");
 
         CloseableHttpResponse response = httpclient.execute(httpPost);
         StringBuilder responseBuilder = new StringBuilder();
 
         responseBuilder.append(EntityUtils.toString(response.getEntity()));
         httpclient.close();
-        return responseBuilder.toString();
+
+        if (response.getStatusLine().getStatusCode() == 200) {
+            return responseBuilder.toString();
+        } else {
+            throw new HttpResponseException(response.getStatusLine().getStatusCode(), responseBuilder.toString());
+        }
+
+
     }
 }

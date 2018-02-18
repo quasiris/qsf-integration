@@ -30,7 +30,18 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("brand", "brandElasticField");
         transformer.addFilterMapping("color", "colorElasticField");
         ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
-        Assert.assertEquals("red", elasticQuery.get("query").get("filter").get(0).get("term").get("colorElasticField").asText());
+        Assert.assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get(0).get("term").get("colorElasticField").asText());
+    }
+
+    @Test
+    public void transformFilterVersion1() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setElasticVersion(1);
+        transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location-v1.json");
+        transformer.addFilterMapping("brand", "brandElasticField");
+        transformer.addFilterMapping("color", "colorElasticField");
+        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
+        Assert.assertEquals("red", elasticQuery.get("query").get("filtered").get("filter").get("bool").get("must").get(0).get("term").get("colorElasticField").asText());
     }
 
     @Test

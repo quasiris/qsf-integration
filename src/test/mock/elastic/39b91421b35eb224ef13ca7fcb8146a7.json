@@ -1,0 +1,78 @@
+{
+  "took" : 5,
+  "hits" : {
+    "total" : 1,
+    "max_score" : null,
+    "hits" : [ {
+      "_index" : "osm",
+      "_type" : "osm",
+      "_id" : "5917f4db-8fab-4701-809f-52e7e1d6fcb8",
+      "_score" : null,
+      "_source" : {
+        "tagkey_openGeoDB:license_plate_code" : "DA",
+        "tagkey_openGeoDB:is_in_loc_id" : 517,
+        "tagkey_wikipedia" : "de:Darmstadt",
+        "tagkey_name" : "Darmstadt",
+        "id" : 240074718,
+        "latlon" : "49.872775,8.651177",
+        "tagkey_is_in" : "Darmstadt,Hessen,Bundesrepublik Deutschland,Europe",
+        "name" : "Darmstadt",
+        "tagkey_name:sr" : "Дармштат",
+        "tagkey_openGeoDB:type" : "Wissenschaftsstadt",
+        "place" : "city",
+        "tagkey_is_in:country_code" : "DE",
+        "lat" : "49.872775",
+        "lon" : "8.651177",
+        "tagkey_name:zh" : "达姆施塔特",
+        "tagkey_place" : "city",
+        "tagkey_openGeoDB:layer" : 6,
+        "tagkey_name:de" : "Darmstadt",
+        "tagkey_wikidata" : "Q2973",
+        "tagkey_name:la" : "Darmstadium",
+        "tagkey_is_in:iso_3166_2" : "DE-HE",
+        "tagkey_openGeoDB:postal_codes" : "64283,64285,64287,64289,64291,64293,64295,64297",
+        "tagkey_ref:LOCODE" : "DEDAR",
+        "tagkey_openGeoDB:community_identification_number" : 6411000,
+        "tagkey_openGeoDB:telephone_area_code" : 6151,
+        "tagkey_name:ja" : "ダルムシュタット",
+        "tagkey_population" : 154002,
+        "tagkey_name:ru" : "Дармштадт",
+        "tagkey_openGeoDB:loc_id" : 15443,
+        "tagkey_name:nds" : "Darmstadt"
+      },
+      "highlight" : {
+        "name" : [ "<em>Darmstadt</em>" ]
+      }
+    } ]
+  },
+  "aggregations" : {
+    "places" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 0,
+      "buckets" : [ {
+        "key" : "city",
+        "doc_count" : 1
+      } ]
+    },
+    "tag" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 0,
+      "buckets" : [ {
+        "key" : "bundesrepublik",
+        "doc_count" : 1
+      }, {
+        "key" : "darmstadt",
+        "doc_count" : 1
+      }, {
+        "key" : "deutschland",
+        "doc_count" : 1
+      }, {
+        "key" : "europe",
+        "doc_count" : 1
+      }, {
+        "key" : "hessen",
+        "doc_count" : 1
+      } ]
+    }
+  }
+}
