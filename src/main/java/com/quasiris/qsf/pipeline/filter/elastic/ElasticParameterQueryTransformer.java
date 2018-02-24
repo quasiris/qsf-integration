@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.web.RequestParser;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.util.PrintUtil;
@@ -40,7 +41,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
 
     @Override
-    public ObjectNode transform(PipelineContainer pipelineContainer) {
+    public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
         this.pipelineContainer = pipelineContainer;
         this.searchQuery = pipelineContainer.getSearchQuery();
 
@@ -155,5 +156,9 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     public void addAggregation(String name, String field) {
         Pair<String, String> pair = new ImmutablePair<>(name, field);
         aggregations.add(pair);
+    }
+
+    public String getProfile() {
+        return profile;
     }
 }
