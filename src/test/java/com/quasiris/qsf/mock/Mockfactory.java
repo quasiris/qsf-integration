@@ -9,10 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * Created by mki on 25.11.17.
@@ -24,20 +21,40 @@ public class Mockfactory {
             URI uri = new URI(url);
 
 
-            final Map<String, String> parametersMap = Splitter.on("&")
+            final Iterable<String> parameterList = Splitter.on("&")
                     .omitEmptyStrings()
-                    .trimResults()
-                    .withKeyValueSeparator("=")
-                    .split(uri.getQuery());
+                    .trimResults().split(uri.getQuery());
 
-            final Map<String, String[]> decodedParametersMap = parametersMap.
-                    entrySet().
-                    stream().
-                    collect(Collectors.toMap(
-                            Map.Entry::getKey, entry -> decodeUrlParam(entry.getValue())));
+            final Map<String, List<String>> parametersMap = new HashMap<>();
+
+            final Map<String, String[]> decodedParametersMap = new HashMap<>();
+
+            for(String param : parameterList) {
+                List<String> splitted = Splitter.on("=").splitToList(param);
+                if(splitted.size() != 2) {
+                    throw new IllegalArgumentException("The url " + url + " is not valid for param: " + param);
+                }
+                String key = splitted.get(0);
+                List<String> values = parametersMap.get(key);
+                if(values == null) {
+                    values = new ArrayList<>();
+                }
+                values.add(splitted.get(1));
+                parametersMap.put(key, values);
+            }
+
+            for(Map.Entry<String, List<String>> entry : parametersMap.entrySet()) {
+                List<String> decodedValues = new ArrayList<>();
+                for(String value: entry.getValue()) {
+                    decodedValues.add(decodeUrlParam(value));
+                }
+                decodedParametersMap.put(entry.getKey(), decodedValues.toArray(new String[0]));
+
+            }
 
 
-            //map(e -> decodeUrlParam(e.getValue()))
+
+
 
 
             HttpServletRequest httpServletRequest = Mockito.mock(HttpServletRequest.class);
@@ -62,13 +79,11 @@ public class Mockfactory {
         }
     }
 
-    public static String[] decodeUrlParam(String param) {
+    public static String decodeUrlParam(String param) {
         try {
-            String[] paramArray = new String[] {URLDecoder.decode(param, "UTF-8")};
-            return paramArray;
+            return URLDecoder.decode(param, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            String[] paramArray = new String[] {param};
-            return paramArray;
+            return param;
         }
     }
 
