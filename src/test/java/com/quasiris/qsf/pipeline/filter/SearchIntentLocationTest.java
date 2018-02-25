@@ -23,7 +23,7 @@ public class SearchIntentLocationTest extends AbstractPipelineTest {
         try {
             testSearchIntentLocation();
         } catch (PipelineContainerException e) {
-            System.out.println(e.getErrorMessage());
+            System.out.println(e.getMessage());
         }
     }
 

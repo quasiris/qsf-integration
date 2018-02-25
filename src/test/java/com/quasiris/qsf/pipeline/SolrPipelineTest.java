@@ -31,7 +31,7 @@ public class SolrPipelineTest extends AbstractPipelineTest {
         } catch (PipelineContainerDebugException e) {
             System.out.println(e.getDebugStack());
         } catch (PipelineContainerException e) {
-            System.out.println(e.getErrorMessage());
+            System.out.println(e.getMessage());
         } catch (Exception e) {
             throw e;
         }

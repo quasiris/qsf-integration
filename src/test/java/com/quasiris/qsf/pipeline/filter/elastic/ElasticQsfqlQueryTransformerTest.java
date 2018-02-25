@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.parser.QsfqlParserTest;
 import org.junit.Assert;
@@ -74,7 +75,7 @@ public class ElasticQsfqlQueryTransformerTest {
 
     }
 
-    private ObjectNode transform(ElasticQsfqlQueryTransformer transformer, String... parameters) {
+    private ObjectNode transform(ElasticQsfqlQueryTransformer transformer, String... parameters) throws PipelineContainerException {
         SearchQuery searchQuery = QsfqlParserTest.createQuery(parameters);
         PipelineContainer pipelineContainer = new PipelineContainer(null, null);
         pipelineContainer.setSearchQuery(searchQuery);
