@@ -119,7 +119,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
         String elasticField = getFilterMapping().get(searchFilter.getName());
         if (Strings.isNullOrEmpty(elasticField)) {
-            return null;
+            elasticField = searchFilter.getName();
         }
 
         String firstValue = searchFilter.getValues().stream().findFirst().orElse(null);

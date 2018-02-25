@@ -25,7 +25,7 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
                 try {
                         testQsfqlElasticFilterVersion1();
                 } catch (PipelineContainerException e) {
-                        System.out.println(e.getErrorMessage());
+                        System.out.println(e.getMessage());
                 } catch (PipelineContainerDebugException debug) {
                         System.out.println(debug.getDebugStack());
                 }
