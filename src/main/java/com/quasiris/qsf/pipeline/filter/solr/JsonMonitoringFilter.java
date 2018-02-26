@@ -6,15 +6,18 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.SearchResult;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +30,19 @@ public class JsonMonitoringFilter extends AbstractFilter {
 
     private List<Pair<String, String>> conditions = new ArrayList<>();
 
-    private CloseableHttpClient httpclient = HttpClients.createDefault();
+    private CloseableHttpClient httpclient = HttpClientBuilder.create().build();
+
+    private String username;
+
+    private String password;
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
+
+
+
+
+
 
         SearchResult searchResult = new SearchResult();
         int aggregatedStatus = 200;
@@ -42,6 +54,14 @@ public class JsonMonitoringFilter extends AbstractFilter {
 
             httpGet.setHeader("Content-Type", "application/json");
 
+            if(this.username != null && this.password != null) {
+                String auth = username + ":" + password;
+                byte[] encodedAuth = Base64.encodeBase64(
+                        auth.getBytes(Charset.forName("ISO-8859-1")));
+                String authHeader = "Basic " + new String(encodedAuth);
+                httpGet.setHeader(HttpHeaders.AUTHORIZATION, authHeader);
+
+            }
             CloseableHttpResponse response = httpclient.execute(httpGet);
             StringBuilder responseBuilder = new StringBuilder();
             responseBuilder.append(EntityUtils.toString(response.getEntity()));
@@ -92,5 +112,10 @@ public class JsonMonitoringFilter extends AbstractFilter {
 
     public void setHttpclient(CloseableHttpClient httpclient) {
         this.httpclient = httpclient;
+    }
+
+    public void setAuthentication(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 }
