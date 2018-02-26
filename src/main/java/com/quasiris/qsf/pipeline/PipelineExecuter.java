@@ -55,7 +55,7 @@ public class PipelineExecuter {
     public PipelineContainer execute() throws PipelineContainerException, PipelineContainerDebugException {
         try {
             ExecutorService executorService = Executors.newFixedThreadPool(1);
-            FutureTask<PipelineContainer> futureTask = new FutureTask<>(new PipelineCallable(pipeline, pipelineContainer));
+            FutureTask<PipelineContainer> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer()));
             executorService.execute(futureTask);
             pipelineContainer = futureTask.get(pipeline.getTimeout(), TimeUnit.MILLISECONDS);
             executorService.shutdown();
