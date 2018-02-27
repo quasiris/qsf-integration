@@ -1,6 +1,7 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
@@ -12,6 +13,7 @@ import com.quasiris.qsf.response.FacetValue;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.util.EncodingUtil;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -91,21 +93,14 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     @Override
     public Document transformHit(Hit hit) {
         ObjectNode objectNode = hit.get_source();
-        Iterator<Map.Entry<String, JsonNode>> it = objectNode.fields();
-        Document document = new Document();
-        while (it.hasNext()) {
-            Map.Entry<String, JsonNode> entry = it.next();
 
-            JsonNode jsonNode = entry.getValue();
-            Object value = null;
-            if(jsonNode.isTextual()) {
-                value = jsonNode.textValue();
-            } else if( jsonNode.isNumber()) {
-                value = jsonNode.numberValue();
-            } else {
-                value = jsonNode;
-            }
-            document.getDocument().put(entry.getKey(), value);
+        Document document = new Document();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Map fields = mapper.readValue(objectNode.toString(), Map.class);
+            document.setDocument(fields);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         for(Map.Entry<String, List<String>> entry : hit.getHighlight().entrySet()) {
