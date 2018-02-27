@@ -22,48 +22,24 @@ public class QsfqlSolrFilterTest extends AbstractPipelineTest {
 
 
     @Test
-    public void testQsfqlSolrFilter() throws Exception {
+    public void testMultipleFilter() throws Exception {
+            SearchResult searchResult = executePipeline("http://localhost?q=*:*&foo=bar&f.genre=fantasy&f.category=book&f.category=hardcover");
+            Assert.assertEquals(Long.valueOf(1), searchResult.getTotal());
+            Assert.assertEquals(1,searchResult.getDocuments().size());
 
-            MockSolrClient mockSolrClient = Mockfactory.createSolrClient("http://localhost:8983/solr/gettingstarted");
-            //mockSolrClient.setRecord(true);
+            Document document = searchResult.getDocuments().get(0);
+            Assert.assertEquals(3, document.getFieldCount());
+    }
 
-            Pipeline pipeline = PipelineBuilder.create().
-                    pipeline("products").
-                    timeout(1000L).
-                    filter(new QSQLRequestFilter()).
-                    filter(SolrFilterBuilder.create().
-                            solrClient(mockSolrClient).
-                            param("facet", "true").
-                            param("facet.field","author").
-                            param("facet.field","genre_s").
-                            mapFilter("genre", "genre_s").
-                            mapField("id","id").
-                            mapField("genre_s","genre").
-                            mapFacet("genre_s", "genre").
-                            mapFacetName("genre", "Genre").
-                            resultSetId("products").
-                            build()).
-                    build();
+    @Test
+    public void smokeTest() throws Exception {
 
-            Assert.assertNotNull(pipeline.print(""));
-
-            HttpServletRequest httpServletRequest = Mockfactory.createHttpServletRequest("http://localhost?q=*:*&foo=bar&f.genre=fantasy&page=2");
-
-            PipelineContainer pipelineContainer = PipelineExecuter.create().
-                    pipeline(pipeline).
-                    httpRequest(httpServletRequest).
-                    execute();
-
-            if(!pipelineContainer.isSuccess()) {
-                Assert.fail();
-            }
-
-            SearchResult searchResult = pipelineContainer.getSearchResult("products");
+            SearchResult searchResult = executePipeline("http://localhost?q=*:*&foo=bar&f.genre=fantasy&page=2");
             Assert.assertEquals(Long.valueOf(11), searchResult.getTotal());
             Assert.assertEquals(1,searchResult.getDocuments().size());
 
             Document document = searchResult.getDocuments().get(0);
-            Assert.assertEquals(2, document.getFieldCount());
+            Assert.assertEquals(3, document.getFieldCount());
 
 
             Facet facet = searchResult.getFacetById("genre");
@@ -77,6 +53,47 @@ public class QsfqlSolrFilterTest extends AbstractPipelineTest {
             Assert.assertEquals(Long.valueOf(11), facetValue.getCount());
             Assert.assertEquals("genre=fantasy", facetValue.getFilter());
 
+        }
+
+        private SearchResult executePipeline(String url) throws PipelineContainerException, PipelineContainerDebugException {
+                MockSolrClient mockSolrClient = Mockfactory.createSolrClient("http://localhost:8983/solr/gettingstarted");
+                //mockSolrClient.setRecord(true);
+
+                Pipeline pipeline = PipelineBuilder.create().
+                        pipeline("products").
+                        timeout(1000000000L).
+                        filter(new QSQLRequestFilter()).
+                        filter(SolrFilterBuilder.create().
+                                solrClient(mockSolrClient).
+                                param("facet", "true").
+                                param("facet.field","author").
+                                param("facet.field","genre_s").
+                                mapFilter("genre", "genre_s").
+                                mapFilter("category", "cat").
+                                mapField("id","id").
+                                mapField("genre_s","genre").
+                                mapField("cat","category").
+                                mapFacet("genre_s", "genre").
+                                mapFacetName("genre", "Genre").
+                                resultSetId("products").
+                                build()).
+                        build();
+
+                Assert.assertNotNull(pipeline.print(""));
+
+                HttpServletRequest httpServletRequest = Mockfactory.createHttpServletRequest(url);
+
+                PipelineContainer pipelineContainer = PipelineExecuter.create().
+                        pipeline(pipeline).
+                        httpRequest(httpServletRequest).
+                        execute();
+
+                if(!pipelineContainer.isSuccess()) {
+                        Assert.fail();
+                }
+
+                SearchResult searchResult = pipelineContainer.getSearchResult("products");
+                return searchResult;
         }
 
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.query.SearchFilter;
 
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
 
     @Override
-    public ObjectNode transform(PipelineContainer pipelineContainer) {
+    public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
         super.transform(pipelineContainer);
 
         transformQuery();
@@ -61,7 +62,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         }
     }
 
-    public void transformFilters() {
+    public void transformFilters() throws PipelineContainerException {
         if(elasticVersion < 2) {
             transformFiltersVersionOlder2();
             return;
@@ -70,7 +71,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
 
-    public void transformFiltersVersionOlder2() {
+    public void transformFiltersVersionOlder2() throws PipelineContainerException {
         ArrayNode filters = getObjectMapper().createArrayNode();
         for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
             ObjectNode filter = transformFilter(searchFilter);
@@ -88,6 +89,9 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         ObjectNode bool = getObjectMapper().createObjectNode();
         bool.set("bool", must);
         ObjectNode query = (ObjectNode) getElasticQuery().get("query").get("filtered");
+        if(query == null) {
+            throw new PipelineContainerException("There is no filtered query defined in the profile " + getProfile());
+        }
         query.set("filter", bool);
 
     }
@@ -115,7 +119,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
         String elasticField = getFilterMapping().get(searchFilter.getName());
         if (Strings.isNullOrEmpty(elasticField)) {
-            return null;
+            elasticField = searchFilter.getName();
         }
 
         String firstValue = searchFilter.getValues().stream().findFirst().orElse(null);

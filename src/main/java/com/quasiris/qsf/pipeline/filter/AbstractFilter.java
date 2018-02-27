@@ -38,7 +38,7 @@ public abstract class AbstractFilter implements Filter {
 
     @Override
     public PipelineContainer onError(PipelineContainer pipelineContainer, Exception e) {
-        pipelineContainer.error("error in filter: " + getId());
+        pipelineContainer.error("error in filter: " + getId() + " message: " + e.getMessage());
         pipelineContainer.error(e);
         return pipelineContainer;
     }

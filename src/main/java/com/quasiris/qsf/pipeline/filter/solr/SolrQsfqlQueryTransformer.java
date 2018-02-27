@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.solr;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.query.SearchFilter;
@@ -69,15 +70,17 @@ public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer imp
             return;
         }
 
-        String firstValue = searchFilter.getValues().stream().findFirst().orElse(null);
-        if(Strings.isNullOrEmpty(firstValue)) {
+        if(searchFilter.getValues() == null || searchFilter.getValues().isEmpty()) {
             return;
         }
         StringBuilder solrFilter  = new StringBuilder();
         if(searchFilter.isExclude()) {
             solrFilter.append("{!tag=").append(searchFilter.getId()).append("}");
         }
-        solrFilter.append(solrField).append(":").append(firstValue);
+        String operator = " AND ";
+        solrFilter.append(solrField).append(":").append("(");
+        solrFilter.append(Joiner.on(operator).skipNulls().join(searchFilter.getValues()));
+        solrFilter.append(")");
         getSolrQuery().addFilterQuery(solrFilter.toString());
     }
 

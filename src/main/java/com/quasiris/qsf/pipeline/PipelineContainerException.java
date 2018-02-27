@@ -5,13 +5,7 @@ package com.quasiris.qsf.pipeline;
  */
 public class PipelineContainerException extends Exception {
 
-    private String errorMessage;
-
     public PipelineContainerException(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
+        super(errorMessage);
     }
 }
