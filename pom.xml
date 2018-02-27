@@ -96,4 +96,17 @@
 
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>quasiris-snapshots</id>
+            <name>quasiris Release Repository</name>
+            <url>${nexus.base.url}/repository/maven-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>quasiris-snapshots</id>
+            <name>Quasiris Snapshot Repository</name>
+            <url>${nexus.base.url}/repository/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
