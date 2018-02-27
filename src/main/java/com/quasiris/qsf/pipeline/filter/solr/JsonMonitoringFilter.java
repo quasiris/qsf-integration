@@ -36,15 +36,13 @@ public class JsonMonitoringFilter extends AbstractFilter {
 
     private String password;
 
+    private String description;
+    private String documentationUrl;
+
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
-
-
-
-
-
-
         SearchResult searchResult = new SearchResult();
+        int httpCode = 0;
         int aggregatedStatus = 200;
         try {
             ScriptEngineManager mgr = new ScriptEngineManager();
@@ -63,6 +61,7 @@ public class JsonMonitoringFilter extends AbstractFilter {
 
             }
             CloseableHttpResponse response = httpclient.execute(httpGet);
+            httpCode = response.getStatusLine().getStatusCode();
             StringBuilder responseBuilder = new StringBuilder();
             responseBuilder.append(EntityUtils.toString(response.getEntity()));
             httpclient.close();
@@ -77,6 +76,12 @@ public class JsonMonitoringFilter extends AbstractFilter {
                 document.getDocument().put("condition", condition.getLeft());
                 document.getDocument().put("expected", condition.getRight());
                 document.getDocument().put("actual", stringValue);
+                document.getDocument().put("description", description);
+                document.getDocument().put("documentationUrl", documentationUrl);
+                document.getDocument().put("duration", getCurrentTime());
+                document.getDocument().put("httpCode", httpCode);
+
+
 
                 String function = "var value =" + stringValue + "; " + condition.getRight() + ";";
 
@@ -94,6 +99,10 @@ public class JsonMonitoringFilter extends AbstractFilter {
             Document document = new Document();
             document.getDocument().put("url", url);
             document.getDocument().put("error", e.getMessage());
+            document.getDocument().put("description", description);
+            document.getDocument().put("documentationUrl", documentationUrl);
+            document.getDocument().put("duration", getCurrentTime());
+            document.getDocument().put("httpCode", httpCode);
             searchResult.addDocument(document);
         }
 
@@ -117,5 +126,13 @@ public class JsonMonitoringFilter extends AbstractFilter {
     public void setAuthentication(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDocumentationUrl(String documentationUrl) {
+        this.documentationUrl = documentationUrl;
     }
 }
