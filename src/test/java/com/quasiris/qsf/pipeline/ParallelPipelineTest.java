@@ -80,7 +80,7 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
                 pipeline("parallel").
                 timeout(10000L).
                 filter(new SleepFilter(1000L)).
-                filter(new SleepFilter(100L)).
+                filter(new SleepFilter(1000L)).
                 build();
 
         PipelineContainer pipelineContainer = PipelineExecuter.create().
@@ -91,7 +91,7 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
             Assert.fail();
         }
 
-        MatcherAssert.assertThat("currentTime", pipelineContainer.currentTime(), Matchers.greaterThan(2000L));
+        MatcherAssert.assertThat("currentTime", pipelineContainer.currentTime(), Matchers.greaterThan(1999L));
     }
 
 
