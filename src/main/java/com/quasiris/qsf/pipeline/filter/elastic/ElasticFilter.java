@@ -37,6 +37,7 @@ public class ElasticFilter extends AbstractFilter {
         ElasticResult elasticResult = elasticClient.request(baseUrl + "/_search", elasticQuery);
         pipelineContainer.debug(elasticResult);
         SearchResult searchResult = searchResultTransformer.transform(elasticResult);
+        searchResult.setName(resultSetId);
         pipelineContainer.putSearchResult(resultSetId,searchResult);
 
         return pipelineContainer;

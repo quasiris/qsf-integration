@@ -59,6 +59,7 @@ public class SolrFilter extends AbstractFilter {
 
 
         SearchResult searchResult = searchResultTransformer.transform(solrResponse);
+        searchResult.setName(resultSetId);
         searchResult.setTime(getCurrentTime());
         searchResult.setStatusCode(200);
         searchResult.setStatusMessage("OK");
