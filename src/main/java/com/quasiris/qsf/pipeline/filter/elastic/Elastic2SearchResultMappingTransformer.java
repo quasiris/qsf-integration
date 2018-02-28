@@ -114,4 +114,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     public StringBuilder print(String indent) {
         return new StringBuilder("TODO");
     }
+
+    public void filterPrefix(String filterPrefix) {
+        this.filterPrefix=filterPrefix;
+    }
 }

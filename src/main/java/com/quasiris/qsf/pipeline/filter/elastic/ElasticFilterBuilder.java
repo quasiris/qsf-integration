@@ -154,7 +154,7 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilterBuilder filterPrefix(String filterPrefix) {
-        //getMappingTransformer().filterPrefix(filterPrefix);
+        getMappingTransformer().filterPrefix(filterPrefix);
         return this;
     }
 
