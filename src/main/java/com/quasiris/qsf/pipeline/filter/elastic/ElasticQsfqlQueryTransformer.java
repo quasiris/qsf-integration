@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
@@ -8,6 +9,7 @@ import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.query.SearchFilter;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -111,6 +113,15 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             return;
         }
         ObjectNode query = (ObjectNode) getElasticQuery().get("query").get("bool");
+        if(query.get("filter") != null && query.get("filter").isArray()) {
+            if(query.get("filter").isArray()) {
+                ArrayNode filtersArray = (ArrayNode) query.get("filter");
+                for (Iterator<JsonNode> it = filtersArray.iterator(); it.hasNext();) {
+                    filters.add((ObjectNode) it.next());
+                }
+            }
+        }
+
         query.set("filter", filters);
 
     }
