@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class SearchFilter {
 
-    private Operator operator = Operator.OR;
+    private FilterType filterType;
 
     private boolean exclude = true;
 
@@ -43,12 +43,12 @@ public class SearchFilter {
         this.name = name;
     }
 
-    public Operator getOperator() {
-        return operator;
+    public FilterType getFilterType() {
+        return filterType;
     }
 
-    public void setOperator(Operator operator) {
-        this.operator = operator;
+    public void setFilterType(FilterType filterType) {
+        this.filterType = filterType;
     }
 
     public boolean isExclude() {
@@ -79,7 +79,7 @@ public class SearchFilter {
     @Override
     public String toString() {
         return "SearchFilter{" +
-                "operator=" + operator +
+                "filterType=" + filterType +
                 ", exclude=" + exclude +
                 ", id='" + id + '\'' +
                 ", name='" + name + '\'' +

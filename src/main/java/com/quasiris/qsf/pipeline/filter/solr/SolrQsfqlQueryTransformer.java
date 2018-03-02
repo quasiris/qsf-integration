@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.solr;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
 import org.apache.solr.client.solrj.SolrQuery;
 
@@ -59,10 +60,65 @@ public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer imp
 
     public void transformFilters() {
         for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
-            transformFilter(searchFilter);
+
+
+            switch (searchFilter.getFilterType()) {
+                case OR:
+                    transformFilter(searchFilter);
+                    break;
+                case AND:
+                    transformFilter(searchFilter);
+                    break;
+                case RANGE:
+                    transformRangeFilter(searchFilter);
+                    break;
+                case SLIDER:
+                    transformRangeFilter(searchFilter);
+                    break;
+                default:
+                    throw new IllegalArgumentException("The filter type " + searchFilter.getFilterType().getCode() + " is not implemented.");
+            }
+
         }
 
     }
+
+
+    public void transformRangeFilter(SearchFilter searchFilter) {
+        String solrField = getFilterMapping().get(searchFilter.getName());
+        if(Strings.isNullOrEmpty(solrField)) {
+            return;
+        }
+
+        RangeFilterValue<Number> rangeFilterValue = searchFilter.getRangeValue(Number.class);
+        if(rangeFilterValue == null) {
+            return;
+        }
+        StringBuilder solrFilter  = new StringBuilder();
+        if(searchFilter.isExclude()) {
+            solrFilter.append("{!tag=").append(searchFilter.getId()).append("}");
+        }
+
+        String min = rangeFilterValue.getMinValue().toString();
+        if(rangeFilterValue.getMinValue().equals(Double.MIN_VALUE)) {
+            min = "*";
+        }
+
+        String max = rangeFilterValue.getMaxValue().toString();
+        if(rangeFilterValue.getMaxValue().equals(Double.MAX_VALUE)) {
+            max = "*";
+        }
+
+        solrFilter.append(solrField).append(":").
+                append("[").
+                append(min).
+                append(" TO ").
+                append(max).
+                append("]");
+
+        getSolrQuery().addFilterQuery(solrFilter.toString());
+    }
+
 
     public void transformFilter(SearchFilter searchFilter) {
         String solrField = getFilterMapping().get(searchFilter.getName());
@@ -77,7 +133,22 @@ public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer imp
         if(searchFilter.isExclude()) {
             solrFilter.append("{!tag=").append(searchFilter.getId()).append("}");
         }
+
+
         String operator = " AND ";
+        switch (searchFilter.getFilterType()) {
+            case OR:
+                operator = " OR ";
+                break;
+            case AND:
+                operator = " AND ";
+                break;
+            case RANGE:
+                throw new IllegalArgumentException("A range filter can not be applied to solr terms filter.");
+            case SLIDER:
+                throw new IllegalArgumentException("A slider filter can not be applied to solr terms filter.");
+        }
+
         solrFilter.append(solrField).append(":").append("(");
         solrFilter.append(Joiner.on(operator).skipNulls().join(searchFilter.getValues()));
         solrFilter.append(")");

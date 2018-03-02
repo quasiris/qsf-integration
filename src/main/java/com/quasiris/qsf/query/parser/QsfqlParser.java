@@ -1,10 +1,7 @@
 package com.quasiris.qsf.query.parser;
 
 import com.google.common.base.Strings;
-import com.quasiris.qsf.query.RangeFilterValue;
-import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.query.Sort;
+import com.quasiris.qsf.query.*;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -73,6 +70,52 @@ public class QsfqlParser {
 
     }
 
+
+    SearchFilter createSearchFilter(String filterName, String[] filterValues)  {
+        SearchFilter searchFilter = new SearchFilter();
+        searchFilter.setId(filterName);
+        searchFilter.setName(filterName);
+        searchFilter.setValues(Arrays.asList(filterValues));
+        return searchFilter;
+    }
+
+
+    SearchFilter createRangeFilter(String filterName, String[] filterValues) {
+        //SearchFilter<RangeFilterValue<Number>> searchFilter = new SearchFilter<>();
+        SearchFilter searchFilter = new SearchFilter();
+        searchFilter.setFilterType(FilterType.RANGE);
+        RangeFilterValue<Number> rangeFilterValue = new RangeFilterValue<>();
+
+        for(String value : filterValues) {
+            String[] valueSplitted = value.split(Pattern.quote(","));
+            if(valueSplitted.length != 2) {
+                throw new IllegalArgumentException("The value of a range searchFilter must be in the format parameter=v1-v2");
+            }
+            String min = valueSplitted[0];
+            String max = valueSplitted[1];
+            try {
+                if (min.equals("min")) {
+                    rangeFilterValue.setMinValue(Double.MIN_VALUE);
+                } else {
+                    rangeFilterValue.setMinValue(Double.valueOf(min));
+                }
+
+                if (max.equals("max")) {
+                    rangeFilterValue.setMaxValue(Double.MAX_VALUE);
+                } else {
+                    rangeFilterValue.setMaxValue(Double.valueOf(max));
+                }
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("The min value " + min + " or max value " + max + " is no number value.");
+            }
+        }
+
+        searchFilter.setName(filterName);
+        searchFilter.setId(filterName);
+        searchFilter.setRangeValue(rangeFilterValue);
+        return searchFilter;
+    }
+
     void parseFilter(SearchQuery query) {
         for(String name: getParameterNames()) {
             Matcher m = filterPattern.matcher(name);
@@ -80,43 +123,21 @@ public class QsfqlParser {
                 String filterName = m.group(1);
                 String[] filterValues = parameters.get(name);
                 String filterType = m.group(2);
-                if(Strings.isNullOrEmpty(filterType)) {
-                    SearchFilter searchFilter = new SearchFilter();
-                    searchFilter.setId(filterName);
-                    searchFilter.setName(filterName);
-                    searchFilter.setValues(Arrays.asList(filterValues));
+                if(Strings.isNullOrEmpty(filterType) || ".and".equals(filterType)) {
+                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues);
+                    searchFilter.setFilterType(FilterType.AND);
+                    query.getSearchFilterList().add(searchFilter);
+                } else if (".or".equals(filterType)) {
+                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues);
+                    searchFilter.setFilterType(FilterType.OR);
+                    query.getSearchFilterList().add(searchFilter);
+                } else if (".slider".equals(filterType)) {
+                    SearchFilter searchFilter = createRangeFilter(filterName, filterValues);
+                    searchFilter.setFilterType(FilterType.SLIDER);
                     query.getSearchFilterList().add(searchFilter);
                 } else if (".range".equals(filterType)) {
-                    //SearchFilter<RangeFilterValue<Number>> searchFilter = new SearchFilter<>();
-                    SearchFilter searchFilter = new SearchFilter();
-                    RangeFilterValue<Number> rangeFilterValue = new RangeFilterValue<>();
-
-                    for(String value : filterValues) {
-                        String[] valueSplitted = value.split(Pattern.quote(","));
-                        if(valueSplitted.length != 2) {
-                            throw new IllegalArgumentException("The value of a range searchFilter must be in the format parameter=v1-v2");
-                        }
-                        String min = valueSplitted[0];
-                        String max = valueSplitted[1];
-                        try {
-                            if (min.equals("min")) {
-                                rangeFilterValue.setMinValue(Double.MIN_VALUE);
-                            } else {
-                                rangeFilterValue.setMinValue(Double.valueOf(min));
-                            }
-
-                            if (max.equals("max")) {
-                                rangeFilterValue.setMaxValue(Double.MAX_VALUE);
-                            } else {
-                                rangeFilterValue.setMaxValue(Double.valueOf(max));
-                            }
-                        } catch (NumberFormatException e) {
-                            throw new IllegalArgumentException("The min value " + min + " or max value " + max + " is no number value.");
-                        }
-                    }
-
-                    searchFilter.setName(filterName);
-                    searchFilter.setRangeValue(rangeFilterValue);
+                    SearchFilter searchFilter = createRangeFilter(filterName, filterValues);
+                    searchFilter.setFilterType(FilterType.RANGE);
                     query.getSearchFilterList().add(searchFilter);
                 }
 

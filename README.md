@@ -23,7 +23,7 @@ https://spring.io/guides/gs/circuit-breaker/
 - all 
 
 - by default multiple searchFilter values for one property are connected by OR
-- to change the logic: searchFilter.name.operator=AND
+- to change the logic: searchFilter.name.filterType=AND
 
 
 

@@ -32,6 +32,27 @@ public class QsfqlSolrFilterTest extends AbstractPipelineTest {
     }
 
     @Test
+    public void testMultipleAndFilter() throws Exception {
+        SearchResult searchResult = executePipeline("http://localhost?q=*:*&foo=bar&f.genre=fantasy&f.category.and=book&f.category.and=hardcover");
+        Assert.assertEquals(Long.valueOf(1), searchResult.getTotal());
+        Assert.assertEquals(1,searchResult.getDocuments().size());
+
+        Document document = searchResult.getDocuments().get(0);
+        Assert.assertEquals(3, document.getFieldCount());
+    }
+
+    @Test
+    public void testMultipleOrFilter() throws Exception {
+        SearchResult searchResult = executePipeline("http://localhost?q=*:*&foo=bar&f.genre=fantasy&f.category.or=book&f.category.or=hardcover");
+        Assert.assertEquals(Long.valueOf(11), searchResult.getTotal());
+        Assert.assertEquals(10,searchResult.getDocuments().size());
+
+        Document document = searchResult.getDocuments().get(0);
+        Assert.assertEquals(3, document.getFieldCount());
+    }
+
+
+    @Test
     public void smokeTest() throws Exception {
 
             SearchResult searchResult = executePipeline("http://localhost?q=*:*&foo=bar&f.genre=fantasy&page=2");

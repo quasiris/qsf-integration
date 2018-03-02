@@ -48,6 +48,43 @@ public class SolrQsfqlQueryTransformerTest {
     }
 
     @Test
+    public void transformMultipleAndFilter() throws Exception {
+
+        SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
+        transformer.addFilterMapping("brand", "brandSolrField");
+        SolrQuery solrQuery = transform(transformer,  "f.brand.and=foo", "f.brand.and=bar");
+        Assert.assertEquals("{!tag=brand}brandSolrField:(foo AND bar)", solrQuery.getFilterQueries()[0]);
+    }
+
+    @Test
+    public void transformMultipleOrFilter() throws Exception {
+
+        SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
+        transformer.addFilterMapping("brand", "brandSolrField");
+        SolrQuery solrQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar");
+        Assert.assertEquals("{!tag=brand}brandSolrField:(foo OR bar)", solrQuery.getFilterQueries()[0]);
+    }
+
+
+    @Test
+    public void transformRangeFilter() throws Exception {
+
+        SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
+        transformer.addFilterMapping("price", "priceSolrField");
+        SolrQuery solrQuery = transform(transformer,  "f.price.range=3,5");
+        Assert.assertEquals("{!tag=price}priceSolrField:[3.0 TO 5.0]", solrQuery.getFilterQueries()[0]);
+    }
+
+    @Test
+    public void transformRangeMinMaxFilter() throws Exception {
+
+        SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
+        transformer.addFilterMapping("price", "priceSolrField");
+        SolrQuery solrQuery = transform(transformer,  "f.price.range=min,max");
+        Assert.assertEquals("{!tag=price}priceSolrField:[* TO *]", solrQuery.getFilterQueries()[0]);
+    }
+
+    @Test
     public void transformPaging() throws Exception {
         SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
         SolrQuery solrQuery = transform(transformer,  "page=3");
