@@ -22,8 +22,25 @@ https://spring.io/guides/gs/circuit-breaker/
 ### Filter
 - all 
 
-- by default multiple searchFilter values for one property are connected by OR
+- by default multiple searchFilter values for one property are connected by AND
 - to change the logic: searchFilter.name.filterType=AND
+
+TODO:
+- Filter for type date
+- how to deal with gte, lte, gt, lt in elastic
+- how to deal with [], () in solr
+- multiple values for range queries
+- data types for filters
+- configuration of filters in the qsfql parser
+
+configuration:
+- type: range, term
+- operator for multiple values: AND, OR
+- data type: string, date, number
+- borders for range queries: 
+
+
+
 
 
 

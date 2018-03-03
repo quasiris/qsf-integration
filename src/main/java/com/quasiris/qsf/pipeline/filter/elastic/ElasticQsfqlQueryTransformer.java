@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
 
 import java.util.HashMap;
@@ -76,7 +77,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public void transformFiltersVersionOlder2() throws PipelineContainerException {
         ArrayNode filters = getObjectMapper().createArrayNode();
         for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
-            ObjectNode filter = transformFilter(searchFilter);
+            ObjectNode filter = transformTermsFilter(searchFilter);
             if(filter != null) {
                 filters.add(filter);
             }
@@ -100,11 +101,29 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
 
     // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
-    // TODO implement range queries
+    // TODO implement range queries for date
     public void transformFiltersCurrentVersion() {
         ArrayNode filters = getObjectMapper().createArrayNode();
         for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
-            ObjectNode filter = transformFilter(searchFilter);
+            ObjectNode filter = null;
+            switch (searchFilter.getFilterType()) {
+                case OR:
+                    filter = transformTermsFilter(searchFilter);
+                    break;
+                case AND:
+                    filter = transformTermsFilter(searchFilter);
+                    break;
+                case RANGE:
+                    filter = transformRangeFilter(searchFilter);
+                    break;
+                case SLIDER:
+                    filter = transformRangeFilter(searchFilter);
+                    break;
+                default:
+                    throw new IllegalArgumentException("The filter type " + searchFilter.getFilterType().getCode() + " is not implemented.");
+            }
+
+
             if(filter != null) {
                 filters.add(filter);
             }
@@ -128,7 +147,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     }
 
-    public ObjectNode transformFilter(SearchFilter searchFilter) {
+    public ObjectNode transformTermsFilter(SearchFilter searchFilter) {
 
         String elasticField = getFilterMapping().get(searchFilter.getName());
         if (Strings.isNullOrEmpty(elasticField)) {
@@ -142,6 +161,27 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
         ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set("term",
                 getObjectMapper().createObjectNode().put(elasticField, firstValue));
+
+        return filter;
+
+    }
+
+    public ObjectNode transformRangeFilter(SearchFilter searchFilter) {
+
+        String elasticField = getFilterMapping().get(searchFilter.getName());
+        if (Strings.isNullOrEmpty(elasticField)) {
+            elasticField = searchFilter.getName();
+        }
+
+        RangeFilterValue<Double> rangeFilterValue = searchFilter.getRangeValue(Double.class);
+        if(rangeFilterValue == null) {
+            return null;
+        }
+
+        ObjectNode range = getObjectMapper().createObjectNode().put("gte", rangeFilterValue.getMinValue()).put("lte", rangeFilterValue.getMaxValue());
+
+        ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set("range",
+                getObjectMapper().createObjectNode().set(elasticField, range));
 
         return filter;
 

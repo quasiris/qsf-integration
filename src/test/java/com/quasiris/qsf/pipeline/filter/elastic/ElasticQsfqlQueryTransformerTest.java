@@ -5,6 +5,7 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.parser.QsfqlParserTest;
+import com.quasiris.qsf.util.PrintUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,6 +33,20 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("color", "colorElasticField");
         ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
         Assert.assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get(0).get("term").get("colorElasticField").asText());
+    }
+
+
+    @Test
+    public void transformRangeFilter() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
+        transformer.addFilterMapping("brand", "brandElasticField");
+        transformer.addFilterMapping("price", "priceElasticField");
+        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.price.range=3,5");
+        PrintUtil.print(elasticQuery);
+
+        Assert.assertEquals("3.0", elasticQuery.get("query").get("bool").get("filter").get(0).get("range").get("priceElasticField").get("gte").asText());
+        Assert.assertEquals("5.0", elasticQuery.get("query").get("bool").get("filter").get(0).get("range").get("priceElasticField").get("lte").asText());
     }
 
     @Test
