@@ -11,7 +11,8 @@ public class SleepFilter extends AbstractFilter {
 
     private long sleepTime;
 
-    public SleepFilter(long sleepTime) {
+    public SleepFilter(String id, long sleepTime) {
+        setId(id);
         this.sleepTime = sleepTime;
     }
 
@@ -21,8 +22,8 @@ public class SleepFilter extends AbstractFilter {
             SearchResult searchResponse = new SearchResult();
             searchResponse.setStatusCode(200);
             searchResponse.setStatusMessage(Thread.currentThread().getName());
-            pipelineContainer.putSearchResult(getId(),searchResponse);
             Thread.sleep(sleepTime);
+            pipelineContainer.putSearchResult(getId(),searchResponse);
         } catch (InterruptedException e) {
             // do nothing
         }

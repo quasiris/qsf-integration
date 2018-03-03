@@ -5,7 +5,6 @@ import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -21,10 +20,10 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
                 parallel().
                 pipeline("first-sleep").
                     timeout(2000L).
-                    filter(new SleepFilter(1000L)).
+                    filter(new SleepFilter("first-sleep", 1000L)).
                 pipeline("second-sleep").
                     timeout(2000L).
-                    filter(new SleepFilter(1000L)).
+                    filter(new SleepFilter("second-sleep", 1000L)).
                 sequential().
                 build();
 
@@ -40,11 +39,6 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
     }
 
     @Test
-    @Ignore
-    // TODO make this test running
-    // in the current implementation the thread is waiting 1000ms for the first-sleep. After 1000ms he is waiting again 2000ms for the second-sleep.
-    // Because of this, the second-sleep don't fail with timeout.
-    // Expected behaviour: the second-sleep terminats with timeout after 2000ms
     public void testParallelPipelineTimeout() throws Exception {
         Pipeline pipeline = PipelineBuilder.create().
                 pipeline("parallel").
@@ -52,10 +46,10 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
                 parallel().
                     pipeline("first-sleep").
                     timeout(2000L).
-                filter(new SleepFilter(1000L)).
+                filter(new SleepFilter("first-sleep", 1000L)).
                 pipeline("second-sleep").
                     timeout(2000L).
-                    filter(new SleepFilter(3000L)).
+                    filter(new SleepFilter("second-sleep",3000L)).
                 sequential().
                 build();
 
@@ -64,9 +58,9 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
                 failOnError(false).
                 execute();
 
-        if(!pipelineContainer.isSuccess()) {
-            Assert.fail();
-        }
+        Assert.assertFalse(pipelineContainer.isSuccess());
+        Assert.assertNotNull("first sleep is available", pipelineContainer.getSearchResult("first-sleep"));
+        Assert.assertNull(pipelineContainer.getSearchResult("second-sleep"));
 
         MatcherAssert.assertThat("currentTime", pipelineContainer.currentTime(), Matchers.lessThan(2100L));
     }
@@ -79,8 +73,8 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
         Pipeline pipeline = PipelineBuilder.create().
                 pipeline("parallel").
                 timeout(10000L).
-                filter(new SleepFilter(1000L)).
-                filter(new SleepFilter(1000L)).
+                filter(new SleepFilter("first" ,1000L)).
+                filter(new SleepFilter("second", 1000L)).
                 build();
 
         PipelineContainer pipelineContainer = PipelineExecuter.create().
