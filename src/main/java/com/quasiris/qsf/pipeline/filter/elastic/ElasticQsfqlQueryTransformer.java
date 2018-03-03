@@ -113,6 +113,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             return;
         }
         ObjectNode query = (ObjectNode) getElasticQuery().get("query").get("bool");
+
+        // add already defined filters from the profile to the filter array
         if(query.get("filter") != null && query.get("filter").isArray()) {
             if(query.get("filter").isArray()) {
                 ArrayNode filtersArray = (ArrayNode) query.get("filter");

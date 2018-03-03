@@ -1,7 +1,7 @@
 package com.quasiris.qsf.test;
 
 import com.quasiris.qsf.pipeline.PipelineContainer;
-import com.quasiris.qsf.util.JsonUtil;
+import com.quasiris.qsf.util.PrintUtil;
 
 /**
  * Created by mki on 25.11.17.
@@ -10,11 +10,7 @@ public class AbstractPipelineTest {
 
 
     public void print(Object object) {
-        try {
-            System.out.println(JsonUtil.toPrettyString(object));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        PrintUtil.print(object);
     }
 
     public void print(PipelineContainer pipelineContainer) {

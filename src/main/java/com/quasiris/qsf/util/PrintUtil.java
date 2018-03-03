@@ -33,4 +33,12 @@ public class PrintUtil {
         }
         return ret;
     }
+
+    public static void print(Object object) {
+        try {
+            System.out.println(JsonUtil.toPrettyString(object));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
