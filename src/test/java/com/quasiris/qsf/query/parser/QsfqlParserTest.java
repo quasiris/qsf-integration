@@ -1,8 +1,6 @@
 package com.quasiris.qsf.query.parser;
 
-import com.quasiris.qsf.query.FilterType;
-import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -74,7 +72,9 @@ public class QsfqlParserTest {
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         Assert.assertEquals(searchFilter.getName(), "foo");
         Assert.assertEquals(searchFilter.getValues().get(0), "bar");
-        Assert.assertEquals(searchFilter.getFilterType(), FilterType.AND);
+        Assert.assertEquals(searchFilter.getFilterType(), FilterType.TERM);
+        Assert.assertEquals(searchFilter.getFilterOperator(), FilterOperator.AND);
+        Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.STRING);
     }
 
 
@@ -85,7 +85,9 @@ public class QsfqlParserTest {
         Assert.assertEquals(searchFilter.getName(), "foo");
         Assert.assertEquals(searchFilter.getValues().get(0), "alice");
         Assert.assertEquals(searchFilter.getValues().get(1), "bob");
-        Assert.assertEquals(searchFilter.getFilterType(), FilterType.OR);
+        Assert.assertEquals(searchFilter.getFilterType(), FilterType.TERM);
+        Assert.assertEquals(searchFilter.getFilterOperator(), FilterOperator.OR);
+        Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.STRING);
     }
 
     @Test
@@ -95,7 +97,9 @@ public class QsfqlParserTest {
         Assert.assertEquals(searchFilter.getName(), "foo");
         Assert.assertEquals(searchFilter.getValues().get(0), "alice");
         Assert.assertEquals(searchFilter.getValues().get(1), "bob");
-        Assert.assertEquals(searchFilter.getFilterType(), FilterType.AND);
+        Assert.assertEquals(searchFilter.getFilterType(), FilterType.TERM);
+        Assert.assertEquals(searchFilter.getFilterOperator(), FilterOperator.AND);
+        Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.STRING);
     }
 
     @Test
@@ -105,7 +109,9 @@ public class QsfqlParserTest {
         Assert.assertEquals("foo", searchFilter.getName());
         Assert.assertEquals("bar", searchFilter.getValues().get(0));
         Assert.assertEquals("alice", searchFilter.getValues().get(1));
-        Assert.assertEquals(searchFilter.getFilterType(), FilterType.AND);
+        Assert.assertEquals(searchFilter.getFilterType(), FilterType.TERM);
+        Assert.assertEquals(searchFilter.getFilterOperator(), FilterOperator.AND);
+        Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.STRING);
     }
 
     @Test
@@ -116,6 +122,7 @@ public class QsfqlParserTest {
         Assert.assertEquals(Double.valueOf(0.1), searchFilter.getRangeValue(Double.class).getMinValue());
         Assert.assertEquals(Double.valueOf(5.2), searchFilter.getRangeValue(Double.class).getMaxValue());
         Assert.assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
+        Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
     }
 
     @Test
@@ -126,6 +133,7 @@ public class QsfqlParserTest {
         Assert.assertEquals(Double.valueOf(3.0), searchFilter.getRangeValue(Double.class).getMinValue());
         Assert.assertEquals(Double.valueOf(5.0), searchFilter.getRangeValue(Double.class).getMaxValue());
         Assert.assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
+        Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
     }
 
     @Test
@@ -136,6 +144,7 @@ public class QsfqlParserTest {
         Assert.assertEquals(Double.valueOf(3.0), searchFilter.getRangeValue(Double.class).getMinValue());
         Assert.assertEquals(Double.valueOf(5.0), searchFilter.getRangeValue(Double.class).getMaxValue());
         Assert.assertEquals(searchFilter.getFilterType(), FilterType.SLIDER);
+        Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
     }
 
     @Test
@@ -146,6 +155,7 @@ public class QsfqlParserTest {
         Assert.assertEquals(Double.valueOf(Double.MIN_VALUE), searchFilter.getRangeValue(Double.class).getMinValue());
         Assert.assertEquals(Double.valueOf(Double.MAX_VALUE), searchFilter.getRangeValue(Double.class).getMaxValue());
         Assert.assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
+        Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
     }
 
     @Test(expected=IllegalArgumentException.class)

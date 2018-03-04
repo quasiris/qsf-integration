@@ -9,6 +9,10 @@ public class SearchFilter {
 
     private FilterType filterType;
 
+    private FilterOperator filterOperator;
+
+    private FilterDataType filterDataType;
+
     private boolean exclude = true;
 
     private String id;
@@ -49,6 +53,26 @@ public class SearchFilter {
 
     public void setFilterType(FilterType filterType) {
         this.filterType = filterType;
+        if(FilterType.TERM.equals(filterType)) {
+            this.filterDataType = FilterDataType.STRING;
+        }
+    }
+
+    public FilterOperator getFilterOperator() {
+        return filterOperator;
+    }
+
+    public void setFilterOperator(FilterOperator filterOperator) {
+        this.filterOperator = filterOperator;
+    }
+
+
+    public FilterDataType getFilterDataType() {
+        return filterDataType;
+    }
+
+    public void setFilterDataType(FilterDataType filterDataType) {
+        this.filterDataType = filterDataType;
     }
 
     public boolean isExclude() {

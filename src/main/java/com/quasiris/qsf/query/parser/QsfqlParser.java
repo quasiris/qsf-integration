@@ -125,19 +125,23 @@ public class QsfqlParser {
                 String filterType = m.group(2);
                 if(Strings.isNullOrEmpty(filterType) || ".and".equals(filterType)) {
                     SearchFilter searchFilter = createSearchFilter(filterName, filterValues);
-                    searchFilter.setFilterType(FilterType.AND);
+                    searchFilter.setFilterType(FilterType.TERM);
+                    searchFilter.setFilterOperator(FilterOperator.AND);
                     query.getSearchFilterList().add(searchFilter);
                 } else if (".or".equals(filterType)) {
                     SearchFilter searchFilter = createSearchFilter(filterName, filterValues);
-                    searchFilter.setFilterType(FilterType.OR);
+                    searchFilter.setFilterType(FilterType.TERM);
+                    searchFilter.setFilterOperator(FilterOperator.OR);
                     query.getSearchFilterList().add(searchFilter);
                 } else if (".slider".equals(filterType)) {
                     SearchFilter searchFilter = createRangeFilter(filterName, filterValues);
                     searchFilter.setFilterType(FilterType.SLIDER);
+                    searchFilter.setFilterDataType(FilterDataType.NUMBER);
                     query.getSearchFilterList().add(searchFilter);
                 } else if (".range".equals(filterType)) {
                     SearchFilter searchFilter = createRangeFilter(filterName, filterValues);
                     searchFilter.setFilterType(FilterType.RANGE);
+                    searchFilter.setFilterDataType(FilterDataType.NUMBER);
                     query.getSearchFilterList().add(searchFilter);
                 }
 

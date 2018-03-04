@@ -3,14 +3,14 @@ package com.quasiris.qsf.query;
 /**
  * Created by mki on 11.11.16.
  */
-public enum FilterType {
+public enum FilterOperator {
 
-    TERM("term"),RANGE("range"),SLIDER("slider");
+    OR("or"),AND("and");
 
 
     private final String code;
 
-    FilterType(String code) {
+    FilterOperator(String code) {
         this.code = code;
     }
 

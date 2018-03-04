@@ -107,10 +107,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
             ObjectNode filter = null;
             switch (searchFilter.getFilterType()) {
-                case OR:
-                    filter = transformTermsFilter(searchFilter);
-                    break;
-                case AND:
+                case TERM:
                     filter = transformTermsFilter(searchFilter);
                     break;
                 case RANGE:

@@ -63,11 +63,8 @@ public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer imp
 
 
             switch (searchFilter.getFilterType()) {
-                case OR:
-                    transformFilter(searchFilter);
-                    break;
-                case AND:
-                    transformFilter(searchFilter);
+                case TERM:
+                    transformTermFilter(searchFilter);
                     break;
                 case RANGE:
                     transformRangeFilter(searchFilter);
@@ -120,7 +117,7 @@ public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer imp
     }
 
 
-    public void transformFilter(SearchFilter searchFilter) {
+    public void transformTermFilter(SearchFilter searchFilter) {
         String solrField = getFilterMapping().get(searchFilter.getName());
         if(Strings.isNullOrEmpty(solrField)) {
             return;
@@ -136,17 +133,13 @@ public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer imp
 
 
         String operator = " AND ";
-        switch (searchFilter.getFilterType()) {
+        switch (searchFilter.getFilterOperator()) {
             case OR:
                 operator = " OR ";
                 break;
             case AND:
                 operator = " AND ";
                 break;
-            case RANGE:
-                throw new IllegalArgumentException("A range filter can not be applied to solr terms filter.");
-            case SLIDER:
-                throw new IllegalArgumentException("A slider filter can not be applied to solr terms filter.");
         }
 
         solrFilter.append(solrField).append(":").append("(");
