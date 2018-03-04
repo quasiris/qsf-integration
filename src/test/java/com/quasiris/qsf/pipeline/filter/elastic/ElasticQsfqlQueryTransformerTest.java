@@ -44,8 +44,31 @@ public class ElasticQsfqlQueryTransformerTest {
         ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.price.range=3,5");
 
         Assert.assertEquals("3.0", elasticQuery.get("query").get("bool").get("filter").get(0).get("range").get("priceElasticField").get("gte").asText());
+        Assert.assertEquals("5.0", elasticQuery.get("query").get("bool").get("filter").get(0).get("range").get("priceElasticField").get("lt").asText());
+    }
+
+    @Test
+    public void transformRangeFilterUpperLowerExcluded() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
+        transformer.addFilterMapping("price", "priceElasticField");
+        ObjectNode elasticQuery = transform(transformer,  "f.price.range={3,5}");
+
+        Assert.assertEquals("3.0", elasticQuery.get("query").get("bool").get("filter").get(0).get("range").get("priceElasticField").get("gt").asText());
+        Assert.assertEquals("5.0", elasticQuery.get("query").get("bool").get("filter").get(0).get("range").get("priceElasticField").get("lt").asText());
+    }
+
+    @Test
+    public void transformRangeFilterUpperLowerIncluded() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
+        transformer.addFilterMapping("price", "priceElasticField");
+        ObjectNode elasticQuery = transform(transformer,  "f.price.range=[3,5]");
+
+        Assert.assertEquals("3.0", elasticQuery.get("query").get("bool").get("filter").get(0).get("range").get("priceElasticField").get("gte").asText());
         Assert.assertEquals("5.0", elasticQuery.get("query").get("bool").get("filter").get(0).get("range").get("priceElasticField").get("lte").asText());
     }
+
 
     @Test
     public void transformFilterWithStaticDefinedFilters() throws Exception {

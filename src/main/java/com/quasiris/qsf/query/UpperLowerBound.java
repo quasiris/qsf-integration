@@ -5,16 +5,23 @@ package com.quasiris.qsf.query;
  */
 public enum UpperLowerBound {
 
-    LOWER_INCLUDED("["),LOWER_EXCLUDED("{"),UPPER_INCLUDED("]"),UPPER_EXCLUDED("}");
+    LOWER_INCLUDED("[", "gte"),LOWER_EXCLUDED("{", "gt"),UPPER_INCLUDED("]", "lte"),UPPER_EXCLUDED("}", "lt");
 
 
     private final String code;
 
-    UpperLowerBound(String code) {
+    private final String operator;
+
+    UpperLowerBound(String code, String operator) {
         this.code = code;
+        this.operator = operator;
     }
 
     public String getCode() {
         return code;
+    }
+
+    public String getOperator() {
+        return operator;
     }
 }

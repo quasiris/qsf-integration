@@ -175,7 +175,10 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             return null;
         }
 
-        ObjectNode range = getObjectMapper().createObjectNode().put("gte", rangeFilterValue.getMinValue()).put("lte", rangeFilterValue.getMaxValue());
+        String lowerBoundOperator = rangeFilterValue.getLowerBound().getOperator();
+        String upperBoundOperator = rangeFilterValue.getUpperBound().getOperator();
+
+        ObjectNode range = getObjectMapper().createObjectNode().put(lowerBoundOperator, rangeFilterValue.getMinValue()).put(upperBoundOperator, rangeFilterValue.getMaxValue());
 
         ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set("range",
                 getObjectMapper().createObjectNode().set(elasticField, range));
