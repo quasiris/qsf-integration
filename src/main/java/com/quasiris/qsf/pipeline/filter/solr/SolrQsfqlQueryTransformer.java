@@ -107,11 +107,11 @@ public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer imp
         }
 
         solrFilter.append(solrField).append(":").
-                append("[").
+                append(rangeFilterValue.getLowerBound().getCode()).
                 append(min).
                 append(" TO ").
                 append(max).
-                append("]");
+                append(rangeFilterValue.getUpperBound().getCode());
 
         getSolrQuery().addFilterQuery(solrFilter.toString());
     }

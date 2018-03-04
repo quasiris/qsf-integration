@@ -17,6 +17,9 @@ public class RangeFilterValue<T> {
     private T minValue;
     private T maxValue;
 
+    private UpperLowerBound lowerBound = UpperLowerBound.LOWER_INCLUDED;
+    private UpperLowerBound upperBound = UpperLowerBound.UPPER_EXCLUDED;
+
 
     public T getMinValue() {
         return minValue;
@@ -32,5 +35,21 @@ public class RangeFilterValue<T> {
 
     public void setMaxValue(T maxValue) {
         this.maxValue = maxValue;
+    }
+
+    public UpperLowerBound getLowerBound() {
+        return lowerBound;
+    }
+
+    public void setLowerBound(UpperLowerBound lowerBound) {
+        this.lowerBound = lowerBound;
+    }
+
+    public UpperLowerBound getUpperBound() {
+        return upperBound;
+    }
+
+    public void setUpperBound(UpperLowerBound upperBound) {
+        this.upperBound = upperBound;
     }
 }

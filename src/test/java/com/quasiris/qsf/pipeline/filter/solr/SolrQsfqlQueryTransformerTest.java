@@ -72,7 +72,34 @@ public class SolrQsfqlQueryTransformerTest {
         SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
         transformer.addFilterMapping("price", "priceSolrField");
         SolrQuery solrQuery = transform(transformer,  "f.price.range=3,5");
+        Assert.assertEquals("{!tag=price}priceSolrField:[3.0 TO 5.0}", solrQuery.getFilterQueries()[0]);
+    }
+
+    @Test
+    public void transformRangeUpperLowerBoundExcludedFilter() throws Exception {
+
+        SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
+        transformer.addFilterMapping("price", "priceSolrField");
+        SolrQuery solrQuery = transform(transformer,  "f.price.range={3,5}");
+        Assert.assertEquals("{!tag=price}priceSolrField:{3.0 TO 5.0}", solrQuery.getFilterQueries()[0]);
+    }
+
+    @Test
+    public void transformRangeUpperLowerBoundIncludedFilter() throws Exception {
+
+        SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
+        transformer.addFilterMapping("price", "priceSolrField");
+        SolrQuery solrQuery = transform(transformer,  "f.price.range=[3,5]");
         Assert.assertEquals("{!tag=price}priceSolrField:[3.0 TO 5.0]", solrQuery.getFilterQueries()[0]);
+    }
+
+    @Test
+    public void transformRangeUpperLowerBoundIncludedExcludedFilter() throws Exception {
+
+        SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
+        transformer.addFilterMapping("price", "priceSolrField");
+        SolrQuery solrQuery = transform(transformer,  "f.price.range=[3,5}");
+        Assert.assertEquals("{!tag=price}priceSolrField:[3.0 TO 5.0}", solrQuery.getFilterQueries()[0]);
     }
 
     @Test
@@ -81,7 +108,7 @@ public class SolrQsfqlQueryTransformerTest {
         SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
         transformer.addFilterMapping("price", "priceSolrField");
         SolrQuery solrQuery = transform(transformer,  "f.price.range=min,max");
-        Assert.assertEquals("{!tag=price}priceSolrField:[* TO *]", solrQuery.getFilterQueries()[0]);
+        Assert.assertEquals("{!tag=price}priceSolrField:[* TO *}", solrQuery.getFilterQueries()[0]);
     }
 
     @Test

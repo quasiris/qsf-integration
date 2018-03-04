@@ -94,6 +94,22 @@ public class QsfqlParser {
             String min = valueSplitted[0];
             String max = valueSplitted[1];
             try {
+                if(min.startsWith(UpperLowerBound.LOWER_EXCLUDED.getCode())) {
+                    rangeFilterValue.setLowerBound(UpperLowerBound.LOWER_EXCLUDED);
+                    min = min.substring(1);
+                } else if (min.startsWith(UpperLowerBound.LOWER_INCLUDED.getCode())) {
+                    rangeFilterValue.setLowerBound(UpperLowerBound.LOWER_INCLUDED);
+                    min = min.substring(1);
+                }
+
+                if(max.endsWith(UpperLowerBound.UPPER_EXCLUDED.getCode())) {
+                    rangeFilterValue.setUpperBound(UpperLowerBound.UPPER_EXCLUDED);
+                    max = max.substring(0, max.length()-1);
+                } else if (max.endsWith(UpperLowerBound.UPPER_INCLUDED.getCode())) {
+                    rangeFilterValue.setUpperBound(UpperLowerBound.UPPER_INCLUDED);
+                    max = max.substring(0, max.length()-1);
+                }
+
                 if (min.equals("min")) {
                     rangeFilterValue.setMinValue(Double.MIN_VALUE);
                 } else {

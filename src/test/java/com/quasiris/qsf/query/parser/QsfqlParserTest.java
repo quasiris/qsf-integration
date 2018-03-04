@@ -123,6 +123,8 @@ public class QsfqlParserTest {
         Assert.assertEquals(Double.valueOf(5.2), searchFilter.getRangeValue(Double.class).getMaxValue());
         Assert.assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
         Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
+        Assert.assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
+        Assert.assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_EXCLUDED);
     }
 
     @Test
@@ -134,6 +136,34 @@ public class QsfqlParserTest {
         Assert.assertEquals(Double.valueOf(5.0), searchFilter.getRangeValue(Double.class).getMaxValue());
         Assert.assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
         Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
+        Assert.assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
+        Assert.assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_EXCLUDED);
+    }
+
+    @Test
+    public void testRangeFilterLowerUpperBoundExcluded() {
+        SearchQuery query = createQuery("f.foo.range={3,5}");
+        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        Assert.assertEquals("foo", searchFilter.getName());
+        Assert.assertEquals(Double.valueOf(3.0), searchFilter.getRangeValue(Double.class).getMinValue());
+        Assert.assertEquals(Double.valueOf(5.0), searchFilter.getRangeValue(Double.class).getMaxValue());
+        Assert.assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
+        Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
+        Assert.assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_EXCLUDED);
+        Assert.assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_EXCLUDED);
+    }
+
+    @Test
+    public void testRangeFilterLowerUpperBoundIncluded() {
+        SearchQuery query = createQuery("f.foo.range=[3,5]");
+        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        Assert.assertEquals("foo", searchFilter.getName());
+        Assert.assertEquals(Double.valueOf(3.0), searchFilter.getRangeValue(Double.class).getMinValue());
+        Assert.assertEquals(Double.valueOf(5.0), searchFilter.getRangeValue(Double.class).getMaxValue());
+        Assert.assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
+        Assert.assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
+        Assert.assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
+        Assert.assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_INCLUDED);
     }
 
     @Test
