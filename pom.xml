@@ -3,7 +3,7 @@
 	<groupId>com.quasiris.qsf</groupId>
 	<artifactId>qsf-integration</artifactId>
 	<packaging>jar</packaging>
-	<version>1.16-SNAPSHOT</version>
+	<version>1.19-SNAPSHOT</version>
 	<name>qsf-integration</name>
 	<url>http://www.quasiris.de</url>
     <properties>
