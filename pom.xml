@@ -3,7 +3,7 @@
 	<groupId>com.quasiris.qsf</groupId>
 	<artifactId>qsf-integration</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.16-SNAPSHOT</version>
 	<name>qsf-integration</name>
 	<url>http://www.quasiris.de</url>
     <properties>
@@ -14,7 +14,7 @@
     <scm>
         <connection>scm:git:https://github.com/quasiris/qsf-integration.git</connection>
         <developerConnection>scm:git:https://github.com/quasiris/qsf-integration.git</developerConnection>
-      <tag>HEAD</tag>
+    <tag>HEAD</tag>
   </scm>
 
     <dependencies>
@@ -111,14 +111,14 @@
 
     <distributionManagement>
         <repository>
-            <id>quasiris-snapshots</id>
+            <id>quasiris-releases</id>
             <name>quasiris Release Repository</name>
-            <url>${nexus.base.url}/repository/maven-releases</url>
+            <url>${nexus.base.url}/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>quasiris-snapshots</id>
             <name>Quasiris Snapshot Repository</name>
-            <url>${nexus.base.url}/repository/maven-snapshots</url>
+            <url>${nexus.base.url}/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
