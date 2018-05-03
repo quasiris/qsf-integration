@@ -1,6 +1,5 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
@@ -15,7 +14,6 @@ import com.quasiris.qsf.util.EncodingUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -103,11 +101,18 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             e.printStackTrace();
         }
 
+        return document;
+    }
+
+    public void transformHighlight(Hit hit, Document document) {
+        if(hit.getHighlight() == null) {
+            return;
+        }
+
         for(Map.Entry<String, List<String>> entry : hit.getHighlight().entrySet()) {
             document.getDocument().put("highlight." + entry.getKey(), entry.getValue());
 
         }
-        return document;
     }
 
     @Override
