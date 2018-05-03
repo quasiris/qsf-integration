@@ -101,6 +101,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             e.printStackTrace();
         }
 
+        transformHighlight(hit, document);
         return document;
     }
 
