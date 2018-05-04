@@ -82,6 +82,7 @@ public class SingleSearchResponse {
             searchResultResponse.add(document.getDocument());
         }
 
+        singleSearchResponse.setSearchresult(searchResultResponse);
         singleSearchResponse.setTotal(searchResult.getTotal());
         return singleSearchResponse;
     }
