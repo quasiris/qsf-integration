@@ -90,9 +90,10 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     @Override
     public Document transformHit(Hit hit) {
+        String id = hit.get_id();
         ObjectNode objectNode = hit.get_source();
 
-        Document document = new Document();
+        Document document = new Document(id);
         ObjectMapper mapper = new ObjectMapper();
         try {
             Map fields = mapper.readValue(objectNode.toString(), Map.class);

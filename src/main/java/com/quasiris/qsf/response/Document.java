@@ -9,7 +9,29 @@ import java.util.Map;
  */
 public class Document {
 
+    private String id;
+
     private Map<String, Object> document = new HashMap<>();
+
+    public Document() {
+    }
+
+    public Document(String id) {
+        this.id = id;
+    }
+
+    public Document(String id, Map<String, Object> document) {
+        this.id = id;
+        this.document = document;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Map<String, Object> getDocument() {
         return document;
@@ -38,8 +60,13 @@ public class Document {
 
     @Override
     public String toString() {
-        return "Document{" +
-                "document=" + document +
-                '}';
+        StringBuilder builder = new StringBuilder("Document{");
+        if(id != null) {
+            builder.append("id="+id+", ");
+        }
+        builder.append("document="+document);
+        builder.append("}");
+
+        return builder.toString();
     }
 }
