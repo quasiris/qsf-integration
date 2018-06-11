@@ -13,6 +13,7 @@ import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.util.EncodingUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,20 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         ObjectMapper mapper = new ObjectMapper();
         try {
             Map fields = mapper.readValue(objectNode.toString(), Map.class);
-            document.setDocument(fields);
+            if(fieldMapping.size() == 0) {
+                document.setDocument(fields);
+            } else {
+                for(Map.Entry<String, List<String>> mapping : fieldMapping.entrySet()) {
+                    String key = mapping.getKey();
+                    Object mappedValue = fields.get(key);
+                    if(mappedValue != null) {
+                        for(String mappedKey: mapping.getValue()) {
+                            document.getDocument().put(mappedKey, mappedValue);
+                        }
+                    }
+                }
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -113,7 +127,6 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
         for(Map.Entry<String, List<String>> entry : hit.getHighlight().entrySet()) {
             document.getDocument().put("highlight." + entry.getKey(), entry.getValue());
-
         }
     }
 
@@ -124,5 +137,15 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     public void filterPrefix(String filterPrefix) {
         this.filterPrefix=filterPrefix;
+    }
+
+    public void addFieldMapping(String from, String to) {
+        List<String> mapping = fieldMapping.get(from);
+        if(mapping == null) {
+            mapping = new ArrayList<>();
+        }
+        mapping.add(to);
+
+        fieldMapping.put(from, mapping);
     }
 }

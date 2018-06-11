@@ -9,7 +9,9 @@ public class ElasticFilterBuilder {
 
     private ElasticFilter elasticFilter;
 
-    private Elastic2SearchResultMappingTransformer mappingTransformer;
+    private Elastic2SearchResultMappingTransformer elastic2SearchResultMappingTransformer;
+
+    private SearchResultTransformerIF searchResultTransformer;
 
     private ElasticParameterQueryTransformer elasticParameterQueryTransformer;
 
@@ -54,8 +56,10 @@ public class ElasticFilterBuilder {
             elasticFilter.setQueryTransformer(elasticParameterQueryTransformer);
         }
 
-        if(mappingTransformer != null) {
-            elasticFilter.setSearchResultTransformer(mappingTransformer);
+        if(searchResultTransformer != null) {
+            elasticFilter.setSearchResultTransformer(searchResultTransformer);
+        } else if(elastic2SearchResultMappingTransformer != null) {
+            elasticFilter.setSearchResultTransformer(elastic2SearchResultMappingTransformer);
         } else {
             elasticFilter.setSearchResultTransformer(new Elastic2SearchResultMappingTransformer());
         }
@@ -63,10 +67,10 @@ public class ElasticFilterBuilder {
     }
 
     private Elastic2SearchResultMappingTransformer getMappingTransformer() {
-        if(mappingTransformer == null) {
-            mappingTransformer = new Elastic2SearchResultMappingTransformer();
+        if(elastic2SearchResultMappingTransformer == null) {
+            elastic2SearchResultMappingTransformer = new Elastic2SearchResultMappingTransformer();
         }
-        return mappingTransformer;
+        return elastic2SearchResultMappingTransformer;
     }
 
     private ElasticParameterQueryTransformer getElasticParameterQueryTransformer() {
@@ -88,8 +92,13 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilterBuilder mapField(String from, String to) {
-        //getMappingTransformer().addFieldMapping(from, to);
+        getMappingTransformer().addFieldMapping(from, to);
         //getElasticParameterQueryTransformer().addFieldListValue(from);
+        return this;
+    }
+
+    public ElasticFilterBuilder searchResultTransformer(SearchResultTransformerIF searchResultTransformer) {
+        this.searchResultTransformer = searchResultTransformer;
         return this;
     }
 
@@ -165,6 +174,16 @@ public class ElasticFilterBuilder {
 
     public ElasticFilterBuilder defaultSort(String defaultSort) {
         getElasticQsfqlQueryTransformer().setDefaultSort(defaultSort);
+        return this;
+    }
+
+    public ElasticFilterBuilder defaultRows(int defaultRows) {
+        getElasticQsfqlQueryTransformer().setDefaultRows(defaultRows);
+        return this;
+    }
+
+    public ElasticFilterBuilder defaultPage(int defaultPage) {
+        getElasticQsfqlQueryTransformer().setDefaultPage(defaultPage);
         return this;
     }
 

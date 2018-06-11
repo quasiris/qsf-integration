@@ -54,6 +54,14 @@ public class Document {
         return String.valueOf(value);
     }
 
+    public String getFieldValue(String fieldName, String defaultValue) {
+        String value = getFieldValue(fieldName);
+        if(value == null) {
+            return defaultValue;
+        }
+        return value;
+    }
+
     public int getFieldCount() {
         return document.keySet().size();
     }

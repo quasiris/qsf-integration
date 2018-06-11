@@ -88,7 +88,7 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
             Assert.assertEquals(1,searchResult.getDocuments().size());
 
             Document document = searchResult.getDocuments().get(0);
-            Assert.assertEquals(31, document.getFieldCount());
+            Assert.assertEquals(2, document.getFieldCount());
 
 
             Facet facet = searchResult.getFacetById("places");
