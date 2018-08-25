@@ -9,6 +9,8 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.web.RequestParser;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.util.ElasticUtil;
+import com.quasiris.qsf.util.JsonUtil;
 import com.quasiris.qsf.util.PrintUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
@@ -69,12 +71,25 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             replaceMap.put("param." + param.getKey(), param.getValue());
         }
 
+        replaceMap = encodeValues(replaceMap);
+
         try {
             String request = loadProfile(profile, replaceMap);
             elasticQuery = (ObjectNode) getObjectMapper().readTree(request);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    public Map<String, String> encodeValues(Map<String, String> replaceMap) {
+        Map<String, String> ret = new HashMap<>();
+        for(Map.Entry<String, String> entry : replaceMap.entrySet()) {
+            String escapedValue = ElasticUtil.escape(entry.getValue());
+            String encodedValue = JsonUtil.encode(escapedValue);
+            ret.put(entry.getKey(), encodedValue);
+        }
+        return ret;
 
     }
 

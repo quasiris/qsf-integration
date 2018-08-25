@@ -1,5 +1,6 @@
 package com.quasiris.qsf.util;
 
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -24,5 +25,11 @@ public class JsonUtil {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String encode(String value) {
+        JsonStringEncoder jsonStringEncoder = JsonStringEncoder.getInstance();
+        return new String(jsonStringEncoder.quoteAsString(value));
+
     }
 }
