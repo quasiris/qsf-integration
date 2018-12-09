@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
@@ -28,6 +29,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     private Map<String, String> facetMapping = new HashMap<>();
     private Map<String, String> facetNameMapping = new HashMap<>();
     private String filterPrefix = "";
+
+    private boolean mapEmptyValues = true;
 
     public Elastic2SearchResultMappingTransformer() {
 
@@ -106,7 +109,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                     Object mappedValue = fields.get(key);
                     if(mappedValue != null) {
                         for(String mappedKey: mapping.getValue()) {
-                            document.getDocument().put(mappedKey, mappedValue);
+                            mapValue(document, mappedKey, mappedValue);
                         }
                     }
                 }
@@ -119,6 +122,11 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         transformHighlight(hit, document);
         return document;
     }
+
+    public void mapValue(Document document, String key, Object value) {
+        document.getDocument().put(key, value);
+    }
+
 
     public void transformHighlight(Hit hit, Document document) {
         if(hit.getHighlight() == null) {
