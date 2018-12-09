@@ -2,6 +2,8 @@ package com.quasiris.qsf.pipeline.filter.solr;
 
 import org.apache.solr.client.solrj.SolrClient;
 
+import java.util.List;
+
 /**
  * Created by mki on 11.11.17.
  */
@@ -51,6 +53,13 @@ public class SolrFilterBuilder {
             solrFilter.setSearchResultTransformer(mappingTransformer);
         }
         return solrFilter;
+    }
+
+    public SolrFilterBuilder params(String name, List<String> values) {
+        for(String value: values) {
+            param(name, value);
+        }
+        return this;
     }
 
     public SolrFilterBuilder param(String name, String value) {
