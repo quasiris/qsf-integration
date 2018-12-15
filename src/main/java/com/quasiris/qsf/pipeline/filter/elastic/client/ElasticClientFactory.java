@@ -6,6 +6,9 @@ public class ElasticClientFactory {
     private static ElasticClientIF elasticClient;
 
     public static ElasticClientIF getElasticClient() {
+        if(elasticClient == null) {
+            return new StandardElasticClient();
+        }
         return elasticClient;
     }
 

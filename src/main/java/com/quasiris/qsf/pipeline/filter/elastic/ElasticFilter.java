@@ -32,9 +32,8 @@ public class ElasticFilter extends AbstractFilter {
     @Override
     public void init() {
         super.init();
-        elasticClient = ElasticClientFactory.getElasticClient();
         if(elasticClient == null) {
-            elasticClient = new StandardElasticClient();
+            elasticClient = ElasticClientFactory.getElasticClient();
         }
     }
 
