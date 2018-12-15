@@ -2,6 +2,7 @@ package com.quasiris.qsf.health;
 
 import com.quasiris.qsf.pipeline.*;
 import com.quasiris.qsf.pipeline.filter.solr.SolrFilterBuilder;
+import com.quasiris.qsf.pipeline.filter.solr.SolrParameterQueryTransformer;
 import com.quasiris.qsf.response.SearchResult;
 
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ public class SolrHealthChecker {
                         baseUrl(baseUrl).
                         param("q", "*:*").
                         param("rows", "1").
+                        queryTransformer(SolrParameterQueryTransformer.class).
                         resultSetId(type).
                         build()).
                 build();

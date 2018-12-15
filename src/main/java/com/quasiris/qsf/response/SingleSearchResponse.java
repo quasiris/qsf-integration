@@ -69,12 +69,14 @@ public class SingleSearchResponse {
         singleSearchResponse.setTime(searchResult.getTime());
 
         SimpleSearchResponse searchResultResponse = new SimpleSearchResponse();
+
         if(searchResult == null) {
             singleSearchResponse.setTotal(0L);
             return singleSearchResponse;
         }
+        singleSearchResponse.setTotal(searchResult.getTotal());
+
         if(searchResult.getDocuments() == null) {
-            singleSearchResponse.setTotal(0L);
             return singleSearchResponse;
         }
 
@@ -83,7 +85,6 @@ public class SingleSearchResponse {
         }
 
         singleSearchResponse.setSearchresult(searchResultResponse);
-        singleSearchResponse.setTotal(searchResult.getTotal());
         return singleSearchResponse;
     }
 }

@@ -10,6 +10,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Changed
 
 ### Fixed
+- set the total correctly in case of no documents in SingleSearchResponse
 
 
 ## [1.28] and previous- 2018-12-12
