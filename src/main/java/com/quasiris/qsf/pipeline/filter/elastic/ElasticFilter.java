@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
+import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
 import com.quasiris.qsf.pipeline.filter.elastic.client.StandardElasticClient;
 import com.quasiris.qsf.response.SearchResult;
@@ -22,11 +23,20 @@ public class ElasticFilter extends AbstractFilter {
 
     private String resultSetId;
 
-    ElasticClientIF elasticClient = new StandardElasticClient();
+    private ElasticClientIF elasticClient;
 
     private QueryTransformerIF queryTransformer;
 
     private SearchResultTransformerIF searchResultTransformer;
+
+    @Override
+    public void init() {
+        super.init();
+        elasticClient = ElasticClientFactory.getElasticClient();
+        if(elasticClient == null) {
+            elasticClient = new StandardElasticClient();
+        }
+    }
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {

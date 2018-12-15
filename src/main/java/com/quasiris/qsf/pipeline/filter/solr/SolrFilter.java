@@ -37,6 +37,7 @@ public class SolrFilter extends AbstractFilter {
     @Override
     public void init() {
         super.init();
+        solrClient = SolrClientFactory.getSolrClient();
         if(solrClient == null) {
             solrClient = new HttpSolrClient.Builder(solrBaseUrl).build();
         }
