@@ -134,7 +134,7 @@ public class QSFHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getQueryString() {
-        throw new UnsupportedOperationException("The method is not implemented yet.");
+        return uri.getQuery();
     }
 
     @Override
@@ -281,7 +281,7 @@ public class QSFHttpServletRequest implements HttpServletRequest {
     public String getParameter(String key) {
         List<String> values = parametersMap.get(key);
         if(values == null || values.size() == 0) {
-            throw new UnsupportedOperationException("The method is not implemented yet.");
+            return null;
         }
         return values.get(0);
     }
