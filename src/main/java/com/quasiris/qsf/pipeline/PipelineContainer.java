@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.SearchResult;
 
 import javax.servlet.http.HttpServletRequest;
@@ -179,6 +180,22 @@ public class PipelineContainer {
 
     public Map<String, String> getParameters() {
         return this.parameter;
+    }
+
+    public Document getFirstDocumentOrNull(String resultSetId) {
+        SearchResult searchResult = searchResults.get(resultSetId);
+        if(searchResult == null) {
+            return null;
+        }
+        if(searchResult.getDocuments() == null) {
+            return null;
+        }
+
+        Document document =  searchResult.getDocuments().stream().findFirst().orElse(null);
+        if(document == null || document.getDocument() == null) {
+            return null;
+        }
+        return document;
     }
 
     @Override
