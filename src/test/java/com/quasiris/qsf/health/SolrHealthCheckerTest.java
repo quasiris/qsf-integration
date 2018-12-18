@@ -12,7 +12,7 @@ public class SolrHealthCheckerTest {
 
     @Before
     public void before() {
-        SolrClientFactory.setSolrClient(new MockSolrClient(baseUrl));
+        SolrClientFactory.setSolrClient(new MockSolrClient(baseUrl), baseUrl);
     }
 
 
