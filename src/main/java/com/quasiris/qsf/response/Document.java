@@ -1,5 +1,6 @@
 package com.quasiris.qsf.response;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,5 +77,23 @@ public class Document {
         builder.append("}");
 
         return builder.toString();
+    }
+
+    public void addValue(String name, Object value) {
+        Object values = this.getDocument().get(name);
+        if(values == null) {
+            this.getDocument().put(name, value);
+        } else if(values instanceof List) {
+            ((List) values).add(value);
+        } else {
+            List list = new ArrayList();
+            list.add(values);
+            list.add(value);
+            this.getDocument().put(name, list);
+        }
+    }
+
+    public void setValue(String name, Object value) {
+        this.getDocument().put(name, value);
     }
 }

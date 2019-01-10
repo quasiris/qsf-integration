@@ -44,6 +44,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         searchResult.initDocuments();
         searchResult.setTotal(elasticResult.getHits().getTotal());
         searchResult.setStatusMessage("OK");
+        searchResult.setStatusCode(200);
+        searchResult.setTime(elasticResult.getTook());
 
         for(Hit hit :elasticResult.getHits().getHits()) {
             Document document = transformHit(hit);
@@ -51,6 +53,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
 
         mapFacets(elasticResult, searchResult);
+
 
         return searchResult;
 

@@ -1,0 +1,149 @@
+package com.quasiris.qsf.pipeline.filter.elastic;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.pipeline.filter.AbstractFilter;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.MultiElasticResult;
+import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
+import com.quasiris.qsf.pipeline.filter.elastic.client.MultiElasticClientIF;
+import com.quasiris.qsf.query.Token;
+import com.quasiris.qsf.text.TextUtils;
+import com.quasiris.qsf.util.JsonUtil;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+
+/**
+ * Created by tbl on 22.12.18.
+ */
+public class PosTaggerElasticFilter extends AbstractFilter {
+
+    private static Logger LOG = LoggerFactory.getLogger(PosTaggerElasticFilter.class);
+
+    private String baseUrl = "http://localhost:9200/pos-tag";
+
+    private MultiElasticClientIF elasticClient;
+
+    private List<String> ignoredChars = Arrays.asList("-".split(";"));
+
+
+    @Override
+    public void init() {
+        super.init();
+        if(elasticClient == null) {
+            elasticClient = ElasticClientFactory.getMulitElasticClient();
+        }
+    }
+
+    @Override
+    public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
+        String q = pipelineContainer.getSearchQuery().getQ();
+
+        String[] queryTokens = q.split(" ");
+        for(String queryToken: queryTokens) {
+            if(ignoredChars.contains(queryToken)) {
+                continue;
+            }
+            Token token = new Token(queryToken);
+            pipelineContainer.getSearchQuery().getQueryToken().add(token);
+
+        }
+
+
+        List<String> elasticQueries = new ArrayList<>();
+        for(Token token: pipelineContainer.getSearchQuery().getQueryToken()) {
+
+            String elasticRequest  = "{\"query\": {\"match\" : {\"token.stemmed\" : \""+ token + "\"}}}";
+            elasticRequest  = "{\"query\":{\"dis_max\": {\"queries\": [{\"query_string\": {\"_name\": \"dismax\",\"query\": \"" + JsonUtil.encode(token.getValue()) + "\",\"default_operator\": \"AND\",\"fields\": [\"token.stemmed^1\", \"token.exact^200\"]}}]}}}";
+            elasticQueries.add(elasticRequest);
+        }
+
+        //System.out.println("b: " + pipelineContainer.currentTime());
+
+        MultiElasticResult multiElasticResult = elasticClient.request(baseUrl + "/_msearch", elasticQueries);
+        //System.out.println("a: " + pipelineContainer.currentTime());
+
+        if(multiElasticResult.getResponses().size() != pipelineContainer.getSearchQuery().getQueryToken().size()) {
+            throw new RuntimeException("something get wrong");
+        }
+
+        for (int i = 0; i <multiElasticResult.getResponses().size() ; i++) {
+            Hit hit = multiElasticResult.getResponses().get(i).getHits().getHits().stream().findFirst().orElse(null);
+            String postag = "<UNKNOWN>";
+            String attrName = "unknown";
+            if(hit != null) {
+                postag = getAsText(hit.get_source(), "postag");
+                attrName = getAsText(hit.get_source(), "attributeName");
+            }
+
+
+
+            if(NumberUtils.isCreatable(pipelineContainer.getSearchQuery().getQueryToken().get(i).getValue())) {
+                postag = "<NUM>";
+            } else if( postag.equals("<PRODUCT>")) {
+                // if we know that the token is a product we do nothing else
+            } else if( postag.equals("<BRAND>")) {
+                // if we know that the token is a brand we do nothing else
+            } else if( postag.equals("<UNIT>")) {
+                // if we know that the token is a unit we do nothing else
+            } else if(pipelineContainer.getSearchQuery().getQueryToken().get(i).getValue().length() < 2) {
+                postag = "<SYM>";
+            } else if(TextUtils.containsNumber(pipelineContainer.getSearchQuery().getQueryToken().get(i).getValue())) {
+                postag = "<SYM>";
+            }
+
+
+
+
+            Token token = pipelineContainer.getSearchQuery().getQueryToken().get(i);
+            token.setPosTag(postag);
+            token.setAttributeName(attrName);
+            overridePostag(token);
+        }
+
+        return pipelineContainer;
+    }
+
+
+    private static Map<String, String> posTagOverrides = new HashMap<>();
+    static {
+        posTagOverrides.put("max", "<SYM>");
+        posTagOverrides.put("pro", "<SYM>");
+        posTagOverrides.put("plus", "<SYM>");
+        posTagOverrides.put("als", "<IGNORE>");
+    }
+
+    private Token overridePostag(Token token) {
+        String key = token.getNormalizedValue().toLowerCase();
+        String value = posTagOverrides.get(key);
+        if(value != null) {
+            token.setPosTag(value);
+        }
+
+        return token;
+    }
+
+    private String getAsText(ObjectNode objectNode, String name) {
+        JsonNode node = objectNode.get(name);
+        if(node == null) {
+            return null;
+        }
+        if(node.isArray()) {
+            return node.get(0).asText();
+        }
+        return node.asText();
+
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+}

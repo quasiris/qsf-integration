@@ -8,11 +8,14 @@ import java.util.List;
  */
 public class SearchQuery {
 
+    private List<Token> queryToken = new ArrayList<>();
+
     private String q;
 
     private String requestId;
 
     private List<SearchFilter> searchFilterList = new ArrayList<>();
+    private List<Facet> facetList;
 
     private Sort sort;
 
@@ -76,5 +79,46 @@ public class SearchQuery {
 
     public void setSort(Sort sort) {
         this.sort = sort;
+    }
+
+    public List<Token> getQueryToken() {
+        return queryToken;
+    }
+
+    public void setQueryToken(List<Token> queryToken) {
+        this.queryToken = queryToken;
+    }
+
+    public List<Facet> getFacetList() {
+        return facetList;
+    }
+
+    public void addFacet(String id, String name) {
+        if(this.facetList==null) {
+            facetList = new ArrayList<>();
+        }
+        Facet facet = new Facet();
+        facet.setId(id);
+        facet.setName(name);
+        facetList.add(facet);
+    }
+
+    public void setFacetList(List<Facet> facetList) {
+        this.facetList = facetList;
+    }
+
+    @Override
+    public String toString() {
+        return "SearchQuery{" +
+                "queryToken=" + queryToken +
+                ", q='" + q + '\'' +
+                ", requestId='" + requestId + '\'' +
+                ", searchFilterList=" + searchFilterList +
+                ", facetList=" + facetList +
+                ", sort=" + sort +
+                ", page=" + page +
+                ", rows=" + rows +
+                ", debug=" + debug +
+                '}';
     }
 }

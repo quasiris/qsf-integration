@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
 
@@ -38,6 +39,18 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
 
         return getElasticQuery();
+    }
+
+
+    @Override
+    public void transformAggregations() {
+        if(getSearchQuery().getFacetList() != null) {
+            for(Facet facet : getSearchQuery().getFacetList()) {
+                addAggregation(facet.getName(), facet.getId());
+            }
+        }
+        super.transformAggregations();
+
     }
 
     public void transformQuery() {

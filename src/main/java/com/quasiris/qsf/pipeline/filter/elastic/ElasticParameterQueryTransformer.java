@@ -76,8 +76,9 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         try {
             String request = loadProfile(profile, replaceMap);
             elasticQuery = (ObjectNode) getObjectMapper().readTree(request);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Could not load elastic query from profile: " + profile, e);
         }
 
     }

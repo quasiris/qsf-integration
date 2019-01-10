@@ -41,6 +41,7 @@ public class ElasticFilter extends AbstractFilter {
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
         ObjectNode elasticQuery = queryTransformer.transform(pipelineContainer);
         if(pipelineContainer.isDebugEnabled()) {
+            pipelineContainer.debug(baseUrl);
             pipelineContainer.debug(elasticQuery);
         }
         ElasticResult elasticResult = elasticClient.request(baseUrl + "/_search", elasticQuery);

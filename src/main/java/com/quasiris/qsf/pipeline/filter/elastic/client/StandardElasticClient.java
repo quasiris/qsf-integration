@@ -25,7 +25,7 @@ public class StandardElasticClient implements  ElasticClientIF {
 
     public ElasticResult request(String elasticUrl, String request) throws IOException {
         LOG.debug("elastic request: " + request);
-        String response = post(elasticUrl, request);
+        String response = ElasticHttpClient.post(elasticUrl, request);
         ElasticResult elasticResult = objectMapper.readValue(response, ElasticResult.class);
         return elasticResult;
     }
@@ -34,29 +34,5 @@ public class StandardElasticClient implements  ElasticClientIF {
     public ElasticResult request(String elasticBaseUrl, JsonNode jsonNode) throws IOException {
         String request = objectMapper.writeValueAsString(jsonNode);
         return request(elasticBaseUrl, request);
-    }
-
-
-    public String post(String url, String postString) throws IOException {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(url);
-
-        StringEntity entity = new StringEntity(postString, "UTF-8");
-        httpPost.setEntity(entity);
-        httpPost.setHeader("Content-Type","application/json");
-
-        CloseableHttpResponse response = httpclient.execute(httpPost);
-        StringBuilder responseBuilder = new StringBuilder();
-
-        responseBuilder.append(EntityUtils.toString(response.getEntity()));
-        httpclient.close();
-
-        if (response.getStatusLine().getStatusCode() == 200) {
-            return responseBuilder.toString();
-        } else {
-            throw new HttpResponseException(response.getStatusLine().getStatusCode(), responseBuilder.toString());
-        }
-
-
     }
 }

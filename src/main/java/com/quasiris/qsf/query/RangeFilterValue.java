@@ -52,4 +52,14 @@ public class RangeFilterValue<T> {
     public void setUpperBound(UpperLowerBound upperBound) {
         this.upperBound = upperBound;
     }
+
+    @Override
+    public String toString() {
+        return "RangeFilterValue{" +
+                "minValue=" + minValue +
+                ", maxValue=" + maxValue +
+                ", lowerBound=" + lowerBound +
+                ", upperBound=" + upperBound +
+                '}';
+    }
 }

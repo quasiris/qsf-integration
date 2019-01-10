@@ -43,7 +43,7 @@ public class PipelineContainer {
     private SearchQuery searchQuery = new SearchQuery();
     private Map<String, SearchResult> searchResults = new HashMap<>();
 
-    private Map<String, ?> context = new HashMap<>();
+    private Map<String, ? super Object> context = new HashMap<>();
 
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -72,6 +72,10 @@ public class PipelineContainer {
 
     public <T> T getContext(String name, Class<T> clazz) {
         return (T) context.get(name);
+    }
+
+    public void putContext(String name, Object value) {
+        context.put(name, value);
     }
 
     public Map<String, SearchResult> getSearchResults() {

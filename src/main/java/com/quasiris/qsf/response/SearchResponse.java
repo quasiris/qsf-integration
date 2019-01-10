@@ -2,6 +2,7 @@ package com.quasiris.qsf.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.quasiris.qsf.pipeline.PipelineContainer;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -63,5 +64,19 @@ public class SearchResponse {
 
     public void setRequest(Request request) {
         this.request = request;
+    }
+
+    public static SearchResponse create(PipelineContainer pipelineContainer, String... searchResultIds) {
+        SearchResponse searchResponse = new SearchResponse();
+        for(String searchResultId: searchResultIds) {
+            searchResponse.getResult().put(searchResultId, pipelineContainer.getSearchResult(searchResultId));
+        }
+
+        searchResponse.setCurrentTime(new Date());
+        searchResponse.setTime(pipelineContainer.currentTime());
+        searchResponse.setRequest(new Request(pipelineContainer.getRequest()));
+        searchResponse.setStatusCode(200);
+        return searchResponse;
+
     }
 }

@@ -1,5 +1,7 @@
 package com.quasiris.qsf.pipeline;
 
+import com.quasiris.qsf.query.SearchQuery;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.*;
@@ -15,6 +17,11 @@ public class PipelineExecuter {
 
     public static PipelineExecuter create() {
         return new PipelineExecuter();
+    }
+
+    public PipelineExecuter searchQuery(SearchQuery searchQuery) {
+        getPipelineContainer().setSearchQuery(searchQuery);
+        return this;
     }
 
     public PipelineExecuter httpRequest(HttpServletRequest httpServletRequest) {
