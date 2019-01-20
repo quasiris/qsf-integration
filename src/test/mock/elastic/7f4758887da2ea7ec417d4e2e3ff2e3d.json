@@ -1,4 +1,5 @@
 {
+  "_comment" : "testQsfqlElasticFilterVersion1",
   "took" : 5,
   "hits" : {
     "total" : 1,

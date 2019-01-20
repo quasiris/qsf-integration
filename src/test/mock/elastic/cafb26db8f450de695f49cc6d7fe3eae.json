@@ -1,4 +1,5 @@
 {
+  "_comment" : "testSearchIntentLocation",
   "took" : 5,
   "hits" : {
     "total" : 9,
