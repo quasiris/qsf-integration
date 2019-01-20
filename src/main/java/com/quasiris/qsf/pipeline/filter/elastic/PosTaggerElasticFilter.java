@@ -8,9 +8,11 @@ import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.MultiElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.MultiElasticClientIF;
+import com.quasiris.qsf.query.PosTag;
 import com.quasiris.qsf.query.Token;
 import com.quasiris.qsf.text.TextUtils;
 import com.quasiris.qsf.util.JsonUtil;
+import javafx.geometry.Pos;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +30,6 @@ public class PosTaggerElasticFilter extends AbstractFilter {
 
     private MultiElasticClientIF elasticClient;
 
-    private List<String> ignoredChars = Arrays.asList("-".split(";"));
-
-
     @Override
     public void init() {
         super.init();
@@ -41,19 +40,6 @@ public class PosTaggerElasticFilter extends AbstractFilter {
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
-        String q = pipelineContainer.getSearchQuery().getQ();
-
-        String[] queryTokens = q.split(" ");
-        for(String queryToken: queryTokens) {
-            if(ignoredChars.contains(queryToken)) {
-                continue;
-            }
-            Token token = new Token(queryToken);
-            pipelineContainer.getSearchQuery().getQueryToken().add(token);
-
-        }
-
-
         List<String> elasticQueries = new ArrayList<>();
         for(Token token: pipelineContainer.getSearchQuery().getQueryToken()) {
 
@@ -73,7 +59,7 @@ public class PosTaggerElasticFilter extends AbstractFilter {
 
         for (int i = 0; i <multiElasticResult.getResponses().size() ; i++) {
             Hit hit = multiElasticResult.getResponses().get(i).getHits().getHits().stream().findFirst().orElse(null);
-            String postag = "<UNKNOWN>";
+            String postag = null;
             String attrName = "unknown";
             if(hit != null) {
                 postag = getAsText(hit.get_source(), "postag");
@@ -82,7 +68,9 @@ public class PosTaggerElasticFilter extends AbstractFilter {
 
 
 
-            if(NumberUtils.isCreatable(pipelineContainer.getSearchQuery().getQueryToken().get(i).getValue())) {
+            if(postag == null) {
+                //do nothing
+            } else if(NumberUtils.isCreatable(pipelineContainer.getSearchQuery().getQueryToken().get(i).getValue())) {
                 postag = "<NUM>";
             } else if( postag.equals("<PRODUCT>")) {
                 // if we know that the token is a product we do nothing else
@@ -100,14 +88,23 @@ public class PosTaggerElasticFilter extends AbstractFilter {
 
 
             Token token = pipelineContainer.getSearchQuery().getQueryToken().get(i);
-            token.setPosTag(postag);
+            if(postag == null) {
+                // ignore
+            } else if(PosTag.isOneOfValue(postag, PosTag.BETWEEN, PosTag.GREATER, PosTag.LESS)) {
+                token.setPosTag(postag);
+            } else if(PosTag.isOneOfValue(token.getPosTag(), PosTag.APPR, PosTag.VAFIN, PosTag.PIDAT)) {
+                // ignore
+            } else {
+                token.setPosTag(postag);
+            }
             token.setAttributeName(attrName);
             overridePostag(token);
         }
 
+        pipelineContainer.putContext("elasticPosTagger", pipelineContainer.getSearchQuery().copyQueryToken());
+
         return pipelineContainer;
     }
-
 
     private static Map<String, String> posTagOverrides = new HashMap<>();
     static {

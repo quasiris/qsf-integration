@@ -85,6 +85,17 @@ public class SearchQuery {
         return queryToken;
     }
 
+    public List<Token> copyQueryToken() {
+        List<Token> copy = new ArrayList<>();
+        for(Token token: getQueryToken()) {
+            Token newToken = new Token(token);
+            copy.add(newToken);
+        }
+        return copy;
+    }
+
+
+
     public void setQueryToken(List<Token> queryToken) {
         this.queryToken = queryToken;
     }

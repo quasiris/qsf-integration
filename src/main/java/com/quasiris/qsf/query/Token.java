@@ -10,6 +10,13 @@ public class Token {
 
     private String attributeName;
 
+    public Token(Token token) {
+        this.posTag = token.getPosTag();
+        this.value = token.getValue();
+        this.normalizedValue = token.getNormalizedValue();
+        this.attributeName = token.getAttributeName();
+    }
+
     public Token(String value) {
         this.value = value;
     }
