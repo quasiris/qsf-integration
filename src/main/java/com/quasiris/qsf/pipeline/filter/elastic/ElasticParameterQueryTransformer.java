@@ -145,8 +145,13 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         ObjectNode aggField = objectMapper.createObjectNode().
                 put("field", facet.getId());
 
-        aggField.set("order", objectMapper.createObjectNode().put(facet.getSortBy(), facet.getSortOrder()));
-        aggField.put("size", facet.getSize());
+        if(facet.getSortBy() != null) {
+            aggField.set("order", objectMapper.createObjectNode().put(facet.getSortBy(), facet.getSortOrder()));
+        }
+
+        if(facet.getSize() != null) {
+            aggField.put("size", facet.getSize());
+        }
         JsonNode agg =
                 objectMapper.createObjectNode().set(
                         facet.getType(),aggField

@@ -7,9 +7,9 @@ public class Facet {
 
     private String type = "terms";
 
-    private int size;
+    private Integer size;
 
-    private String sortBy = "_count";
+    private String sortBy;
 
     private String sortOrder = "asc";
 
@@ -29,11 +29,11 @@ public class Facet {
         this.name = name;
     }
 
-    public int getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
