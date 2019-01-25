@@ -35,6 +35,7 @@ public enum PosTag {
     PIS("<PIS>"),
     PWAT("<PWAT>"),
     ADJA("<ADJA>"),
+    ART("<ART>"),
     PIDAT("<PIDAT>")
     ;
 
@@ -46,6 +47,14 @@ public enum PosTag {
 
     public boolean isValue(String value) {
         return value.equals(this.value);
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public static boolean isOneOfValue(String value, PosTag... posTags) {

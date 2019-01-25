@@ -12,12 +12,14 @@ import com.quasiris.qsf.query.PosTag;
 import com.quasiris.qsf.query.Token;
 import com.quasiris.qsf.text.TextUtils;
 import com.quasiris.qsf.util.JsonUtil;
-import javafx.geometry.Pos;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tbl on 22.12.18.
@@ -92,7 +94,7 @@ public class PosTaggerElasticFilter extends AbstractFilter {
                 // ignore
             } else if(PosTag.isOneOfValue(postag, PosTag.BETWEEN, PosTag.GREATER, PosTag.LESS)) {
                 token.setPosTag(postag);
-            } else if(PosTag.isOneOfValue(token.getPosTag(), PosTag.APPR, PosTag.VAFIN, PosTag.PIDAT)) {
+            } else if(PosTag.isOneOfValue(token.getPosTag(), PosTag.APPR, PosTag.VAFIN, PosTag.PIDAT, PosTag.ART)) {
                 // ignore
             } else {
                 token.setPosTag(postag);
