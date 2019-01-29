@@ -36,7 +36,9 @@ public enum PosTag {
     PWAT("<PWAT>"),
     ADJA("<ADJA>"),
     ART("<ART>"),
-    PIDAT("<PIDAT>")
+    PIDAT("<PIDAT>"),
+    MAX("<MAX>"),
+    MIN("<MIN>")
     ;
 
     private String value;
