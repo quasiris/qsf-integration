@@ -1,5 +1,7 @@
 package com.quasiris.qsf.query;
 
+import java.util.List;
+
 public class Token {
 
     private String posTag;
@@ -9,6 +11,8 @@ public class Token {
     private String normalizedValue;
 
     private String attributeName;
+
+    private List<Integer> phraseTokens;
 
     public Token(Token token) {
         this.posTag = token.getPosTag();
@@ -55,6 +59,19 @@ public class Token {
     public void setNormalizedValue(String normalizedValue) {
         this.normalizedValue = normalizedValue;
     }
+
+    public List<Integer> getPhraseTokens() {
+        return phraseTokens;
+    }
+
+    public void setPhraseTokens(List<Integer> phraseTokens) {
+        this.phraseTokens = phraseTokens;
+    }
+
+    public boolean isPhrase() {
+        return phraseTokens != null;
+    }
+
 
     @Override
     public String toString() {
