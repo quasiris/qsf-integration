@@ -18,6 +18,9 @@ public abstract class AbstractQueryParser {
 
     private List<Token> tokens;
 
+    public AbstractQueryParser() {
+    }
+
     public AbstractQueryParser(List<Token> tokens) {
         this.tokens = tokens;
         this.tokenCount = tokens.size();
@@ -110,6 +113,7 @@ public abstract class AbstractQueryParser {
 
     public void setTokens(List<Token> tokens) {
         this.tokens = tokens;
+        this.tokenCount = tokens.size();
     }
 
     public boolean isPosTag(PosTag posTag) {

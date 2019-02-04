@@ -5,7 +5,7 @@ package com.quasiris.qsf.query;
  */
 public enum FilterType {
 
-    TERM("term"),RANGE("range"),SLIDER("slider");
+    TERM("term"),MATCH("match"),MATCH_PHRASE("match_phrase"),RANGE("range"),SLIDER("slider");
 
 
     private final String code;

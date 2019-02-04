@@ -121,6 +121,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             ObjectNode filter = null;
             switch (searchFilter.getFilterType()) {
                 case TERM:
+                case MATCH:
+                case MATCH_PHRASE:
                     filter = transformTermsFilter(searchFilter);
                     break;
                 case RANGE:
@@ -169,7 +171,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             return null;
         }
 
-        ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set("term",
+        ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set(searchFilter.getFilterType().getCode(),
                 getObjectMapper().createObjectNode().put(elasticField, firstValue));
 
         return filter;
