@@ -14,11 +14,14 @@ public class Token {
 
     private List<Integer> phraseTokens;
 
+    private String unit;
+
     public Token(Token token) {
         this.posTag = token.getPosTag();
         this.value = token.getValue();
         this.normalizedValue = token.getNormalizedValue();
         this.attributeName = token.getAttributeName();
+        this.unit = token.getUnit();
     }
 
     public Token(String value) {
@@ -72,6 +75,13 @@ public class Token {
         return phraseTokens != null;
     }
 
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
     @Override
     public String toString() {
@@ -80,6 +90,7 @@ public class Token {
                 ", value='" + value + '\'' +
                 ", normalizedValue='" + normalizedValue + '\'' +
                 ", attributeName='" + attributeName + '\'' +
+                ", unit='" + unit + '\'' +
                 '}';
     }
 }
