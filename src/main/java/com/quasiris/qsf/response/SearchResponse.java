@@ -75,6 +75,10 @@ public class SearchResponse {
         searchResponse.setCurrentTime(new Date());
         searchResponse.setTime(pipelineContainer.currentTime());
         searchResponse.setRequest(new Request(pipelineContainer.getRequest()));
+
+        if("POST".equals(searchResponse.getRequest().getMethod())) {
+            searchResponse.getRequest().setQuery(pipelineContainer.getSearchQuery().getQ());
+        }
         searchResponse.setStatusCode(200);
         return searchResponse;
 

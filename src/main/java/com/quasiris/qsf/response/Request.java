@@ -15,6 +15,7 @@ public class Request {
     public Request(HttpServletRequest httpServletRequest) {
         this.path = httpServletRequest.getRequestURI();
         this.parameters = httpServletRequest.getParameterMap();
+        this.method = httpServletRequest.getMethod();
 
         this.query = httpServletRequest.getQueryString();
         if(Strings.isNullOrEmpty(this.query)) {
@@ -29,6 +30,9 @@ public class Request {
     private String path;
 
     private String query;
+
+    private String method;
+
 
     private Map<String, String[]> parameters;
 
@@ -64,12 +68,21 @@ public class Request {
         this.query = query;
     }
 
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
     @Override
     public String toString() {
         return "Request{" +
                 "url='" + url + '\'' +
                 ", path='" + path + '\'' +
                 ", query='" + query + '\'' +
+                ", method='" + method + '\'' +
                 ", parameters=" + parameters +
                 '}';
     }

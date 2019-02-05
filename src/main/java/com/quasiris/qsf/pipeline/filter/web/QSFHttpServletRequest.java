@@ -15,10 +15,11 @@ import java.util.*;
 
 public class QSFHttpServletRequest implements HttpServletRequest {
 
-
     private String url;
 
     private URI uri;
+
+    private String method;
 
     private Enumeration<String> parameterNames;
 
@@ -65,6 +66,8 @@ public class QSFHttpServletRequest implements HttpServletRequest {
 
         }
         parameterNames = Collections.enumeration(parametersMap.keySet());
+
+        this.method = "GET";
     }
 
 
@@ -114,7 +117,7 @@ public class QSFHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getMethod() {
-        throw new UnsupportedOperationException("The method is not implemented yet.");
+        return method;
     }
 
     @Override
