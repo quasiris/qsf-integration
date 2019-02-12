@@ -20,7 +20,7 @@ public class QSQLRequestFilter extends AbstractFilter {
                 SearchQuery searchQuery = objectMapper.readValue(pipelineContainer.getRequest().getInputStream(), SearchQuery.class);
                 pipelineContainer.setSearchQuery(searchQuery);
             } catch (Exception e) {
-                throw new PipelineContainerException("Could not read convert search query, becaouse: " + e.getMessage() , e);
+                throw new PipelineContainerException("Could not read convert search query, because: " + e.getMessage() , e);
             }
 
         } else {
