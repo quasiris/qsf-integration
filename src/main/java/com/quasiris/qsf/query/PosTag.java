@@ -39,7 +39,10 @@ public enum PosTag {
     PPER("<PPER>"),
     PIDAT("<PIDAT>"),
     MAX("<MAX>"),
-    MIN("<MIN>")
+    MIN("<MIN>"),
+    CMP("<CMP>"),
+    ACC("<ACC>"),
+    COMP("<COMP>")
     ;
 
     private String value;
