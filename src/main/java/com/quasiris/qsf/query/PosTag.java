@@ -73,4 +73,16 @@ public enum PosTag {
         return false;
 
     }
+
+
+    public static boolean isOneOfValue(PosTag posTagValue, PosTag... posTags) {
+        for(PosTag posTag : posTags) {
+            boolean isValue = posTagValue.equals(posTag);
+            if(isValue) {
+                return true;
+            }
+        }
+        return false;
+
+    }
 }
