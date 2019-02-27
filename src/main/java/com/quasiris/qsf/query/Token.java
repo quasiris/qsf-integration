@@ -16,12 +16,15 @@ public class Token {
 
     private String unit;
 
+    private DeCompound deCompound;
+
     public Token(Token token) {
         this.posTag = token.getPosTag();
         this.value = token.getValue();
         this.normalizedValue = token.getNormalizedValue();
         this.attributeName = token.getAttributeName();
         this.unit = token.getUnit();
+        this.deCompound = token.getDeCompound();
     }
 
     public Token(String value) {
@@ -81,6 +84,14 @@ public class Token {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public DeCompound getDeCompound() {
+        return deCompound;
+    }
+
+    public void setDeCompound(DeCompound deCompound) {
+        this.deCompound = deCompound;
     }
 
     @Override
