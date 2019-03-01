@@ -142,6 +142,9 @@ public class SearchResult{
 
 
     public Facet getFacetById(String id) {
+        if(getFacets() == null) {
+            return null;
+        }
         for(Facet facet : getFacets()) {
             if(id.equals(facet.getId())) {
                 return facet;

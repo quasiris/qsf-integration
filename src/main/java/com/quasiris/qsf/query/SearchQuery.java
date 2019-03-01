@@ -105,12 +105,16 @@ public class SearchQuery {
     }
 
     public void addFacet(String id, String name) {
-        if(this.facetList==null) {
-            facetList = new ArrayList<>();
-        }
         Facet facet = new Facet();
         facet.setId(id);
         facet.setName(name);
+        addFacet(facet);
+    }
+
+    public void addFacet(Facet facet) {
+        if(this.facetList==null) {
+            facetList = new ArrayList<>();
+        }
         facetList.add(facet);
     }
 

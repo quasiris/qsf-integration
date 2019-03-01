@@ -29,17 +29,17 @@ import java.util.*;
  */
 public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
-    private PipelineContainer pipelineContainer;
+    protected PipelineContainer pipelineContainer;
 
-    private SearchQuery searchQuery;
+    protected SearchQuery searchQuery;
 
-    private ObjectNode elasticQuery;
+    protected ObjectNode elasticQuery;
 
-    private String profile;
+    protected String profile;
 
-    private List<Facet> aggregations = new ArrayList<>();
+    protected List<Facet> aggregations = new ArrayList<>();
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    protected ObjectMapper objectMapper = new ObjectMapper();
 
 
 
@@ -102,7 +102,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     }
 
 
-    private String loadProfile(String filename, Map<String, String> vars) throws IOException {
+    protected String loadProfile(String filename, Map<String, String> vars) throws IOException {
         String profile = null;
         if (filename.startsWith("classpath://")) {
             profile = loadProfileFromClasspath(filename);
@@ -188,6 +188,10 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         Facet facet = new Facet();
         facet.setName(name);
         facet.setId(field);
+        aggregations.add(facet);
+    }
+
+    public void addAggregation(Facet facet) {
         aggregations.add(facet);
     }
 

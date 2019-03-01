@@ -54,6 +54,14 @@ public class ElasticFilterBuilder {
             elasticFilter.setQueryTransformer(elasticQsfqlQueryTransformer);
         } else if(queryTransformer.equals(ElasticParameterQueryTransformer.class)) {
             elasticFilter.setQueryTransformer(elasticParameterQueryTransformer);
+        } else {
+            try {
+                elasticFilter.setQueryTransformer((QueryTransformerIF) queryTransformer.newInstance());
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
 
         if(searchResultTransformer != null) {

@@ -46,7 +46,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public void transformAggregations() {
         if(getSearchQuery().getFacetList() != null) {
             for(Facet facet : getSearchQuery().getFacetList()) {
-                addAggregation(facet.getName(), facet.getId());
+                addAggregation(facet);
             }
         }
         super.transformAggregations();

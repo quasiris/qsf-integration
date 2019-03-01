@@ -62,6 +62,8 @@ public class Facet {
     }
 
 
+
+
     @Override
     public String toString() {
         return "Facet{" +
@@ -72,5 +74,63 @@ public class Facet {
                 ", sortBy='" + sortBy + '\'' +
                 ", sortOrder='" + sortOrder + '\'' +
                 '}';
+    }
+
+
+    public static final class Builder {
+        private String id;
+        private String name;
+        private String type = "terms";
+        private Integer size;
+        private String sortBy;
+        private String sortOrder = "asc";
+
+        private Builder() {
+        }
+
+        public static Builder create() {
+            return new Builder();
+        }
+
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder type(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder size(Integer size) {
+            this.size = size;
+            return this;
+        }
+
+        public Builder sortBy(String sortBy) {
+            this.sortBy = sortBy;
+            return this;
+        }
+
+        public Builder sortOrder(String sortOrder) {
+            this.sortOrder = sortOrder;
+            return this;
+        }
+
+        public Facet build() {
+            Facet facet = new Facet();
+            facet.setId(id);
+            facet.setName(name);
+            facet.setType(type);
+            facet.setSize(size);
+            facet.setSortBy(sortBy);
+            facet.setSortOrder(sortOrder);
+            return facet;
+        }
     }
 }
