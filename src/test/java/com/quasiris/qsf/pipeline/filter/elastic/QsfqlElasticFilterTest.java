@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.quasiris.qsf.mock.Mockfactory;
 import com.quasiris.qsf.pipeline.*;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
+import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.Facet;
 import com.quasiris.qsf.response.FacetValue;
@@ -104,5 +105,74 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
 
         }
 
+    @Test
+    public void testSubFacets() throws Exception {
+
+        MockElasticClient mockElasticClient = new MockElasticClient();
+        //mockElasticClient.setRecord(true);
+
+
+        Pipeline pipeline = PipelineBuilder.create().
+                pipeline("osm").
+                timeout(100000000L).
+                filter(ElasticFilterBuilder.create().
+                        client(mockElasticClient).
+                        baseUrl("http://localhost:9200/osm").
+                        profile("classpath://com/quasiris/qsf/elastic/profiles/location-qsfql.json" ).
+                        resultSetId("osm").
+                        build()).
+                build();
+
+        Assert.assertNotNull(pipeline.print(""));
+
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQ("darmstadt");
+
+        com.quasiris.qsf.query.Facet tagkeysFacet =
+                com.quasiris.qsf.query.Facet.Builder.create().
+                        id("tagkeys.keyword").
+                        name("tagkeys").
+                        build();
+
+
+        com.quasiris.qsf.query.Facet subFacet = new com.quasiris.qsf.query.Facet();
+        subFacet.setId("name.keyword");
+        subFacet.setName("name");
+
+        tagkeysFacet.setSubFacet(subFacet);
+        searchQuery.addFacet(tagkeysFacet);
+        PipelineContainer pipelineContainer = PipelineExecuter.create().
+                pipeline(pipeline).
+                searchQuery(searchQuery).
+                execute();
+
+        if(!pipelineContainer.isSuccess()) {
+            Assert.fail();
+        }
+
+        SearchResult searchResult = pipelineContainer.getSearchResult("osm");
+
+
+
+
+        Facet tagkeys = searchResult.getFacetById("tagkeys");
+        Assert.assertEquals("tagkeys", tagkeys.getName());
+        Assert.assertEquals("tagkeys", tagkeys.getId());
+        Assert.assertEquals(Long.valueOf(10), tagkeys.getCount());
+        Assert.assertEquals(Long.valueOf(21), tagkeys.getResultCount());
+
+        FacetValue facetValue = tagkeys.getValues().get(0);
+        Assert.assertEquals("name", facetValue.getValue());
+        Assert.assertEquals(Long.valueOf(5), facetValue.getCount());
+        Assert.assertEquals("tagkeys=name", facetValue.getFilter());
+
+        Assert.assertEquals("subFacet", tagkeys.getSubFacet().getId());
+        Assert.assertEquals("subFacet", tagkeys.getSubFacet().getName());
+
+        FacetValue subFacetValue = tagkeys.getSubFacet().getValues().get(0);
+        Assert.assertEquals("Darmstadt", subFacetValue.getValue() );
+        Assert.assertEquals(Long.valueOf(1), subFacetValue.getCount() );
+
+    }
 
 }

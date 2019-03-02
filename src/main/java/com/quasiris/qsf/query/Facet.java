@@ -13,6 +13,8 @@ public class Facet {
 
     private String sortOrder = "asc";
 
+    private Facet subFacet;
+
     public String getId() {
         return id;
     }
@@ -61,8 +63,13 @@ public class Facet {
         this.type = type;
     }
 
+    public Facet getSubFacet() {
+        return subFacet;
+    }
 
-
+    public void setSubFacet(Facet subFacet) {
+        this.subFacet = subFacet;
+    }
 
     @Override
     public String toString() {

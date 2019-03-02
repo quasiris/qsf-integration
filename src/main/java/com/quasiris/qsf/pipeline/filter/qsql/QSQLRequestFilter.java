@@ -14,7 +14,7 @@ public class QSQLRequestFilter extends AbstractFilter {
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
-        if("POST".equals(pipelineContainer.getRequest().getMethod())) {
+        if(pipelineContainer.getRequest() != null && "POST".equals(pipelineContainer.getRequest().getMethod())) {
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
                 SearchQuery searchQuery = objectMapper.readValue(pipelineContainer.getRequest().getInputStream(), SearchQuery.class);

@@ -1,7 +1,9 @@
 package com.quasiris.qsf.query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mki on 11.11.16.
@@ -24,6 +26,8 @@ public class SearchQuery {
     private Integer rows;
 
     private boolean debug = false;
+
+    private Map<String, String> parameters;
 
     public String getQ() {
         return q;
@@ -120,6 +124,36 @@ public class SearchQuery {
 
     public void setFacetList(List<Facet> facetList) {
         this.facetList = facetList;
+    }
+
+
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    public Map<String, String> getParametersWithPrefix(String prefix) {
+        Map<String, String> prefixMap = new HashMap<>();
+        if(this.parameters == null) {
+            return prefixMap;
+        }
+
+        for(Map.Entry<String, String> entry : parameters.entrySet()) {
+            prefixMap.put(prefix + "." + entry.getKey(), entry.getValue());
+        }
+
+        return prefixMap;
+    }
+
+
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
+    public void addParameter(String key, String value) {
+        if(this.parameters == null) {
+            this.parameters = new HashMap<>();
+        }
+        this.parameters.put(key, value);
     }
 
     @Override

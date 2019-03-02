@@ -15,14 +15,15 @@ import com.quasiris.qsf.util.JsonUtil;
 import com.quasiris.qsf.util.PrintUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mki on 04.02.17.
@@ -58,7 +59,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     public void transformAggregations() {
         ObjectNode aggregationsRequest  = null;
         for(Facet aggregation : aggregations) {
-            aggregationsRequest = createAgg(aggregationsRequest, aggregation);
+            aggregationsRequest = addAgg(aggregationsRequest, aggregation);
         }
         if(aggregationsRequest != null) {
             elasticQuery.set("aggs", aggregationsRequest.get("aggs"));
@@ -68,6 +69,14 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     public void transformParameter() {
         Map<String, String> replaceMap = RequestParser.getRequestParameter(pipelineContainer);
+
+        if(searchQuery != null) {
+            if(searchQuery.getQ() != null) {
+                replaceMap.put("qsfql.q", searchQuery.getQ());
+            }
+            replaceMap.putAll(searchQuery.getParametersWithPrefix("qsfql"));
+        }
+
         for(Map.Entry<String, String> param :pipelineContainer.getParameters().entrySet()) {
             replaceMap.put("param." + param.getKey(), param.getValue());
         }
@@ -136,12 +145,20 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     }
 
 
-    private ObjectNode createAgg(ObjectNode aggregations, Facet facet) {
+    private ObjectNode addAgg(ObjectNode aggregations, Facet facet) {
         if(aggregations == null) {
             aggregations = (ObjectNode) objectMapper.createObjectNode().set("aggs", objectMapper.createObjectNode());
         }
 
 
+        JsonNode agg = createAgg(facet, false);
+
+        ((ObjectNode)aggregations.get("aggs")).setAll((ObjectNode) agg);
+        return aggregations;
+    }
+
+
+    private JsonNode createAgg(Facet facet, boolean isSubFacet) {
         ObjectNode aggField = objectMapper.createObjectNode().
                 put("field", facet.getId());
 
@@ -152,16 +169,29 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         if(facet.getSize() != null) {
             aggField.put("size", facet.getSize());
         }
-        JsonNode agg =
+        JsonNode type =
                 objectMapper.createObjectNode().set(
                         facet.getType(),aggField
-
                 );
 
-        ((ObjectNode)aggregations.get("aggs")).set(facet.getName(), agg);
-        return aggregations;
-    }
+        ObjectNode aggs = (ObjectNode) type;
 
+        if(facet.getSubFacet() != null) {
+            JsonNode subAggs = createAgg(facet.getSubFacet(), true);
+            aggs.set("aggs", subAggs);
+        }
+
+
+        String name = facet.getName();
+        if(isSubFacet) {
+            name = "subFacet";
+        }
+        JsonNode agg =
+                objectMapper.createObjectNode().set(
+                        name,type
+                );
+        return agg;
+    }
 
 
     public PipelineContainer getPipelineContainer() {

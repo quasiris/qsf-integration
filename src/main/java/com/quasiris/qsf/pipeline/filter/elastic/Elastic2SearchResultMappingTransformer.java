@@ -65,34 +65,45 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
         searchResult.setFacetCount(elasticResult.getAggregations().size());
         for(Map.Entry<String, Aggregation> aggregationEntry : elasticResult.getAggregations().entrySet()) {
-            Facet facet = new Facet();
-            String id = facetMapping.get(aggregationEntry.getKey());
-            if(id == null) {
-                id = aggregationEntry.getKey();
-            }
-            facet.setId(id);
-            facet.setFilterName(filterPrefix + id);
-
-            String name = facetNameMapping.get(id);
-
-            if(name == null) {
-                name = aggregationEntry.getKey();
-            }
-            facet.setName(name);
-
-            facet.setCount(Long.valueOf(aggregationEntry.getValue().getBuckets().size()));
-
-            Long facetReseultCount = 0L;
-            for(Bucket bucket : aggregationEntry.getValue().getBuckets()) {
-                FacetValue facetValue = new FacetValue(bucket.getKey(), bucket.getDoc_count());
-                facetReseultCount = facetReseultCount + facetValue.getCount();
-                facetValue.setFilter(filterPrefix + id + "=" + EncodingUtil.encode(bucket.getKey()));
-                facet.getValues().add(facetValue);
-            }
-            facet.setResultCount(facetReseultCount);
+            Facet facet = mapAggregation2Facet(aggregationEntry.getKey(), aggregationEntry.getValue());
             searchResult.addFacet(facet);
 
         }
+    }
+
+    protected Facet mapAggregation2Facet(String key, Aggregation aggregation) {
+        Facet facet = new Facet();
+        String id = facetMapping.get(key);
+        if(id == null) {
+            id = key;
+        }
+        facet.setId(id);
+        facet.setFilterName(filterPrefix + id);
+
+        String name = facetNameMapping.get(id);
+
+        if(name == null) {
+            name = key;
+        }
+        facet.setName(name);
+
+        facet.setCount(Long.valueOf(aggregation.getBuckets().size()));
+
+        Long facetReseultCount = 0L;
+        for(Bucket bucket : aggregation.getBuckets()) {
+            FacetValue facetValue = new FacetValue(bucket.getKey(), bucket.getDoc_count());
+            facetReseultCount = facetReseultCount + facetValue.getCount();
+            facetValue.setFilter(filterPrefix + id + "=" + EncodingUtil.encode(bucket.getKey()));
+
+            if(bucket.getSubFacet() != null) {
+                Facet subFacet = mapAggregation2Facet("subFacet", bucket.getSubFacet());
+                facet.setSubFacet(subFacet);
+            }
+
+            facet.getValues().add(facetValue);
+        }
+        facet.setResultCount(facetReseultCount);
+        return facet;
     }
 
     @Override

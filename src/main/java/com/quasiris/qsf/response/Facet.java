@@ -23,6 +23,8 @@ public class Facet {
 
     private List<FacetValue> values = new ArrayList<>();
 
+    private Facet subFacet;
+
     public String getName() {
         return name;
     }
@@ -71,14 +73,24 @@ public class Facet {
         this.filterName = filterName;
     }
 
+    public Facet getSubFacet() {
+        return subFacet;
+    }
+
+    public void setSubFacet(Facet subFacet) {
+        this.subFacet = subFacet;
+    }
+
     @Override
     public String toString() {
         return "Facet{" +
                 "name='" + name + '\'' +
                 ", id='" + id + '\'' +
+                ", filterName='" + filterName + '\'' +
                 ", count=" + count +
                 ", resultCount=" + resultCount +
                 ", values=" + values +
+                ", subFacet=" + subFacet +
                 '}';
     }
 }
