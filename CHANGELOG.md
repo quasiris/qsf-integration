@@ -3,6 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- implement sub facet for elastic
 - implement QSFHttpServletRequest
 - implement health check for elastic
 - implement health check for solr
