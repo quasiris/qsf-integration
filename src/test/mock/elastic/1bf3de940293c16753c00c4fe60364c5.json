@@ -1,0 +1,280 @@
+{
+  "took" : 14,
+  "hits" : {
+    "total" : 5,
+    "max_score" : 18.797123,
+    "hits" : [ {
+      "_index" : "osm-germany",
+      "_type" : "osm",
+      "_id" : "A5B2Y2UBwXmvIcYzP1ic",
+      "_score" : 18.797123,
+      "_source" : {
+        "openGeoDB_type" : "Wissenschaftsstadt",
+        "is_in" : "Darmstadt,Hessen,Bundesrepublik Deutschland,Europe",
+        "tagvalues" : [ "Darmstadt,Hessen,Bundesrepublik Deutschland,Europe", "DE", "DE-HE", "Darmstadt", "Darmstadt", "ダルムシュタット", "Darmstadium", "Darmstadt", "Дармштадт", "Дармштат", "达姆施塔特", "06411000", "517", "6", "DA", "15443", "64283,64285,64287,64289,64291,64293,64295,64297", "06151", "Wissenschaftsstadt", "city", "154002", "DEDAR", "Q2973", "de:Darmstadt" ],
+        "lon" : "8.651177",
+        "openGeoDB_telephone_area_code" : "06151",
+        "population" : "154002",
+        "osm_type" : "node",
+        "openGeoDB_license_plate_code" : "DA",
+        "openGeoDB_postal_codes" : "64283,64285,64287,64289,64291,64293,64295,64297",
+        "latlon" : "49.872775,8.651177",
+        "tagkeys" : [ "is_in", "is_in:country_code", "is_in:iso_3166_2", "name", "name:de", "name:ja", "name:la", "name:nds", "name:ru", "name:sr", "name:zh", "openGeoDB:community_identification_number", "openGeoDB:is_in_loc_id", "openGeoDB:layer", "openGeoDB:license_plate_code", "openGeoDB:loc_id", "openGeoDB:postal_codes", "openGeoDB:telephone_area_code", "openGeoDB:type", "place", "population", "ref:LOCODE", "wikidata", "wikipedia" ],
+        "name" : "Darmstadt",
+        "id" : "240074718",
+        "place" : "city",
+        "lat" : "49.872775"
+      },
+      "highlight" : {
+        "name" : [ "<em>Darmstadt</em>" ]
+      }
+    }, {
+      "_index" : "osm-germany",
+      "_type" : "osm",
+      "_id" : "g7etY2UBwXmvIcYzHvCI",
+      "_score" : 11.836373,
+      "_source" : {
+        "osm_type" : "node",
+        "latlon" : "49.8735755,8.672461",
+        "tagvalues" : [ "300", "Darmstadt-Ost", "suburb" ],
+        "tagkeys" : [ "ref", "name", "place" ],
+        "name" : "Darmstadt-Ost",
+        "lon" : "8.672461",
+        "id" : "958121890",
+        "place" : "suburb",
+        "lat" : "49.8735755"
+      },
+      "highlight" : {
+        "name" : [ "<em>Darmstadt</em>-Ost" ]
+      }
+    }, {
+      "_index" : "osm-germany",
+      "_type" : "osm",
+      "_id" : "OritY2UBwXmvIcYzHgiL",
+      "_score" : 11.79026,
+      "_source" : {
+        "osm_type" : "node",
+        "latlon" : "49.8590836,8.6371938",
+        "tagvalues" : [ "500", "Darmstadt-West", "suburb" ],
+        "tagkeys" : [ "ref", "name", "place" ],
+        "name" : "Darmstadt-West",
+        "lon" : "8.6371938",
+        "id" : "958260491",
+        "place" : "suburb",
+        "lat" : "49.8590836"
+      },
+      "highlight" : {
+        "name" : [ "<em>Darmstadt</em>-West" ]
+      }
+    }, {
+      "_index" : "osm-germany",
+      "_type" : "osm",
+      "_id" : "KritY2UBwXmvIcYzHgiL",
+      "_score" : 11.645162,
+      "_source" : {
+        "osm_type" : "node",
+        "latlon" : "49.8727478,8.6511983",
+        "tagvalues" : [ "100", "Darmstadt-Mitte", "suburb" ],
+        "tagkeys" : [ "ref", "name", "place" ],
+        "name" : "Darmstadt-Mitte",
+        "lon" : "8.6511983",
+        "id" : "958260411",
+        "place" : "suburb",
+        "lat" : "49.8727478"
+      },
+      "highlight" : {
+        "name" : [ "<em>Darmstadt</em>-Mitte" ]
+      }
+    }, {
+      "_index" : "osm-germany",
+      "_type" : "osm",
+      "_id" : "N7itY2UBwXmvIcYzHgiL",
+      "_score" : 11.645162,
+      "_source" : {
+        "osm_type" : "node",
+        "latlon" : "49.883176,8.6507225",
+        "tagvalues" : [ "200", "Darmstadt-Nord", "suburb" ],
+        "tagkeys" : [ "ref", "name", "place" ],
+        "name" : "Darmstadt-Nord",
+        "lon" : "8.6507225",
+        "id" : "958260474",
+        "place" : "suburb",
+        "lat" : "49.883176"
+      },
+      "highlight" : {
+        "name" : [ "<em>Darmstadt</em>-Nord" ]
+      }
+    } ]
+  },
+  "aggregations" : {
+    "tagkeys" : {
+      "doc_count_error_upper_bound" : 0,
+      "sum_other_doc_count" : 15,
+      "buckets" : [ {
+        "key" : "name",
+        "doc_count" : 5,
+        "subFacet" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Darmstadt",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-Mitte",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-Nord",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-Ost",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-West",
+            "doc_count" : 1,
+            "subFacet" : null
+          } ]
+        }
+      }, {
+        "key" : "place",
+        "doc_count" : 5,
+        "subFacet" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Darmstadt",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-Mitte",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-Nord",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-Ost",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-West",
+            "doc_count" : 1,
+            "subFacet" : null
+          } ]
+        }
+      }, {
+        "key" : "ref",
+        "doc_count" : 4,
+        "subFacet" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Darmstadt-Mitte",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-Nord",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-Ost",
+            "doc_count" : 1,
+            "subFacet" : null
+          }, {
+            "key" : "Darmstadt-West",
+            "doc_count" : 1,
+            "subFacet" : null
+          } ]
+        }
+      }, {
+        "key" : "is_in",
+        "doc_count" : 1,
+        "subFacet" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Darmstadt",
+            "doc_count" : 1,
+            "subFacet" : null
+          } ]
+        }
+      }, {
+        "key" : "is_in:country_code",
+        "doc_count" : 1,
+        "subFacet" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Darmstadt",
+            "doc_count" : 1,
+            "subFacet" : null
+          } ]
+        }
+      }, {
+        "key" : "is_in:iso_3166_2",
+        "doc_count" : 1,
+        "subFacet" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Darmstadt",
+            "doc_count" : 1,
+            "subFacet" : null
+          } ]
+        }
+      }, {
+        "key" : "name:de",
+        "doc_count" : 1,
+        "subFacet" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Darmstadt",
+            "doc_count" : 1,
+            "subFacet" : null
+          } ]
+        }
+      }, {
+        "key" : "name:ja",
+        "doc_count" : 1,
+        "subFacet" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Darmstadt",
+            "doc_count" : 1,
+            "subFacet" : null
+          } ]
+        }
+      }, {
+        "key" : "name:la",
+        "doc_count" : 1,
+        "subFacet" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Darmstadt",
+            "doc_count" : 1,
+            "subFacet" : null
+          } ]
+        }
+      }, {
+        "key" : "name:nds",
+        "doc_count" : 1,
+        "subFacet" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Darmstadt",
+            "doc_count" : 1,
+            "subFacet" : null
+          } ]
+        }
+      } ]
+    }
+  }
+}

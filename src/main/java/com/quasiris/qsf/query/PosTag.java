@@ -19,6 +19,7 @@ public enum PosTag {
     IGNORE("<IGNORE>"),
     NUM("<NUM>"),
     PWAV("<PWAV>"),
+    PWS("<PWS>"),
     VAFIN("<VAFIN>"),
     ADJD("<ADJD>"),
     APPRART("<APPRART>"),
