@@ -7,6 +7,7 @@ import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.query.FilterType;
 import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
 
@@ -166,6 +167,17 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             elasticField = searchFilter.getName();
         }
 
+        if(searchFilter.getValues().size() > 1 && searchFilter.getFilterType().equals(FilterType.TERM) ) {
+            ArrayNode arrayNode = getObjectMapper().createArrayNode();
+            for(String v : searchFilter.getValues()) {
+                arrayNode.add(v);
+            }
+
+            ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set("terms",
+                    getObjectMapper().createObjectNode().set(elasticField, arrayNode));
+            return filter;
+        }
+
         String firstValue = searchFilter.getValues().stream().findFirst().orElse(null);
         if (Strings.isNullOrEmpty(firstValue)) {
             return null;
@@ -173,6 +185,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
         ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set(searchFilter.getFilterType().getCode(),
                 getObjectMapper().createObjectNode().put(elasticField, firstValue));
+
+
 
         return filter;
 
