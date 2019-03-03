@@ -57,9 +57,12 @@ public class SolrHealthChecker {
 
     }
 
+    public Long getTotal() throws PipelineContainerException, PipelineContainerDebugException {
+        SearchResult searchResult = getSearchResult();
+        return searchResult.getTotal();
+    }
 
-
-    public boolean isHealthy() throws PipelineContainerException, PipelineContainerDebugException {
+    public SearchResult getSearchResult() throws PipelineContainerException, PipelineContainerDebugException {
         Pipeline pipeline = PipelineBuilder.create().
                 pipeline(type).
                 timeout(4000L).
@@ -76,13 +79,18 @@ public class SolrHealthChecker {
                 execute();
 
         SearchResult searchResult = pipelineContainer.getSearchResults().get(type);
+        return searchResult;
+    }
+
+
+    public boolean isHealthy() throws PipelineContainerException, PipelineContainerDebugException {
+        SearchResult searchResult = getSearchResult();
         for(Predicate<SearchResult> p : getPredicates()) {
             if(!p.test(searchResult)) {
                 return false;
             }
         }
         return true;
-
     }
 
     public String getBaseUrl() {
