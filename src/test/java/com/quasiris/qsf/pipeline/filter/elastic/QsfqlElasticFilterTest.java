@@ -166,10 +166,10 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
         Assert.assertEquals(Long.valueOf(5), facetValue.getCount());
         Assert.assertEquals("tagkeys=name", facetValue.getFilter());
 
-        Assert.assertEquals("subFacet", tagkeys.getSubFacet().getId());
-        Assert.assertEquals("subFacet", tagkeys.getSubFacet().getName());
+        Assert.assertEquals("subFacet", facetValue.getSubFacet().getId());
+        Assert.assertEquals("subFacet", facetValue.getSubFacet().getName());
 
-        FacetValue subFacetValue = tagkeys.getSubFacet().getValues().get(0);
+        FacetValue subFacetValue = facetValue.getSubFacet().getValues().get(0);
         Assert.assertEquals("Darmstadt", subFacetValue.getValue() );
         Assert.assertEquals(Long.valueOf(1), subFacetValue.getCount() );
 

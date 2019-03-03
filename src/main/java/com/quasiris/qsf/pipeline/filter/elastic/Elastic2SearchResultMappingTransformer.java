@@ -97,7 +97,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
             if(bucket.getSubFacet() != null) {
                 Facet subFacet = mapAggregation2Facet("subFacet", bucket.getSubFacet());
-                facet.setSubFacet(subFacet);
+                facetValue.setSubFacet(subFacet);
             }
 
             facet.getValues().add(facetValue);

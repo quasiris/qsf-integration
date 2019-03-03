@@ -19,6 +19,8 @@ public class FacetValue {
 
     private String filter;
 
+    private Facet subFacet;
+
     public String getValue() {
         return value;
     }
@@ -43,12 +45,21 @@ public class FacetValue {
         this.filter = filter;
     }
 
+    public Facet getSubFacet() {
+        return subFacet;
+    }
+
+    public void setSubFacet(Facet subFacet) {
+        this.subFacet = subFacet;
+    }
+
     @Override
     public String toString() {
         return "FacetValue{" +
                 "value='" + value + '\'' +
                 ", count=" + count +
                 ", filter='" + filter + '\'' +
+                ", subFacet=" + subFacet +
                 '}';
     }
 }
