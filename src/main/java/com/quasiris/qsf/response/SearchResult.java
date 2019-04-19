@@ -3,7 +3,9 @@ package com.quasiris.qsf.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mki on 11.11.16.
@@ -35,6 +37,8 @@ public class SearchResult{
 
 
     private Paging paging;
+
+    private Map<String, Object> context;
 
     public String getName() {
         return name;
@@ -172,6 +176,21 @@ public class SearchResult{
 
     public void setPaging(Paging paging) {
         this.paging = paging;
+    }
+
+    public <T> T getContext(String name, Class<T> clazz) {
+        return (T) context.get(name);
+    }
+
+    public Map<String, Object> getContext() {
+        return context;
+    }
+
+    public void putContext(String name, Object value) {
+        if(context == null) {
+            context = new HashMap<>();
+        }
+        context.put(name, value);
     }
 
     @Override
