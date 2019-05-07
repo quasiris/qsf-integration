@@ -44,6 +44,9 @@ public class Document {
 
     public String getFieldValue(String fieldName) {
         Object value = document.get(fieldName);
+        if(value == null) {
+            return null;
+        }
         if(value instanceof List) {
             List values = (List) value;
             if(((List) value).size() > 0) {
