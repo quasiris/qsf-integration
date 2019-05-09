@@ -3,7 +3,7 @@
 	<groupId>com.quasiris.qsf</groupId>
 	<artifactId>qsf-integration</artifactId>
 	<packaging>jar</packaging>
-	<version>2.0</version>
+	<version>2.1-SNAPSHOT</version>
 	<name>qsf-integration</name>
 	<url>http://www.quasiris.de</url>
     <properties>
@@ -14,7 +14,7 @@
     <scm>
         <connection>scm:git:https://github.com/quasiris/qsf-integration.git</connection>
         <developerConnection>scm:git:https://github.com/quasiris/qsf-integration.git</developerConnection>
-    <tag>qsf-integration-2.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
     <dependencies>
