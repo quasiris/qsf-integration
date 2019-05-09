@@ -7,6 +7,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Changed
 - update jackson version
+- update guava version
 
 ### Fixed
 
