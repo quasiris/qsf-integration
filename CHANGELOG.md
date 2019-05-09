@@ -12,6 +12,7 @@ All notable changes qsf-integration project will be documented in this file.
 - update javax.servlet-api version
 - update commons-codec version
 - update slf4j-simple version
+- update maven version
 
 ### Fixed
 
