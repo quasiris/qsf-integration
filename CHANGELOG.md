@@ -10,6 +10,7 @@ All notable changes qsf-integration project will be documented in this file.
 - update guava version
 - update commons-text version
 - update javax.servlet-api version
+- update commons-codec version
 
 ### Fixed
 
