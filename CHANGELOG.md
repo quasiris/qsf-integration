@@ -19,6 +19,9 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [1.30]
 ### Added
+- add a context to the search result
+- add tokens
+- add pos tags
 - implement sub facet for elastic
 - implement QSFHttpServletRequest
 - implement health check for elastic
