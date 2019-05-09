@@ -1,7 +1,17 @@
 # Changelog
 All notable changes qsf-integration project will be documented in this file.
 
+
 ## [Unreleased]
+### Added
+
+### Changed
+- update jackson version
+
+### Fixed
+
+
+## [1.30]
 ### Added
 - implement sub facet for elastic
 - implement QSFHttpServletRequest
