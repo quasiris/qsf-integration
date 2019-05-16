@@ -9,6 +9,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
+        <maven.gpg.skip>true</maven.gpg.skip>
     </properties>
 
     <scm>
@@ -119,20 +120,102 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skip>${maven.gpg.skip}</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <releaseProfiles>release</releaseProfiles>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <distributionManagement>
-        <repository>
-            <id>quasiris-releases</id>
-            <name>quasiris Release Repository</name>
-            <url>${nexus.base.url}/repository/maven-releases/</url>
-        </repository>
         <snapshotRepository>
-            <id>quasiris-snapshots</id>
-            <name>Quasiris Snapshot Repository</name>
-            <url>${nexus.base.url}/repository/maven-snapshots/</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <comments>use for testing and development</comments>
+        </license>
+        <license>
+            <name>QSF License</name>
+            <url>https://www.quasiris.de/de/qsf-license/</url>
+            <comments>commercial use in production</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Thomas Bärwinkel</name>
+            <email>thomas.baerwinkel@quasiris.de</email>
+            <organization>Quasiris GmbH</organization>
+            <organizationUrl>https://www.quasiris.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <maven.gpg.skip>false</maven.gpg.skip>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
