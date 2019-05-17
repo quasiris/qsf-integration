@@ -5,7 +5,10 @@ package com.quasiris.qsf.query;
  */
 public enum UpperLowerBound {
 
-    LOWER_INCLUDED("[", "gte"),LOWER_EXCLUDED("{", "gt"),UPPER_INCLUDED("]", "lte"),UPPER_EXCLUDED("}", "lt");
+    LOWER_INCLUDED("[", "gte"),
+    LOWER_EXCLUDED("{", "gt"),
+    UPPER_INCLUDED("]", "lte"),
+    UPPER_EXCLUDED("}", "lt");
 
 
     private final String code;
