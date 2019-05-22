@@ -71,6 +71,24 @@ public class Facet {
         this.filterName = filterName;
     }
 
+    public FacetValue getFacetValueByValue(String value) {
+        for(FacetValue facetValue : getValues()) {
+            if(facetValue.getValue().equals(value)) {
+                return facetValue;
+            }
+        }
+        return null;
+    }
+
+    public Long getFacetCountByValue(String value) {
+        FacetValue facetValue = getFacetValueByValue(value);
+        if(facetValue == null) {
+            return 0L;
+        }
+        return facetValue.getCount();
+    }
+
+
     @Override
     public String toString() {
         return "Facet{" +
