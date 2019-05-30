@@ -4,6 +4,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- add monitoring support
 
 ### Changed
 - update jackson version

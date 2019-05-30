@@ -58,6 +58,11 @@ public class Document {
         return String.valueOf(value);
     }
 
+
+    public Object getFieldValueAsObject(String fieldName) {
+        return document.get(fieldName);
+    }
+
     public String getFieldValue(String fieldName, String defaultValue) {
         String value = getFieldValue(fieldName);
         if(value == null) {
@@ -98,5 +103,12 @@ public class Document {
 
     public void setValue(String name, Object value) {
         this.getDocument().put(name, value);
+    }
+
+    public void setValueIfNotNull(String name, Object value) {
+        if(value == null) {
+            return;
+        }
+        setValue(name, value);
     }
 }

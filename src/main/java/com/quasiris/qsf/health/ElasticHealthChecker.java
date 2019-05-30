@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 public class ElasticHealthChecker {
 
     private String baseUrl;
-    private String profile = "classpath://com/quasiris/qsf/elastic/profiles/health-profile.json";
+    private String profile = "classpath://com/quasiris/qsf/elastic/profiles/match-all-profile.json";
 
     private String type = "health";
 
@@ -26,36 +26,36 @@ public class ElasticHealthChecker {
 
     public static class Builder {
 
-        private ElasticHealthChecker solrHealthChecker = new ElasticHealthChecker();
+        private ElasticHealthChecker elasticHealthChecker = new ElasticHealthChecker();
 
         public ElasticHealthChecker build() {
-            predicate(sr -> sr.getTotal() > solrHealthChecker.getMinTotal());
-            return solrHealthChecker;
+            predicate(sr -> sr.getTotal() > elasticHealthChecker.getMinTotal());
+            return elasticHealthChecker;
 
         }
         public Builder baseUrl(String baseUrl) {
-            solrHealthChecker.setBaseUrl(baseUrl);
+            elasticHealthChecker.setBaseUrl(baseUrl);
             return this;
         }
 
 
         public Builder predicate(Predicate<SearchResult> predicate) {
-            solrHealthChecker.getPredicates().add(predicate);
+            elasticHealthChecker.getPredicates().add(predicate);
             return this;
         }
 
         public Builder profile(String profile) {
-            solrHealthChecker.setProfile(profile);
+            elasticHealthChecker.setProfile(profile);
             return this;
         }
 
         public Builder type(String type) {
-            solrHealthChecker.setType(type);
+            elasticHealthChecker.setType(type);
             return this;
         }
 
         public Builder minTotal(long minTotal) {
-            solrHealthChecker.setMinTotal(minTotal);
+            elasticHealthChecker.setMinTotal(minTotal);
             return this;
         }
 
