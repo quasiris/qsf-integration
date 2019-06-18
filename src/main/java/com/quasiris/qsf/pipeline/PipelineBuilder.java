@@ -66,6 +66,12 @@ public class PipelineBuilder {
         return this;
     }
 
+    public PipelineBuilder parallel(String executorName, int executorSize) {
+        parallelFilter = new ParallelFilter(pipeline.getId(), executorName, executorSize);
+        pipeline.addFilter(parallelFilter);
+        return this;
+    }
+
     public PipelineBuilder sequential() throws PipelineContainerException {
         parent.parallelFilter.addPipeline(this.build());
         return parent;

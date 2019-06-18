@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -23,10 +24,24 @@ public class ParallelFilter extends AbstractFilter {
 
     private String sourcePipelineId;
 
-    private ExecutorService executorService;
+    private static HashMap<String, ExecutorService> executorServices = new HashMap<>();
+    private String executorName = "DefaultParallelExecutor";
 
     public ParallelFilter(String sourcePipelineId) {
         this.sourcePipelineId = sourcePipelineId;
+        if (executorServices.get(executorName) == null) {
+            ExecutorService executorService = Executors.newFixedThreadPool(20);
+            executorServices.put(executorName, executorService);
+        }
+    }
+
+    public ParallelFilter(String sourcePipelineId, String executorName, int executorSize) {
+        this.sourcePipelineId = sourcePipelineId;
+        this.executorName = executorName;
+        if (executorServices.get(this.executorName) == null) {
+            ExecutorService executorService = Executors.newFixedThreadPool(executorSize);
+            executorServices.put(this.executorName, executorService);
+        }
     }
 
     public void addPipeline(Pipeline pipeline) {
@@ -35,9 +50,6 @@ public class ParallelFilter extends AbstractFilter {
 
     @Override
     public void init() {
-        if(pipelines.size() > 0) {
-            executorService = Executors.newFixedThreadPool(pipelines.size());
-        }
     }
 
     @Override
@@ -48,6 +60,7 @@ public class ParallelFilter extends AbstractFilter {
             futureTaskList.add(new PipelineFutureTask<>(new PipelineCallable(pipeline, pipelineContainer), pipeline));
         }
 
+        ExecutorService executorService = executorServices.get(executorName);
 
         for(PipelineFutureTask<PipelineContainer> futureTask :futureTaskList) {
             executorService.execute(futureTask);

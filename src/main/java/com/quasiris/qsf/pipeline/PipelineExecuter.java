@@ -4,6 +4,7 @@ import com.quasiris.qsf.query.SearchQuery;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.concurrent.*;
 
 /**
@@ -15,9 +16,20 @@ public class PipelineExecuter {
 
     private PipelineContainer pipelineContainer;
 
+    private static HashMap<String, ExecutorService> executorServices = new HashMap<>();
+    private String executorName = "DefaultPipelineExecutor";
+
+    private PipelineExecuter() {
+        if (executorServices.get(this.executorName) == null) {
+            ExecutorService executorService = Executors.newFixedThreadPool(20);
+            executorServices.put(this.executorName, executorService);
+        }
+    }
+
     public static PipelineExecuter create() {
         return new PipelineExecuter();
     }
+
 
     public PipelineExecuter searchQuery(SearchQuery searchQuery) {
         getPipelineContainer().setSearchQuery(searchQuery);
@@ -59,13 +71,22 @@ public class PipelineExecuter {
         return this;
     }
 
+    public PipelineExecuter executor(String executorName, int executorSize) {
+        this.executorName = executorName;
+        if (executorServices.get(this.executorName) == null) {
+            ExecutorService executorService = Executors.newFixedThreadPool(executorSize);
+            executorServices.put(this.executorName, executorService);
+        }
+
+        return this;
+    }
+
     public PipelineContainer execute() throws PipelineContainerException, PipelineContainerDebugException {
         try {
-            ExecutorService executorService = Executors.newFixedThreadPool(1);
+            ExecutorService executorService = executorServices.get(executorName);
             FutureTask<PipelineContainer> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer()));
             executorService.execute(futureTask);
             pipelineContainer = futureTask.get(pipeline.getTimeout(), TimeUnit.MILLISECONDS);
-            executorService.shutdown();
             if(pipelineContainer.isDebugEnabled()) {
                 throw new PipelineContainerDebugException(pipelineContainer);
             }

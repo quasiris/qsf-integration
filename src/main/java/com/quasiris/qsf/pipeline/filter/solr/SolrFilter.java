@@ -31,17 +31,18 @@ public class SolrFilter extends AbstractFilter {
     private SearchResultTransformerIF searchResultTransformer = new Solr2SearchResultTransformer();
     private QueryTransformerIF queryTransformer;
 
-    private SolrClient solrClient;
+    private static HashMap<String, SolrClient> solrClients = new HashMap<>();
 
+    private SolrClient solrClient;
 
     @Override
     public void init() {
         super.init();
-        if(solrClient == null) {
-            solrClient = SolrClientFactory.getSolrClient(solrBaseUrl);
-        }
-        if(solrClient == null) {
+
+        solrClient = solrClients.get(solrBaseUrl);
+        if (solrClient == null) {
             solrClient = new HttpSolrClient.Builder(solrBaseUrl).build();
+            solrClients.put(solrBaseUrl, solrClient);
         }
     }
 
@@ -50,13 +51,13 @@ public class SolrFilter extends AbstractFilter {
 
         SolrQuery solrQuery = queryTransformer.transform(pipelineContainer);
 
-        if(pipelineContainer.isDebugEnabled()) {
+        if (pipelineContainer.isDebugEnabled()) {
             pipelineContainer.debug(query2url(this.solrBaseUrl, solrQuery));
         }
 
 
         QueryResponse solrResponse = solrClient.query(solrQuery);
-        if(pipelineContainer.isDebugEnabled()) {
+        if (pipelineContainer.isDebugEnabled()) {
             pipelineContainer.debug(queryResponse2Json(solrResponse));
         }
 
@@ -68,7 +69,6 @@ public class SolrFilter extends AbstractFilter {
         searchResult.setStatusMessage("OK");
 
         pipelineContainer.putSearchResult(resultSetId, searchResult);
-
         return pipelineContainer;
     }
 
