@@ -1,7 +1,7 @@
 package com.quasiris.qsf.pipeline;
 
 import com.quasiris.qsf.mock.Mockfactory;
-import com.quasiris.qsf.pipeline.filter.solr.MockSolrClient;
+import com.quasiris.qsf.pipeline.filter.solr.SolrClientFactory;
 import com.quasiris.qsf.pipeline.filter.solr.SolrFilterBuilder;
 import com.quasiris.qsf.pipeline.filter.solr.SolrParameterQueryTransformer;
 import com.quasiris.qsf.response.Document;
@@ -40,13 +40,14 @@ public class SolrPipelineTest extends AbstractPipelineTest {
 
     @Test
     public void testSolrPipeline() throws Exception {
-        MockSolrClient mockSolrClient = Mockfactory.createSolrClient("http://localhost:8983/solr/gettingstarted");
-        //mockSolrClient.setRecord(true);
+        String baseUrl = "http://localhost:8983/solr/gettingstarted";
+
+        SolrClientFactory.setSolrClient(Mockfactory.createSolrClient(baseUrl), baseUrl);
         Pipeline pipeline = PipelineBuilder.create().
                 pipeline("products").
                 timeout(1000L).
                 filter(SolrFilterBuilder.create().
-                        solrClient(mockSolrClient).
+                        baseUrl(baseUrl).
                         queryTransformer(SolrParameterQueryTransformer.class).
                         param("q","${q}").
                         param("fq","cat:*").

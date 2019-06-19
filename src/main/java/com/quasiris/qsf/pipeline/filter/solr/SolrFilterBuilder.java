@@ -1,7 +1,5 @@
 package com.quasiris.qsf.pipeline.filter.solr;
 
-import org.apache.solr.client.solrj.SolrClient;
-
 import java.util.List;
 
 /**
@@ -139,11 +137,6 @@ public class SolrFilterBuilder {
 
     public SolrFilterBuilder resultField(String resultFieldName, String value) {
         getMappingTransformer().addResultField(resultFieldName, value);
-        return this;
-    }
-
-    public SolrFilterBuilder solrClient(SolrClient solrClient) {
-        solrFilter.setSolrClient(solrClient);
         return this;
     }
 

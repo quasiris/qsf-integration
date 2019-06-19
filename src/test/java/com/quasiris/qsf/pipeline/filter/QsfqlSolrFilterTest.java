@@ -3,7 +3,7 @@ package com.quasiris.qsf.pipeline.filter;
 import com.quasiris.qsf.mock.Mockfactory;
 import com.quasiris.qsf.pipeline.*;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
-import com.quasiris.qsf.pipeline.filter.solr.MockSolrClient;
+import com.quasiris.qsf.pipeline.filter.solr.SolrClientFactory;
 import com.quasiris.qsf.pipeline.filter.solr.SolrFilterBuilder;
 import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.Facet;
@@ -77,15 +77,15 @@ public class QsfqlSolrFilterTest extends AbstractPipelineTest {
         }
 
         private SearchResult executePipeline(String url) throws PipelineContainerException, PipelineContainerDebugException {
-                MockSolrClient mockSolrClient = Mockfactory.createSolrClient("http://localhost:8983/solr/gettingstarted");
-                //mockSolrClient.setRecord(true);
+                String baseUrl = "http://localhost:8983/solr/gettingstarted";
+                SolrClientFactory.setSolrClient(Mockfactory.createSolrClient(baseUrl), baseUrl);
 
                 Pipeline pipeline = PipelineBuilder.create().
                         pipeline("products").
                         timeout(1000000000L).
                         filter(new QSQLRequestFilter()).
                         filter(SolrFilterBuilder.create().
-                                solrClient(mockSolrClient).
+                                baseUrl(baseUrl).
                                 param("facet", "true").
                                 param("facet.field","author").
                                 param("facet.field","genre_s").

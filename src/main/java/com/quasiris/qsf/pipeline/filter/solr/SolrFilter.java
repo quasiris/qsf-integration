@@ -1,10 +1,10 @@
 package com.quasiris.qsf.pipeline.filter.solr;
 
 import com.google.common.base.Optional;
+import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.util.JsonUtil;
-import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.util.PrintUtil;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -31,19 +31,11 @@ public class SolrFilter extends AbstractFilter {
     private SearchResultTransformerIF searchResultTransformer = new Solr2SearchResultTransformer();
     private QueryTransformerIF queryTransformer;
 
-    private static HashMap<String, SolrClient> solrClients = new HashMap<>();
-
-    private SolrClient solrClient;
 
     @Override
     public void init() {
         super.init();
 
-        solrClient = solrClients.get(solrBaseUrl);
-        if (solrClient == null) {
-            solrClient = new HttpSolrClient.Builder(solrBaseUrl).build();
-            solrClients.put(solrBaseUrl, solrClient);
-        }
     }
 
     @Override
@@ -55,7 +47,11 @@ public class SolrFilter extends AbstractFilter {
             pipelineContainer.debug(query2url(this.solrBaseUrl, solrQuery));
         }
 
-
+        SolrClient solrClient = SolrClientFactory.getSolrClient(solrBaseUrl);
+        if(solrClient == null) {
+            solrClient = new HttpSolrClient.Builder(solrBaseUrl).build();
+            SolrClientFactory.setSolrClient(solrClient, solrBaseUrl);
+        }
         QueryResponse solrResponse = solrClient.query(solrQuery);
         if (pipelineContainer.isDebugEnabled()) {
             pipelineContainer.debug(queryResponse2Json(solrResponse));
@@ -86,10 +82,6 @@ public class SolrFilter extends AbstractFilter {
 
     public void setQueryTransformer(QueryTransformerIF queryTransformer) {
         this.queryTransformer = queryTransformer;
-    }
-
-    public void setSolrClient(SolrClient solrClient) {
-        this.solrClient = solrClient;
     }
 
     public static String query2url(SolrQuery solrQuery) {
