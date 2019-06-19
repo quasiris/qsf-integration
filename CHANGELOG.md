@@ -20,6 +20,10 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Fixed
 
+### Breaking Changes
+- it is not possible anymore to set the solr client in the pipeline
+
+### Deprications
 
 ## [1.30]
 ### Added
