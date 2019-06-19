@@ -27,7 +27,7 @@ public class MonitoringBuilder {
      *
      * @param error minimum error limit.
      * @param warn minimum warn limit.
-     * @return @return the {@link MonitoringBuilder}
+     * @return the {@link MonitoringBuilder}
      */
     public MonitoringBuilder totalHits(long error, long warn) {
         MonitoringDocument<Long> monitoringDocument = MonitoringDocumentBuilder.

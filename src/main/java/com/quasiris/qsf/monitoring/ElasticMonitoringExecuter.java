@@ -115,8 +115,8 @@ public class ElasticMonitoringExecuter {
      * Create a elastic query, executes the query and check the results.
      *
      * @return the {@link MonitoringResponse}
-     * @throws PipelineContainerException
-     * @throws PipelineContainerDebugException
+     * @throws PipelineContainerException in case of an error
+     * @throws PipelineContainerDebugException in case of debugging
      */
     public MonitoringResponse doMonitoring( ) throws PipelineContainerException, PipelineContainerDebugException {
         String type = "health";
