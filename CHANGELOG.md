@@ -4,6 +4,17 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Fixed
+
+### Breaking Changes
+
+### Deprications
+
+## [2.5]
+### Added
 - add monitoring support
 
 ### Changed
