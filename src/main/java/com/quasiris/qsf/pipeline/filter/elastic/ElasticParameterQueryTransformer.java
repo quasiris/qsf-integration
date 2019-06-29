@@ -37,6 +37,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     protected ObjectNode elasticQuery;
 
     protected String profile;
+    protected Map<String, String> profileParameter = new HashMap<>();
 
     protected List<Facet> aggregations = new ArrayList<>();
 
@@ -70,18 +71,22 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     public void transformParameter() {
         Map<String, String> replaceMap = RequestParser.getRequestParameter(pipelineContainer);
 
+
+        for(Map.Entry<String, String> param :profileParameter.entrySet()) {
+            replaceMap.put("profile." + param.getKey(), param.getValue());
+        }
+
         if(searchQuery != null) {
             if(searchQuery.getQ() != null) {
-                replaceMap.put("qsfql.q", searchQuery.getQ());
+                replaceMap.put("qsfql.q", encodeValue(searchQuery.getQ()));
             }
-            replaceMap.putAll(searchQuery.getParametersWithPrefix("qsfql"));
+            replaceMap.putAll(encodeValues(searchQuery.getParametersWithPrefix("qsfql")));
         }
 
         for(Map.Entry<String, String> param :pipelineContainer.getParameters().entrySet()) {
-            replaceMap.put("param." + param.getKey(), param.getValue());
+            replaceMap.put("param." + param.getKey(), encodeValue(param.getValue()));
         }
 
-        replaceMap = encodeValues(replaceMap);
 
         try {
             String request = loadProfile(profile, replaceMap);
@@ -93,15 +98,21 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     }
 
+
+    public String encodeValue(String value) {
+        String escapedValue = ElasticUtil.escape(value);
+        String encodedValue = JsonUtil.encode(escapedValue);
+        return encodedValue;
+    }
+
     public Map<String, String> encodeValues(Map<String, String> replaceMap) {
         Map<String, String> ret = new HashMap<>();
-        for(Map.Entry<String, String> entry : replaceMap.entrySet()) {
+        for (Map.Entry<String, String> entry : replaceMap.entrySet()) {
             String escapedValue = ElasticUtil.escape(entry.getValue());
             String encodedValue = JsonUtil.encode(escapedValue);
             ret.put(entry.getKey(), encodedValue);
         }
         return ret;
-
     }
 
     public StringBuilder print(String indent) {
@@ -210,6 +221,10 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         this.profile = profile;
     }
 
+    public void setProfileParameter(String key, String value) {
+        this.profileParameter.put(key, value);
+    }
+
     public ObjectNode getElasticQuery() {
         return elasticQuery;
     }
@@ -218,6 +233,14 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         Facet facet = new Facet();
         facet.setName(name);
         facet.setId(field);
+        aggregations.add(facet);
+    }
+
+    public void addAggregation(String name, String field, int size) {
+        Facet facet = new Facet();
+        facet.setName(name);
+        facet.setId(field);
+        facet.setSize(size);
         aggregations.add(facet);
     }
 

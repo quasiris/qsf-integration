@@ -36,6 +36,15 @@ public class ElasticQsfqlQueryTransformerTest {
 
 
     @Test
+    public void transformFilterRule() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
+        transformer.addFilterRule("(.+)", "attr_$1.keyword");
+        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
+        Assert.assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get(0).get("term").get("attr_color.keyword").asText());
+    }
+
+    @Test
     public void transformRangeFilter() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");

@@ -116,6 +116,12 @@ public class ElasticFilterBuilder {
         return this;
     }
 
+    public ElasticFilterBuilder addAggregation(String name, String field, int size) {
+        getElasticParameterQueryTransformer().addAggregation(name, field, size);
+        getElasticQsfqlQueryTransformer().addAggregation(name, field, size);
+        return this;
+    }
+
     public ElasticFilterBuilder mapAggregation(String from, String to) {
         //getMappingTransformer().addFacetMapping(from, to);
         return this;
@@ -128,6 +134,11 @@ public class ElasticFilterBuilder {
 
     public ElasticFilterBuilder mapFilter(String from, String to) {
         getElasticQsfqlQueryTransformer().addFilterMapping(from, to);
+        return this;
+    }
+
+    public ElasticFilterBuilder addFilterRule(String pattern, String replacement) {
+        getElasticQsfqlQueryTransformer().addFilterRule(pattern, replacement);
         return this;
     }
 
@@ -154,9 +165,20 @@ public class ElasticFilterBuilder {
         return this;
     }
 
+    public ElasticFilterBuilder profileMatchAll() {
+       return profile("classpath://com/quasiris/qsf/elastic/profiles/match-all-profile.json");
+    }
+
+
     public ElasticFilterBuilder profile(String profile) {
         getElasticQsfqlQueryTransformer().setProfile(profile);
         getElasticParameterQueryTransformer().setProfile(profile);
+        return this;
+    }
+
+    public ElasticFilterBuilder profileParameter(String key, String value) {
+        getElasticQsfqlQueryTransformer().setProfileParameter(key, value);
+        getElasticParameterQueryTransformer().setProfileParameter(key, value);
         return this;
     }
 

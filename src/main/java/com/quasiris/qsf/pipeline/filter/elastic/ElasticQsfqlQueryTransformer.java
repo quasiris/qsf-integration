@@ -23,6 +23,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     private Map<String, String> sortMapping = new HashMap<>();
     private String defaultSort;
     private Map<String, String> filterMapping = new HashMap<>();
+    private Map<String, String> filterRules = new HashMap<>();
     private Integer defaultRows = 10;
     private Integer defaultPage = 1;
 
@@ -160,12 +161,27 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     }
 
+    public String mapFilterField(String fieldName) {
+        String elasticField = getFilterMapping().get(fieldName);
+        if(!Strings.isNullOrEmpty(elasticField)) {
+            return elasticField;
+        }
+
+        for(Map.Entry<String, String> rule : getFilterRules().entrySet()) {
+            String pattern = rule.getKey();
+            String replacement = rule.getValue();
+            elasticField = fieldName.replaceAll(pattern, replacement);
+            if(!Strings.isNullOrEmpty(elasticField)) {
+                return elasticField;
+            }
+        }
+        return fieldName;
+
+    }
+
     public ObjectNode transformTermsFilter(SearchFilter searchFilter) {
 
-        String elasticField = getFilterMapping().get(searchFilter.getName());
-        if (Strings.isNullOrEmpty(elasticField)) {
-            elasticField = searchFilter.getName();
-        }
+        String elasticField = mapFilterField(searchFilter.getName());
 
         if(searchFilter.getValues().size() > 1 && searchFilter.getFilterType().equals(FilterType.TERM) ) {
             ArrayNode arrayNode = getObjectMapper().createArrayNode();
@@ -248,6 +264,11 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         filterMapping.put(from, to);
     }
 
+
+    public void addFilterRule(String pattern, String replacement) {
+        filterRules.put(pattern, replacement);
+    }
+
     public Map<String, String> getSortMapping() {
         return sortMapping;
     }
@@ -294,5 +315,23 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public void setElasticVersion(Integer elasticVersion) {
         this.elasticVersion = elasticVersion;
+    }
+
+    /**
+     * Getter for property 'filterRules'.
+     *
+     * @return Value for property 'filterRules'.
+     */
+    public Map<String, String> getFilterRules() {
+        return filterRules;
+    }
+
+    /**
+     * Setter for property 'filterRules'.
+     *
+     * @param filterRules Value to set for property 'filterRules'.
+     */
+    public void setFilterRules(Map<String, String> filterRules) {
+        this.filterRules = filterRules;
     }
 }
