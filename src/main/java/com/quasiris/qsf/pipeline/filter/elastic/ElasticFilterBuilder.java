@@ -1,6 +1,7 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
+import com.quasiris.qsf.query.Facet;
 
 /**
  * Created by mki on 10.02.18.
@@ -107,6 +108,13 @@ public class ElasticFilterBuilder {
 
     public ElasticFilterBuilder searchResultTransformer(SearchResultTransformerIF searchResultTransformer) {
         this.searchResultTransformer = searchResultTransformer;
+        return this;
+    }
+
+
+    public ElasticFilterBuilder addAggregation(Facet facet) {
+        getElasticParameterQueryTransformer().addAggregation(facet);
+        getElasticQsfqlQueryTransformer().addAggregation(facet);
         return this;
     }
 

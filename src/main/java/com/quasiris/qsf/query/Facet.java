@@ -13,6 +13,10 @@ public class Facet {
 
     private String sortOrder = "asc";
 
+    private String include;
+
+    private String exclude;
+
     private Facet subFacet;
 
     public String getId() {
@@ -70,6 +74,43 @@ public class Facet {
     public void setSubFacet(Facet subFacet) {
         this.subFacet = subFacet;
     }
+
+    /**
+     * Getter for property 'include'.
+     *
+     * @return Value for property 'include'.
+     */
+    public String getInclude() {
+        return include;
+    }
+
+    /**
+     * Setter for property 'include'.
+     *
+     * @param include Value to set for property 'include'.
+     */
+    public void setInclude(String include) {
+        this.include = include;
+    }
+
+    /**
+     * Getter for property 'exclude'.
+     *
+     * @return Value for property 'exclude'.
+     */
+    public String getExclude() {
+        return exclude;
+    }
+
+    /**
+     * Setter for property 'exclude'.
+     *
+     * @param exclude Value to set for property 'exclude'.
+     */
+    public void setExclude(String exclude) {
+        this.exclude = exclude;
+    }
+
 
     @Override
     public String toString() {

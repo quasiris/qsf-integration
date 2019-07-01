@@ -173,6 +173,14 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         ObjectNode aggField = objectMapper.createObjectNode().
                 put("field", facet.getId());
 
+        if(facet.getInclude() != null) {
+            aggField.put("include", facet.getInclude());
+        }
+
+        if(facet.getExclude() != null) {
+            aggField.put("exclude", facet.getExclude());
+        }
+
         if(facet.getSortBy() != null) {
             aggField.set("order", objectMapper.createObjectNode().put(facet.getSortBy(), facet.getSortOrder()));
         }
