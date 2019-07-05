@@ -2,15 +2,11 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
-import com.quasiris.qsf.response.Document;
-import com.quasiris.qsf.response.Facet;
-import com.quasiris.qsf.response.FacetValue;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.response.*;
 import com.quasiris.qsf.util.EncodingUtil;
 
 import java.io.IOException;
@@ -25,12 +21,16 @@ import java.util.Map;
 public class Elastic2SearchResultMappingTransformer implements SearchResultTransformerIF {
 
     private Map<String, List<String>> fieldMapping = new HashMap<>();
-    private Map<String, String> resultFields = new HashMap<>();
+
+
     private Map<String, String> facetMapping = new HashMap<>();
     private Map<String, String> facetNameMapping = new HashMap<>();
-    private String filterPrefix = "";
 
-    private boolean mapEmptyValues = true;
+    private Map<String, String> sliderMapping = new HashMap<>();
+    private Map<String, String> sliderNameMapping = new HashMap<>();
+
+
+    private String filterPrefix = "";
 
     public Elastic2SearchResultMappingTransformer() {
 
@@ -63,47 +63,86 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         if(elasticResult.getAggregations() == null) {
             return;
         }
-        searchResult.setFacetCount(elasticResult.getAggregations().size());
-        for(Map.Entry<String, Aggregation> aggregationEntry : elasticResult.getAggregations().entrySet()) {
-            Facet facet = mapAggregation2Facet(aggregationEntry.getKey(), aggregationEntry.getValue());
-            searchResult.addFacet(facet);
 
+
+        // for backward compatibility
+        // if no mapping is defined for a aggregation a default facet mapping is configured
+        for(Map.Entry<String, Aggregation> aggregation : elasticResult.getAggregations().entrySet()) {
+            if(!facetMapping.containsKey(aggregation.getKey()) &&
+                    !sliderMapping.containsKey(aggregation.getKey())) {
+                facetMapping.put(aggregation.getKey(), aggregation.getKey());
+            }
+
+        }
+
+        for(Map.Entry<String, String> mapping : facetMapping.entrySet()) {
+            Aggregation aggregation = elasticResult.getAggregations().get(mapping.getKey());
+            if(aggregation == null) {
+                continue;
+            }
+            Facet facet = mapAggregation2Facet(mapping.getValue(), aggregation);
+            searchResult.addFacet(facet);
+        }
+
+        for(Map.Entry<String, String> mapping : sliderMapping.entrySet()) {
+            Aggregation aggregation = elasticResult.getAggregations().get(mapping.getKey());
+            if(aggregation == null) {
+                continue;
+            }
+            Slider slider = mapAggregation2Slider(mapping.getValue(), aggregation);
+            searchResult.addSlider(slider);
         }
     }
 
-    protected Facet mapAggregation2Facet(String key, Aggregation aggregation) {
-        Facet facet = new Facet();
-        String id = facetMapping.get(key);
-        if(id == null) {
-            id = key;
-        }
-        facet.setId(id);
-        facet.setFilterName(filterPrefix + id);
+    protected Slider mapAggregation2Slider(String sliderId, Aggregation aggregation) {
+        Slider slider = new Slider();
 
-        String name = facetNameMapping.get(id);
+        slider.setId(sliderId);
+        slider.setFilterName(filterPrefix + sliderId);
+
+        String name = sliderNameMapping.get(sliderId);
 
         if(name == null) {
-            name = key;
+            name = sliderId;
+        }
+        slider.setName(name);
+        slider.setCount(Long.valueOf(aggregation.getCount()));
+        slider.setMin(aggregation.getMin());
+        slider.setMax(aggregation.getMax());
+        return slider;
+
+    }
+
+    protected Facet mapAggregation2Facet(String facetId, Aggregation aggregation) {
+        Facet facet = new Facet();
+
+        facet.setId(facetId);
+        facet.setFilterName(filterPrefix + facetId);
+
+        String name = facetNameMapping.get(facetId);
+
+        if(name == null) {
+            name = facetId;
         }
         facet.setName(name);
-
         facet.setCount(Long.valueOf(aggregation.getBuckets().size()));
 
         Long facetReseultCount = 0L;
         for(Bucket bucket : aggregation.getBuckets()) {
             FacetValue facetValue = new FacetValue(bucket.getKey(), bucket.getDoc_count());
             facetReseultCount = facetReseultCount + facetValue.getCount();
-            facetValue.setFilter(filterPrefix + id + "=" + EncodingUtil.encode(bucket.getKey()));
+            facetValue.setFilter(filterPrefix + facet.getId() + "=" + EncodingUtil.encode(bucket.getKey()));
 
             if(bucket.getSubFacet() != null) {
                 Facet subFacet = mapAggregation2Facet("subFacet", bucket.getSubFacet());
                 facetValue.setSubFacet(subFacet);
             }
-
             facet.getValues().add(facetValue);
         }
         facet.setResultCount(facetReseultCount);
+
         return facet;
+
     }
 
     @Override
@@ -170,4 +209,9 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
         fieldMapping.put(from, mapping);
     }
+
+    public void addSliderMapping(String from, String to) {
+        this.sliderMapping.put(from, to);
+    }
+
 }

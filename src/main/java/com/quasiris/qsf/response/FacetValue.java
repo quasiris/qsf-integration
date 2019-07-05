@@ -19,6 +19,8 @@ public class FacetValue {
 
     private String filter;
 
+    private Boolean selected;
+
     private Facet subFacet;
 
     public String getValue() {
@@ -51,6 +53,24 @@ public class FacetValue {
 
     public void setSubFacet(Facet subFacet) {
         this.subFacet = subFacet;
+    }
+
+    /**
+     * Getter for property 'selected'.
+     *
+     * @return Value for property 'selected'.
+     */
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    /**
+     * Setter for property 'selected'.
+     *
+     * @param selected Value to set for property 'selected'.
+     */
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.web.RequestParser;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.util.ElasticUtil;
 import com.quasiris.qsf.util.JsonUtil;
 import com.quasiris.qsf.util.PrintUtil;
@@ -40,6 +41,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     protected Map<String, String> profileParameter = new HashMap<>();
 
     protected List<Facet> aggregations = new ArrayList<>();
+    protected List<Slider> sliders = new ArrayList<>();
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 
@@ -60,8 +62,15 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     public void transformAggregations() {
         ObjectNode aggregationsRequest  = null;
         for(Facet aggregation : aggregations) {
-            aggregationsRequest = addAgg(aggregationsRequest, aggregation);
+            JsonNode agg = createAgg(aggregation, false);
+            aggregationsRequest = addAgg(aggregationsRequest, agg);
         }
+
+        for(Slider slider : sliders) {
+            JsonNode agg = createSlider(slider);
+            aggregationsRequest = addAgg(aggregationsRequest, agg);
+        }
+
         if(aggregationsRequest != null) {
             elasticQuery.set("aggs", aggregationsRequest.get("aggs"));
         }
@@ -156,16 +165,29 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     }
 
 
-    private ObjectNode addAgg(ObjectNode aggregations, Facet facet) {
+
+    private ObjectNode addAgg(ObjectNode aggregations, JsonNode agg) {
         if(aggregations == null) {
             aggregations = (ObjectNode) objectMapper.createObjectNode().set("aggs", objectMapper.createObjectNode());
         }
-
-
-        JsonNode agg = createAgg(facet, false);
-
         ((ObjectNode)aggregations.get("aggs")).setAll((ObjectNode) agg);
         return aggregations;
+    }
+
+
+    private JsonNode createSlider(Slider slider) {
+        ObjectNode aggField = objectMapper.createObjectNode().
+                put("field", slider.getId());
+        JsonNode type =
+                objectMapper.createObjectNode().set(
+                        slider.getType(),aggField
+                );
+        String name = slider.getName();
+        JsonNode agg =
+                objectMapper.createObjectNode().set(
+                        name,type
+                );
+        return agg;
     }
 
 
@@ -254,6 +276,10 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     public void addAggregation(Facet facet) {
         aggregations.add(facet);
+    }
+
+    public void addSlider(Slider slider) {
+        sliders.add(slider);
     }
 
     public void addAggregation(String name, String field, int size, String sortOrder, String sortBy, String type) {

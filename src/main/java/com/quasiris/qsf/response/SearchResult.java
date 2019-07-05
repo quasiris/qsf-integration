@@ -32,6 +32,7 @@ public class SearchResult{
     private Float maxScore;
 
     private List<Facet> facets;
+    private List<Slider> sliders;
 
     private Integer facetCount;
 
@@ -144,6 +145,30 @@ public class SearchResult{
         getFacets().add(facet);
     }
 
+    public void addSlider(Slider slider) {
+        if(this.sliders == null) {
+            this.sliders = new ArrayList<>();
+        }
+        getSliders().add(slider);
+    }
+
+    /**
+     * Getter for property 'sliders'.
+     *
+     * @return Value for property 'sliders'.
+     */
+    public List<Slider> getSliders() {
+        return sliders;
+    }
+
+    /**
+     * Setter for property 'sliders'.
+     *
+     * @param sliders Value to set for property 'sliders'.
+     */
+    public void setSliders(List<Slider> sliders) {
+        this.sliders = sliders;
+    }
 
     public Facet getFacetById(String id) {
         if(getFacets() == null) {
@@ -152,6 +177,19 @@ public class SearchResult{
         for(Facet facet : getFacets()) {
             if(id.equals(facet.getId())) {
                 return facet;
+            }
+        }
+        return null;
+    }
+
+
+    public Slider getSliderById(String id) {
+        if(getSliders() == null) {
+            return null;
+        }
+        for(Slider slider : getSliders()) {
+            if(id.equals(slider.getId())) {
+                return slider;
             }
         }
         return null;

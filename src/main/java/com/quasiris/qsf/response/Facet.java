@@ -21,7 +21,10 @@ public class Facet {
 
     private Long resultCount;
 
+    private Boolean selected;
+
     private List<FacetValue> values = new ArrayList<>();
+
 
     public String getName() {
         return name;
@@ -69,6 +72,24 @@ public class Facet {
 
     public void setFilterName(String filterName) {
         this.filterName = filterName;
+    }
+
+    /**
+     * Getter for property 'selected'.
+     *
+     * @return Value for property 'selected'.
+     */
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    /**
+     * Setter for property 'selected'.
+     *
+     * @param selected Value to set for property 'selected'.
+     */
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
     }
 
     public FacetValue getFacetValueByValue(String value) {

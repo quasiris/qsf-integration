@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
 import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.query.Slider;
 
 /**
  * Created by mki on 10.02.18.
@@ -111,6 +112,12 @@ public class ElasticFilterBuilder {
         return this;
     }
 
+    public ElasticFilterBuilder addSlider(Slider slider) {
+        getElasticParameterQueryTransformer().addSlider(slider);
+        getElasticQsfqlQueryTransformer().addSlider(slider);
+        getMappingTransformer().addSliderMapping(slider.getId(), slider.getId());
+        return this;
+    }
 
     public ElasticFilterBuilder addAggregation(Facet facet) {
         getElasticParameterQueryTransformer().addAggregation(facet);

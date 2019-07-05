@@ -8,6 +8,8 @@ All notable changes qsf-integration project will be documented in this file.
 - default rows in QSFQLRequestFilter
 - profile paramter for elastic
 - added include, exclude rules for Facets
+- implement a slider
+- flag the selected facets, facet values in the response
 
 ### Changed
 - improve the setting of aggregations
