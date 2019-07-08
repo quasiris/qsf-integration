@@ -107,8 +107,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
         slider.setName(name);
         slider.setCount(Long.valueOf(aggregation.getCount()));
-        slider.setMin(aggregation.getMin());
-        slider.setMax(aggregation.getMax());
+        slider.setMinRange(aggregation.getMin());
+        slider.setMaxRange(aggregation.getMax());
         return slider;
 
     }

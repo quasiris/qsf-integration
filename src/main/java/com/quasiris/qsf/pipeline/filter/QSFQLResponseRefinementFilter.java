@@ -29,8 +29,8 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
             String filterId = searchFilter.getId();
             Slider slider = searchResult.getSliderById(filterId);
             if(slider != null) {
-                slider.setSelectedMin((Double) searchFilter.getRangeValue(Double.class).getMinValue());
-                slider.setSelectedMax((Double) searchFilter.getRangeValue(Double.class).getMaxValue());
+                slider.setMinValueOrDefault((Double) searchFilter.getRangeValue(Double.class).getMinValue());
+                slider.setMaxValueOrDefault((Double) searchFilter.getRangeValue(Double.class).getMaxValue());
                 slider.setSelected(Boolean.TRUE);
             }
 

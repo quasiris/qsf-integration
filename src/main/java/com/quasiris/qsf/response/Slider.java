@@ -16,11 +16,11 @@ public class Slider {
 
     private Long count;
 
-    private Double min;
-    private Double max;
+    private Double minValue;
+    private Double maxValue;
 
-    private Double selectedMin;
-    private Double selectedMax;
+    private Double minRange;
+    private Double maxRange;
 
     private Boolean selected;
 
@@ -96,77 +96,6 @@ public class Slider {
         this.count = count;
     }
 
-    /**
-     * Getter for property 'min'.
-     *
-     * @return Value for property 'min'.
-     */
-    public Double getMin() {
-        return min;
-    }
-
-    /**
-     * Setter for property 'min'.
-     *
-     * @param min Value to set for property 'min'.
-     */
-    public void setMin(Double min) {
-        this.min = min;
-    }
-
-    /**
-     * Getter for property 'max'.
-     *
-     * @return Value for property 'max'.
-     */
-    public Double getMax() {
-        return max;
-    }
-
-    /**
-     * Setter for property 'max'.
-     *
-     * @param max Value to set for property 'max'.
-     */
-    public void setMax(Double max) {
-        this.max = max;
-    }
-
-    /**
-     * Getter for property 'selectedMin'.
-     *
-     * @return Value for property 'selectedMin'.
-     */
-    public Double getSelectedMin() {
-        return selectedMin;
-    }
-
-    /**
-     * Setter for property 'selectedMin'.
-     *
-     * @param selectedMin Value to set for property 'selectedMin'.
-     */
-    public void setSelectedMin(Double selectedMin) {
-        this.selectedMin = selectedMin;
-    }
-
-    /**
-     * Getter for property 'selectedMax'.
-     *
-     * @return Value for property 'selectedMax'.
-     */
-    public Double getSelectedMax() {
-        return selectedMax;
-    }
-
-    /**
-     * Setter for property 'selectedMax'.
-     *
-     * @param selectedMax Value to set for property 'selectedMax'.
-     */
-    public void setSelectedMax(Double selectedMax) {
-        this.selectedMax = selectedMax;
-    }
 
     /**
      * Getter for property 'selected'.
@@ -186,6 +115,93 @@ public class Slider {
         this.selected = selected;
     }
 
+
+    /**
+     * Getter for property 'minValue'.
+     *
+     * @return Value for property 'minValue'.
+     */
+    public Double getMinValue() {
+        return minValue;
+    }
+
+    /**
+     * Setter for property 'minValue'.
+     *
+     * @param minValue Value to set for property 'minValue'.
+     */
+    public void setMinValue(Double minValue) {
+        this.minValue = minValue;
+    }
+
+    public void setMinValueOrDefault(Double minValue) {
+        if(minValue == null) {
+            minValue = minRange;
+        }
+        this.minValue = minValue;
+    }
+
+    public void setMaxValueOrDefault(Double maxValue) {
+        if(maxValue == null) {
+            maxValue = maxRange;
+        }
+        this.maxValue = maxValue;
+    }
+
+    /**
+     * Getter for property 'maxValue'.
+     *
+     * @return Value for property 'maxValue'.
+     */
+    public Double getMaxValue() {
+        return maxValue;
+    }
+
+    /**
+     * Setter for property 'maxValue'.
+     *
+     * @param maxValue Value to set for property 'maxValue'.
+     */
+    public void setMaxValue(Double maxValue) {
+        this.maxValue = maxValue;
+    }
+
+    /**
+     * Getter for property 'minRange'.
+     *
+     * @return Value for property 'minRange'.
+     */
+    public Double getMinRange() {
+        return minRange;
+    }
+
+    /**
+     * Setter for property 'minRange'.
+     *
+     * @param minRange Value to set for property 'minRange'.
+     */
+    public void setMinRange(Double minRange) {
+        this.minRange = minRange;
+    }
+
+    /**
+     * Getter for property 'maxRange'.
+     *
+     * @return Value for property 'maxRange'.
+     */
+    public Double getMaxRange() {
+        return maxRange;
+    }
+
+    /**
+     * Setter for property 'maxRange'.
+     *
+     * @param maxRange Value to set for property 'maxRange'.
+     */
+    public void setMaxRange(Double maxRange) {
+        this.maxRange = maxRange;
+    }
+
     @Override
     public String toString() {
         return "Slider{" +
@@ -193,10 +209,11 @@ public class Slider {
                 ", id='" + id + '\'' +
                 ", filterName='" + filterName + '\'' +
                 ", count=" + count +
-                ", min=" + min +
-                ", max=" + max +
-                ", selectedMin=" + selectedMin +
-                ", selectedMax=" + selectedMax +
+                ", minValue=" + minValue +
+                ", maxValue=" + maxValue +
+                ", minRange=" + minRange +
+                ", maxRange=" + maxRange +
+                ", selected=" + selected +
                 '}';
     }
 }
