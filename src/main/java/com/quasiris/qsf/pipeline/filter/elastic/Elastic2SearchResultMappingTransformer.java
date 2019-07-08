@@ -214,4 +214,12 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         this.sliderMapping.put(from, to);
     }
 
+    public void addSliderNameMapping(String from, String to) {
+        this.sliderNameMapping.put(from, to);
+    }
+
+    public void addFacetNameMapping(String from, String to) {
+        this.facetNameMapping.put(from, to);
+    }
+
 }

@@ -119,6 +119,11 @@ public class ElasticFilterBuilder {
         return this;
     }
 
+    public ElasticFilterBuilder mapSliderName(String from, String to) {
+        getMappingTransformer().addSliderNameMapping(from, to);
+        return this;
+    }
+
     public ElasticFilterBuilder addAggregation(Facet facet) {
         getElasticParameterQueryTransformer().addAggregation(facet);
         getElasticQsfqlQueryTransformer().addAggregation(facet);
@@ -142,7 +147,7 @@ public class ElasticFilterBuilder {
         return this;
     }
     public ElasticFilterBuilder mapAggregationName(String from, String to) {
-        //getMappingTransformer().addFacetNameMapping(from, to);
+        getMappingTransformer().addFacetNameMapping(from, to);
         return this;
     }
 

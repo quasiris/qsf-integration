@@ -10,6 +10,8 @@ All notable changes qsf-integration project will be documented in this file.
 - added include, exclude rules for Facets
 - implement a slider
 - flag the selected facets, facet values in the response
+- add a mapping for facet names in the elastic builder
+- add a mapping for slider names in the elastic builder
 
 ### Changed
 - improve the setting of aggregations
