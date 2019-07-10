@@ -33,7 +33,7 @@ public class ElasticHttpClient {
         responseBuilder.append(EntityUtils.toString(response.getEntity()));
         httpclient.close();
 
-        if (response.getStatusLine().getStatusCode() == 200) {
+        if (response.getStatusLine().getStatusCode() < 300) {
             return responseBuilder.toString();
         } else {
             throw new HttpResponseException(response.getStatusLine().getStatusCode(), responseBuilder.toString());

@@ -12,6 +12,8 @@ All notable changes qsf-integration project will be documented in this file.
 - flag the selected facets, facet values in the response
 - add a mapping for facet names in the elastic builder
 - add a mapping for slider names in the elastic builder
+- implement a tracking filter that read all relevant information from the search query and the search result
+- extend the tracking filter to allow tracking to elasticsearch
 
 ### Changed
 - improve the setting of aggregations

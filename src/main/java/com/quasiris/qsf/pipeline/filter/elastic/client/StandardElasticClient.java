@@ -2,14 +2,8 @@ package com.quasiris.qsf.pipeline.filter.elastic.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +15,13 @@ import java.io.IOException;
 public class StandardElasticClient implements  ElasticClientIF {
     private static Logger LOG = LoggerFactory.getLogger(StandardElasticClient.class);
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper;
+
+    public StandardElasticClient() {
+        objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+    }
 
     public ElasticResult request(String elasticUrl, String request) throws IOException {
         LOG.debug("elastic request: " + request);
@@ -34,5 +34,16 @@ public class StandardElasticClient implements  ElasticClientIF {
     public ElasticResult request(String elasticBaseUrl, JsonNode jsonNode) throws IOException {
         String request = objectMapper.writeValueAsString(jsonNode);
         return request(elasticBaseUrl, request);
+    }
+
+    @Override
+    public void index(String elasticBaseUrl, String request) throws IOException {
+        ElasticHttpClient.post(elasticBaseUrl, request);
+    }
+
+    @Override
+    public void index(String elasticBaseUrl, Object request) throws IOException {
+        String requestAsString = objectMapper.writeValueAsString(request);
+        index(elasticBaseUrl, requestAsString);
     }
 }

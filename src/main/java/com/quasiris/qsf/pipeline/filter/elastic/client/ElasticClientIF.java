@@ -13,4 +13,8 @@ public interface ElasticClientIF {
     ElasticResult request(String elasticBaseUrl, String request) throws IOException;
 
     ElasticResult request(String elasticBaseUrl, JsonNode request) throws IOException;
+
+    void index(String elasticBaseUrl, String request) throws IOException;
+
+    void index(String elasticBaseUrl, Object request) throws IOException;
 }
