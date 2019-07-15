@@ -54,7 +54,6 @@ public class TrackingFilter extends AbstractFilter {
         HttpServletRequest request = pipelineContainer.getRequest();
 
         Document tracking = new Document();
-        tracking.getDocument().putAll(customParameter);
         tracking.setValue("timestamp", new Date());
         tracking.setValue("requestId", searchQuery.getRequestId());
 
@@ -110,6 +109,8 @@ public class TrackingFilter extends AbstractFilter {
 
 
         tracking.setValue("duration", pipelineContainer.currentTime());
+
+        tracking.getDocument().putAll(customParameter);
 
         return tracking;
     }
