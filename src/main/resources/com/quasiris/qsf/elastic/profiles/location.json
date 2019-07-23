@@ -9,7 +9,7 @@
               {
                 "query_string": {
                   "_name": "dismax",
-                  "query": "${q}",
+                  "query": "${q.escaped}",
                   "default_operator": "OR",
                   "fields": [
                     "name"

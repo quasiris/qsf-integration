@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by mki on 04.02.17.
@@ -78,23 +79,37 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     }
 
     public void transformParameter() {
-        Map<String, String> replaceMap = RequestParser.getRequestParameter(pipelineContainer);
+        Map<String, String> rawValues = RequestParser.getRequestParameter(pipelineContainer);
 
 
         for(Map.Entry<String, String> param :profileParameter.entrySet()) {
-            replaceMap.put("profile." + param.getKey(), param.getValue());
+            rawValues.put("profile." + param.getKey(), param.getValue());
         }
 
         if(searchQuery != null) {
             if(searchQuery.getQ() != null) {
-                replaceMap.put("qsfql.q", encodeValue(searchQuery.getQ()));
+                rawValues.put("qsfql.q", searchQuery.getQ());
             }
-            replaceMap.putAll(encodeValues(searchQuery.getParametersWithPrefix("qsfql")));
+
+            rawValues.putAll(searchQuery.getParametersWithPrefix("qsfql"));
         }
 
         for(Map.Entry<String, String> param :pipelineContainer.getParameters().entrySet()) {
-            replaceMap.put("param." + param.getKey(), encodeValue(param.getValue()));
+            rawValues.put("param." + param.getKey(), param.getValue());
         }
+
+
+        Map<String, String> escapedValues = rawValues.entrySet().stream().collect(Collectors.toMap(
+                entry -> entry.getKey() + ".escaped",
+                entry -> escapeValue(entry.getValue())));
+
+        Map<String, String> encodedValues = rawValues.entrySet().stream().collect(Collectors.toMap(
+                entry -> entry.getKey(),
+                entry -> JsonUtil.encode(entry.getValue())));
+
+        Map<String, String> replaceMap = new HashMap<>(escapedValues);
+        replaceMap.putAll(encodedValues);
+
 
 
         try {
@@ -108,7 +123,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     }
 
 
-    public String encodeValue(String value) {
+    public String escapeValue(String value) {
         String escapedValue = ElasticUtil.escape(value);
         String encodedValue = JsonUtil.encode(escapedValue);
         return encodedValue;
