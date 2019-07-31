@@ -80,7 +80,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             if(aggregation == null) {
                 continue;
             }
-            Facet facet = mapAggregation2Facet(mapping.getValue(), aggregation);
+            Facet facet = mapAggregation2Facet(mapping.getValue(), aggregation, "", "");
             searchResult.addFacet(facet);
         }
 
@@ -113,17 +113,14 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     }
 
-    protected Facet mapAggregation2Facet(String facetId, Aggregation aggregation) {
+    protected Facet mapAggregation2Facet(String facetId, Aggregation aggregation, String filterType, String filterValuePrefix) {
         Facet facet = new Facet();
-
-        facet.setId(facetId);
-        facet.setFilterName(filterPrefix + facetId);
-
         String name = facetNameMapping.get(facetId);
 
         if(name == null) {
             name = facetId;
         }
+        facet.setId(facetId);
         facet.setName(name);
         facet.setCount(Long.valueOf(aggregation.getBuckets().size()));
 
@@ -131,14 +128,24 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         for(Bucket bucket : aggregation.getBuckets()) {
             FacetValue facetValue = new FacetValue(bucket.getKey(), bucket.getDoc_count());
             facetReseultCount = facetReseultCount + facetValue.getCount();
-            facetValue.setFilter(filterPrefix + facet.getId() + "=" + EncodingUtil.encode(bucket.getKey()));
+
+            String filterValueEncoded = EncodingUtil.encode(bucket.getKey());
+
+            facetValue.setFilter(filterPrefix + facet.getId() + filterType + "=" + filterValuePrefix + filterValueEncoded);
 
             if(bucket.getSubFacet() != null) {
-                Facet subFacet = mapAggregation2Facet("subFacet", bucket.getSubFacet());
+                filterType=".tree";
+                String treeFilterSeperator = EncodingUtil.encode(" > ");
+                Facet subFacet = mapAggregation2Facet(
+                        facetId,
+                        bucket.getSubFacet(),
+                        filterType,
+                        filterValueEncoded + treeFilterSeperator);
                 facetValue.setSubFacet(subFacet);
             }
             facet.getValues().add(facetValue);
         }
+        facet.setFilterName(filterPrefix + facetId + filterType);
         facet.setResultCount(facetReseultCount);
 
         return facet;

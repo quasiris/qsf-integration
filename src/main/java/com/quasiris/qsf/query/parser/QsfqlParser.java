@@ -3,10 +3,7 @@ package com.quasiris.qsf.query.parser;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.query.*;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,6 +76,31 @@ public class QsfqlParser {
         return searchFilter;
     }
 
+
+    List<SearchFilter> createTreeFilter(String filterName, String[] filterValues) {
+
+        List<SearchFilter> searchFilterList = new ArrayList<>();
+
+        if(filterValues.length != 1) {
+            // do some userfule logging
+            return searchFilterList;
+        }
+
+        int counter = 0;
+        for(String value : filterValues[0].split(Pattern.quote(" > "))) {
+            SearchFilter searchFilter = new SearchFilter();
+            searchFilter.setFilterType(FilterType.TERM);
+            String treeFilterName = filterName + counter;
+            searchFilter.setName(treeFilterName);
+            searchFilter.setId(treeFilterName);
+            searchFilter.setValues(Arrays.asList(value));
+            counter++;
+            searchFilterList.add(searchFilter);
+        }
+
+
+        return searchFilterList;
+    }
 
     SearchFilter createRangeFilter(String filterName, String[] filterValues) {
         //SearchFilter<RangeFilterValue<Number>> searchFilter = new SearchFilter<>();
@@ -159,7 +181,10 @@ public class QsfqlParser {
                     searchFilter.setFilterType(FilterType.RANGE);
                     searchFilter.setFilterDataType(FilterDataType.NUMBER);
                     query.getSearchFilterList().add(searchFilter);
-                }
+                } else if (".tree".equals(filterType)) {
+                    List<SearchFilter> searchFilters = createTreeFilter(filterName, filterValues);
+                    query.getSearchFilterList().addAll(searchFilters);
+            }
 
             }
         }

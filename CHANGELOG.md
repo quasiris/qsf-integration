@@ -14,11 +14,15 @@ All notable changes qsf-integration project will be documented in this file.
 - add a mapping for slider names in the elastic builder
 - implement a tracking filter that read all relevant information from the search query and the search result
 - extend the tracking filter to allow tracking to elasticsearch
+- implement a tree filter and facet
+- make the context accessable for the pipeline executer
 
 ### Changed
 - improve the setting of aggregations
+- increase the aggregation size of the monitoring filter to 100
 
 ### Fixed
+- fix bug for parameter encoding in the elastic filter
 
 ### Breaking Changes
 
