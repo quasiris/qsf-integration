@@ -38,6 +38,8 @@ public class ElasticMonitoringExecuter {
 
     private String status = "OK";
 
+    private int aggSize = 100;
+
     /**
      * Getter for property 'baseUrl'.
      *
@@ -138,7 +140,7 @@ public class ElasticMonitoringExecuter {
 
             if(monitoringDocument.getType().equals("facet")) {
                 elasticFilterBuilder.
-                        addAggregation(monitoringDocument.getFieldName(), monitoringDocument.getFieldName());
+                        addAggregation(monitoringDocument.getFieldName(), monitoringDocument.getFieldName(), aggSize);
             }
         }
 
