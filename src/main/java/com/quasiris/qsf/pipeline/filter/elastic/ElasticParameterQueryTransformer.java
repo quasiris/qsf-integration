@@ -104,11 +104,14 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
                 entry -> escapeValue(entry.getValue())));
 
         Map<String, String> encodedValues = rawValues.entrySet().stream().collect(Collectors.toMap(
-                entry -> entry.getKey(),
+                entry -> entry.getKey() + ".encoded",
                 entry -> JsonUtil.encode(entry.getValue())));
 
         Map<String, String> replaceMap = new HashMap<>(escapedValues);
         replaceMap.putAll(encodedValues);
+        replaceMap.putAll(rawValues);
+
+
 
 
 
