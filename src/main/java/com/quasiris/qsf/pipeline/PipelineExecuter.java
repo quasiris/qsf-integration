@@ -31,6 +31,11 @@ public class PipelineExecuter {
     }
 
 
+    public PipelineExecuter context(String name, Object value) {
+        getPipelineContainer().putContext(name, value);
+        return this;
+    }
+
     public PipelineExecuter searchQuery(SearchQuery searchQuery) {
         getPipelineContainer().setSearchQuery(searchQuery);
         return this;
