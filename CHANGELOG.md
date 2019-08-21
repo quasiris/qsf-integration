@@ -16,6 +16,7 @@ All notable changes qsf-integration project will be documented in this file.
 - extend the tracking filter to allow tracking to elasticsearch
 - implement a tree filter and facet
 - make the context accessable for the pipeline executer
+- integrate travis and coversall
 
 ### Changed
 - improve the setting of aggregations
