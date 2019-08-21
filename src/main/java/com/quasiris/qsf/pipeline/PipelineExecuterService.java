@@ -30,6 +30,7 @@ public class PipelineExecuterService {
         for(Filter filter : pipeline.getFilterList()) {
             failOnError(pipelineContainer);
             try {
+                LOG.debug("The filter: " + filter.getId() + " started.");
                 filter.start();
                 if(filter.isActive() && pipelineContainer.isFilterActive(filter.getId())) {
                     pipelineContainer = filter.filter(pipelineContainer);
@@ -38,6 +39,7 @@ public class PipelineExecuterService {
                 }
                 LOG.debug("The filter: " + filter.getId() + " took: " + filter.getCurrentTime() + " ms.");
             } catch (Exception e) {
+                LOG.debug("The filter: " + filter.getId() + " failed with an error: " + e.getMessage());
                 filter.onError(pipelineContainer, e);
             }
         }
