@@ -1,7 +1,7 @@
 # Quasiris Search Framework (QSF) Integration
 
 [![Build Status](https://travis-ci.org/quasiris/qsf-integration.svg?branch=master)](https://travis-ci.org/quasiris/qsf-integration)
-
+[![Coverage Status](https://coveralls.io/repos/github/quasiris/qsf-integration/badge.svg?branch=master)](https://coveralls.io/github/quasiris/qsf-integration?branch=master)
 
 The QSF (Quasiris Search Framework) offers a flexible framework to easily create search services and applications.
 It coveres the main functionality of typical requirements for search applications in the context of a microservice architectures and reduced the costs and risks.
