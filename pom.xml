@@ -90,12 +90,6 @@
             <version>1.7.26</version>
             <scope>test</scope>
         </dependency>
-
-
-
-
-
-
     </dependencies>
 
     <build>
@@ -179,6 +173,31 @@
                 <version>2.5.3</version>
                 <configuration>
                     <releaseProfiles>release</releaseProfiles>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.3.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <format>xml</format>
+                    <maxmem>256m</maxmem>
+                    <!-- aggregated reports for multi-module projects -->
+                    <aggregate>true</aggregate>
+                    <instrumentation>
+                        <ignoreTrivial>true</ignoreTrivial>
+                        <ignores>
+                            <ignore>com.quasiris.qsf.health.*</ignore>
+                        </ignores>
+                        <excludes>
+                            <exclude>com/quasiris/qsf/health/**/*.class</exclude>
+                        </excludes>
+                    </instrumentation>
                 </configuration>
             </plugin>
         </plugins>
