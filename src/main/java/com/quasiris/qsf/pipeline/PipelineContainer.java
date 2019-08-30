@@ -32,7 +32,7 @@ public class PipelineContainer {
 
     private boolean success = true;
 
-    private StringBuilder message = new StringBuilder();
+    private StringBuffer message = new StringBuffer();
 
     private boolean debug = false;
 
