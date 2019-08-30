@@ -49,9 +49,8 @@ public class TrackingFilter extends AbstractFilter {
 
     protected Document getTracking(PipelineContainer pipelineContainer) {
 
-        SearchResult searchResult = pipelineContainer.getSearchResult(resultSetId);
-        SearchQuery searchQuery = pipelineContainer.getSearchQuery();
-        HttpServletRequest request = pipelineContainer.getRequest();
+       SearchQuery searchQuery = pipelineContainer.getSearchQuery();
+
 
         Document tracking = new Document();
         tracking.setValue("timestamp", new Date());
@@ -61,17 +60,8 @@ public class TrackingFilter extends AbstractFilter {
         tracking.setValue("sessionId", searchQuery.getRequestId());
         tracking.setValue("userId", searchQuery.getRequestId());
 
-        tracking.setValue("userAgent", request.getHeader("User-Agent"));
-        tracking.setValue("ipAddress", request.getRemoteAddr());
-        tracking.setValue("referrer", request.getHeader("Referer"));
+        tracking = trackRequestParameter(pipelineContainer, tracking);
 
-        String queryString = request.getQueryString();
-        if(!Strings.isNullOrEmpty(queryString)) {
-            tracking.setValue("url", request.getRequestURI() + "?" + queryString);
-        } else {
-            tracking.setValue("url", request.getRequestURI());
-        }
-        tracking.setValue("httpMethod", request.getMethod());
         tracking.setValue("resultSetId", resultSetId);
 
         tracking.setValue("q", searchQuery.getQ());
@@ -98,21 +88,55 @@ public class TrackingFilter extends AbstractFilter {
             }
         }
 
+        tracking = trackSearchResult(pipelineContainer, tracking);
+
+
+
+
+        tracking.getDocument().putAll(customParameter);
+
+        return tracking;
+    }
+
+
+    protected Document trackSearchResult(PipelineContainer pipelineContainer, Document tracking) {
+        SearchResult searchResult = pipelineContainer.getSearchResult(resultSetId);
+        if(searchResult == null) {
+            return tracking;
+        }
+
+        tracking.setValue("total", searchResult.getTotal());
+        tracking.setValue("duration", pipelineContainer.currentTime());
+
         if(idFieldName != null) {
             for (Document document : searchResult.getDocuments()) {
                 String id = document.getFieldValue(idFieldName);
                 tracking.addValue("docIds", id);
             }
         }
+        return tracking;
+    }
 
-        tracking.setValue("total", searchResult.getTotal());
+    protected Document trackRequestParameter(PipelineContainer pipelineContainer, Document tracking) {
+        HttpServletRequest request = pipelineContainer.getRequest();
+        if(request == null) {
+            return tracking;
+        }
 
+        tracking.setValue("userAgent", request.getHeader("User-Agent"));
+        tracking.setValue("ipAddress", request.getRemoteAddr());
+        tracking.setValue("referrer", request.getHeader("Referer"));
 
-        tracking.setValue("duration", pipelineContainer.currentTime());
-
-        tracking.getDocument().putAll(customParameter);
+        String queryString = request.getQueryString();
+        if (!Strings.isNullOrEmpty(queryString)) {
+            tracking.setValue("url", request.getRequestURI() + "?" + queryString);
+        } else {
+            tracking.setValue("url", request.getRequestURI());
+        }
+        tracking.setValue("httpMethod", request.getMethod());
 
         return tracking;
+
     }
 
     public void addCustomerParameter(String key, Object value) {
