@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by mki on 04.11.17.
@@ -35,6 +36,8 @@ public class PipelineContainer {
     private StringBuffer message = new StringBuffer();
 
     private boolean debug = false;
+
+    private boolean timeout = false;
 
     private boolean failOnError = true;
 
@@ -134,6 +137,9 @@ public class PipelineContainer {
     }
 
     public void error(Throwable e) {
+        if (e instanceof TimeoutException) {
+            timeout = true;
+        }
         error(e.getMessage());
         error(Throwables.getStackTraceAsString(e));
     }
@@ -144,6 +150,10 @@ public class PipelineContainer {
 
     public boolean isSuccess() {
         return success;
+    }
+
+    public boolean isTimeout() {
+        return timeout;
     }
 
     public void setRequest(HttpServletRequest request) {

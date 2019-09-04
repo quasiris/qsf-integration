@@ -56,7 +56,7 @@ public class PipelineExecuterService {
 
     public static void failOnError(PipelineContainer pipelineContainer) throws PipelineContainerException {
         if(pipelineContainer.isFailOnError() && !pipelineContainer.isSuccess()) {
-            throw new PipelineContainerException(pipelineContainer.getMessage());
+            throw new PipelineContainerException(pipelineContainer, pipelineContainer.getMessage());
         }
     }
 
