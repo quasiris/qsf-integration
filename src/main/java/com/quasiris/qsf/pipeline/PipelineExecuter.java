@@ -96,7 +96,7 @@ public class PipelineExecuter {
                 throw new PipelineContainerDebugException(pipelineContainer);
             }
         } catch (TimeoutException e) {
-            pipelineContainer.error("The pipeline " + pipeline.getId() + " did not finished in " + pipeline.getTimeout() + " ms.");
+            pipelineContainer.error("The pipeline " + pipeline.getId() + " has not finished in " + pipeline.getTimeout() + " ms.");
             pipelineContainer.error(e);
             PipelineExecuterService.failOnError(pipelineContainer);
         } catch (InterruptedException | ExecutionException e) {

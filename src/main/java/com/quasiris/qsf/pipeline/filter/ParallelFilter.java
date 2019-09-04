@@ -76,7 +76,7 @@ public class ParallelFilter extends AbstractFilter {
                     results.add(value);
                 } catch (TimeoutException e) {
                     Pipeline pipeline = futureTask.getPipeline();
-                    pipelineContainer.error("The pipeline " + pipeline.getId() + " did not finished in " + pipeline.getTimeout() + " ms.");
+                    pipelineContainer.error("The pipeline " + pipeline.getId() + " has not finished in " + pipeline.getTimeout() + " ms.");
                     pipelineContainer.error(e);
                     PipelineExecuterService.failOnError(pipelineContainer);
                 } catch (InterruptedException | ExecutionException e) {
