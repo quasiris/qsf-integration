@@ -4,6 +4,17 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Fixed
+
+### Breaking Changes
+
+### Deprications
+
+## [2.6]
+### Added
 - added filter rules for elastic
 - default rows in QSFQLRequestFilter
 - profile paramter for elastic
