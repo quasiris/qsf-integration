@@ -186,7 +186,7 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilterBuilder profileMatchAll() {
-       return profile("classpath://com/quasiris/qsf/elastic/profiles/match-all-profile.json");
+       return profile(Profiles.matchAll());
     }
 
 

@@ -17,6 +17,7 @@ All notable changes qsf-integration project will be documented in this file.
 - implement a tree filter and facet
 - make the context accessable for the pipeline executer
 - integrate travis and coversall
+- implement a suggest for elastic
 
 ### Changed
 - improve the setting of aggregations
