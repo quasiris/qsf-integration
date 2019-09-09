@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by mki on 02.12.17.
@@ -53,6 +54,7 @@ public class TrackingFilter extends AbstractFilter {
 
 
         Document tracking = new Document();
+        tracking.setValue("id", UUID.randomUUID().toString());
         tracking.setValue("timestamp", new Date());
         tracking.setValue("requestId", searchQuery.getRequestId());
 
