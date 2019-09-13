@@ -21,4 +21,25 @@ public enum FilterDataType {
     public String getCode() {
         return code;
     }
+
+    /**
+     * Getter for property 'clazz'.
+     *
+     * @return Value for property 'clazz'.
+     */
+    public Class getClazz() {
+        return clazz;
+    }
+
+    public boolean isString() {
+        return this.equals(STRING);
+    }
+
+    public boolean isDate() {
+        return this.equals(DATE);
+    }
+
+    public boolean isNumber() {
+        return this.equals(NUMBER);
+    }
 }

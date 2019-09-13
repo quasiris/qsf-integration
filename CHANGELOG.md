@@ -5,6 +5,10 @@ All notable changes qsf-integration project will be documented in this file.
 ## [Unreleased]
 ### Added
 - add an id for the tracking filter
+- implement logic to use filters in a match all query for elastic
+- improve filter building for elastic
+- make it possible to use string and date in range queries for elastic
+- implement a search filter builder
 
 ### Changed
 

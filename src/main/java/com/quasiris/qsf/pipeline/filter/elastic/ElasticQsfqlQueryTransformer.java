@@ -11,6 +11,7 @@ import com.quasiris.qsf.query.FilterType;
 import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -145,19 +146,25 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         if(filters.size() == 0) {
             return;
         }
-        ObjectNode query = (ObjectNode) getElasticQuery().get("query").get("bool");
+
+        ObjectNode query = (ObjectNode) getElasticQuery().get("query");
+        ObjectNode bool = (ObjectNode) query.get("bool");
+        if(bool == null) {
+            bool = objectMapper.createObjectNode();
+            query.set(" bool", bool);
+        }
 
         // add already defined filters from the profile to the filter array
-        if(query.get("filter") != null && query.get("filter").isArray()) {
-            if(query.get("filter").isArray()) {
-                ArrayNode filtersArray = (ArrayNode) query.get("filter");
+        if(bool.get("filter") != null && bool.get("filter").isArray()) {
+            if(bool.get("filter").isArray()) {
+                ArrayNode filtersArray = (ArrayNode) bool.get("filter");
                 for (Iterator<JsonNode> it = filtersArray.iterator(); it.hasNext();) {
                     filters.add((ObjectNode) it.next());
                 }
             }
         }
 
-        query.set("filter", filters);
+        bool.set("filter", filters);
 
     }
 
@@ -182,6 +189,12 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public ObjectNode transformTermsFilter(SearchFilter searchFilter) {
 
         String elasticField = mapFilterField(searchFilter.getName());
+        if(elasticField == null) {
+            elasticField = searchFilter.getId();
+        }
+        if(elasticField == null) {
+            throw new IllegalArgumentException("There is no field name defined.");
+        }
 
         if(searchFilter.getValues().size() > 1 && searchFilter.getFilterType().equals(FilterType.TERM) ) {
             ArrayNode arrayNode = getObjectMapper().createArrayNode();
@@ -214,16 +227,38 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         if (Strings.isNullOrEmpty(elasticField)) {
             elasticField = searchFilter.getName();
         }
-
-        RangeFilterValue<Double> rangeFilterValue = searchFilter.getRangeValue(Double.class);
-        if(rangeFilterValue == null) {
-            return null;
+        if(elasticField == null) {
+            throw new IllegalArgumentException("Could not create elastic filter because the mapping or the name of " +
+                    "the filter is missing");
         }
 
-        String lowerBoundOperator = rangeFilterValue.getLowerBound().getOperator();
-        String upperBoundOperator = rangeFilterValue.getUpperBound().getOperator();
+        ObjectNode range = null;
 
-        ObjectNode range = getObjectMapper().createObjectNode().put(lowerBoundOperator, rangeFilterValue.getMinValue()).put(upperBoundOperator, rangeFilterValue.getMaxValue());
+        if(searchFilter.getFilterDataType().isNumber()) {
+            RangeFilterValue<Double> rangeFilterValue = searchFilter.getRangeValue(Double.class);
+            range = getObjectMapper().
+                    createObjectNode().
+                    put(rangeFilterValue.getLowerBound().getOperator(), rangeFilterValue.getMinValue()).
+                    put(rangeFilterValue.getUpperBound().getOperator(), rangeFilterValue.getMaxValue());
+        } else if (searchFilter.getFilterDataType().isString()) {
+            RangeFilterValue<String> rangeFilterValue = searchFilter.getRangeValue(String.class);
+            range = getObjectMapper().
+                    createObjectNode().
+                    put(rangeFilterValue.getLowerBound().getOperator(), rangeFilterValue.getMinValue()).
+                    put(rangeFilterValue.getUpperBound().getOperator(), rangeFilterValue.getMaxValue());
+        } else if(searchFilter.getFilterDataType().isDate()) {
+            RangeFilterValue<Date> rangeFilterValue = searchFilter.getRangeValue(Date.class);
+            // TODO transform the date in the correct format
+            String minValue = rangeFilterValue.getMinValue().toString();
+            String maxValue = rangeFilterValue.getMaxValue().toString();
+            range = getObjectMapper().
+                    createObjectNode().
+                    put(rangeFilterValue.getLowerBound().getOperator(), minValue).
+                    put(rangeFilterValue.getUpperBound().getOperator(), maxValue);
+        } else {
+            throw new IllegalArgumentException("For the data type " + searchFilter.getFilterDataType().getCode() +
+                    " no implementation is available.");
+        }
 
         ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set("range",
                 getObjectMapper().createObjectNode().set(elasticField, range));

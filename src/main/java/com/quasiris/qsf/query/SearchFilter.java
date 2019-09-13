@@ -95,6 +95,22 @@ public class SearchFilter {
         return (RangeFilterValue<T>) rangeValue;
     }
 
+    public Object getMinValue() {
+        return rangeValue.getMinValue();
+    }
+
+    public Object getMaxValue() {
+        return rangeValue.getMaxValue();
+    }
+
+    public String getLowerBoundOperator() {
+        return rangeValue.getLowerBound().getOperator();
+    }
+
+    public String getUpperBoundOperator() {
+        return rangeValue.getUpperBound().getOperator();
+    }
+
     public RangeFilterValue<String> rangeValue( ) {
         return (RangeFilterValue<String>) rangeValue;
     }
