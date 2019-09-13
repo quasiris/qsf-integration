@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic.suggest;
 
+import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticParameterQueryTransformer;
 import com.quasiris.qsf.pipeline.filter.elastic.Profiles;
 import com.quasiris.qsf.query.Facet;
@@ -63,7 +64,8 @@ public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
         suggest.setId(fieldName);
         suggest.setName(fieldName);
 
-        if(!Character.isWhitespace(query.charAt(query.length() - 1))) {
+        if(!Strings.isNullOrEmpty(query) &&
+                !Character.isWhitespace(query.charAt(query.length() - 1))) {
             suggest.setInclude(lastToken.toLowerCase() + ".*");
         }
         return suggest;
