@@ -36,7 +36,7 @@ public class SuggestMappingFilter extends AbstractFilter {
         List<FacetValue> sortedFacetValues = new ArrayList(mergedFacet.values());
         Collections.sort(sortedFacetValues, new FacetValueCountComparator());
 
-
+        suggestResult.setDocuments(new ArrayList<>());
         for (int i = sortedFacetValues.size() - 1; i >=0  ; i--) {
 
             FacetValue facetValue = sortedFacetValues.get(i);
