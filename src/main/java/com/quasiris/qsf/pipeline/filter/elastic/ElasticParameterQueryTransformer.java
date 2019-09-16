@@ -175,6 +175,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         InputStream in = this.getClass().getClassLoader()
                 .getResourceAsStream(resource);
 
+        // TODO try to remove IOUtils
         String profile = IOUtils.toString(in, Charset.forName("UTF-8"));
         IOUtils.closeQuietly(in);
         return profile;
