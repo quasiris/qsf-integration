@@ -9,6 +9,7 @@ All notable changes qsf-integration project will be documented in this file.
 - improve filter building for elastic
 - make it possible to use string and date in range queries for elastic
 - implement a search filter builder
+- implement a not filter for the qsfql query
 
 ### Changed
 

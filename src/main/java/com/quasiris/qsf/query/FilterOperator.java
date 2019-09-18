@@ -5,7 +5,7 @@ package com.quasiris.qsf.query;
  */
 public enum FilterOperator {
 
-    OR("or"),AND("and");
+    OR("or"),AND("and"), NOT("not");
 
 
     private final String code;

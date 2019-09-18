@@ -6,15 +6,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
-import com.quasiris.qsf.query.Facet;
-import com.quasiris.qsf.query.FilterType;
-import com.quasiris.qsf.query.RangeFilterValue;
-import com.quasiris.qsf.query.SearchFilter;
+import com.quasiris.qsf.query.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by mki on 04.02.18.
@@ -89,6 +84,10 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         transformFiltersCurrentVersion();
     }
 
+    public void transformFiltersCurrentVersion() throws PipelineContainerException {
+        transformFiltersAndOr();
+        transformFiltersNot();
+    }
 
     public void transformFiltersVersionOlder2() throws PipelineContainerException {
         ArrayNode filters = getObjectMapper().createArrayNode();
@@ -115,12 +114,11 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     }
 
-
     // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
     // TODO implement range queries for date
-    public void transformFiltersCurrentVersion() {
+    public ArrayNode computeFilter(List<SearchFilter> searchFilterList) {
         ArrayNode filters = getObjectMapper().createArrayNode();
-        for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
+        for (SearchFilter searchFilter : searchFilterList) {
             ObjectNode filter = null;
             switch (searchFilter.getFilterType()) {
                 case TERM:
@@ -143,17 +141,55 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 filters.add(filter);
             }
         }
-        if(filters.size() == 0) {
-            return;
-        }
+        return filters;
+    }
 
+    public ObjectNode getBoolQuery() {
         ObjectNode query = (ObjectNode) getElasticQuery().get("query");
         ObjectNode bool = (ObjectNode) query.get("bool");
         if(bool == null) {
             bool = objectMapper.createObjectNode();
             query.set(" bool", bool);
         }
+        return bool;
+    }
 
+
+    public void transformFiltersNot() {
+        List<SearchFilter> searchFilterList = getSearchQuery().getSearchFilterList().stream().
+                filter(sf -> sf.getFilterOperator().equals(FilterOperator.NOT)).
+                collect(Collectors.toList());
+        ArrayNode filters = computeFilter(searchFilterList);
+        if(filters.size() == 0) {
+            return;
+        }
+
+        ObjectNode bool = getBoolQuery();
+        // add already defined filters from the profile to the filter array
+        if(bool.get("must_not") != null && bool.get("must_not").isArray()) {
+            if(bool.get("must_not").isArray()) {
+                ArrayNode filtersArray = (ArrayNode) bool.get("must_not");
+                for (Iterator<JsonNode> it = filtersArray.iterator(); it.hasNext();) {
+                    filters.add((ObjectNode) it.next());
+                }
+            }
+        }
+
+        bool.set("must_not", filters);
+    }
+
+    // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
+    // TODO implement range queries for date
+    public void transformFiltersAndOr() {
+        List<SearchFilter> searchFilterList = getSearchQuery().getSearchFilterList().stream().
+                filter(sf -> !sf.getFilterOperator().equals(FilterOperator.NOT)).
+                collect(Collectors.toList());
+        ArrayNode filters = computeFilter(searchFilterList);
+        if(filters.size() == 0) {
+            return;
+        }
+
+        ObjectNode bool = getBoolQuery();
         // add already defined filters from the profile to the filter array
         if(bool.get("filter") != null && bool.get("filter").isArray()) {
             if(bool.get("filter").isArray()) {
@@ -165,7 +201,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         }
 
         bool.set("filter", filters);
-
     }
 
     public String mapFilterField(String fieldName) {

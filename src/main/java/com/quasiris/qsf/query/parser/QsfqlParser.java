@@ -106,6 +106,7 @@ public class QsfqlParser {
         //SearchFilter<RangeFilterValue<Number>> searchFilter = new SearchFilter<>();
         SearchFilter searchFilter = new SearchFilter();
         searchFilter.setFilterType(FilterType.RANGE);
+        searchFilter.setFilterOperator(FilterOperator.AND);
         RangeFilterValue<Number> rangeFilterValue = new RangeFilterValue<>();
 
         for(String value : filterValues) {
