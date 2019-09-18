@@ -24,6 +24,8 @@ public class SearchResponse {
 
     private Request request;
 
+    private String requestId;
+
 
     public Integer getStatusCode() {
         return statusCode;
@@ -66,6 +68,24 @@ public class SearchResponse {
         this.request = request;
     }
 
+    /**
+     * Getter for property 'requestId'.
+     *
+     * @return Value for property 'requestId'.
+     */
+    public String getRequestId() {
+        return requestId;
+    }
+
+    /**
+     * Setter for property 'requestId'.
+     *
+     * @param requestId Value to set for property 'requestId'.
+     */
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
     public static SearchResponse create(PipelineContainer pipelineContainer, String... searchResultIds) {
         SearchResponse searchResponse = new SearchResponse();
         for(String searchResultId: searchResultIds) {
@@ -74,12 +94,18 @@ public class SearchResponse {
 
         searchResponse.setCurrentTime(new Date());
         searchResponse.setTime(pipelineContainer.currentTime());
-        searchResponse.setRequest(new Request(pipelineContainer.getRequest()));
 
-        if("POST".equals(searchResponse.getRequest().getMethod())) {
-            searchResponse.getRequest().setQuery(pipelineContainer.getSearchQuery().getQ());
+        if(pipelineContainer.getRequest() != null) {
+            searchResponse.setRequest(new Request(pipelineContainer.getRequest()));
+            if("POST".equals(searchResponse.getRequest().getMethod())) {
+                searchResponse.getRequest().setQuery(pipelineContainer.getSearchQuery().getQ());
+            }
         }
+
+
+
         searchResponse.setStatusCode(200);
+        searchResponse.setRequestId(pipelineContainer.getRequestId());
         return searchResponse;
 
     }

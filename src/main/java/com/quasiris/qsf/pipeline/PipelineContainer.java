@@ -27,6 +27,8 @@ public class PipelineContainer {
         this.response = response;
     }
 
+    private String requestId;
+
     private Map<String, String> parameter = new HashMap<>();
 
     private List<String> notActiveFilters = new ArrayList<>();
@@ -210,6 +212,24 @@ public class PipelineContainer {
             return null;
         }
         return document;
+    }
+
+    /**
+     * Getter for property 'requestId'.
+     *
+     * @return Value for property 'requestId'.
+     */
+    public String getRequestId() {
+        return requestId;
+    }
+
+    /**
+     * Setter for property 'requestId'.
+     *
+     * @param requestId Value to set for property 'requestId'.
+     */
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     @Override
