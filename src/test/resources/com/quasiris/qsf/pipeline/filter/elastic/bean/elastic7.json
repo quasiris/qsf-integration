@@ -1,0 +1,269 @@
+{
+  "took": 2,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 139727,
+      "relation": "eq"
+    },
+    "max_score": 1.0,
+    "hits": [{
+      "_index": "quantum",
+      "_type": "quantum",
+      "_id": "d38f60fa-2f6a-4d5a-a66c-8cf708d0b716",
+      "_score": 1.0,
+      "_source": {
+        "tagkey_name": "Moosbach",
+        "lon": "11.2613323",
+        "tagkey_place": "village",
+        "laton": "49.3926081,11.2613323",
+        "tagkey_is_in": "Feucht,Nürnberger Land,Mittelfranken,Bayern,Bundesrepublik Deutschland,Europe",
+        "name": "Moosbach",
+        "tagkey_created_by": "JOSM",
+        "place": "village",
+        "lat": "49.3926081"
+      }
+    }, {
+      "_index": "quantum",
+      "_type": "quantum",
+      "_id": "4aef41bf-a5e9-4b6a-bbb8-6274b0429063",
+      "_score": 1.0,
+      "_source": {
+        "tagkey_name": "Alten-Buseck",
+        "lon": "8.7560994",
+        "tagkey_place": "village",
+        "laton": "50.6215648,8.7560994",
+        "tagkey_is_in": "Buseck,Gießen,Gießen,Hessen,Bundesrepublik Deutschland,Europe",
+        "name": "Alten-Buseck",
+        "place": "village",
+        "lat": "50.6215648"
+      }
+    }, {
+      "_index": "quantum",
+      "_type": "quantum",
+      "_id": "4d2aeeaa-0f9a-417d-ac62-11a6e9a8893e",
+      "_score": 1.0,
+      "_source": {
+        "tagkey_name": "Domäne Schiffenberg",
+        "lon": "8.7217738",
+        "tagkey_place": "locality",
+        "laton": "50.5556661,8.7217738",
+        "tagkey_is_in": "Gießen,Gießen,Gießen,Hessen,Bundesrepublik Deutschland,Europe",
+        "name": "Domäne Schiffenberg",
+        "place": "locality",
+        "lat": "50.5556661"
+      }
+    }, {
+      "_index": "quantum",
+      "_type": "quantum",
+      "_id": "f8529012-e44a-4bc0-9607-e5f37b902cdb",
+      "_score": 1.0,
+      "_source": {
+        "tagkey_name": "Lochrütte",
+        "lon": "8.0470979",
+        "tagkey_place": "locality",
+        "laton": "47.8979928,8.0470979",
+        "name": "Lochrütte",
+        "place": "locality",
+        "lat": "47.8979928"
+      }
+    }, {
+      "_index": "quantum",
+      "_type": "quantum",
+      "_id": "282161a9-67d1-41bb-8015-fb972e966c78",
+      "_score": 1.0,
+      "_source": {
+        "tagkey_population": 350,
+        "tagkey_name": "Griesheim",
+        "tagkey_note": "opengeodb daten fehlen",
+        "lon": "11.0427669",
+        "tagkey_place": "village",
+        "laton": "50.7531605,11.0427669",
+        "tagkey_postal_code": 99326,
+        "tagkey_is_in": "Ilmtal,Ilm-Kreis,Thüringen,Bundesrepublik Deutschland,Europe",
+        "name": "Griesheim",
+        "place": "village",
+        "lat": "50.7531605"
+      }
+    }, {
+      "_index": "quantum",
+      "_type": "quantum",
+      "_id": "aff2ec5d-313a-430c-a082-1b05ea92bb15",
+      "_score": 1.0,
+      "_source": {
+        "tagkey_openGeoDB:license_plate_code": "OHZ",
+        "lon": "8.7948239",
+        "tagkey_place": "town",
+        "tagkey_openGeoDB:layer": 6,
+        "laton": "53.2281763,8.7948239",
+        "tagkey_postal_code": 27711,
+        "tagkey_wikidata": "Q16141",
+        "tagkey_openGeoDB:is_in_loc_id": 359,
+        "tagkey_ele": 11,
+        "tagkey_wikipedia": "de:Osterholz-Scharmbeck",
+        "tagkey_openGeoDB:community_identification_number": 3356007,
+        "tagkey_openGeoDB:telephone_area_code": 4791,
+        "tagkey_ref:LOCODE": "DEOSS",
+        "tagkey_name": "Osterholz-Scharmbeck",
+        "tagkey_population": 29942,
+        "tagkey_is_in": "Osterholz,Niedersachsen,Bundesrepublik Deutschland,Europe",
+        "name": "Osterholz-Scharmbeck",
+        "place": "town",
+        "tagkey_openGeoDB:loc_id": 22218,
+        "lat": "53.2281763",
+        "tagkey_name:nds": "Oosterholt-Scharmbeek"
+      }
+    }, {
+      "_index": "quantum",
+      "_type": "quantum",
+      "_id": "6036c03c-60a8-43b2-aab3-ce567fab86a4",
+      "_score": 1.0,
+      "_source": {
+        "tagkey_population": 417,
+        "tagkey_name": "Hennersdorf",
+        "lon": "13.6172129",
+        "tagkey_place": "suburb",
+        "laton": "50.8285766,13.6172129",
+        "tagkey_is_in": "Dippoldiswalde",
+        "name": "Hennersdorf",
+        "place": "suburb",
+        "tagkey_source": "2015 http://www.dippoldiswalde.de/inhalte/dippoldiswalde/_inhalt/dippoldiswalde/zahlen_fakten/statistiken/statistiken",
+        "lat": "50.8285766"
+      }
+    }, {
+      "_index": "quantum",
+      "_type": "quantum",
+      "_id": "40367184-0dd2-4419-8ef3-026a5edd3bfd",
+      "_score": 1.0,
+      "_source": {
+        "tagkey_name": "Beerwalde",
+        "lon": "13.5833466",
+        "tagkey_place": "village",
+        "laton": "50.8898725,13.5833466",
+        "name": "Beerwalde",
+        "place": "village",
+        "lat": "50.8898725"
+      }
+    }, {
+      "_index": "quantum",
+      "_type": "quantum",
+      "_id": "34826bae-3bdf-4483-8d38-9c30ec5b59b8",
+      "_score": 1.0,
+      "_source": {
+        "tagkey_population": 1280,
+        "tagkey_name": "Istein",
+        "lon": "7.5396199",
+        "tagkey_place": "village",
+        "laton": "47.6584833,7.5396199",
+        "tagkey_is_in": "Efringen-Kirchen,Lörrach,Freiburg,Baden-Württemberg,Bundesrepublik Deutschland,Europe",
+        "name": "Istein",
+        "tagkey_wikidata": "Q1674838",
+        "place": "village",
+        "tagkey_wikipedia": "de:Istein",
+        "lat": "47.6584833"
+      }
+    }, {
+      "_index": "quantum",
+      "_type": "quantum",
+      "_id": "70105efe-6076-4c68-8ff1-2d85ab3c9ee6",
+      "_score": 1.0,
+      "_source": {
+        "tagkey_openGeoDB:license_plate_code": "NOM",
+        "lon": "9.8681643",
+        "tagkey_place": "town",
+        "laton": "51.8184594,9.8681643",
+        "tagkey_postal_code": 37574,
+        "tagkey_wikidata": "Q47244",
+        "tagkey_openGeoDB:is_in_loc_id": 343,
+        "tagkey_wikipedia": "de:Einbeck",
+        "tagkey_ele": 112,
+        "tagkey_ref:LOCODE": "DEEIB",
+        "tagkey_openGeoDB:community_identification_number": 3155004,
+        "tagkey_openGeoDB:telephone_area_code": 5561,
+        "tagkey_name": "Einbeck",
+        "tagkey_population": 31591,
+        "tagkey_is_in": "Einbeck,Landkreis Northeim,Niedersachsen,Bundesrepublik Deutschland,Europe",
+        "name": "Einbeck",
+        "place": "town",
+        "tagkey_openGeoDB:loc_id": 16059,
+        "lat": "51.8184594"
+      }
+    }]
+  },
+  "aggregations": {
+    "places": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "village",
+          "doc_count": 7427
+        },
+        {
+          "key": "suburb",
+          "doc_count": 1718
+        },
+        {
+          "key": "town",
+          "doc_count": 918
+        },
+        {
+          "key": "city",
+          "doc_count": 29
+        }
+      ]
+    },
+    "tag": {
+      "doc_count_error_upper_bound": 114,
+      "sum_other_doc_count": 23882,
+      "buckets": [
+        {
+          "key": "deutschland",
+          "doc_count": 7051
+        },
+        {
+          "key": "europe",
+          "doc_count": 7050
+        },
+        {
+          "key": "bundesrepublik",
+          "doc_count": 7034
+        },
+        {
+          "key": "bayern",
+          "doc_count": 1535
+        },
+        {
+          "key": "kreis",
+          "doc_count": 1211
+        },
+        {
+          "key": "regierungsbezirk",
+          "doc_count": 1139
+        },
+        {
+          "key": "niedersachsen",
+          "doc_count": 1047
+        },
+        {
+          "key": "nordrhein",
+          "doc_count": 949
+        },
+        {
+          "key": "westfalen",
+          "doc_count": 949
+        },
+        {
+          "key": "baden",
+          "doc_count": 944
+        }
+      ]
+    }
+  }
+}

@@ -11,6 +11,7 @@ All notable changes qsf-integration project will be documented in this file.
 - implement a search filter builder
 - implement a not filter for the qsfql query
 - add the request id to the pipeline container
+- add support for elastic 7
 
 ### Changed
 
