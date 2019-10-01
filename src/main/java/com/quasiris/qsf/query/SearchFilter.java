@@ -67,6 +67,9 @@ public class SearchFilter {
     }
 
     public FilterOperator getFilterOperator() {
+        if(this.filterOperator == null) {
+            return FilterOperator.AND;
+        }
         return filterOperator;
     }
 
