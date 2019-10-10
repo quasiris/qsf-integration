@@ -24,7 +24,7 @@ public class StandardElasticClient implements  ElasticClientIF {
     }
 
     public ElasticResult request(String elasticUrl, String request) throws IOException {
-        LOG.debug("elastic request: " + request);
+        LOG.debug("elastic url: {} request: {}", elasticUrl, request);
         String response = ElasticHttpClient.post(elasticUrl, request);
         ElasticResult elasticResult = objectMapper.readValue(response, ElasticResult.class);
         return elasticResult;
@@ -38,7 +38,8 @@ public class StandardElasticClient implements  ElasticClientIF {
 
     @Override
     public void index(String elasticBaseUrl, String request) throws IOException {
-        ElasticHttpClient.post(elasticBaseUrl, request);
+        LOG.debug("elastic url: {} request: {}", elasticBaseUrl, request);
+        ElasticHttpClient.postAsync(elasticBaseUrl, request);
     }
 
     @Override
