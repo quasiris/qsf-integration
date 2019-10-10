@@ -6,7 +6,6 @@ import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
-import com.quasiris.qsf.pipeline.filter.elastic.client.StandardElasticClient;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.util.PrintUtil;
 import org.slf4j.Logger;
@@ -87,5 +86,11 @@ public class ElasticFilter extends AbstractFilter {
 
     public void setSearchResultTransformer(SearchResultTransformerIF searchResultTransformer) {
         this.searchResultTransformer = searchResultTransformer;
+    }
+
+    @Override
+    public PipelineContainer onError(PipelineContainer pipelineContainer, Exception e) {
+        LOG.error("The filter: " + getId() + " failed with an error: " + e.getMessage());
+        return super.onError(pipelineContainer, e);
     }
 }
