@@ -12,6 +12,9 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Request {
 
+    public Request() {
+    }
+
     public Request(HttpServletRequest httpServletRequest) {
         this.path = httpServletRequest.getRequestURI();
         this.parameters = httpServletRequest.getParameterMap();

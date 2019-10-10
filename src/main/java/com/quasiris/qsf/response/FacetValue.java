@@ -8,6 +8,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacetValue {
 
+    public FacetValue() {
+    }
+
     public FacetValue(String value, Long count) {
         this.value = value;
         this.count = count;

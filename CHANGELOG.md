@@ -17,6 +17,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Fixed
 - suggest query transformer: don't set the include parameter in case of an empty query
+- add a default constructor to the data beans to allow deserialization
 
 ### Breaking Changes
 
