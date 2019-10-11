@@ -12,6 +12,7 @@ All notable changes qsf-integration project will be documented in this file.
 - implement a not filter for the qsfql query
 - add the request id to the pipeline container
 - add support for elastic 7
+- add a qsf exception converter to transform qsf exceptions to html
 
 ### Changed
 
