@@ -1,5 +1,7 @@
 package com.quasiris.qsf.pipeline;
 
+import com.quasiris.qsf.exception.Debug;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ public class PipelineContainerDebugException extends Exception {
         this.pipelineContainer = pipelineContainer;
     }
 
-    public List<Object> getDebugStack() {
+    public List<Debug> getDebugStack() {
         return this.pipelineContainer.getDebugStack();
     }
 }

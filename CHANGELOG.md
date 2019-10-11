@@ -15,6 +15,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add a qsf exception converter to transform qsf exceptions to html
 
 ### Changed
+- change the handling of debug objects
 
 ### Fixed
 - suggest query transformer: don't set the include parameter in case of an empty query

@@ -2,16 +2,15 @@ package com.quasiris.qsf.pipeline;
 
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
+import com.quasiris.qsf.exception.Debug;
+import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.SearchResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -43,7 +42,7 @@ public class PipelineContainer {
 
     private boolean failOnError = true;
 
-    private List<Object> debugStack = new ArrayList<>();
+    private List<Debug> debugStack = new ArrayList<>();
 
     private SearchQuery searchQuery = new SearchQuery();
     private Map<String, SearchResult> searchResults = new HashMap<>();
@@ -70,7 +69,11 @@ public class PipelineContainer {
 
     public void putSearchResult(String name, SearchResult searchResult) {
         if(isDebugEnabled()) {
-            debugStack.add(searchResult);
+            Debug debug = new Debug();
+            debug.setId("searchResult." + searchResult.getName());
+            debug.setDebugObject(searchResult);
+            debug.setType(DebugType.OBJECT);
+            debugStack.add(debug);
         }
         searchResults.put(name, searchResult);
     }
@@ -106,8 +109,20 @@ public class PipelineContainer {
     }
 
     public void debug(Object debugObject) {
-        if(debug) {
-            this.debugStack.add(debugObject);
+        debug(UUID.randomUUID().toString(),DebugType.OBJECT, debugObject );
+    }
+
+    public void debug(String id, DebugType type, Object debugObject) {
+        Debug debug = new Debug();
+        debug.setId(id);
+        debug.setType(type);
+        debug.setDebugObject(debugObject);
+        debug(debug);
+    }
+
+    public void debug(Debug debug) {
+        if(this.debug) {
+            this.debugStack.add(debug);
         }
     }
 
@@ -123,7 +138,7 @@ public class PipelineContainer {
         return this.debug;
     }
 
-    public List<Object> getDebugStack() {
+    public List<Debug> getDebugStack() {
         return debugStack;
     }
 

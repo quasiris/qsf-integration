@@ -1,6 +1,7 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
@@ -39,12 +40,12 @@ public class ElasticFilter extends AbstractFilter {
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
         ObjectNode elasticQuery = queryTransformer.transform(pipelineContainer);
-        if(pipelineContainer.isDebugEnabled()) {
-            pipelineContainer.debug(baseUrl);
-            pipelineContainer.debug(elasticQuery);
-        }
+
+        pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, baseUrl);
+        pipelineContainer.debug(getId() + ".query", DebugType.JSON, elasticQuery);
+
         ElasticResult elasticResult = elasticClient.request(baseUrl + "/_search", elasticQuery);
-        pipelineContainer.debug(elasticResult);
+        pipelineContainer.debug(getId() + ".result", DebugType.OBJECT, elasticResult);
         SearchResult searchResult = searchResultTransformer.transform(elasticResult);
         searchResult.setName(resultSetId);
         pipelineContainer.putSearchResult(resultSetId,searchResult);

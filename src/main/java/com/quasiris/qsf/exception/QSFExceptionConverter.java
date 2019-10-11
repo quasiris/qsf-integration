@@ -29,17 +29,20 @@ public class QSFExceptionConverter {
         return builder.toString();
     }
 
-    public static StringBuilder debugToHtml(List<Object> debugObjects) {
+    public static StringBuilder debugToHtml(List<Debug> debugList) {
         ObjectMapper mapper = new ObjectMapper();
         StringBuilder builder = new StringBuilder();
-        for(Object debugObject : debugObjects) {
-
-            Object formatted = debugObject;
-
-            try {
-                formatted = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(debugObject);
-            } catch (JsonProcessingException e) {
-                //
+        for(Debug debug : debugList) {
+            Object formatted = null;
+            DebugType debugType = debug.getType();
+            if (debugType.isJson() || debugType.isObject()) {
+                try {
+                    formatted = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(debug.getDebugObject());
+                } catch (JsonProcessingException e) {
+                    //
+                }
+            } else {
+                formatted = debug.getDebugObject();
             }
             builder.append("<pre>");
             builder.append(formatted);

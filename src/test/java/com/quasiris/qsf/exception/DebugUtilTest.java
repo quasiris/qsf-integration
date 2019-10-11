@@ -21,7 +21,9 @@ public class DebugUtilTest {
 
         PipelineContainer pipelineContainer = new PipelineContainer();
         pipelineContainer.setDebug(true);
-        pipelineContainer.debug("test debug");
+        Debug debug = new Debug();
+        debug.setDebugObject("test debug");
+        pipelineContainer.debug(debug);
         PipelineContainerException ex = new PipelineContainerException(pipelineContainer, "test error");
 
         String html =  QSFExceptionConverter.error2Html(ex);
@@ -34,7 +36,9 @@ public class DebugUtilTest {
 
         PipelineContainer pipelineContainer = new PipelineContainer();
         pipelineContainer.setDebug(true);
-        pipelineContainer.debug("test debug");
+        Debug debug = new Debug();
+        debug.setDebugObject("test debug");
+        pipelineContainer.debug(debug);
         PipelineContainerDebugException ex = new PipelineContainerDebugException(pipelineContainer);
 
         String html =  QSFExceptionConverter.debugToHtml(ex);

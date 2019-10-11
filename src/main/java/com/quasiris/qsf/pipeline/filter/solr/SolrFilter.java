@@ -1,6 +1,7 @@
 package com.quasiris.qsf.pipeline.filter.solr;
 
 import com.google.common.base.Optional;
+import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.response.SearchResult;
@@ -43,9 +44,8 @@ public class SolrFilter extends AbstractFilter {
 
         SolrQuery solrQuery = queryTransformer.transform(pipelineContainer);
 
-        if (pipelineContainer.isDebugEnabled()) {
-            pipelineContainer.debug(query2url(this.solrBaseUrl, solrQuery));
-        }
+
+        pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, query2url(this.solrBaseUrl, solrQuery));
 
         SolrClient solrClient = SolrClientFactory.getSolrClient(solrBaseUrl);
         if(solrClient == null) {
@@ -53,10 +53,7 @@ public class SolrFilter extends AbstractFilter {
             SolrClientFactory.setSolrClient(solrClient, solrBaseUrl);
         }
         QueryResponse solrResponse = solrClient.query(solrQuery);
-        if (pipelineContainer.isDebugEnabled()) {
-            pipelineContainer.debug(queryResponse2Json(solrResponse));
-        }
-
+        pipelineContainer.debug(getId() + ".result", DebugType.STRING, queryResponse2Json(solrResponse));
 
         SearchResult searchResult = searchResultTransformer.transform(solrResponse);
         searchResult.setName(resultSetId);
