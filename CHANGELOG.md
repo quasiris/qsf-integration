@@ -22,6 +22,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add a default constructor to the data beans to allow deserialization
 
 ### Breaking Changes
+- the type of debug stack changed from List<Object> to List<Debug>
 
 ### Deprications
 
