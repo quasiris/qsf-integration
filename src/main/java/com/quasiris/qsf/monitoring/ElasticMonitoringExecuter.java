@@ -199,13 +199,6 @@ public class ElasticMonitoringExecuter {
      * @param status Value to set for property 'status'.
      */
     private void setStatus(String status) {
-        if(this.status.equals("ERROR")) {
-            return;
-        }
-        if(this.status.equals("WARN") && status.equals("ERROR")) {
-            this.status = status;
-            return;
-        }
-        this.status = status;
+        this.status = MonitoringStatus.computeStatus(this.status, status);
     }
 }
