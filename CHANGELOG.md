@@ -13,6 +13,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add the request id to the pipeline container
 - add support for elastic 7
 - add a qsf exception converter to transform qsf exceptions to html
+- add a function to merge monitoring responses
 
 ### Changed
 - change the handling of debug objects
