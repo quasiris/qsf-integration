@@ -2,6 +2,8 @@ package com.quasiris.qsf.monitoring;
 
 import com.quasiris.qsf.pipeline.*;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilterBuilder;
+import com.quasiris.qsf.pipeline.filter.elastic.Profiles;
+import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.Facet;
 import com.quasiris.qsf.response.MonitoringResponse;
@@ -17,7 +19,6 @@ import java.util.List;
  */
 public class ElasticMonitoringExecuter {
 
-
     /**
      * Create a new ElasticMonitoringExecuter.
      * @param baseUrl The base url of the elastic index. E.g. http://localhost:9200/qsf-index
@@ -26,11 +27,13 @@ public class ElasticMonitoringExecuter {
     public ElasticMonitoringExecuter(String baseUrl, List<MonitoringDocument> monitoringDocumentList) {
         this.baseUrl = baseUrl;
         this.monitoringDocumentList = monitoringDocumentList;
+        this.query = "*";
     }
 
     private String baseUrl;
+    private String query;
 
-    private String profile = "classpath://com/quasiris/qsf/elastic/profiles/match-all-profile.json";
+    private String profile = Profiles.queryString();
 
     private List<MonitoringDocument> monitoringDocumentList;
 
@@ -113,6 +116,24 @@ public class ElasticMonitoringExecuter {
     }
 
     /**
+     * Getter for property 'query'.
+     *
+     * @return Value for property 'query'.
+     */
+    public String getQuery() {
+        return query;
+    }
+
+    /**
+     * Setter for property 'query'.
+     *
+     * @param query Value to set for property 'query'.
+     */
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    /**
      * Run the monitoring.
      * Create a elastic query, executes the query and check the results.
      *
@@ -152,8 +173,11 @@ public class ElasticMonitoringExecuter {
                         build()).
                 build();
 
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQ(this.query);
         PipelineContainer pipelineContainer = PipelineExecuter.create().
                 pipeline(pipeline).
+                searchQuery(searchQuery).
                 execute();
 
         SearchResult searchResult = pipelineContainer.getSearchResults().get(type);
@@ -186,6 +210,7 @@ public class ElasticMonitoringExecuter {
             }
             monitoringDocument.check();
             monitoringDocument.setValue("baseUrl", baseUrl);
+            monitoringDocument.setValue("query", query);
             setStatus(monitoringDocument.getStatus());
             monitoring.addDocument(monitoringDocument);
         }
