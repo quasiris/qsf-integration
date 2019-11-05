@@ -4,17 +4,21 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.concurrent.Future;
 
 public class ElasticHttpClient {
+
+    private static Logger LOG = LoggerFactory.getLogger(ElasticHttpClient.class);
 
 
     public static String post(String url, String postString) throws IOException {
@@ -45,11 +49,11 @@ public class ElasticHttpClient {
     }
 
 
-    public static void postAsync(String url, String postString) throws IOException {
+    public static void postAsync(String url, String postString) {
         postAsync(url, postString, "application/json");
     }
 
-    public static void postAsync(String url, String postString, String contentType) throws IOException {
+    public static void postAsync(String url, String postString, String contentType) {
         CloseableHttpAsyncClient client = HttpAsyncClients.createDefault();
         client.start();
         HttpPost httpPost = new HttpPost(url);
@@ -58,8 +62,20 @@ public class ElasticHttpClient {
         httpPost.setEntity(entity);
         httpPost.setHeader("Content-Type",contentType);
 
-        Future<HttpResponse> future = client.execute(httpPost, null);
-        client.close();
 
+        client.execute(httpPost, new FutureCallback<HttpResponse>() {
+            public void failed(final Exception e) {
+                LOG.error("The async request failed because " + e.getMessage(), e);
+            }
+
+            public void completed(final HttpResponse httpResponse) {
+                LOG.debug("The async request finished successful with code: "
+                        + httpResponse.getStatusLine().getStatusCode());
+            }
+
+            public void cancelled() {
+                LOG.error("The async request was canceled.");
+            }
+        });
     }
 }
