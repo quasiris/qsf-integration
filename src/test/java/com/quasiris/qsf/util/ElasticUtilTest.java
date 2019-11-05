@@ -14,4 +14,10 @@ public class ElasticUtilTest {
 
     }
 
+    @Test
+    public void escapeOR() throws Exception {
+        String value = ElasticUtil.escape("16515 OR");
+        Assert.assertEquals("16515 \\OR", value);
+    }
+
 }
