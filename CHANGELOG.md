@@ -23,6 +23,7 @@ All notable changes qsf-integration project will be documented in this file.
 - suggest query transformer: don't set the include parameter in case of an empty query
 - add a default constructor to the data beans to allow deserialization
 - improve computing of the status of a monitoring event
+- bugfix for computing the correct total pages
 
 ### Breaking Changes
 - the type of debug stack changed from List<Object> to List<Debug>

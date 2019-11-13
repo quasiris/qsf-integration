@@ -3,6 +3,8 @@ package com.quasiris.qsf.paging;
 import com.quasiris.qsf.response.Page;
 import com.quasiris.qsf.response.Paging;
 
+import java.math.BigDecimal;
+
 public class PagingBuilder {
 
 
@@ -15,16 +17,20 @@ public class PagingBuilder {
             rows = 10;
         }
 
-        Long pageCount = ((total / rows) +1);
+
+
+        int pageCount = BigDecimal.valueOf(total).
+                divide(BigDecimal.valueOf(rows), BigDecimal.ROUND_UP).
+                intValue();
 
         Paging paging = new Paging();
         paging.setCurrentPage(currentPage);
-        paging.setPageCount(pageCount.intValue());
+        paging.setPageCount(pageCount);
         paging.setFirstPage(createPage(1, currentPage));
-        paging.setLastPage(createPage(pageCount.intValue(), currentPage));
+        paging.setLastPage(createPage(pageCount, currentPage));
 
 
-        paging.setNextPage(createPage(Math.min(pageCount.intValue(), (currentPage+1)), currentPage));
+        paging.setNextPage(createPage(Math.min(pageCount, (currentPage+1)), currentPage));
         paging.setPreviousPage(createPage(Math.max(1, (currentPage-1)), currentPage));
 
         paging.setRows(rows);
