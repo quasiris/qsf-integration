@@ -15,6 +15,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add a qsf exception converter to transform qsf exceptions to html
 - add a function to merge monitoring responses
 - add support for using lucene query in the elastic monitoring 
+- add methods to get the value as integer or long from the document
 
 ### Changed
 - change the handling of debug objects

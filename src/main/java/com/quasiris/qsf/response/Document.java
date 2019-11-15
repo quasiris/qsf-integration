@@ -63,6 +63,22 @@ public class Document {
         return document.get(fieldName);
     }
 
+    public Long getFieldValueAsLong(String fieldName) {
+        String value = getFieldValue(fieldName);
+        if(value == null) {
+            return null;
+        }
+        return Long.valueOf(value);
+    }
+
+    public Integer getFieldValueAsInteger(String fieldName) {
+        String value = getFieldValue(fieldName);
+        if(value == null) {
+            return null;
+        }
+        return Integer.valueOf(value);
+    }
+
     public String getFieldValue(String fieldName, String defaultValue) {
         String value = getFieldValue(fieldName);
         if(value == null) {
