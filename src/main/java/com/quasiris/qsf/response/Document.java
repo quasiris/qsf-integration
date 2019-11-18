@@ -68,7 +68,11 @@ public class Document {
         if(value == null) {
             return null;
         }
-        return Long.valueOf(value);
+        try {
+            return Long.valueOf(value.trim());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public Integer getFieldValueAsInteger(String fieldName) {
@@ -76,7 +80,11 @@ public class Document {
         if(value == null) {
             return null;
         }
-        return Integer.valueOf(value);
+        try {
+            return Integer.valueOf(value.trim());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String getFieldValue(String fieldName, String defaultValue) {
