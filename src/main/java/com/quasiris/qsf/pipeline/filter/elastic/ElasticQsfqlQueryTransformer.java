@@ -84,9 +84,12 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         transformFiltersCurrentVersion();
     }
 
-    public void transformFiltersCurrentVersion() throws PipelineContainerException {
-        transformFiltersAndOr();
-        transformFiltersNot();
+    // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
+    // TODO implement range queries for date
+    public void transformFiltersCurrentVersion() {
+        transformFilters("must", FilterOperator.AND);
+        transformFilters("should", FilterOperator.OR);
+        transformFilters("must_not", FilterOperator.NOT);
     }
 
     public void transformFiltersVersionOlder2() throws PipelineContainerException {
@@ -155,53 +158,44 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
 
-    public void transformFiltersNot() {
-        List<SearchFilter> searchFilterList = getSearchQuery().getSearchFilterList().stream().
-                filter(sf -> sf.getFilterOperator().equals(FilterOperator.NOT)).
-                collect(Collectors.toList());
-        ArrayNode filters = computeFilter(searchFilterList);
-        if(filters.size() == 0) {
-            return;
-        }
-
+    public ObjectNode getFilterBool() {
         ObjectNode bool = getBoolQuery();
-        // add already defined filters from the profile to the filter array
-        if(bool.get("must_not") != null && bool.get("must_not").isArray()) {
-            if(bool.get("must_not").isArray()) {
-                ArrayNode filtersArray = (ArrayNode) bool.get("must_not");
-                for (Iterator<JsonNode> it = filtersArray.iterator(); it.hasNext();) {
-                    filters.add((ObjectNode) it.next());
-                }
-            }
+
+        ObjectNode filter = (ObjectNode) bool.get("filter");
+        if(filter == null) {
+            bool = (ObjectNode) bool.set("filter", objectMapper.createObjectNode());
+            filter = (ObjectNode) bool.get("filter");
         }
 
-        bool.set("must_not", filters);
+        ObjectNode filterBool = (ObjectNode) filter.get("bool");
+        if(filterBool == null) {
+            filter = (ObjectNode) filter.set("bool", objectMapper.createObjectNode());
+            filterBool = (ObjectNode) filter.get("bool");
+        }
+        return filterBool;
     }
 
-    // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
-    // TODO implement range queries for date
-    public void transformFiltersAndOr() {
+    public void transformFilters(String elasticOperator, FilterOperator filterOperator) {
         List<SearchFilter> searchFilterList = getSearchQuery().getSearchFilterList().stream().
-                filter(sf -> !sf.getFilterOperator().equals(FilterOperator.NOT)).
+                filter(sf -> sf.getFilterOperator().equals(filterOperator)).
                 collect(Collectors.toList());
-        ArrayNode filters = computeFilter(searchFilterList);
-        if(filters.size() == 0) {
+        ArrayNode notFilters = computeFilter(searchFilterList);
+        if(notFilters.size() == 0) {
             return;
         }
-
-        ObjectNode bool = getBoolQuery();
         // add already defined filters from the profile to the filter array
-        if(bool.get("filter") != null && bool.get("filter").isArray()) {
-            if(bool.get("filter").isArray()) {
-                ArrayNode filtersArray = (ArrayNode) bool.get("filter");
-                for (Iterator<JsonNode> it = filtersArray.iterator(); it.hasNext();) {
-                    filters.add((ObjectNode) it.next());
-                }
+        ObjectNode filterBool = getFilterBool();
+        ArrayNode filter = (ArrayNode) filterBool.get(elasticOperator);
+
+        if(filter != null && filter.isArray()) {
+            for (Iterator<JsonNode> it = filter.iterator(); it.hasNext();) {
+                notFilters.add(it.next());
             }
         }
-
-        bool.set("filter", filters);
+        filterBool.set(elasticOperator, notFilters);
     }
+
+
 
     public String mapFilterField(String fieldName) {
         String elasticField = getFilterMapping().get(fieldName);

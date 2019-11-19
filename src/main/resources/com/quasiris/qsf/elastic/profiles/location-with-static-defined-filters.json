@@ -51,18 +51,22 @@
           }
         }
       ],
-      "filter": [
-        {
-          "term": {
-            "staticElasticField": "alice"
-          }
-        },
-        {
-          "term": {
-            "staticElasticField": "bob"
-          }
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "term": {
+                "staticElasticField": "alice"
+              }
+            },
+            {
+              "term": {
+                "staticElasticField": "bob"
+              }
+            }
+          ]
         }
-      ]
+      }
     }
   },
   "highlight": {

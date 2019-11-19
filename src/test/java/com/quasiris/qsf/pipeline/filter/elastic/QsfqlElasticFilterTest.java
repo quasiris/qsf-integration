@@ -21,15 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 public class QsfqlElasticFilterTest extends AbstractPipelineTest {
 
         @Test
-        @Ignore
         public void debug() throws Exception {
-                try {
-                        testQsfqlElasticFilterVersion1();
-                } catch (PipelineContainerException e) {
-                        System.out.println(e.getMessage());
-                } catch (PipelineContainerDebugException debug) {
-                        System.out.println(debug.getDebugStack());
-                }
+            try {
+                    testQsfqlElasticFilterVersion1();
+            } catch (PipelineContainerException e) {
+                    System.out.println(e.getMessage());
+            } catch (PipelineContainerDebugException debug) {
+                    System.out.println(debug.getDebugStack());
+            }
         }
 
         @Test

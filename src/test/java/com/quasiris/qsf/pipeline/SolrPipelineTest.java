@@ -22,19 +22,10 @@ public class SolrPipelineTest extends AbstractPipelineTest {
 
     private boolean debug = false;
 
-    @Test
-    //@Ignore
+    @Test(expected = PipelineContainerDebugException.class)
     public void debug() throws Exception {
         this.debug = true;
-        try {
-            testSolrPipeline();
-        } catch (PipelineContainerDebugException e) {
-            System.out.println(e.getDebugStack());
-        } catch (PipelineContainerException e) {
-            System.out.println(e.getMessage());
-        } catch (Exception e) {
-            throw e;
-        }
+        testSolrPipeline();
     }
 
 

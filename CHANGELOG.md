@@ -16,9 +16,11 @@ All notable changes qsf-integration project will be documented in this file.
 - add a function to merge monitoring responses
 - add support for using lucene query in the elastic monitoring 
 - add methods to get the value as integer or long from the document
+- implement a or filter for elastic
 
 ### Changed
 - change the handling of debug objects
+- refactor the filter logic
 
 ### Fixed
 - suggest query transformer: don't set the include parameter in case of an empty query

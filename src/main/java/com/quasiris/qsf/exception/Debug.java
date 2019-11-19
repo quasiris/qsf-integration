@@ -78,4 +78,14 @@ public class Debug {
     public void setType(DebugType type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "Debug{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", debugObject=" + debugObject +
+                '}';
+    }
 }
