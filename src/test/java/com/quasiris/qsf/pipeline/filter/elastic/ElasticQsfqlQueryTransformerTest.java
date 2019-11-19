@@ -43,8 +43,23 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("color", "colorElasticField");
         ObjectNode elasticQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar", "f.color=red");
         Assert.assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("term").get("colorElasticField").asText());
-        Assert.assertEquals("foo", elasticQuery.get("query").get("bool").get("filter").get("bool").get("should").get(0).get("terms").get("brandElasticField").get(0).asText());
-        Assert.assertEquals("bar", elasticQuery.get("query").get("bool").get("filter").get("bool").get("should").get(0).get("terms").get("brandElasticField").get(1).asText());
+        Assert.assertEquals("foo", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(1).get("bool").get("should").get(0).get("term").get("brandElasticField").asText());
+        Assert.assertEquals("bar", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(1).get("bool").get("should").get(1).get("term").get("brandElasticField").asText());
+    }
+
+    @Test
+    public void transformFilterOrMultiple() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
+        transformer.addFilterMapping("brand", "brandElasticField");
+        transformer.addFilterMapping("color", "colorElasticField");
+        transformer.addFilterMapping("size", "sizeElasticField");
+        ObjectNode elasticQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar", "f.color=red", "f.size.or=xl", "f.size.or=xxl");
+        Assert.assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("term").get("colorElasticField").asText());
+        Assert.assertEquals("xl", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(1).get("bool").get("should").get(0).get("term").get("sizeElasticField").asText());
+        Assert.assertEquals("xxl", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(1).get("bool").get("should").get(1).get("term").get("sizeElasticField").asText());
+        Assert.assertEquals("foo", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(2).get("bool").get("should").get(0).get("term").get("brandElasticField").asText());
+        Assert.assertEquals("bar", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(2).get("bool").get("should").get(1).get("term").get("brandElasticField").asText());
     }
 
 

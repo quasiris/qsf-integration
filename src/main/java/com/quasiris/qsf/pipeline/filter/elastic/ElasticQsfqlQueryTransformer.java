@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
-import com.quasiris.qsf.query.*;
+import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.query.FilterOperator;
+import com.quasiris.qsf.query.RangeFilterValue;
+import com.quasiris.qsf.query.SearchFilter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -88,16 +91,16 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     // TODO implement range queries for date
     public void transformFiltersCurrentVersion() {
         transformFilters("must", FilterOperator.AND);
-        transformFilters("should", FilterOperator.OR);
+        transformFiltersOr();
         transformFilters("must_not", FilterOperator.NOT);
     }
 
     public void transformFiltersVersionOlder2() throws PipelineContainerException {
         ArrayNode filters = getObjectMapper().createArrayNode();
         for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
-            ObjectNode filter = transformTermsFilter(searchFilter);
+            ArrayNode filter = transformTermsFilter(searchFilter);
             if(filter != null) {
-                filters.add(filter);
+                filters.addAll(filter);
             }
         }
         if(filters.size() == 0) {
@@ -122,7 +125,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public ArrayNode computeFilter(List<SearchFilter> searchFilterList) {
         ArrayNode filters = getObjectMapper().createArrayNode();
         for (SearchFilter searchFilter : searchFilterList) {
-            ObjectNode filter = null;
+            ArrayNode filter = null;
             switch (searchFilter.getFilterType()) {
                 case TERM:
                 case MATCH:
@@ -141,7 +144,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
 
             if(filter != null) {
-                filters.add(filter);
+                filters.addAll(filter);
             }
         }
         return filters;
@@ -196,6 +199,40 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
 
+    public void transformFiltersOr() {
+        List<SearchFilter> searchFilterList = getSearchQuery().getSearchFilterList().stream().
+                filter(sf -> sf.getFilterOperator().equals(FilterOperator.OR)).
+                collect(Collectors.toList());
+
+        for(SearchFilter searchFilter : searchFilterList) {
+            ArrayNode filters = computeFilter(Arrays.asList(searchFilter));
+            if (filters.size() == 0) {
+                return;
+            }
+
+
+            ObjectNode should = objectMapper.createObjectNode();
+            should.set("should", filters);
+
+            ObjectNode bool = objectMapper.createObjectNode();
+
+            bool.set("bool", should);
+
+            ObjectNode filterBool = getFilterBool();
+            ArrayNode must = (ArrayNode) filterBool.get("must");
+            if (must == null) {
+                filterBool.set("must", objectMapper.createArrayNode());
+                must = (ArrayNode) filterBool.get("must");
+            }
+
+            must.add(bool);
+        }
+
+
+
+    }
+
+
 
     public String mapFilterField(String fieldName) {
         String elasticField = getFilterMapping().get(fieldName);
@@ -215,7 +252,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     }
 
-    public ObjectNode transformTermsFilter(SearchFilter searchFilter) {
+    public ArrayNode transformTermsFilter(SearchFilter searchFilter) {
 
         String elasticField = mapFilterField(searchFilter.getName());
         if(elasticField == null) {
@@ -225,32 +262,18 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             throw new IllegalArgumentException("There is no field name defined.");
         }
 
-        if(searchFilter.getValues().size() > 1 && searchFilter.getFilterType().equals(FilterType.TERM) ) {
-            ArrayNode arrayNode = getObjectMapper().createArrayNode();
-            for(String v : searchFilter.getValues()) {
-                arrayNode.add(v);
-            }
-
-            ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set("terms",
-                    getObjectMapper().createObjectNode().set(elasticField, arrayNode));
-            return filter;
+        ArrayNode arrayNode = getObjectMapper().createArrayNode();
+        for(String filterValue : searchFilter.getValues()) {
+            ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set(searchFilter.getFilterType().getCode(),
+                    getObjectMapper().createObjectNode().put(elasticField, filterValue));
+            arrayNode.add(filter);
         }
 
-        String firstValue = searchFilter.getValues().stream().findFirst().orElse(null);
-        if (Strings.isNullOrEmpty(firstValue)) {
-            return null;
-        }
-
-        ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set(searchFilter.getFilterType().getCode(),
-                getObjectMapper().createObjectNode().put(elasticField, firstValue));
-
-
-
-        return filter;
+        return arrayNode;
 
     }
 
-    public ObjectNode transformRangeFilter(SearchFilter searchFilter) {
+    public ArrayNode transformRangeFilter(SearchFilter searchFilter) {
 
         String elasticField = getFilterMapping().get(searchFilter.getName());
         if (Strings.isNullOrEmpty(elasticField)) {
@@ -292,7 +315,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set("range",
                 getObjectMapper().createObjectNode().set(elasticField, range));
 
-        return filter;
+        return getObjectMapper().createArrayNode().add(filter);
 
     }
 
