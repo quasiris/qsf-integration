@@ -2,18 +2,12 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.*;
 import com.quasiris.qsf.response.*;
 import com.quasiris.qsf.util.EncodingUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by mki on 04.11.17.
@@ -156,11 +150,17 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     public Document transformHit(Hit hit) {
         String id = hit.get_id();
         ObjectNode objectNode = hit.get_source();
+        LinkedHashMap<String, InnerHitResult> innerHits = hit.getInner_hits();
 
         Document document = new Document(id);
         ObjectMapper mapper = new ObjectMapper();
         try {
             Map fields = mapper.readValue(objectNode.toString(), Map.class);
+
+            if(innerHits != null) {
+                transformInnerHits(fields, innerHits);
+            }
+
             if(fieldMapping.size() == 0) {
                 document.setDocument(fields);
             } else {
@@ -181,6 +181,22 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
         transformHighlight(hit, document);
         return document;
+    }
+
+    public void transformInnerHits(Map fields, LinkedHashMap<String, InnerHitResult> innerHits) {
+        for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
+            String fieldName = entry.getKey();
+            List<Map<String, Object>> values = (List) fields.get(fieldName);
+            int valueOffset = 0;
+            for (Map<String, Object> value : values) {
+                value.put("_score", 0.0);
+                value.put("_offset", valueOffset++);
+            }
+            for (InnerHit innerHit : entry.getValue().getHits().getHits()) {
+                Integer offset = innerHit.get_nested().getOffset();
+                values.get(offset).put("_score", innerHit.get_score());
+            }
+        }
     }
 
     public void mapValue(Document document, String key, Object value) {

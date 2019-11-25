@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic.bean;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ public class Hit {
     private String _id;
     private Double _score;
     private ObjectNode _source;
+    private LinkedHashMap<String, InnerHitResult> inner_hits;
 
     private Map<String, List<String>> highlight;
 
@@ -59,6 +61,14 @@ public class Hit {
 
     public void set_source(ObjectNode _source) {
         this._source = _source;
+    }
+
+    public LinkedHashMap<String, InnerHitResult> getInner_hits() {
+        return inner_hits;
+    }
+
+    public void getInner_hits(LinkedHashMap<String, InnerHitResult> inner_hits) {
+        this.inner_hits = inner_hits;
     }
 
     public Map<String, List<String>> getHighlight() {
