@@ -17,6 +17,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add support for using lucene query in the elastic monitoring 
 - add methods to get the value as integer or long from the document
 - implement a or filter for elastic
+- add support for inner hits in elastic
 
 ### Changed
 - change the handling of debug objects
