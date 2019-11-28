@@ -13,11 +13,12 @@ public class ElasticUtil {
     }
 
     public static String escape(String value, String[] metaCharacters) {
-        for (int i = 0 ; i < metaCharacters.length ; i++){
-            if(value.contains(metaCharacters[i])){
-                value = value.replace(metaCharacters[i],"\\"+metaCharacters[i]);
+        if(value != null) {
+            for (int i = 0; i < metaCharacters.length; i++) {
+                if (value.contains(metaCharacters[i])) {
+                    value = value.replace(metaCharacters[i], "\\" + metaCharacters[i]);
+                }
             }
-
         }
         return value;
     }

@@ -40,8 +40,11 @@ public class JsonUtil {
     }
 
     public static String encode(String value) {
-        JsonStringEncoder jsonStringEncoder = JsonStringEncoder.getInstance();
-        return new String(jsonStringEncoder.quoteAsString(value));
-
+        String result = null;
+        if(value != null) {
+            JsonStringEncoder jsonStringEncoder = JsonStringEncoder.getInstance();
+            result = new String(jsonStringEncoder.quoteAsString(value));
+        }
+        return result;
     }
 }
