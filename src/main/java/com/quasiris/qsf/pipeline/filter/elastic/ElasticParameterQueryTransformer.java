@@ -98,14 +98,11 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             rawValues.put("param." + param.getKey(), param.getValue());
         }
 
+        Map<String, String> escapedValues = rawValues.entrySet().stream().collect(HashMap::new,
+                (m,e)->m.put(e.getKey() + ".escaped", escapeValue(e.getValue())), HashMap::putAll);
 
-        Map<String, String> escapedValues = rawValues.entrySet().stream().collect(Collectors.toMap(
-                entry -> entry.getKey() + ".escaped",
-                entry -> escapeValue(entry.getValue())));
-
-        Map<String, String> encodedValues = rawValues.entrySet().stream().collect(Collectors.toMap(
-                entry -> entry.getKey() + ".encoded",
-                entry -> JsonUtil.encode(entry.getValue())));
+        Map<String, String> encodedValues = rawValues.entrySet().stream().collect(HashMap::new,
+                (m,e)->m.put(e.getKey() + ".encoded", JsonUtil.encode(e.getValue())), HashMap::putAll);
 
         Map<String, String> replaceMap = new HashMap<>(escapedValues);
         replaceMap.putAll(encodedValues);
@@ -157,6 +154,11 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             profile = loadProfileFromFile(filename);
         }
 
+        for (Map.Entry<String, String> entry : vars.entrySet()) {
+            if(entry.getValue() == null) {
+                entry.setValue("null");
+            }
+        }
 
         StrSubstitutor strSubstitutor = new StrSubstitutor(vars);
         profile = strSubstitutor.replace(profile);
