@@ -187,14 +187,16 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
             String fieldName = entry.getKey();
             List<Map<String, Object>> values = (List) fields.get(fieldName);
-            int valueOffset = 0;
-            for (Map<String, Object> value : values) {
-                value.put("_score", 0.0);
-                value.put("_offset", valueOffset++);
-            }
-            for (InnerHit innerHit : entry.getValue().getHits().getHits()) {
-                Integer offset = innerHit.get_nested().getOffset();
-                values.get(offset).put("_score", innerHit.get_score());
+            if(values != null) {
+                int valueOffset = 0;
+                for (Map<String, Object> value : values) {
+                    value.put("_score", 0.0);
+                    value.put("_offset", valueOffset++);
+                }
+                for (InnerHit innerHit : entry.getValue().getHits().getHits()) {
+                    Integer offset = innerHit.get_nested().getOffset();
+                    values.get(offset).put("_score", innerHit.get_score());
+                }
             }
         }
     }

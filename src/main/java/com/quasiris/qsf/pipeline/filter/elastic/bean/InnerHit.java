@@ -2,6 +2,8 @@ package com.quasiris.qsf.pipeline.filter.elastic.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.LinkedHashMap;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InnerHit {
 
@@ -10,6 +12,7 @@ public class InnerHit {
     private String _id;
     private Double _score;
     private InnerHitNested _nested;
+    private LinkedHashMap<String, InnerHitResult> inner_hits;
 
     public String get_index() {
         return _index;
@@ -52,6 +55,14 @@ public class InnerHit {
         this._nested = _nested;
     }
 
+    public LinkedHashMap<String, InnerHitResult> getInner_hits() {
+        return inner_hits;
+    }
+
+    public void getInner_hits(LinkedHashMap<String, InnerHitResult> inner_hits) {
+        this.inner_hits = inner_hits;
+    }
+
     @Override
     public String toString() {
         return "Hit{" +
@@ -60,6 +71,7 @@ public class InnerHit {
                 ", _id='" + _id +
                 ", _score=" + _score +
                 ", _nested=" + _nested +
+                ", inner_hits=" + inner_hits +
                 '}';
     }
 }
