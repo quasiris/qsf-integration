@@ -232,6 +232,11 @@ public class ElasticFilterBuilder {
         return this;
     }
 
+    public ElasticFilterBuilder rows(int rows) {
+        getElasticQsfqlQueryTransformer().setRows(rows);
+        return this;
+    }
+
     public ElasticFilterBuilder defaultPage(int defaultPage) {
         getElasticQsfqlQueryTransformer().setDefaultPage(defaultPage);
         return this;

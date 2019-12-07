@@ -24,6 +24,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     private Map<String, String> filterMapping = new HashMap<>();
     private Map<String, String> filterRules = new HashMap<>();
     private Integer defaultRows = 10;
+    private Integer rows;
     private Integer defaultPage = 1;
 
     private Integer elasticVersion = 6;
@@ -328,6 +329,9 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         if (rows == null) {
             rows = defaultRows;
         }
+        if(this.rows != null) {
+            rows = this.rows;
+        }
 
 
         int start = (page - 1) * rows;
@@ -420,5 +424,23 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
      */
     public void setFilterRules(Map<String, String> filterRules) {
         this.filterRules = filterRules;
+    }
+
+    /**
+     * Getter for property 'rows'.
+     *
+     * @return Value for property 'rows'.
+     */
+    public Integer getRows() {
+        return rows;
+    }
+
+    /**
+     * Setter for property 'rows'.
+     *
+     * @param rows Value to set for property 'rows'.
+     */
+    public void setRows(Integer rows) {
+        this.rows = rows;
     }
 }

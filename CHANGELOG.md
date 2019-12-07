@@ -18,6 +18,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add methods to get the value as integer or long from the document
 - implement a or filter for elastic
 - add support for inner hits in elastic
+- make the rows configurable in the elastic filter builder
 
 ### Changed
 - change the handling of debug objects
