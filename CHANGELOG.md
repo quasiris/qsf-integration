@@ -19,6 +19,7 @@ All notable changes qsf-integration project will be documented in this file.
 - implement a or filter for elastic
 - add support for inner hits in elastic
 - make the rows configurable in the elastic filter builder
+- add the possibility to use a function score query in elasticsearch profiles
 
 ### Changed
 - change the handling of debug objects

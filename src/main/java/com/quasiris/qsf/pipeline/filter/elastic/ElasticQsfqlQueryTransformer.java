@@ -153,6 +153,13 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public ObjectNode getBoolQuery() {
         ObjectNode query = (ObjectNode) getElasticQuery().get("query");
+        ObjectNode functionScore = (ObjectNode) query.get("function_score");
+        if(functionScore != null) {
+            query = (ObjectNode) functionScore.get("query");
+        }
+
+
+
         ObjectNode bool = (ObjectNode) query.get("bool");
         if(bool == null) {
             bool = objectMapper.createObjectNode();
