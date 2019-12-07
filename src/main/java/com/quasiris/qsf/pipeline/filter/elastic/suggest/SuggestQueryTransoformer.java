@@ -5,6 +5,7 @@ import com.quasiris.qsf.pipeline.filter.elastic.ElasticParameterQueryTransformer
 import com.quasiris.qsf.pipeline.filter.elastic.Profiles;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.util.JsonUtil;
 
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +67,7 @@ public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
 
         if(!Strings.isNullOrEmpty(query) &&
                 !Character.isWhitespace(query.charAt(query.length() - 1))) {
-            suggest.setInclude(lastToken.toLowerCase() + ".*");
+            suggest.setInclude(JsonUtil.encode(lastToken.toLowerCase()) + ".*");
         }
         return suggest;
 
