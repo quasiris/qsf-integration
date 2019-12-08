@@ -163,7 +163,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         ObjectNode bool = (ObjectNode) query.get("bool");
         if(bool == null) {
             bool = objectMapper.createObjectNode();
-            query.set(" bool", bool);
+            query.set("bool", bool);
         }
         return bool;
     }
