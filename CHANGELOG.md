@@ -32,6 +32,7 @@ All notable changes qsf-integration project will be documented in this file.
 - bugfix for computing the correct total pages
 - enable null values in query profiles
 - json encode query token for suggets facet
+- fix bug in suggest after entering a whitespace
 
 ### Breaking Changes
 - the type of debug stack changed from List<Object> to List<Debug>

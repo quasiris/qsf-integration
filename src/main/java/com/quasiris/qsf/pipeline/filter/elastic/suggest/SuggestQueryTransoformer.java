@@ -29,6 +29,9 @@ public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
 
         SearchQuery searchQuery = getPipelineContainer().getSearchQuery();
         String query = searchQuery.getQ();
+        if(query.endsWith(" ")) {
+            query = query + "*";
+        }
         String[] tokenizedQuery = query.split(" ");
         String lastToken = tokenizedQuery[tokenizedQuery.length - 1];
         StringJoiner startTokenJoiner = new StringJoiner(" ");
@@ -65,8 +68,7 @@ public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
         suggest.setId(fieldName);
         suggest.setName(fieldName);
 
-        if(!Strings.isNullOrEmpty(query) &&
-                !Character.isWhitespace(query.charAt(query.length() - 1))) {
+        if(!Strings.isNullOrEmpty(query) && !"*".equals(lastToken)) {
             suggest.setInclude(JsonUtil.encode(lastToken.toLowerCase()) + ".*");
         }
         return suggest;
