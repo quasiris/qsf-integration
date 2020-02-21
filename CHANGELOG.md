@@ -2,7 +2,7 @@
 All notable changes qsf-integration project will be documented in this file.
 
 
-## [Unreleased]
+## [2.7]
 ### Added
 - add an id for the tracking filter
 - implement logic to use filters in a match all query for elastic
@@ -20,6 +20,8 @@ All notable changes qsf-integration project will be documented in this file.
 - add support for inner hits in elastic
 - make the rows configurable in the elastic filter builder
 - add the possibility to use a function score query in elasticsearch profiles
+- track the number of query tokens
+- add elastic 7 support, add track_total_hits flag to profiles
 
 ### Changed
 - change the handling of debug objects
