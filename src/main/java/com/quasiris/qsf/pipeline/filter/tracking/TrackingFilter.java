@@ -67,6 +67,7 @@ public class TrackingFilter extends AbstractFilter {
         tracking.setValue("resultSetId", resultSetId);
 
         tracking.setValue("q", searchQuery.getQ());
+        tracking.setValue("queryTokenCount", searchQuery.getQ().split(" ").length);
         tracking.setValue("page", searchQuery.getPage());
         tracking.setValue("rows", searchQuery.getRows());
 
