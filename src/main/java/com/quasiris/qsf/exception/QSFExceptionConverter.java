@@ -23,6 +23,18 @@ public class QSFExceptionConverter {
 
     }
 
+    public static String debugToHtml(String debugId, PipelineContainerDebugException ex) {
+        if(debugId == null) {
+            return debugToHtml(ex);
+        }
+        for(Debug debug : ex.getDebugStack()) {
+            if(debug.getId() != null && debug.getId().equals(debugId)) {
+                return debugToHtml(debug).toString();
+            }
+        }
+        return debugToHtml(ex);
+    }
+
     public static String debugToHtml(PipelineContainerDebugException ex) {
         StringBuilder builder = new StringBuilder();
         builder.append(debugToHtml(ex.getDebugStack()));
@@ -33,21 +45,30 @@ public class QSFExceptionConverter {
         ObjectMapper mapper = new ObjectMapper();
         StringBuilder builder = new StringBuilder();
         for(Debug debug : debugList) {
-            Object formatted = null;
-            DebugType debugType = debug.getType();
-            if (debugType.isJson() || debugType.isObject()) {
-                try {
-                    formatted = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(debug.getDebugObject());
-                } catch (JsonProcessingException e) {
-                    //
-                }
-            } else {
-                formatted = debug.getDebugObject();
-            }
-            builder.append("<pre>");
-            builder.append(formatted);
-            builder.append("</pre>");
+           builder.append(debugToHtml(debug));
         }
+        return builder;
+    }
+
+    public static StringBuilder debugToHtml(Debug debug) {
+        ObjectMapper mapper = new ObjectMapper();
+        StringBuilder builder = new StringBuilder();
+
+        Object formatted = null;
+        DebugType debugType = debug.getType();
+        if (debugType.isJson() || debugType.isObject()) {
+            try {
+                formatted = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(debug.getDebugObject());
+            } catch (JsonProcessingException e) {
+                //
+            }
+        } else {
+            formatted = debug.getDebugObject();
+        }
+        builder.append("<pre>");
+        builder.append(formatted);
+        builder.append("</pre>");
+
         return builder;
     }
 }
