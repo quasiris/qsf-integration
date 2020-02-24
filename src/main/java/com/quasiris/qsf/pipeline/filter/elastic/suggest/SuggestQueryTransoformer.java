@@ -15,6 +15,8 @@ import java.util.StringJoiner;
 public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
 
 
+    private String matchAllProfile = Profiles.matchAll();
+
     private List<String> suggestFields;
 
     public SuggestQueryTransoformer(List<String> suggestFields) {
@@ -52,7 +54,7 @@ public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
         getPipelineContainer().putContext("suggestContext", suggestContext);
 
         if(startTokenJoiner.length() == 0) {
-            this.profile = Profiles.matchAll();
+            this.profile = matchAllProfile;
         }
 
         for(String suggestField: suggestFields) {
@@ -91,5 +93,23 @@ public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
      */
     public void setSuggestFields(List<String> suggestFields) {
         this.suggestFields = suggestFields;
+    }
+
+    /**
+     * Getter for property 'matchAllProfile'.
+     *
+     * @return Value for property 'matchAllProfile'.
+     */
+    public String getMatchAllProfile() {
+        return matchAllProfile;
+    }
+
+    /**
+     * Setter for property 'matchAllProfile'.
+     *
+     * @param matchAllProfile Value to set for property 'matchAllProfile'.
+     */
+    public void setMatchAllProfile(String matchAllProfile) {
+        this.matchAllProfile = matchAllProfile;
     }
 }

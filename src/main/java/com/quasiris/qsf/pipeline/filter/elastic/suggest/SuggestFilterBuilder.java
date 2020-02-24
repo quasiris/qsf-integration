@@ -64,6 +64,11 @@ public class SuggestFilterBuilder {
         return this;
     }
 
+    public SuggestFilterBuilder matchAllProfile(String matchAllProfile) {
+        suggestQueryTransoformer.setMatchAllProfile(matchAllProfile);
+        return this;
+    }
+
     public SuggestFilterBuilder profileParameter(String key, String value) {
         suggestQueryTransoformer.setProfileParameter(key, value);
         return this;
