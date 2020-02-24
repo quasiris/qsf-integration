@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.web.RequestParser;
@@ -25,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by mki on 04.02.17.
@@ -111,12 +111,16 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
 
 
-
+        String request = "";
         try {
-            String request = loadProfile(profile, replaceMap);
+            request = loadProfile(profile, replaceMap);
             elasticQuery = (ObjectNode) getObjectMapper().readTree(request);
         }
         catch (Exception e) {
+            if(pipelineContainer.isDebugEnabled()) {
+                pipelineContainer.debug("profile", DebugType.STRING, request);
+                pipelineContainer.debug("replaceMap", DebugType.OBJECT, replaceMap);
+            }
             throw new RuntimeException("Could not load elastic query from profile: " + profile, e);
         }
 
