@@ -270,6 +270,9 @@ public class MonitoringDocument<T extends Comparable> extends Document {
      * @return Value for property 'warn'.
      */
     public boolean isWarn() {
+        if(getValue() == null) {
+            return false;
+        }
         if(getMinWarnLimit() != null && (getValue().compareTo(getMinWarnLimit()) < 0)) {
             return true;
         }
@@ -285,6 +288,9 @@ public class MonitoringDocument<T extends Comparable> extends Document {
      * @return Value for property 'error'.
      */
     public boolean isError() {
+        if(getValue() == null) {
+            return true;
+        }
         if(getMinErrorLimit() != null && (getValue().compareTo(getMinErrorLimit()) < 0)) {
             return true;
         }
