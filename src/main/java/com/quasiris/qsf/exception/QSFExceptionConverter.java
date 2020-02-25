@@ -23,13 +23,13 @@ public class QSFExceptionConverter {
 
     }
 
-    public static String debugToHtml(String debugId, PipelineContainerDebugException ex) {
+    public static String debugToType(String debugId, String debugType, PipelineContainerDebugException ex) {
         if(debugId == null) {
             return debugToHtml(ex);
         }
         for(Debug debug : ex.getDebugStack()) {
             if(debug.getId() != null && debug.getId().equals(debugId)) {
-                return debugToHtml(debug).toString();
+                return debugToType(debugType, debug).toString();
             }
         }
         return debugToHtml(ex);
@@ -42,7 +42,6 @@ public class QSFExceptionConverter {
     }
 
     public static StringBuilder debugToHtml(List<Debug> debugList) {
-        ObjectMapper mapper = new ObjectMapper();
         StringBuilder builder = new StringBuilder();
         for(Debug debug : debugList) {
            builder.append(debugToHtml(debug));
@@ -50,7 +49,15 @@ public class QSFExceptionConverter {
         return builder;
     }
 
-    public static StringBuilder debugToHtml(Debug debug) {
+
+    public static StringBuilder debugToType(String type, Debug debug) {
+        if("text".equals(type)) {
+            return debugToText(debug);
+        }
+        return debugToHtml(debug);
+    }
+
+    public static StringBuilder debugToText(Debug debug) {
         ObjectMapper mapper = new ObjectMapper();
         StringBuilder builder = new StringBuilder();
 
@@ -65,10 +72,17 @@ public class QSFExceptionConverter {
         } else {
             formatted = debug.getDebugObject();
         }
-        builder.append("<pre>");
         builder.append(formatted);
-        builder.append("</pre>");
 
+        return builder;
+    }
+
+    public static StringBuilder debugToHtml(Debug debug) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("<pre>");
+        builder.append(debugToText(debug));
+        builder.append("</pre>");
         return builder;
     }
 }
