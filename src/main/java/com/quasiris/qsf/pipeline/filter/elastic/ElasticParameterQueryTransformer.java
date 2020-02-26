@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -22,10 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by mki on 04.02.17.
@@ -46,6 +44,8 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 
+    protected Set<String> sourceFields;
+
 
 
     @Override
@@ -53,12 +53,24 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         this.pipelineContainer = pipelineContainer;
         this.searchQuery = pipelineContainer.getSearchQuery();
 
+
         transformParameter();
+        transformSourceFields();
         transformAggregations();
 
         return elasticQuery;
     }
 
+    public void transformSourceFields() {
+        if(sourceFields == null) {
+            return;
+        }
+        ArrayNode sourceFieldArray = objectMapper.createArrayNode();
+        for(String field : sourceFields) {
+            sourceFieldArray.add(field);
+        }
+        elasticQuery.set("_source", sourceFieldArray);
+    }
 
     public void transformAggregations() {
         ObjectNode aggregationsRequest  = null;
@@ -320,5 +332,14 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     public String getProfile() {
         return profile;
+    }
+
+    /**
+     * Setter for property 'sourceFields'.
+     *
+     * @param sourceFields Value to set for property 'sourceFields'.
+     */
+    public void setSourceFields(Set<String> sourceFields) {
+        this.sourceFields = sourceFields;
     }
 }

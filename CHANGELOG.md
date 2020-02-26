@@ -1,6 +1,21 @@
 # Changelog
 All notable changes qsf-integration project will be documented in this file.
 
+## [Unreleased]
+### Added
+- ElasticSearch Query Builder select the source fields automatically if they are mapped
+
+### Changed
+
+
+### Fixed
+
+
+### Breaking Changes
+
+
+### Deprications
+
 
 ## [2.7]
 ### Added

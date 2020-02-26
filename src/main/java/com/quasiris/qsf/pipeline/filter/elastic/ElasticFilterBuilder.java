@@ -4,6 +4,9 @@ import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.Slider;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by mki on 10.02.18.
  */
@@ -20,6 +23,8 @@ public class ElasticFilterBuilder {
     private ElasticQsfqlQueryTransformer elasticQsfqlQueryTransformer;
 
     private Class<?> queryTransformer = ElasticQsfqlQueryTransformer.class;
+
+    private Set<String> sourceFields;
 
     public static ElasticFilterBuilder create() {
         ElasticFilterBuilder builder = new ElasticFilterBuilder();
@@ -53,8 +58,10 @@ public class ElasticFilterBuilder {
     public ElasticFilter build() {
 
         if(queryTransformer.equals(ElasticQsfqlQueryTransformer.class)) {
+            elasticQsfqlQueryTransformer.setSourceFields(sourceFields);
             elasticFilter.setQueryTransformer(elasticQsfqlQueryTransformer);
         } else if(queryTransformer.equals(ElasticParameterQueryTransformer.class)) {
+            elasticParameterQueryTransformer.setSourceFields(sourceFields);
             elasticFilter.setQueryTransformer(elasticParameterQueryTransformer);
         } else {
             try {
@@ -103,8 +110,16 @@ public class ElasticFilterBuilder {
 
     public ElasticFilterBuilder mapField(String from, String to) {
         getMappingTransformer().addFieldMapping(from, to);
+        addSourceField(from);
         //getElasticParameterQueryTransformer().addFieldListValue(from);
         return this;
+    }
+
+    public void addSourceField(String fieldName) {
+        if(this.sourceFields == null) {
+            this.sourceFields = new HashSet<>();
+        }
+        this.sourceFields.add(fieldName);
     }
 
     public ElasticFilterBuilder searchResultTransformer(SearchResultTransformerIF searchResultTransformer) {
