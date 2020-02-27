@@ -25,6 +25,7 @@ public class ElasticFilterBuilder {
     private Class<?> queryTransformer = ElasticQsfqlQueryTransformer.class;
 
     private Set<String> sourceFields;
+    private Set<String> sourceFieldExcludes = new HashSet<>();
 
     public static ElasticFilterBuilder create() {
         ElasticFilterBuilder builder = new ElasticFilterBuilder();
@@ -56,6 +57,9 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilter build() {
+        if(sourceFields != null) {
+            sourceFields.removeAll(sourceFieldExcludes);
+        }
 
         if(queryTransformer.equals(ElasticQsfqlQueryTransformer.class)) {
             elasticQsfqlQueryTransformer.setSourceFields(sourceFields);
@@ -115,11 +119,17 @@ public class ElasticFilterBuilder {
         return this;
     }
 
-    public void addSourceField(String fieldName) {
+    public ElasticFilterBuilder excludeSourceField(String fieldName) {
+        sourceFieldExcludes.add(fieldName);
+        return this;
+    }
+
+    public ElasticFilterBuilder addSourceField(String fieldName) {
         if(this.sourceFields == null) {
             this.sourceFields = new HashSet<>();
         }
         this.sourceFields.add(fieldName);
+        return this;
     }
 
     public ElasticFilterBuilder searchResultTransformer(SearchResultTransformerIF searchResultTransformer) {
