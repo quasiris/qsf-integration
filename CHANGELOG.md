@@ -4,6 +4,7 @@ All notable changes qsf-integration project will be documented in this file.
 ## [Unreleased]
 ### Added
 - ElasticSearch Query Builder select the source fields automatically if they are mapped
+- add IOUtils to support io operations
 
 ### Changed
 
