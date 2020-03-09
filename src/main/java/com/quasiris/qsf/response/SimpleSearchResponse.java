@@ -26,4 +26,9 @@ public class SimpleSearchResponse extends ArrayList<Map<String, Object>> {
         }
         return searchResponse;
     }
+
+    public static SimpleSearchResponse createEmpty() {
+        return new SimpleSearchResponse();
+
+    }
 }
