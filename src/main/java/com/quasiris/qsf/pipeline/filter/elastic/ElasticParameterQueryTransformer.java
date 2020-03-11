@@ -163,13 +163,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
 
     protected String loadProfile(String filename, Map<String, String> vars) throws IOException {
-        String profile = null;
-        if (filename.startsWith("classpath://")) {
-            profile = loadProfileFromClasspath(filename);
-        } else {
-            profile = loadProfileFromFile(filename);
-        }
-
+        String profile = ProfileLoader.loadProfile(filename, vars);
         for (Map.Entry<String, String> entry : vars.entrySet()) {
             if(entry.getValue() == null) {
                 entry.setValue("null");
@@ -179,26 +173,6 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         StrSubstitutor strSubstitutor = new StrSubstitutor(vars);
         profile = strSubstitutor.replace(profile);
         return profile;
-    }
-
-    private String loadProfileFromFile(String filename) throws IOException {
-        File file = new File(filename);
-        String profile = Files.toString(file, Charsets.UTF_8);
-        return profile;
-    }
-
-    private String loadProfileFromClasspath(String filename) throws IOException {
-
-        String resource = filename.replaceFirst("classpath://", "");
-        InputStream in = this.getClass().getClassLoader()
-                .getResourceAsStream(resource);
-
-        // TODO try to remove IOUtils
-        String profile = IOUtils.toString(in, Charset.forName("UTF-8"));
-        IOUtils.closeQuietly(in);
-        return profile;
-
-
     }
 
 
