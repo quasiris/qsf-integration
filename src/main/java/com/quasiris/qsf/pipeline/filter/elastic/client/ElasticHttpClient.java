@@ -66,15 +66,30 @@ public class ElasticHttpClient {
         client.execute(httpPost, new FutureCallback<HttpResponse>() {
             public void failed(final Exception e) {
                 LOG.error("The async request failed because " + e.getMessage(), e);
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    LOG.error("Could not close async http client", ex);
+                }
             }
 
             public void completed(final HttpResponse httpResponse) {
                 LOG.debug("The async request finished successful with code: "
                         + httpResponse.getStatusLine().getStatusCode());
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    LOG.error("Could not close async http client", ex);
+                }
             }
 
             public void cancelled() {
                 LOG.error("The async request was canceled.");
+                try {
+                    client.close();
+                } catch (IOException ex) {
+                    LOG.error("Could not close async http client", ex);
+                }
             }
         });
     }
