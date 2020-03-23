@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.regex.Pattern;
 
 /**
  * Download models from a url to a local path.
@@ -24,18 +25,34 @@ import java.nio.file.StandardCopyOption;
 public class ModelLoader {
     private static final Logger logger = LoggerFactory.getLogger(ModelLoader.class);
 
+    private String groupId;
+    private String artifactId;
+    private String version;
     private String modelBaseUrl;
     private String modelBasePath;
-    private String modelName;
 
-    public ModelLoader(String modelBaseUrl, String modelBasePath, String modelName) {
-        this.modelBasePath = IOUtils.ensureEndingSlash(modelBasePath);
-        this.modelBaseUrl =  IOUtils.ensureEndingSlash(modelBaseUrl);
-        this.modelName = modelName;
+
+    public String getModelName() {
+        return artifactId + "-" + version;
     }
 
+    public String getUrlPath() {
+        StringBuilder groupIdPath = new StringBuilder(groupId.replaceAll(Pattern.quote("."), "/"));
+        groupIdPath.append("/");
+        groupIdPath.append(artifactId);
+        groupIdPath.append("/");
+        groupIdPath.append(version);
+        groupIdPath.append("/");
+        groupIdPath.append(getModelName());
+        groupIdPath.append(".zip");
+        return groupIdPath.toString();
+    }
+
+
+
+
     public boolean isInstalled() {
-        Path path = Paths.get(modelBasePath, modelName);
+        Path path = Paths.get(modelBasePath, getModelName());
         return Files.exists(path)
                 && Files.isReadable(path)
                 && Files.isWritable(path);
@@ -43,17 +60,20 @@ public class ModelLoader {
 
     public void install() {
         if(!isInstalled()) {
-            logger.warn("Model "+modelName+" is not installed locally!");
+            logger.warn("Model {} is not installed locally!", getModelName());
             download();
             unzip();
         } else {
-            logger.info("Found installed model "+modelName);
+            logger.info("Found installed model {}", getModelName());
         }
     }
 
     protected void download() {
-        logger.info("Downloading model {} from url: {} to path: {} ", modelName, modelBaseUrl, modelBasePath);
-        String modelUrl = modelBaseUrl + modelName + ".zip";
+
+        String modelUrl = modelBaseUrl + getUrlPath();
+        IOUtils.createDirectoryIfNotExists(modelBasePath);
+
+        logger.info("Downloading model {} from url: {} to path: {} ", getModelName(), modelUrl, getZipFile());
         try {
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -78,7 +98,7 @@ public class ModelLoader {
     }
 
     private String getZipFile() {
-        return modelBasePath + modelName + ".zip";
+        return modelBasePath + getModelName() + ".zip";
     }
 
     public void unzip() {
@@ -90,5 +110,145 @@ public class ModelLoader {
         } catch (IOException e) {
             throw new RuntimeException("Could not unzip file: " + zipFile, e);
         }
+    }
+
+    public static final class ModelLoaderBuilder {
+        private String groupId;
+        private String artifactId;
+        private String version;
+        private String modelBaseUrl;
+        private String modelBasePath;
+
+        private ModelLoaderBuilder() {
+        }
+
+        public static ModelLoaderBuilder create() {
+            return new ModelLoaderBuilder();
+        }
+
+        public ModelLoaderBuilder groupId(String groupId) {
+            this.groupId = groupId;
+            return this;
+        }
+
+        public ModelLoaderBuilder artifactId(String artifactId) {
+            this.artifactId = artifactId;
+            return this;
+        }
+
+        public ModelLoaderBuilder version(String version) {
+            this.version = version;
+            return this;
+        }
+
+        public ModelLoaderBuilder modelBaseUrl(String modelBaseUrl) {
+            this.modelBaseUrl = modelBaseUrl;
+            return this;
+        }
+
+        public ModelLoaderBuilder modelBasePath(String modelBasePath) {
+            this.modelBasePath = modelBasePath;
+            return this;
+        }
+
+        public ModelLoader build() {
+            ModelLoader modelLoader =  new ModelLoader();
+            modelLoader.setGroupId(groupId);
+            modelLoader.setArtifactId(artifactId);
+            modelLoader.setVersion(version);
+            modelLoader.setModelBasePath(modelBasePath);
+            modelLoader.setModelBaseUrl(modelBaseUrl);
+            return modelLoader;
+        }
+    }
+
+    /**
+     * Getter for property 'groupId'.
+     *
+     * @return Value for property 'groupId'.
+     */
+    public String getGroupId() {
+        return groupId;
+    }
+
+    /**
+     * Setter for property 'groupId'.
+     *
+     * @param groupId Value to set for property 'groupId'.
+     */
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    /**
+     * Getter for property 'artifactId'.
+     *
+     * @return Value for property 'artifactId'.
+     */
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    /**
+     * Setter for property 'artifactId'.
+     *
+     * @param artifactId Value to set for property 'artifactId'.
+     */
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
+
+    /**
+     * Getter for property 'version'.
+     *
+     * @return Value for property 'version'.
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * Setter for property 'version'.
+     *
+     * @param version Value to set for property 'version'.
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * Getter for property 'modelBaseUrl'.
+     *
+     * @return Value for property 'modelBaseUrl'.
+     */
+    public String getModelBaseUrl() {
+        return modelBaseUrl;
+    }
+
+    /**
+     * Setter for property 'modelBaseUrl'.
+     *
+     * @param modelBaseUrl Value to set for property 'modelBaseUrl'.
+     */
+    public void setModelBaseUrl(String modelBaseUrl) {
+        this.modelBaseUrl = modelBaseUrl;
+    }
+
+    /**
+     * Getter for property 'modelBasePath'.
+     *
+     * @return Value for property 'modelBasePath'.
+     */
+    public String getModelBasePath() {
+        return modelBasePath;
+    }
+
+    /**
+     * Setter for property 'modelBasePath'.
+     *
+     * @param modelBasePath Value to set for property 'modelBasePath'.
+     */
+    public void setModelBasePath(String modelBasePath) {
+        this.modelBasePath = modelBasePath;
     }
 }

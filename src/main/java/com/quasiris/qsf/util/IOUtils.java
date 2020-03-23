@@ -186,4 +186,12 @@ public class IOUtils {
         }
         return value + "/";
     }
+
+    public static boolean createDirectoryIfNotExists(String directory) {
+        File dir = new File(directory);
+        if (!dir.exists()){
+            return dir.mkdirs();
+        }
+        return false;
+    }
 }
