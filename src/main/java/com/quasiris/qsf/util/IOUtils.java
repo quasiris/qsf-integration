@@ -7,14 +7,15 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.*;
 
 /**
  * Created by tblsoft
@@ -180,6 +181,49 @@ public class IOUtils {
         }
     }
 
+    public static void zip(String dir, String zipFile) throws IOException {
+        File directory = new File(dir);
+        List<String> fileList = getAllFiles(dir).stream().
+                map(p -> p.toFile().getAbsolutePath()).
+                collect(Collectors.toList());
+
+
+        try (FileOutputStream fos = new FileOutputStream(zipFile);
+             ZipOutputStream zos = new ZipOutputStream(fos)) {
+
+            for (String filePath : fileList) {
+
+                // Creates a zip entry.
+                String name = directory.getName() + "/" + filePath.substring(
+                        directory.getAbsolutePath().length() + 1,
+                        filePath.length());
+
+                ZipEntry zipEntry = new ZipEntry(name);
+                zos.putNextEntry(zipEntry);
+
+                try (FileInputStream fis = new FileInputStream(filePath)) {
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = fis.read(buffer)) > 0) {
+                        zos.write(buffer, 0, length);
+                    }
+                    zos.closeEntry();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static List<Path> getAllFiles(String directory) throws IOException {
+        try (Stream<Path> paths = java.nio.file.Files.walk(Paths.get(directory))) {
+            return paths.filter(java.nio.file.Files::isRegularFile).collect(Collectors.toList());
+        }
+    }
+
     public static String ensureEndingSlash(String value ) {
         if(value.endsWith("/")) {
             return value;
@@ -187,11 +231,15 @@ public class IOUtils {
         return value + "/";
     }
 
-    public static boolean createDirectoryIfNotExists(String directory) {
-        File dir = new File(directory);
-        if (!dir.exists()){
-            return dir.mkdirs();
+
+    public static boolean createDirectoryIfNotExists(File directory) {
+        if (!directory.exists()){
+            return directory.mkdirs();
         }
         return false;
+    }
+
+    public static boolean createDirectoryIfNotExists(String directory) {
+        return createDirectoryIfNotExists(new File(directory));
     }
 }
