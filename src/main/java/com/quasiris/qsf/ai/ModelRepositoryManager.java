@@ -28,8 +28,8 @@ import java.util.regex.Pattern;
  * Download and save models from a url to a local path.
  * If the model exists the local model is used.
  */
-public class ModelLoader {
-    private static final Logger logger = LoggerFactory.getLogger(ModelLoader.class);
+public class ModelRepositoryManager {
+    private static final Logger logger = LoggerFactory.getLogger(ModelRepositoryManager.class);
 
     private String groupId;
     private String artifactId;
@@ -222,7 +222,7 @@ public class ModelLoader {
         }
     }
 
-    public static final class ModelLoaderBuilder {
+    public static final class Builder {
         private String groupId;
         private String artifactId;
         private String version;
@@ -230,52 +230,52 @@ public class ModelLoader {
         private String modelBasePath;
         private String uploadBaseUrl;
 
-        private ModelLoaderBuilder() {
+        private Builder() {
         }
 
-        public static ModelLoaderBuilder create() {
-            return new ModelLoaderBuilder();
+        public static Builder create() {
+            return new Builder();
         }
 
-        public ModelLoaderBuilder groupId(String groupId) {
+        public Builder groupId(String groupId) {
             this.groupId = groupId;
             return this;
         }
 
-        public ModelLoaderBuilder artifactId(String artifactId) {
+        public Builder artifactId(String artifactId) {
             this.artifactId = artifactId;
             return this;
         }
 
-        public ModelLoaderBuilder version(String version) {
+        public Builder version(String version) {
             this.version = version;
             return this;
         }
 
-        public ModelLoaderBuilder modelBaseUrl(String modelBaseUrl) {
+        public Builder modelBaseUrl(String modelBaseUrl) {
             this.modelBaseUrl = modelBaseUrl;
             return this;
         }
 
-        public ModelLoaderBuilder modelBasePath(String modelBasePath) {
+        public Builder modelBasePath(String modelBasePath) {
             this.modelBasePath = modelBasePath;
             return this;
         }
 
-        public ModelLoaderBuilder uploadBaseUrl(String uploadBaseUrl) {
+        public Builder uploadBaseUrl(String uploadBaseUrl) {
             this.uploadBaseUrl = uploadBaseUrl;
             return this;
         }
 
-        public ModelLoader build() {
-            ModelLoader modelLoader =  new ModelLoader();
-            modelLoader.setGroupId(groupId);
-            modelLoader.setArtifactId(artifactId);
-            modelLoader.setVersion(version);
-            modelLoader.setModelBasePath(modelBasePath);
-            modelLoader.setModelBaseUrl(modelBaseUrl);
-            modelLoader.setUploadBaseUrl(uploadBaseUrl);
-            return modelLoader;
+        public ModelRepositoryManager build() {
+            ModelRepositoryManager modelRepositoryManager =  new ModelRepositoryManager();
+            modelRepositoryManager.setGroupId(groupId);
+            modelRepositoryManager.setArtifactId(artifactId);
+            modelRepositoryManager.setVersion(version);
+            modelRepositoryManager.setModelBasePath(modelBasePath);
+            modelRepositoryManager.setModelBaseUrl(modelBaseUrl);
+            modelRepositoryManager.setUploadBaseUrl(uploadBaseUrl);
+            return modelRepositoryManager;
         }
     }
 

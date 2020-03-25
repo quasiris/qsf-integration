@@ -6,7 +6,7 @@ All notable changes qsf-integration project will be documented in this file.
 - ElasticSearch Query Builder select the source fields automatically if they are mapped
 - add IOUtils to support io operations
 - add a unzip method to the IOUtils
-- implement a model loader
+- implement a model repository manager
 
 ### Changed
 
