@@ -2,9 +2,15 @@ package com.quasiris.qsf.ai;
 
 import com.quasiris.qsf.util.IOUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -29,6 +35,7 @@ public class ModelLoader {
     private String artifactId;
     private String version;
     private String modelBaseUrl;
+    private String uploadBaseUrl;
     private String modelBasePath;
 
 
@@ -59,11 +66,15 @@ public class ModelLoader {
      * @throws IOException if the zip file can not be created or saved.
      */
     public void save(String sourceDir) throws IOException {
-        String dir =  modelBasePath + getUrlPath();
-        IOUtils.createDirectoryIfNotExists(dir);
+        String absoluteModelPath =  getAbsoluteModelPath();
+        IOUtils.createDirectoryIfNotExists(absoluteModelPath);
+        String zipFileName = getZipFile();
+        IOUtils.zip(sourceDir, getModelName(), zipFileName);
+    }
 
-        String zipFilePath = dir + getModelName() + ".zip";
-        IOUtils.zip(sourceDir, zipFilePath);
+    public void saveAndUpload(String sourceDir) throws IOException {
+        save(sourceDir);
+        upload(getZipFile());
     }
 
     /**
@@ -74,9 +85,9 @@ public class ModelLoader {
      * @throws IOException if the file can not be saved
      */
     public void save(InputStream zipFileInputStream) throws IOException {
-        String dir =  modelBasePath + getUrlPath();
-        IOUtils.createDirectoryIfNotExists(dir);
-        String zipFile = dir + getModelName() + ".zip";
+        String absoluteModelPath =  getAbsoluteModelPath();
+        IOUtils.createDirectoryIfNotExists(absoluteModelPath);
+        String zipFile = getZipFile();
         FileUtils.copyInputStreamToFile(zipFileInputStream, new File(zipFile));
     }
 
@@ -122,6 +133,45 @@ public class ModelLoader {
 
     protected String getAbsoluteModelFile(String fileName) {
         return modelBasePath + getUrlPath()  + getModelName() + "/" + fileName;
+    }
+
+    protected String getUploadUrl() {
+
+        StringBuilder uploadUrl = new StringBuilder(uploadBaseUrl);
+        uploadUrl.append(groupId);
+        uploadUrl.append("/");
+        uploadUrl.append(artifactId);
+        uploadUrl.append("/");
+        uploadUrl.append(version);
+
+        return uploadUrl.toString();
+    }
+
+    public void upload(String fileName) throws IOException {
+        String url = getUploadUrl();
+
+        try {
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            HttpPost post = new HttpPost(url);
+            File file = new File(fileName);
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            builder.addBinaryBody("file", file, ContentType.DEFAULT_BINARY, fileName);
+            HttpEntity entity = builder.build();
+            post.setEntity(entity);
+            HttpResponse response = httpclient.execute(post);
+
+            if(response.getStatusLine().getStatusCode() >= 300) {
+                String responseBody = EntityUtils.toString(response.getEntity());
+                throw new RuntimeException("Could not upload file " + fileName +
+                        " to url: " + url +
+                        " http code: " + response.getStatusLine().getStatusCode() +
+                        " message: " +  responseBody);
+            }
+            httpclient.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected void download() {
@@ -178,6 +228,7 @@ public class ModelLoader {
         private String version;
         private String modelBaseUrl;
         private String modelBasePath;
+        private String uploadBaseUrl;
 
         private ModelLoaderBuilder() {
         }
@@ -211,6 +262,11 @@ public class ModelLoader {
             return this;
         }
 
+        public ModelLoaderBuilder uploadBaseUrl(String uploadBaseUrl) {
+            this.uploadBaseUrl = uploadBaseUrl;
+            return this;
+        }
+
         public ModelLoader build() {
             ModelLoader modelLoader =  new ModelLoader();
             modelLoader.setGroupId(groupId);
@@ -218,6 +274,7 @@ public class ModelLoader {
             modelLoader.setVersion(version);
             modelLoader.setModelBasePath(modelBasePath);
             modelLoader.setModelBaseUrl(modelBaseUrl);
+            modelLoader.setUploadBaseUrl(uploadBaseUrl);
             return modelLoader;
         }
     }
@@ -310,5 +367,23 @@ public class ModelLoader {
      */
     public void setModelBasePath(String modelBasePath) {
         this.modelBasePath = IOUtils.ensureEndingSlash(modelBasePath);
+    }
+
+    /**
+     * Getter for property 'uploadBaseUrl'.
+     *
+     * @return Value for property 'uploadBaseUrl'.
+     */
+    public String getUploadBaseUrl() {
+        return uploadBaseUrl;
+    }
+
+    /**
+     * Setter for property 'uploadBaseUrl'.
+     *
+     * @param uploadBaseUrl Value to set for property 'uploadBaseUrl'.
+     */
+    public void setUploadBaseUrl(String uploadBaseUrl) {
+        this.uploadBaseUrl = IOUtils.ensureEndingSlash(uploadBaseUrl);
     }
 }

@@ -181,8 +181,11 @@ public class IOUtils {
         }
     }
 
-    public static void zip(String dir, String zipFile) throws IOException {
+    public static void zip(String dir, String rootDirName, String zipFile) throws IOException {
         File directory = new File(dir);
+        if(rootDirName == null) {
+            rootDirName = directory.getName();
+        }
         List<String> fileList = getAllFiles(dir).stream().
                 map(p -> p.toFile().getAbsolutePath()).
                 collect(Collectors.toList());
@@ -194,7 +197,7 @@ public class IOUtils {
             for (String filePath : fileList) {
 
                 // Creates a zip entry.
-                String name = directory.getName() + "/" + filePath.substring(
+                String name = rootDirName + "/" + filePath.substring(
                         directory.getAbsolutePath().length() + 1,
                         filePath.length());
 
@@ -211,6 +214,10 @@ public class IOUtils {
 
             }
         }
+    }
+
+    public static void zip(String dir, String zipFile) throws IOException {
+        zip(dir, null, zipFile);
     }
 
 

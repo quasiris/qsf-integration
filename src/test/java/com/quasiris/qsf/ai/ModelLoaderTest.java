@@ -16,6 +16,7 @@ public class ModelLoaderTest {
                 version("1.2.3").
                 modelBasePath("/path/to/models").
                 modelBaseUrl("https://models.quasiris.de/models").
+                uploadBaseUrl("https://upload.quasiris.de/models").
                 build();
 
         assertEquals("com/quasiris/qsf/test-model/1.2.3/", modelLoader.getUrlPath());
@@ -26,6 +27,8 @@ public class ModelLoaderTest {
         assertEquals("/path/to/models/com/quasiris/qsf/test-model/1.2.3/test-model-1.2.3/my-model.bin", modelLoader.getAbsoluteModelFile("my-model.bin"));
         assertEquals("https://models.quasiris.de/models/com/quasiris/qsf/test-model/1.2.3/test-model-1.2.3.zip", modelLoader.getModelUrl());
         assertEquals("/path/to/models/com/quasiris/qsf/test-model/1.2.3/test-model-1.2.3.zip", modelLoader.getZipFile());
+        assertEquals("https://upload.quasiris.de/models/", modelLoader.getUploadBaseUrl());
+        assertEquals("https://upload.quasiris.de/models/com.quasiris.qsf/test-model/1.2.3", modelLoader.getUploadUrl());
     }
 
 }
