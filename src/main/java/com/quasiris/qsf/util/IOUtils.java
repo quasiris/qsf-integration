@@ -201,19 +201,15 @@ public class IOUtils {
                 ZipEntry zipEntry = new ZipEntry(name);
                 zos.putNextEntry(zipEntry);
 
-                try (FileInputStream fis = new FileInputStream(filePath)) {
-                    byte[] buffer = new byte[1024];
-                    int length;
-                    while ((length = fis.read(buffer)) > 0) {
-                        zos.write(buffer, 0, length);
-                    }
-                    zos.closeEntry();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                FileInputStream fis = new FileInputStream(filePath);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = fis.read(buffer)) > 0) {
+                    zos.write(buffer, 0, length);
                 }
+                zos.closeEntry();
+
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -225,6 +221,9 @@ public class IOUtils {
     }
 
     public static String ensureEndingSlash(String value ) {
+        if(value == null) {
+            return null;
+        }
         if(value.endsWith("/")) {
             return value;
         }

@@ -1,6 +1,7 @@
 package com.quasiris.qsf.ai;
 
 import com.quasiris.qsf.util.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -10,8 +11,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +19,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.regex.Pattern;
 
 /**
- * Download models from a url to a local path.
+ * Download and save models from a url to a local path.
  * If the model exists the local model is used.
  */
 public class ModelLoader {
@@ -32,27 +32,71 @@ public class ModelLoader {
     private String modelBasePath;
 
 
-    public String getModelName() {
+    protected String getModelName() {
         return artifactId + "-" + version;
     }
 
-    public String getUrlPath() {
+    protected String getUrlZipFile() {
+        return getUrlPath() + getModelName() + ".zip";
+    }
+
+
+    protected String getUrlPath() {
         StringBuilder groupIdPath = new StringBuilder(groupId.replaceAll(Pattern.quote("."), "/"));
         groupIdPath.append("/");
         groupIdPath.append(artifactId);
         groupIdPath.append("/");
         groupIdPath.append(version);
         groupIdPath.append("/");
-        groupIdPath.append(getModelName());
-        groupIdPath.append(".zip");
         return groupIdPath.toString();
     }
 
 
+    /**
+     * Zip the source directory and save it to the specified path.
+     *
+     * @param sourceDir the source directory to zip.
+     * @throws IOException if the zip file can not be created or saved.
+     */
+    public void save(String sourceDir) throws IOException {
+        String dir =  modelBasePath + getUrlPath();
+        IOUtils.createDirectoryIfNotExists(dir);
+
+        String zipFilePath = dir + getModelName() + ".zip";
+        IOUtils.zip(sourceDir, zipFilePath);
+    }
+
+    /**
+     * Save the input stream as a zip file in the correct repository structure.
+     * The zip file must be created in a correct way. See TODO
+     *
+     * @param zipFileInputStream input stream of the zip file
+     * @throws IOException if the file can not be saved
+     */
+    public void save(InputStream zipFileInputStream) throws IOException {
+        String dir =  modelBasePath + getUrlPath();
+        IOUtils.createDirectoryIfNotExists(dir);
+        String zipFile = dir + getModelName() + ".zip";
+        FileUtils.copyInputStreamToFile(zipFileInputStream, new File(zipFile));
+    }
 
 
-    public boolean isInstalled() {
-        Path path = Paths.get(modelBasePath, getModelName());
+    /**
+     * Load a specific file from the zipped model directory.
+     * If the model does not exists, it is installed.
+     *
+     * @param fileName the file name to be loaded.
+     * @return the inputstream of the file.
+     * @throws FileNotFoundException if the file was not found.
+     */
+    public InputStream load(String fileName) throws FileNotFoundException {
+        install();
+        String absoluteFile = getAbsoluteModelFile(fileName);
+        return new FileInputStream(new File(absoluteFile));
+    }
+
+    protected boolean isInstalled() {
+        Path path = Paths.get(getAbsoluteModelPath());
         return Files.exists(path)
                 && Files.isReadable(path)
                 && Files.isWritable(path);
@@ -68,10 +112,24 @@ public class ModelLoader {
         }
     }
 
+    protected String getModelUrl() {
+        return modelBaseUrl + getUrlZipFile();
+    }
+
+    protected String getAbsoluteModelPath() {
+        return modelBasePath + getUrlPath();
+    }
+
+    protected String getAbsoluteModelFile(String fileName) {
+        return modelBasePath + getUrlPath()  + getModelName() + "/" + fileName;
+    }
+
     protected void download() {
 
-        String modelUrl = modelBaseUrl + getUrlPath();
-        IOUtils.createDirectoryIfNotExists(modelBasePath);
+        String modelUrl = getModelUrl();
+        String path = getAbsoluteModelPath();
+
+        IOUtils.createDirectoryIfNotExists(path);
 
         logger.info("Downloading model {} from url: {} to path: {} ", getModelName(), modelUrl, getZipFile());
         try {
@@ -97,11 +155,13 @@ public class ModelLoader {
         }
     }
 
-    private String getZipFile() {
-        return modelBasePath + getModelName() + ".zip";
+    protected String getZipFile() {
+        return modelBasePath + getUrlZipFile();
     }
 
-    public void unzip() {
+
+
+    protected void unzip() {
         String zipFile = getZipFile();
         try {
             logger.info("Unzipping downloaded file {}", zipFile);
@@ -231,7 +291,7 @@ public class ModelLoader {
      * @param modelBaseUrl Value to set for property 'modelBaseUrl'.
      */
     public void setModelBaseUrl(String modelBaseUrl) {
-        this.modelBaseUrl = modelBaseUrl;
+        this.modelBaseUrl = IOUtils.ensureEndingSlash(modelBaseUrl);
     }
 
     /**
@@ -249,6 +309,6 @@ public class ModelLoader {
      * @param modelBasePath Value to set for property 'modelBasePath'.
      */
     public void setModelBasePath(String modelBasePath) {
-        this.modelBasePath = modelBasePath;
+        this.modelBasePath = IOUtils.ensureEndingSlash(modelBasePath);
     }
 }
