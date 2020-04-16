@@ -31,4 +31,28 @@ public class ModeRepositoryManagerTest {
         assertEquals("https://upload.quasiris.de/models/com.quasiris.qsf/test-model/1.2.3", modelRepositoryManager.getUploadUrl());
     }
 
+
+    @Test
+    public void testShortId() {
+
+        ModelRepositoryManager modelRepositoryManager = ModelRepositoryManager.Builder.create().
+               shortId("com.quasiris.qsf|test-model|1.2.3").
+                build();
+
+        assertEquals("com.quasiris.qsf", modelRepositoryManager.getGroupId());
+        assertEquals("test-model", modelRepositoryManager.getArtifactId());
+        assertEquals("1.2.3", modelRepositoryManager.getVersion());
+    }
+
+    @Test
+    public void testShortIdWithFilename() {
+
+        ModelRepositoryManager modelRepositoryManager = ModelRepositoryManager.Builder.create().
+                shortId("com.quasiris.qsf|test-model|1.2.3|test-model.bin").
+                build();
+
+        assertEquals("com.quasiris.qsf", modelRepositoryManager.getGroupId());
+        assertEquals("test-model", modelRepositoryManager.getArtifactId());
+        assertEquals("1.2.3", modelRepositoryManager.getVersion());
+    }
 }

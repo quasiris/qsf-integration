@@ -237,6 +237,17 @@ public class ModelRepositoryManager {
             return new Builder();
         }
 
+        public Builder shortId(String shortId) {
+            String[] splitted = shortId.split(Pattern.quote("|"));
+            if(splitted.length < 3) {
+                throw new IllegalArgumentException("The short id: " + shortId + " is invalid.");
+            }
+            this.groupId = splitted[0];
+            this.artifactId = splitted[1];
+            this.version = splitted[2];
+            return this;
+        }
+
         public Builder groupId(String groupId) {
             this.groupId = groupId;
             return this;
