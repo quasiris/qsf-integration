@@ -110,22 +110,12 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             rawValues.put("param." + param.getKey(), param.getValue());
         }
 
-        Map<String, String> escapedValues = rawValues.entrySet().stream().collect(HashMap::new,
-                (m,e)->m.put(e.getKey() + ".escaped", escapeValue(e.getValue())), HashMap::putAll);
-
-        Map<String, String> encodedValues = rawValues.entrySet().stream().collect(HashMap::new,
-                (m,e)->m.put(e.getKey() + ".encoded", JsonUtil.encode(e.getValue())), HashMap::putAll);
-
-        Map<String, String> replaceMap = new HashMap<>(escapedValues);
-        replaceMap.putAll(encodedValues);
-        replaceMap.putAll(rawValues);
-
-
+        Map<String, String> replaceMap = ProfileLoader.encodeParameters(rawValues);
 
 
         String request = "";
         try {
-            request = loadProfile(profile, replaceMap);
+            request = ProfileLoader.loadProfile(profile, replaceMap);
             elasticQuery = (ObjectNode) getObjectMapper().readTree(request);
         }
         catch (Exception e) {
@@ -138,44 +128,11 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     }
 
-
-    public String escapeValue(String value) {
-        String escapedValue = ElasticUtil.escape(value);
-        String encodedValue = JsonUtil.encode(escapedValue);
-        return encodedValue;
-    }
-
-    public Map<String, String> encodeValues(Map<String, String> replaceMap) {
-        Map<String, String> ret = new HashMap<>();
-        for (Map.Entry<String, String> entry : replaceMap.entrySet()) {
-            String escapedValue = ElasticUtil.escape(entry.getValue());
-            String encodedValue = JsonUtil.encode(escapedValue);
-            ret.put(entry.getKey(), encodedValue);
-        }
-        return ret;
-    }
-
     public StringBuilder print(String indent) {
         StringBuilder printer = new StringBuilder();
         PrintUtil.printKeyValue(printer, indent, "profile", profile);
         return printer;
     }
-
-
-    protected String loadProfile(String filename, Map<String, String> vars) throws IOException {
-        String profile = ProfileLoader.loadProfile(filename, vars);
-        for (Map.Entry<String, String> entry : vars.entrySet()) {
-            if(entry.getValue() == null) {
-                entry.setValue("null");
-            }
-        }
-
-        StrSubstitutor strSubstitutor = new StrSubstitutor(vars);
-        profile = strSubstitutor.replace(profile);
-        return profile;
-    }
-
-
 
     private ObjectNode addAgg(ObjectNode aggregations, JsonNode agg) {
         if(aggregations == null) {

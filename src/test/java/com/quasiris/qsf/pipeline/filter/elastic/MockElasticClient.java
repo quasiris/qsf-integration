@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.io.Files;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.Analyze;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.client.StandardElasticClient;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -25,9 +26,22 @@ public class MockElasticClient extends StandardElasticClient {
     private boolean mock = true;
 
     @Override
+    public Analyze analyze(String elasticBaseUrl, String request) throws IOException {
+        if(mock) {
+            return getMockedElasticResult(request, Analyze.class);
+        }
+
+        Analyze analyze = super.analyze(elasticBaseUrl, request);
+        if(record) {
+            recordQueryElasticResult(request, analyze);
+        }
+        return analyze;
+    }
+
+    @Override
     public ElasticResult request(String elasticUrl, String request) throws IOException {
         if(mock) {
-            return getMockedElasticResult(request);
+            return getMockedElasticResult(request, ElasticResult.class);
         }
 
         ElasticResult elasticResult = super.request(elasticUrl, request);
@@ -47,19 +61,19 @@ public class MockElasticClient extends StandardElasticClient {
         return mockDir + "/" + fileName + ".json";
     }
 
-    ElasticResult getMockedElasticResult(String request) {
+    <T> T getMockedElasticResult(String request, Class<T> valueType) {
         String fileName = getFilename(request);
         try {
             String responseString = Files.toString(new File(fileName), Charset.forName("UTF-8"));
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(responseString, ElasticResult.class);
+            return objectMapper.readValue(responseString, valueType);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    void recordQueryElasticResult(String request, ElasticResult elasticResult) {
+    void recordQueryElasticResult(String request, Object elasticResult) {
         String fileName = getFilename(request);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);

@@ -2,12 +2,16 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.quasiris.qsf.util.ElasticUtil;
+import com.quasiris.qsf.util.JsonUtil;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.text.StrSubstitutor;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileLoader {
@@ -19,6 +23,15 @@ public class ProfileLoader {
         } else {
             profile = loadProfileFromFile(filename);
         }
+
+
+        for (Map.Entry<String, String> entry : vars.entrySet()) {
+            if(entry.getValue() == null) {
+                entry.setValue("null");
+            }
+        }
+        StrSubstitutor strSubstitutor = new StrSubstitutor(vars);
+        profile = strSubstitutor.replace(profile);
         return profile;
     }
 
@@ -38,5 +51,34 @@ public class ProfileLoader {
         File file = new File(filename);
         String profile = Files.toString(file, Charsets.UTF_8);
         return profile;
+    }
+
+    public static Map<String, String> encodeParameters(Map<String, String> rawValues) {
+        Map<String, String> escapedValues = rawValues.entrySet().stream().collect(HashMap::new,
+                (m,e)->m.put(e.getKey() + ".escaped", escapeValue(e.getValue())), HashMap::putAll);
+
+        Map<String, String> encodedValues = rawValues.entrySet().stream().collect(HashMap::new,
+                (m,e)->m.put(e.getKey() + ".encoded", JsonUtil.encode(e.getValue())), HashMap::putAll);
+
+        Map<String, String> replaceMap = new HashMap<>(escapedValues);
+        replaceMap.putAll(encodedValues);
+        replaceMap.putAll(rawValues);
+        return replaceMap;
+    }
+
+    public static Map<String, String> encodeValues(Map<String, String> replaceMap) {
+        Map<String, String> ret = new HashMap<>();
+        for (Map.Entry<String, String> entry : replaceMap.entrySet()) {
+            String escapedValue = ElasticUtil.escape(entry.getValue());
+            String encodedValue = JsonUtil.encode(escapedValue);
+            ret.put(entry.getKey(), encodedValue);
+        }
+        return ret;
+    }
+
+    public static String escapeValue(String value) {
+        String escapedValue = ElasticUtil.escape(value);
+        String encodedValue = JsonUtil.encode(escapedValue);
+        return encodedValue;
     }
 }
