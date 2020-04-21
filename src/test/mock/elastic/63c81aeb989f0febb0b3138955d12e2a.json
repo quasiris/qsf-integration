@@ -1,0 +1,17 @@
+{
+  "tokens" : [ {
+    "token" : "beenden",
+    "start_offset" : 0,
+    "end_offset" : 8,
+    "type" : "SYNONYM",
+    "position" : 0,
+    "positionLength" : null
+  }, {
+    "token" : "kuendigen",
+    "start_offset" : 0,
+    "end_offset" : 8,
+    "type" : "<ALPHANUM>",
+    "position" : 0,
+    "positionLength" : null
+  } ]
+}
