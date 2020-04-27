@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline;
 
+import com.quasiris.qsf.pipeline.filter.ParallelFilter;
 import com.quasiris.qsf.pipeline.filter.SleepFilter;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.hamcrest.MatcherAssert;
@@ -24,8 +25,18 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
                 pipeline("second-sleep").
                     timeout(2000L).
                     filter(new SleepFilter("second-sleep", 1000L)).
+                pipeline("third-sleep").
+                    timeout(2000L).
+                    filter(new SleepFilter("third-sleep", 1000L)).
                 sequential().
                 build();
+
+
+        ParallelFilter parallelFilter = (ParallelFilter) pipeline.getFilterList().get(0);
+        Assert.assertEquals("parallel.ParallelFilter", pipeline.getFilterList().get(0).getId());
+        Assert.assertEquals("first-sleep", parallelFilter.getPipelines().get(0).getId());
+        Assert.assertEquals("second-sleep", parallelFilter.getPipelines().get(1).getId());
+        Assert.assertEquals("third-sleep", parallelFilter.getPipelines().get(2).getId());
 
         PipelineContainer pipelineContainer = PipelineExecuter.create().
                 pipeline(pipeline).

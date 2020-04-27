@@ -101,4 +101,13 @@ public class ParallelFilter extends AbstractFilter {
 
 
     }
+
+    /**
+     * Getter for property 'pipelines'.
+     *
+     * @return Value for property 'pipelines'.
+     */
+    public List<Pipeline> getPipelines() {
+        return pipelines;
+    }
 }
