@@ -1,6 +1,7 @@
 package com.quasiris.qsf.pipeline.filter.elastic.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.MultiElasticResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +17,13 @@ public class StandardMultiElasticClient implements MultiElasticClientIF {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public MultiElasticResult request(String elasticUrl, List<String> requests) throws IOException {
+    public MultiElasticResult request(String elasticUrl, List<String> requests) throws IOException, PipelineContainerException {
         LOG.debug("elastic request: " + requests);
+
+        if(requests == null || requests.isEmpty()) {
+            throw new PipelineContainerException("There are no requests to process.");
+        }
+
         StringBuilder multiRequest = new StringBuilder();
         for(String request: requests) {
             multiRequest.append("{}").append("\n");

@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic.client;
 
+import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.MultiElasticResult;
 
 import java.io.IOException;
@@ -10,6 +11,6 @@ import java.util.List;
  */
 public interface MultiElasticClientIF {
 
-    MultiElasticResult request(String elasticBaseUrl, List<String> request) throws IOException;
+    MultiElasticResult request(String elasticBaseUrl, List<String> request) throws IOException, PipelineContainerException;
 
 }

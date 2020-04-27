@@ -10,6 +10,10 @@ import java.util.Map;
  */
 public class SearchQuery {
 
+    private String originalQuery;
+    private boolean queryChanged = false;
+    private Boolean tracking;
+
     private List<Token> queryToken = new ArrayList<>();
 
     private String q;
@@ -26,6 +30,8 @@ public class SearchQuery {
     private Integer rows;
 
     private boolean debug = false;
+
+    private String requestOrigin;
 
     private Map<String, String> parameters;
 
@@ -154,6 +160,81 @@ public class SearchQuery {
             this.parameters = new HashMap<>();
         }
         this.parameters.put(key, value);
+    }
+
+
+
+    /**
+     * Getter for property 'tracking'.
+     *
+     * @return Value for property 'tracking'.
+     */
+    public Boolean getTracking() {
+        return tracking;
+    }
+
+    /**
+     * Setter for property 'tracking'.
+     *
+     * @param tracking Value to set for property 'tracking'.
+     */
+    public void setTracking(Boolean tracking) {
+        this.tracking = tracking;
+    }
+
+
+    /**
+     * Getter for property 'requestOrigin'.
+     *
+     * @return Value for property 'requestOrigin'.
+     */
+    public String getRequestOrigin() {
+        return requestOrigin;
+    }
+
+    /**
+     * Setter for property 'requestOrigin'.
+     *
+     * @param requestOrigin Value to set for property 'requestOrigin'.
+     */
+    public void setRequestOrigin(String requestOrigin) {
+        this.requestOrigin = requestOrigin;
+    }
+
+    /**
+     * Getter for property 'originalQuery'.
+     *
+     * @return Value for property 'originalQuery'.
+     */
+    public String getOriginalQuery() {
+        return originalQuery;
+    }
+
+    /**
+     * Setter for property 'originalQuery'.
+     *
+     * @param originalQuery Value to set for property 'originalQuery'.
+     */
+    public void setOriginalQuery(String originalQuery) {
+        this.originalQuery = originalQuery;
+    }
+
+    /**
+     * Getter for property 'queryChanged'.
+     *
+     * @return Value for property 'queryChanged'.
+     */
+    public boolean isQueryChanged() {
+        return queryChanged;
+    }
+
+    /**
+     * Setter for property 'queryChanged'.
+     *
+     * @param queryChanged Value to set for property 'queryChanged'.
+     */
+    public void setQueryChanged(boolean queryChanged) {
+        this.queryChanged = queryChanged;
     }
 
     @Override
