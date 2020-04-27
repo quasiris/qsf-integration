@@ -1,10 +1,12 @@
 package com.quasiris.qsf.pipeline;
 
+import com.quasiris.qsf.pipeline.filter.ConditionFilter;
 import com.quasiris.qsf.pipeline.filter.Filter;
 import com.quasiris.qsf.pipeline.filter.ParallelFilter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Created by mki on 11.11.17.
@@ -16,6 +18,8 @@ public class PipelineBuilder {
     private Pipeline pipeline;
 
     private ParallelFilter parallelFilter;
+
+    private ConditionFilter conditionFilter;
 
     public static PipelineBuilder create() {
         return new PipelineBuilder();
@@ -34,7 +38,7 @@ public class PipelineBuilder {
             return pipelineBuilder;
         }
 
-        if(parallelFilter == null) {
+        if(parent.parallelFilter != null) {
             parent.parallelFilter.addPipeline(this.build());
             PipelineBuilder pipelineBuilder = new PipelineBuilder();
             pipelineBuilder.setParent(parent);
@@ -42,8 +46,15 @@ public class PipelineBuilder {
             return pipelineBuilder;
         }
 
-        parallelFilter.addPipeline(this.build());
-        return parent;
+        if(parent.conditionFilter != null) {
+            parent.conditionFilter.setPipeline(this.build());
+            PipelineBuilder pipelineBuilder = new PipelineBuilder();
+            pipelineBuilder.setParent(parent);
+            pipelineBuilder.pipeline(id);
+            return pipelineBuilder;
+        }
+
+        throw new RuntimeException("This should never happen.");
     }
 
     public PipelineBuilder timeout(long timeout) {
@@ -60,6 +71,20 @@ public class PipelineBuilder {
         return filter(filter, pipeline.getId());
     }
 
+    public PipelineBuilder conditional(Predicate<PipelineContainer> predicate) {
+        conditionFilter = new ConditionFilter(pipeline.getId(), predicate);
+        pipeline.addFilter(conditionFilter);
+        return this;
+    }
+
+    public PipelineBuilder endConditional() throws PipelineContainerException {
+        if(parent == null) {
+            throw new PipelineContainerException("There is no pipeline defined for the conditional.");
+        }
+        parent.conditionFilter.setPipeline(this.build());
+        return parent;
+    }
+
     public PipelineBuilder parallel() {
         parallelFilter = new ParallelFilter(pipeline.getId());
         pipeline.addFilter(parallelFilter);
@@ -70,6 +95,10 @@ public class PipelineBuilder {
         parallelFilter = new ParallelFilter(pipeline.getId(), executorName, executorSize);
         pipeline.addFilter(parallelFilter);
         return this;
+    }
+
+    public PipelineBuilder endParallel() throws PipelineContainerException {
+        return sequential();
     }
 
     public PipelineBuilder sequential() throws PipelineContainerException {
