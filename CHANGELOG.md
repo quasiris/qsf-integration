@@ -7,6 +7,13 @@ All notable changes qsf-integration project will be documented in this file.
 - add IOUtils to support io operations
 - add a unzip method to the IOUtils
 - implement a model repository manager
+- implement a conditional filter
+- implement a spellchecking filter
+- implement a originalQuery parameter in the search query
+- implement a queryChanged parameter in the search query
+- implement a requestOrigin parameter for tracking in the search query
+- implement a parameter to disable tracking in the search query
+- make it possible to set tracking parameters in pipeline container
 
 ### Changed
 
