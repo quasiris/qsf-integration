@@ -12,10 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by mki on 02.12.17.
@@ -32,14 +29,46 @@ public class TrackingFilter extends AbstractFilter {
 
     private Map<String, Object> customParameter = new HashMap<>();
 
+    private Set<String> singleValueParameters = new HashSet<>();
+
     @Override
     public void init() {
         super.init();
+        singleValueParameters.add("id");
+        singleValueParameters.add("timestamp");
+        singleValueParameters.add("requestId");
+        singleValueParameters.add("requestOrigin");
+        singleValueParameters.add("sessionId");
+        singleValueParameters.add("userId");
+        singleValueParameters.add("q");
+        singleValueParameters.add("queryChanged");
+        singleValueParameters.add("queryTokenCount");
+        singleValueParameters.add("page");
+        singleValueParameters.add("rows");
+        singleValueParameters.add("sort");
+        singleValueParameters.add("total");
+        singleValueParameters.add("duration");
+        singleValueParameters.add("userAgent");
+        singleValueParameters.add("ipAddress");
+        singleValueParameters.add("referrer");
+        singleValueParameters.add("url");
+        singleValueParameters.add("httpMethod");
+    }
+
+
+    public boolean isTrackingEnabled(PipelineContainer pipelineContainer) {
+        if(Boolean.FALSE.equals(pipelineContainer.getSearchQuery().getTracking())) {
+            return false;
+        }
+        return true;
     }
 
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
+        if(!isTrackingEnabled(pipelineContainer)) {
+            return pipelineContainer;
+        }
         Document tracking = getTracking(pipelineContainer);
         if(trackingId != null) {
             pipelineContainer.putContext(trackingId, tracking);
@@ -50,13 +79,14 @@ public class TrackingFilter extends AbstractFilter {
 
     protected Document getTracking(PipelineContainer pipelineContainer) {
 
-       SearchQuery searchQuery = pipelineContainer.getSearchQuery();
+        SearchQuery searchQuery = pipelineContainer.getSearchQuery();
 
 
         Document tracking = new Document();
         tracking.setValue("id", UUID.randomUUID().toString());
         tracking.setValue("timestamp", new Date());
         tracking.setValue("requestId", searchQuery.getRequestId());
+        tracking.setValue("requestOrigin", searchQuery.getRequestOrigin());
 
         // TODO implement a logic for session and user id
         tracking.setValue("sessionId", searchQuery.getRequestId());
@@ -66,7 +96,15 @@ public class TrackingFilter extends AbstractFilter {
 
         tracking.setValue("resultSetId", resultSetId);
 
-        tracking.setValue("q", searchQuery.getQ());
+        if(searchQuery.getOriginalQuery() != null) {
+            tracking.setValue("q", searchQuery.getOriginalQuery());
+            tracking.addValue("changedQuery", searchQuery.getQ());
+            tracking.setValue("queryChanged", true);
+        } else {
+            tracking.setValue("q", searchQuery.getQ());
+        }
+
+
         tracking.setValue("queryTokenCount", searchQuery.getQ().split(" ").length);
         tracking.setValue("page", searchQuery.getPage());
         tracking.setValue("rows", searchQuery.getRows());
@@ -97,6 +135,20 @@ public class TrackingFilter extends AbstractFilter {
 
 
         tracking.getDocument().putAll(customParameter);
+
+        Document t = pipelineContainer.getTracking();
+        for(Map.Entry<String, Object> entry : t.getDocument().entrySet()) {
+            String value = tracking.getFieldValue(entry.getKey());
+            if(value == null) {
+                tracking.setValue(entry.getKey(), entry.getValue());
+            } else if (singleValueParameters.contains(entry.getKey())) {
+                tracking.setValue(entry.getKey(), entry.getValue());
+            } else {
+                tracking.addValue(entry.getKey(), entry.getValue());
+            }
+
+        }
+
 
         return tracking;
     }

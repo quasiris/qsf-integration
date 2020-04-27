@@ -31,6 +31,9 @@ public class ElasticTrackingFilter extends TrackingFilter {
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
+        if(!isTrackingEnabled(pipelineContainer)) {
+            return pipelineContainer;
+        }
 
         Document tracking = getTracking(pipelineContainer);
         elasticTrackingClient.trackDocument(tracking);

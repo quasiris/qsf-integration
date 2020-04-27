@@ -44,6 +44,8 @@ public class PipelineContainer {
 
     private List<Debug> debugStack = new ArrayList<>();
 
+    private Document tracking = new Document();
+
     private SearchQuery searchQuery = new SearchQuery();
     private Map<String, SearchResult> searchResults = new HashMap<>();
 
@@ -245,6 +247,24 @@ public class PipelineContainer {
      */
     public void setRequestId(String requestId) {
         this.requestId = requestId;
+    }
+
+    /**
+     * Getter for property 'tracking'.
+     *
+     * @return Value for property 'tracking'.
+     */
+    public Document getTracking() {
+        return tracking;
+    }
+
+    /**
+     * Setter for property 'tracking'.
+     *
+     * @param tracking Value to set for property 'tracking'.
+     */
+    public void setTracking(Document tracking) {
+        this.tracking = tracking;
     }
 
     @Override
