@@ -26,6 +26,25 @@ public class SearchResponse {
 
     private String requestId;
 
+    private DidYouMeanResult didYouMeanResult;
+
+    /**
+     * Getter for property 'didYouMeanResult'.
+     *
+     * @return Value for property 'didYouMeanResult'.
+     */
+    public DidYouMeanResult getDidYouMeanResult() {
+        return didYouMeanResult;
+    }
+
+    /**
+     * Setter for property 'didYouMeanResult'.
+     *
+     * @param didYouMeanResult Value to set for property 'didYouMeanResult'.
+     */
+    public void setDidYouMeanResult(DidYouMeanResult didYouMeanResult) {
+        this.didYouMeanResult = didYouMeanResult;
+    }
 
     public Integer getStatusCode() {
         return statusCode;
