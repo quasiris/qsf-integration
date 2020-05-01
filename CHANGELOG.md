@@ -19,11 +19,13 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Fixed
 - close the http coneection in async elastic client
+- fix character escaping for elastic queries
 
 ### Breaking Changes
-
+- ElasticUtil.escape is private
 
 ### Deprications
+
 
 
 ## [2.7]
