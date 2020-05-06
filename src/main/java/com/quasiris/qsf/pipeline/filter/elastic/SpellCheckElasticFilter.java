@@ -10,6 +10,7 @@ import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.MultiElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.MultiElasticClientIF;
+import com.quasiris.qsf.pipeline.filter.elastic.client.QSFHttpClient;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Token;
 import com.quasiris.qsf.util.JsonUtil;
@@ -18,7 +19,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by tbl on 11.4.20.
@@ -55,14 +58,18 @@ public class SpellCheckElasticFilter extends AbstractFilter {
     private void process(PipelineContainer pipelineContainer) throws IOException, PipelineContainerException {
 
         List<String> elasticQueries = new ArrayList<>();
+        List<SpellCheckToken> spellCheckTokens = new ArrayList<>();
         for(Token token: pipelineContainer.getSearchQuery().getQueryToken()) {
+            SpellCheckToken spellCheckToken = new SpellCheckToken(token);
+            spellCheckTokens.add(spellCheckToken);
+
             if(token.getValue().length() < minTokenLenght) {
-                pipelineContainer.getTracking().addValue("tags", "spellcheck_ignore_tag_min_token_length");
                 continue;
             }
 
             String elasticRequest  = "{\"query\": {\"fuzzy\": {\"text.keyword\": {\"value\": \"" + JsonUtil.encode(token.getValue().toLowerCase()) + "\",\"fuzziness\": \"AUTO\"}}}}";
             elasticQueries.add(elasticRequest);
+            spellCheckToken.setElasticResultPojnter(elasticQueries.size()-1);
         }
 
         if(elasticQueries.isEmpty()) {
@@ -71,72 +78,105 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
         MultiElasticResult multiElasticResult = elasticClient.request(baseUrl + "/_msearch", elasticQueries);
 
-        boolean hasTypo = false;
-        StringBuilder correctedBuilder = new StringBuilder();
-        int ignoredTokenCount = 0;
-        long spellcheckVariants = 0;
-        long correctedWords = 0;
-
-        for (int i = 0; i < pipelineContainer.getSearchQuery().getQueryToken().size() ; i++) {
-            Token token = pipelineContainer.getSearchQuery().getQueryToken().get(i);
-
-            String bestMatch = token.getValue();
-            double maxScore = 0.0;
-            boolean typo = true;
-
-            if(token.getValue().length() < minTokenLenght) {
-                ignoredTokenCount++;
-                correctedBuilder.append(bestMatch).append(" ");
-                continue;
+        for (SpellCheckToken spellCheckToken : spellCheckTokens) {
+            if(spellCheckToken.getElasticResultPojnter() != null) {
+                computeScoresFromElastic(spellCheckToken, multiElasticResult.getResponses().get(spellCheckToken.getElasticResultPojnter()));
             }
-
-            int elasticPointer = i - ignoredTokenCount;
-            ElasticResult elasticResult = multiElasticResult.getResponses().get(elasticPointer);
-            if(elasticResult.getHits() == null || elasticResult.getHits().getHits().isEmpty() ) {
-                pipelineContainer.getTracking().addValue("tags", "spellcheck_not_found");
-                continue;
-            }
-
-            for(Hit hit: multiElasticResult.getResponses().get(elasticPointer).getHits().getHits()) {
-                String text = getAsText(hit.get_source(), "text");
-                if(fuzzyEquals(token.getValue(), text)) {
-                    bestMatch = token.getValue();
-                    typo = false;
-                    break;
-                }
-                Double score = hit.get_score();
-                String weightString = getAsText(hit.get_source(), "weight");
-                Double weight = Double.valueOf(weightString);
-                if(weight > 10) {
-                    score = score + 100;
-                }
-                if(score > maxScore) {
-                    bestMatch = text;
-                    maxScore = score;
-                }
-            }
-
-            if(typo) {
-                hasTypo = true;
-                spellcheckVariants = spellcheckVariants + elasticResult.getHits().getTotal();
-                correctedWords++;
-            }
-            correctedBuilder.append(bestMatch).append(" ");
         }
 
-        if(hasTypo) {
-            String corrected = correctedBuilder.toString().trim();
-            SearchQuery searchQuery = pipelineContainer.getSearchQuery();
-            if(!fuzzyEquals(corrected, searchQuery.getQ())) {
-                searchQuery.setOriginalQuery(searchQuery.getQ());
-                searchQuery.setQ(corrected);
-                searchQuery.setQueryChanged(true);
-            }
-            pipelineContainer.getTracking().setValue("spellcheckVariants", spellcheckVariants);
-            pipelineContainer.getTracking().setValue("spellcheckCorrectedWords", correctedWords);
+
+        List<Score> correctedQueryVariants = new ArrayList<>();
+        correctedQueryVariants.add(new Score("", 0.0));
+        for (SpellCheckToken spellCheckToken : spellCheckTokens) {
+            correctedQueryVariants = computeVariants(spellCheckToken, correctedQueryVariants);
+        }
+
+        if(correctedQueryVariants.size() > 1) {
+            // do some bert magic
+            correctedQueryVariants.sort(Comparator.comparing(Score::getScore).reversed());
+
+            List<String> s = correctedQueryVariants.stream().
+                    limit(4).
+                    map(Score::getText).
+                    collect(Collectors.toList());
+
+            Sentences sentences = new Sentences();
+            sentences.setSentences(s);
+
+
+            QSFHttpClient qsfHttpClient = new QSFHttpClient();
+            SentencesResponse sentencesResponse = qsfHttpClient.
+                    post("http://localhost:5000/v1/sentence-scoring", sentences, SentencesResponse.class);
+
+            correctedQueryVariants = sentencesResponse.getSentences();
+            correctedQueryVariants.sort(Comparator.comparing(Score::getScore).reversed());
+        }
+
+
+
+        Score corrected = correctedQueryVariants.stream().findFirst().orElse(null);
+        SearchQuery searchQuery = pipelineContainer.getSearchQuery();
+        if(!fuzzyEquals(corrected.getText(), searchQuery.getQ())) {
+            searchQuery.setOriginalQuery(searchQuery.getQ());
+            searchQuery.setQ(corrected.getText());
+            searchQuery.setQueryChanged(true);
         }
     }
 
+
+    List<Score> computeVariants(SpellCheckToken spellCheckToken, List<Score> spellcheckVariants) {
+        List<Score> extendedCorrectedQueryVariants = new ArrayList<>();
+        List<Score> correctedVariants = spellCheckToken.getCorrectedVariants();
+
+        if(correctedVariants == null) {
+            correctedVariants = new ArrayList<>();
+            correctedVariants.add(new Score(spellCheckToken.getToken().getValue(), 0.0));
+
+        }
+        for(Score score : correctedVariants) {
+            for(Score spellcheckVariant : spellcheckVariants) {
+                extendedCorrectedQueryVariants.add(
+                        new Score(
+                                spellcheckVariant.getText() + " " + score.getText(),
+                                spellcheckVariant.getScore() + score.getScore()));
+            }
+        }
+
+        return extendedCorrectedQueryVariants;
+
+
+
+    }
+
+    void computeScoresFromElastic(SpellCheckToken token, ElasticResult elasticResult) {
+        List<Score> scores = new ArrayList<>();
+        if(elasticResult.getHits() == null || elasticResult.getHits().getHits().isEmpty() ) {
+            token.setUnknownToken(true);
+            return;
+        }
+
+
+
+        for(Hit hit: elasticResult.getHits().getHits()) {
+            String text = getAsText(hit.get_source(), "text");
+            if(fuzzyEquals(token.getToken().getValue(), text)) {
+                token.setCorrectToken(true);
+                return;
+            }
+            Double score = hit.get_score();
+            String weightString = getAsText(hit.get_source(), "weight");
+            Double weight = Double.valueOf(weightString);
+            if(weight > 10) {
+                score = score + 100;
+            }
+
+            scores.add(new Score(text, score));
+        }
+
+        token.setCorrectedVariants(scores);
+        token.setUnknownToken(false);
+        token.setCorrectToken(false);
+    }
 
 
     private boolean fuzzyEquals(String left, String right) {
@@ -178,5 +218,23 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    /**
+     * Getter for property 'elasticClient'.
+     *
+     * @return Value for property 'elasticClient'.
+     */
+    public MultiElasticClientIF getElasticClient() {
+        return elasticClient;
+    }
+
+    /**
+     * Setter for property 'elasticClient'.
+     *
+     * @param elasticClient Value to set for property 'elasticClient'.
+     */
+    public void setElasticClient(MultiElasticClientIF elasticClient) {
+        this.elasticClient = elasticClient;
     }
 }
