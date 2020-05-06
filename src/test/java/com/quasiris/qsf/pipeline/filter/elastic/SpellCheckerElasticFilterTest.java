@@ -5,72 +5,53 @@ import com.quasiris.qsf.pipeline.Pipeline;
 import com.quasiris.qsf.pipeline.PipelineBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineExecuter;
-import com.quasiris.qsf.pipeline.filter.ConditionFilter;
-import com.quasiris.qsf.pipeline.filter.SpyFilter;
 import com.quasiris.qsf.pipeline.filter.TokenizerFilter;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.function.Predicate;
 
 /**
- * Created by mki on 11.02.18.
+ * Created by tbl on 11.4.20.
  */
 public class SpellCheckerElasticFilterTest extends AbstractPipelineTest {
 
-
-
     @Test
-    @Ignore
     public void testSpellCheckerElasticFilterTest() throws Exception {
-        String baseUrl = "http://localhost:9200/dias-spellchecker";
+        String baseUrl = "http://localhost:9200/dias-spellchecker-dev";
 
 
-        MockElasticClient mockElasticClient = new MockElasticClient();
-        mockElasticClient.setRecord(true);
+        MockMultiElasticClient mockMultiElasticClient = new MockMultiElasticClient();
+        mockMultiElasticClient.setRecord(true);
 
         SpellCheckElasticFilter spellCheckElasticFilter = new SpellCheckElasticFilter(baseUrl);
         spellCheckElasticFilter.setId("spellchecker");
+        spellCheckElasticFilter.setElasticClient(mockMultiElasticClient);
 
-
-        ConditionFilter conditionFilter = new ConditionFilter("foo", isCorrectedQuery());
-        conditionFilter.setPipeline(
-                PipelineBuilder.create().
-                pipeline("condition").
-                filter(new SpyFilter()).
-                build()
-        );
-
-        conditionFilter.setPredicate(isCorrectedQuery());
 
         Pipeline pipeline = PipelineBuilder.create().
-                pipeline("anazlye").
-                timeout(1000000L).
+                pipeline("spell-checker-test").
+                timeout(100000L).
                 filter(new QSQLRequestFilter()).
                 filter(new TokenizerFilter()).
                 filter(spellCheckElasticFilter).
-                filter(conditionFilter).
                 build();
 
         Assert.assertNotNull(pipeline.print(""));
 
-        HttpServletRequest httpServletRequest = Mockfactory.createHttpServletRequest("http://localhost?q=Streaming");
+        HttpServletRequest httpServletRequest = Mockfactory.createHttpServletRequest("http://localhost?q=Mgenta");
 
         PipelineContainer pipelineContainer = PipelineExecuter.create().
                 pipeline(pipeline).
                 httpRequest(httpServletRequest).
                 execute();
 
+        Assert.assertEquals("telefon", pipelineContainer.getSearchQuery().getQ());
+        Assert.assertEquals("tlefon", pipelineContainer.getSearchQuery().getOriginalQuery());
+        Assert.assertTrue(pipelineContainer.getSearchQuery().isQueryChanged());
 
-    }
-
-
-    public static Predicate<PipelineContainer> isCorrectedQuery() {
-        return p -> p.getSearchQuery().getQ().equals(p.getSearchQuery().getOriginalQuery());
     }
 
 
