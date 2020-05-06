@@ -24,14 +24,20 @@ public class StandardMultiElasticClient implements MultiElasticClientIF {
             throw new PipelineContainerException("There are no requests to process.");
         }
 
+        String request = createRequest(requests);
+        String response = ElasticHttpClient.post(elasticUrl, request, "application/x-ndjson");
+        MultiElasticResult multiElasticResult = objectMapper.readValue(response, MultiElasticResult.class);
+        return multiElasticResult;
+    }
+
+
+    public static String createRequest(List<String> requests) {
         StringBuilder multiRequest = new StringBuilder();
         for(String request: requests) {
             multiRequest.append("{}").append("\n");
             multiRequest.append(request).append("\n");
         }
 
-        String response = ElasticHttpClient.post(elasticUrl, multiRequest.toString(), "application/x-ndjson");
-        MultiElasticResult multiElasticResult = objectMapper.readValue(response, MultiElasticResult.class);
-        return multiElasticResult;
+        return multiRequest.toString();
     }
 }
