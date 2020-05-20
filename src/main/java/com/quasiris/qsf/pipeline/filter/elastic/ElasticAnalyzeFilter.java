@@ -50,7 +50,7 @@ public class ElasticAnalyzeFilter extends AbstractFilter {
         pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, baseUrl);
         pipelineContainer.debug(getId() + ".request", DebugType.JSON, request);
 
-        Analyze analyze = elasticClient.analyze(baseUrl + "_analyze", request);
+        Analyze analyze = elasticClient.analyze(baseUrl + "/_analyze", request);
         pipelineContainer.debug(getId() + ".result", DebugType.OBJECT, analyze);
         SearchResult searchResult = new SearchResult();
 
