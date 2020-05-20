@@ -14,6 +14,8 @@ All notable changes qsf-integration project will be documented in this file.
 - implement a requestOrigin parameter for tracking in the search query
 - implement a parameter to disable tracking in the search query
 - make it possible to set tracking parameters in pipeline container
+- implement a analyzer filter for elastic
+- implement a filter to extract synonyms from the elastic analyzer
 
 ### Changed
 
