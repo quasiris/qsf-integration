@@ -1,0 +1,100 @@
+{
+  "_comment" : "SpellCheckerElasticFilterTest.testSpellCheckerElasticFilterTest",
+  "responses" : [ {
+    "took" : 4,
+    "hits" : {
+      "total" : 8,
+      "max_score" : 9.451306,
+      "hits" : [ {
+        "_index" : "dias-spellchecker-dev_2020-05-02-00.07.43",
+        "_type" : "_doc",
+        "_id" : "magenta",
+        "_score" : 9.451306,
+        "_source" : {
+          "weight" : "2072",
+          "text" : "magenta"
+        },
+        "inner_hits" : null,
+        "highlight" : null
+      }, {
+        "_index" : "dias-spellchecker-dev_2020-05-02-00.07.43",
+        "_type" : "_doc",
+        "_id" : "magneta",
+        "_score" : 7.561044,
+        "_source" : {
+          "weight" : "5",
+          "text" : "magneta"
+        },
+        "inner_hits" : null,
+        "highlight" : null
+      }, {
+        "_index" : "dias-spellchecker-dev_2020-05-02-00.07.43",
+        "_type" : "_doc",
+        "_id" : "agents",
+        "_score" : 7.561044,
+        "_source" : {
+          "weight" : "6",
+          "text" : "agents"
+        },
+        "inner_hits" : null,
+        "highlight" : null
+      }, {
+        "_index" : "dias-spellchecker-dev_2020-05-02-00.07.43",
+        "_type" : "_doc",
+        "_id" : "meganta",
+        "_score" : 7.561044,
+        "_source" : {
+          "weight" : "1",
+          "text" : "meganta"
+        },
+        "inner_hits" : null,
+        "highlight" : null
+      }, {
+        "_index" : "dias-spellchecker-dev_2020-05-02-00.07.43",
+        "_type" : "_doc",
+        "_id" : "manta",
+        "_score" : 6.8049407,
+        "_source" : {
+          "weight" : "2",
+          "text" : "manta"
+        },
+        "inner_hits" : null,
+        "highlight" : null
+      }, {
+        "_index" : "dias-spellchecker-dev_2020-05-02-00.07.43",
+        "_type" : "_doc",
+        "_id" : "ngena",
+        "_score" : 6.8049407,
+        "_source" : {
+          "weight" : "5",
+          "text" : "ngena"
+        },
+        "inner_hits" : null,
+        "highlight" : null
+      }, {
+        "_index" : "dias-spellchecker-dev_2020-05-02-00.07.43",
+        "_type" : "_doc",
+        "_id" : "agent",
+        "_score" : 6.8049407,
+        "_source" : {
+          "weight" : "112",
+          "text" : "agent"
+        },
+        "inner_hits" : null,
+        "highlight" : null
+      }, {
+        "_index" : "dias-spellchecker-dev_2020-05-02-00.07.43",
+        "_type" : "_doc",
+        "_id" : "meta",
+        "_score" : 5.670784,
+        "_source" : {
+          "weight" : "3",
+          "text" : "meta"
+        },
+        "inner_hits" : null,
+        "highlight" : null
+      } ]
+    },
+    "aggregations" : null
+  } ]
+}
