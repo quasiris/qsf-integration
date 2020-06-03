@@ -9,6 +9,7 @@ import com.quasiris.qsf.pipeline.filter.TokenizerFilter;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,11 +25,12 @@ public class SpellCheckerElasticFilterTest extends AbstractPipelineTest {
 
 
         MockMultiElasticClient mockMultiElasticClient = new MockMultiElasticClient();
-        mockMultiElasticClient.setRecord(true);
+        //mockMultiElasticClient.setRecord(true);
 
         SpellCheckElasticFilter spellCheckElasticFilter = new SpellCheckElasticFilter(baseUrl);
         spellCheckElasticFilter.setId("spellchecker");
         spellCheckElasticFilter.setElasticClient(mockMultiElasticClient);
+        spellCheckElasticFilter.setSentenceScoringEnabled(false);
 
 
         Pipeline pipeline = PipelineBuilder.create().
@@ -48,8 +50,8 @@ public class SpellCheckerElasticFilterTest extends AbstractPipelineTest {
                 httpRequest(httpServletRequest).
                 execute();
 
-        Assert.assertEquals("telefon", pipelineContainer.getSearchQuery().getQ());
-        Assert.assertEquals("tlefon", pipelineContainer.getSearchQuery().getOriginalQuery());
+        Assert.assertEquals("magenta", pipelineContainer.getSearchQuery().getQ());
+        Assert.assertEquals("Mgenta", pipelineContainer.getSearchQuery().getOriginalQuery());
         Assert.assertTrue(pipelineContainer.getSearchQuery().isQueryChanged());
 
     }

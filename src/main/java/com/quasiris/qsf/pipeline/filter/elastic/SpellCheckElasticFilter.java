@@ -36,6 +36,8 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     private MultiElasticClientIF elasticClient;
 
+    private boolean sentenceScoringEnabled = true;
+
     public SpellCheckElasticFilter(String baseUrl) {
         this.baseUrl = baseUrl;
     }
@@ -90,11 +92,10 @@ public class SpellCheckElasticFilter extends AbstractFilter {
         for (SpellCheckToken spellCheckToken : spellCheckTokens) {
             correctedQueryVariants = computeVariants(spellCheckToken, correctedQueryVariants);
         }
+        correctedQueryVariants.sort(Comparator.comparing(Score::getScore).reversed());
 
-        if(correctedQueryVariants.size() > 1) {
+        if(sentenceScoringEnabled && correctedQueryVariants.size() > 1) {
             // do some bert magic
-            correctedQueryVariants.sort(Comparator.comparing(Score::getScore).reversed());
-
             List<String> s = correctedQueryVariants.stream().
                     limit(4).
                     map(Score::getText).
@@ -236,5 +237,14 @@ public class SpellCheckElasticFilter extends AbstractFilter {
      */
     public void setElasticClient(MultiElasticClientIF elasticClient) {
         this.elasticClient = elasticClient;
+    }
+
+    /**
+     * Setter for property 'sentenceScoringEnabled'.
+     *
+     * @param sentenceScoringEnabled Value to set for property 'sentenceScoringEnabled'.
+     */
+    public void setSentenceScoringEnabled(boolean sentenceScoringEnabled) {
+        this.sentenceScoringEnabled = sentenceScoringEnabled;
     }
 }
