@@ -18,6 +18,10 @@ public class Token {
 
     private DeCompound deCompound;
 
+    private int start;
+
+    private int end;
+
     public Token(Token token) {
         this.posTag = token.getPosTag();
         this.value = token.getValue();
@@ -92,6 +96,42 @@ public class Token {
 
     public void setDeCompound(DeCompound deCompound) {
         this.deCompound = deCompound;
+    }
+
+    /**
+     * Getter for property 'start'.
+     *
+     * @return Value for property 'start'.
+     */
+    public int getStart() {
+        return start;
+    }
+
+    /**
+     * Setter for property 'start'.
+     *
+     * @param start Value to set for property 'start'.
+     */
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    /**
+     * Getter for property 'end'.
+     *
+     * @return Value for property 'end'.
+     */
+    public int getEnd() {
+        return end;
+    }
+
+    /**
+     * Setter for property 'end'.
+     *
+     * @param end Value to set for property 'end'.
+     */
+    public void setEnd(int end) {
+        this.end = end;
     }
 
     @Override
