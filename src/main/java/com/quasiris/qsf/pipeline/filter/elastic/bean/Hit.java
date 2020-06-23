@@ -18,6 +18,7 @@ public class Hit {
     private String _id;
     private Double _score;
     private ObjectNode _source;
+    private ObjectNode _explanation;
     private LinkedHashMap<String, InnerHitResult> inner_hits;
 
     private Map<String, List<String>> highlight;
@@ -61,6 +62,14 @@ public class Hit {
 
     public void set_source(ObjectNode _source) {
         this._source = _source;
+    }
+
+    public ObjectNode get_explanation() {
+        return _explanation;
+    }
+
+    public void set_explanation(ObjectNode _explanation) {
+        this._explanation = _explanation;
     }
 
     public LinkedHashMap<String, InnerHitResult> getInner_hits() {

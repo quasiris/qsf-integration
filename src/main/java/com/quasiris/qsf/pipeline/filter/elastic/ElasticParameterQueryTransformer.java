@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
@@ -13,16 +11,7 @@ import com.quasiris.qsf.pipeline.filter.web.RequestParser;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Slider;
-import com.quasiris.qsf.util.ElasticUtil;
-import com.quasiris.qsf.util.JsonUtil;
 import com.quasiris.qsf.util.PrintUtil;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.text.StrSubstitutor;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -56,6 +45,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
         transformParameter();
         transformSourceFields();
+        transformDebug();
         transformAggregations();
 
         return elasticQuery;
@@ -70,6 +60,12 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             sourceFieldArray.add(field);
         }
         elasticQuery.set("_source", sourceFieldArray);
+    }
+
+    public void transformDebug() {
+        if(pipelineContainer.isDebugEnabled()) {
+            getElasticQuery().put("explain", true);
+        }
     }
 
     public void transformAggregations() {
