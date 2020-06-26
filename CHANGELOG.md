@@ -3,6 +3,19 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+
+### Removed
+
+### Changed
+
+### Deprecated
+
+### Fixed
+
+### Security
+
+## [2.8] - 2020-06-26
+### Added
 - ElasticSearch Query Builder select the source fields automatically if they are mapped
 - add IOUtils to support io operations
 - add a unzip method to the IOUtils
@@ -16,17 +29,23 @@ All notable changes qsf-integration project will be documented in this file.
 - make it possible to set tracking parameters in pipeline container
 - implement a analyzer filter for elastic
 - implement a filter to extract synonyms from the elastic analyzer
+- implement logic to use filters in a match all query for elastic suggests
+- add did you mean in search response
+- add elastic explanation in debug mode
 
 ### Changed
+- extend elastic debugging
 
 ### Fixed
 - close the http coneection in async elastic client
 - fix character escaping for elastic queries
+- nullptr in monitoring
+- javadoc warnings
 
 ### Breaking Changes
 - ElasticUtil.escape is private
 
-### Deprications
+### Deprecations
 
 
 
