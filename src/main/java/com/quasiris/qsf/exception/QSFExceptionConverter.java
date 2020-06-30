@@ -2,10 +2,13 @@ package com.quasiris.qsf.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainerDebugException;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QSFExceptionConverter {
 
@@ -23,16 +26,34 @@ public class QSFExceptionConverter {
 
     }
 
-    public static String debugToType(String debugId, String debugType, PipelineContainerDebugException ex) {
-        if(debugId == null) {
-            return debugToHtml(ex);
+    public static Object debugToType(String debugId, String debugType, List<Debug> debugList) {
+        if(debugId == null && "json".equals(debugType)) {
+            Map<String, String> json = new HashMap<>();
+            for(Debug debug : debugList) {
+                String debugText = debugToType(debugType, debug).toString();
+                if(!Strings.isNullOrEmpty(debug.getId())) {
+                    json.put(debug.getId(), debugText);
+                }
+            }
+            return json;
         }
-        for(Debug debug : ex.getDebugStack()) {
+
+        if(debugId == null) {
+            return debugToHtml(debugList).toString();
+        }
+
+
+
+        for(Debug debug : debugList) {
             if(debug.getId() != null && debug.getId().equals(debugId)) {
                 return debugToType(debugType, debug).toString();
             }
         }
-        return debugToHtml(ex);
+        return debugToHtml(debugList).toString();
+    }
+
+    public static Object debugToType(String debugId, String debugType, PipelineContainerDebugException ex) {
+       return debugToType(debugId, debugType, ex.getDebugStack());
     }
 
     public static String debugToHtml(PipelineContainerDebugException ex) {
@@ -80,7 +101,9 @@ public class QSFExceptionConverter {
     public static StringBuilder debugToHtml(Debug debug) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append("<pre>");
+        builder.append("\n<pre>\n");
+        builder.append(debug.getId() + ":\n");
+
         builder.append(debugToText(debug));
         builder.append("</pre>");
         return builder;
