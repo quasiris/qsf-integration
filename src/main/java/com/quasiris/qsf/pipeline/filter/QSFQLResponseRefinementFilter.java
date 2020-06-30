@@ -37,9 +37,13 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
             Facet facet = searchResult.getFacetById(filterId);
             if(facet != null) {
                 facet.setSelected(Boolean.TRUE);
-                for(String filterValue : searchFilter.getValues()) {
-                    FacetValue facetValue = facet.getFacetValueByValue(filterValue);
-                    facetValue.setSelected(Boolean.TRUE);
+                if(searchFilter.getValues() != null) {
+                    for (String filterValue : searchFilter.getValues()) {
+                        FacetValue facetValue = facet.getFacetValueByValue(filterValue);
+                        if (facetValue != null) {
+                            facetValue.setSelected(Boolean.TRUE);
+                        }
+                    }
                 }
 
             }
