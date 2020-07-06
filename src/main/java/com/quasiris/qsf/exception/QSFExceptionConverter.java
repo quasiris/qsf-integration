@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainerDebugException;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +89,7 @@ public class QSFExceptionConverter {
             try {
                 formatted = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(debug.getDebugObject());
             } catch (JsonProcessingException e) {
-                //
+                formatted = ExceptionUtils.getStackTrace(e);
             }
         } else {
             formatted = debug.getDebugObject();
