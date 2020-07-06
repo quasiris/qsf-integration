@@ -22,6 +22,9 @@ public class Token {
 
     private int end;
 
+    public Token() {
+    }
+
     public Token(Token token) {
         this.posTag = token.getPosTag();
         this.value = token.getValue();
