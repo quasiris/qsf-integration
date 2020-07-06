@@ -99,18 +99,30 @@ public class SearchFilter {
     }
 
     public Object getMinValue() {
+        if(rangeValue == null) {
+            return null;
+        }
         return rangeValue.getMinValue();
     }
 
     public Object getMaxValue() {
+        if(rangeValue == null) {
+            return null;
+        }
         return rangeValue.getMaxValue();
     }
 
     public String getLowerBoundOperator() {
+        if(rangeValue == null || rangeValue.getLowerBound() == null) {
+            return null;
+        }
         return rangeValue.getLowerBound().getOperator();
     }
 
     public String getUpperBoundOperator() {
+        if(rangeValue == null || rangeValue.getUpperBound() == null) {
+            return null;
+        }
         return rangeValue.getUpperBound().getOperator();
     }
 
