@@ -47,7 +47,7 @@ public class QSFExceptionConverter {
 
         for(Debug debug : debugList) {
             if(debug.getId() != null && debug.getId().equals(debugId)) {
-                return debugToType(debugType, debug).toString();
+                return debugToType(debugType, debug);
             }
         }
         return debugToHtml(debugList).toString();
@@ -72,9 +72,12 @@ public class QSFExceptionConverter {
     }
 
 
-    public static StringBuilder debugToType(String type, Debug debug) {
+    public static Object debugToType(String type, Debug debug) {
         if("text".equals(type)) {
             return debugToText(debug);
+        }
+        if("json".equals(type) && debug.getType().isJson()) {
+            return debug.getDebugObject();
         }
         return debugToHtml(debug);
     }
