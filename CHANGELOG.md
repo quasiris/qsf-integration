@@ -3,6 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- implement a wildcard field mapping for elastic
 
 ### Removed
 

@@ -166,11 +166,10 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             } else {
                 for(Map.Entry<String, List<String>> mapping : fieldMapping.entrySet()) {
                     String key = mapping.getKey();
-                    Object mappedValue = fields.get(key);
-                    if(mappedValue != null) {
-                        for(String mappedKey: mapping.getValue()) {
-                            mapValue(document, mappedKey, mappedValue);
-                        }
+                    if(key.endsWith("*")) {
+                        mapPrefixFields(mapping, fields, document);
+                    } else {
+                        mapField(mapping, fields, document);
                     }
                 }
             }
@@ -181,6 +180,32 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
         transformHighlight(hit, document);
         return document;
+    }
+
+    public void mapField(Map.Entry<String, List<String>> mapping, Map fields, Document document) {
+        String key = mapping.getKey();
+        Object mappedValue = fields.get(key);
+        if(mappedValue != null) {
+            for(String mappedKey: mapping.getValue()) {
+                mapValue(document, mappedKey, mappedValue);
+            }
+        }
+    }
+
+    public void mapPrefixFields(Map.Entry<String, List<String>> mapping, Map fields, Document document) {
+        String key = mapping.getKey();
+        String prefix = key.substring(0, key.length() - 1);
+        for(Object elasticKeyObject : fields.keySet()) {
+            String elasticKey = (String) elasticKeyObject;
+            if(elasticKey.startsWith(prefix)) {
+                for(String mappedKeyPrefix: mapping.getValue()) {
+                    String mappedKey = elasticKey.replaceFirst(prefix, mappedKeyPrefix);
+                    mapValue(document, mappedKey, fields.get(elasticKey));
+                }
+            }
+
+        }
+
     }
 
     public void transformInnerHits(Map fields, LinkedHashMap<String, InnerHitResult> innerHits) {
