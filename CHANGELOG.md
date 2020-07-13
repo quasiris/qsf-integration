@@ -3,6 +3,19 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+
+### Removed
+
+### Changed
+
+### Deprecated
+
+### Fixed
+
+### Security
+
+## [2.9] - 2020-07-13
+### Added
 - implement a wildcard field mapping for elastic
 
 ### Removed
