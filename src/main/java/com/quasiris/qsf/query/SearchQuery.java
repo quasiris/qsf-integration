@@ -121,6 +121,22 @@ public class SearchQuery {
         addFacet(facet);
     }
 
+    public void addFilter(String id, String value) {
+        SearchFilter searchFilter = new SearchFilter();
+        searchFilter.setId(id);
+        searchFilter.setName(id);
+        searchFilter.addValue(value);
+        searchFilter.setFilterType(FilterType.MATCH);
+        addFilter(searchFilter);
+    }
+
+    public void addFilter(SearchFilter searchFilter) {
+        if(this.searchFilterList == null) {
+            this.searchFilterList = new ArrayList<>();
+        }
+        this.searchFilterList.add(searchFilter);
+    }
+
     public void addFacet(Facet facet) {
         if(this.facetList==null) {
             facetList = new ArrayList<>();
