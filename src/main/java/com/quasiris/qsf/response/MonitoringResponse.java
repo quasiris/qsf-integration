@@ -1,6 +1,7 @@
 package com.quasiris.qsf.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.quasiris.qsf.monitoring.MonitoringDocument;
 import com.quasiris.qsf.monitoring.MonitoringStatus;
 
 import java.util.Date;
@@ -137,6 +138,20 @@ public class MonitoringResponse {
             monitoringResult.add(document.getDocument());
         }
 
+        monitoringResponse.setResult(monitoringResult);
+        return monitoringResponse;
+    }
+
+    public static MonitoringResponse create(MonitoringDocument monitoringDocument, long time) {
+        MonitoringResponse monitoringResponse = new MonitoringResponse();
+        monitoringResponse.setStatus(monitoringDocument.getStatus());
+
+        monitoringResponse.setCurrentTime(new Date());
+        monitoringResponse.setStatusCode(200);
+        monitoringResponse.setTime(time);
+
+        SimpleSearchResponse monitoringResult = new SimpleSearchResponse();
+        monitoringResult.add(monitoringDocument.getDocument());
         monitoringResponse.setResult(monitoringResult);
         return monitoringResponse;
     }

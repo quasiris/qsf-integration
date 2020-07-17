@@ -3,6 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- implement a method to create a custom monitoring
 
 ### Removed
 
@@ -11,6 +12,8 @@ All notable changes qsf-integration project will be documented in this file.
 ### Deprecated
 
 ### Fixed
+- don't throw an exception in case of a monitoring error
+
 
 ### Security
 

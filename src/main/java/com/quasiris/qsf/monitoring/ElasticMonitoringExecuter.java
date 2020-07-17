@@ -10,6 +10,7 @@ import com.quasiris.qsf.response.MonitoringResponse;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -138,10 +139,9 @@ public class ElasticMonitoringExecuter {
      * Create a elastic query, executes the query and check the results.
      *
      * @return the {@link MonitoringResponse}
-     * @throws PipelineContainerException in case of an error
      * @throws PipelineContainerDebugException in case of debugging
      */
-    public MonitoringResponse doMonitoring( ) throws PipelineContainerException, PipelineContainerDebugException {
+    public MonitoringResponse doMonitoring( ) throws PipelineContainerDebugException {
         String type = "health";
         ElasticFilterBuilder elasticFilterBuilder = ElasticFilterBuilder.create().
                 resultSetId(type).
@@ -165,22 +165,32 @@ public class ElasticMonitoringExecuter {
             }
         }
 
+        SearchResult searchResult = null;
+        try {
+            Pipeline pipeline = PipelineBuilder.create().
+                    pipeline(type).
+                    timeout(timeout).
+                    filter(elasticFilterBuilder.
+                            build()).
+                    build();
 
-        Pipeline pipeline = PipelineBuilder.create().
-                pipeline(type).
-                timeout(timeout).
-                filter(elasticFilterBuilder.
-                        build()).
-                build();
+            SearchQuery searchQuery = new SearchQuery();
+            searchQuery.setQ(this.query);
 
-        SearchQuery searchQuery = new SearchQuery();
-        searchQuery.setQ(this.query);
-        PipelineContainer pipelineContainer = PipelineExecuter.create().
-                pipeline(pipeline).
-                searchQuery(searchQuery).
-                execute();
+            PipelineContainer pipelineContainer = PipelineExecuter.create().
+                    pipeline(pipeline).
+                    searchQuery(searchQuery).
+                    execute();
 
-        SearchResult searchResult = pipelineContainer.getSearchResults().get(type);
+            searchResult = pipelineContainer.getSearchResults().get(type);
+        } catch (PipelineContainerException e) {
+            searchResult = new SearchResult();
+            searchResult.setDocuments(new ArrayList<>());
+            searchResult.setTotal(0L);
+            searchResult.setTime(e.getPipelineContainer().currentTime());
+            searchResult.setStatusMessage(e.getMessage());
+        }
+
 
         SearchResult monitoring = new SearchResult();
         monitoring.setTime(searchResult.getTime());
@@ -209,6 +219,7 @@ public class ElasticMonitoringExecuter {
                 }
             }
             monitoringDocument.check();
+            monitoringDocument.setMessage(searchResult.getStatusMessage());
             monitoringDocument.setValue("baseUrl", baseUrl);
             monitoringDocument.setValue("query", query);
             setStatus(monitoringDocument.getStatus());

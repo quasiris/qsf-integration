@@ -13,6 +13,7 @@ public class MonitoringDocument<T extends Comparable> extends Document {
     private String name = "name";
     private String status = "status";
     private String value = "value";
+    private String message = "message";
 
     /*
      * total
@@ -101,6 +102,24 @@ public class MonitoringDocument<T extends Comparable> extends Document {
      */
     public void setType(String type) {
         setValueIfNotNull(this.type, type);
+    }
+
+    /**
+     * Getter for property 'message'.
+     *
+     * @return Value for property 'message'.
+     */
+    public String getMessage() {
+        return getFieldValue(message);
+    }
+
+    /**
+     * Setter for property 'message'.
+     *
+     * @param message Value to set for property 'message'.
+     */
+    public void setMessage(String message) {
+        setValueIfNotNull(this.message, message);
     }
 
     /**
@@ -328,4 +347,15 @@ public class MonitoringDocument<T extends Comparable> extends Document {
         }
     }
 
+    public void error() {
+        setStatus("ERROR");
+    }
+
+    public void warn() {
+        setStatus("WARN");
+    }
+
+    public void ok() {
+        setStatus("OK");
+    }
 }
