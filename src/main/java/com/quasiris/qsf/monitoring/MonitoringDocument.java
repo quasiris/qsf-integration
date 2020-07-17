@@ -14,6 +14,7 @@ public class MonitoringDocument<T extends Comparable> extends Document {
     private String status = "status";
     private String value = "value";
     private String message = "message";
+    private boolean active = true;
 
     /*
      * total
@@ -357,5 +358,23 @@ public class MonitoringDocument<T extends Comparable> extends Document {
 
     public void ok() {
         setStatus("OK");
+    }
+
+    /**
+     * Getter for property 'active'.
+     *
+     * @return Value for property 'active'.
+     */
+    public boolean isActive() {
+        return active;
+    }
+
+    /**
+     * Setter for property 'active'.
+     *
+     * @param active Value to set for property 'active'.
+     */
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

@@ -218,7 +218,13 @@ public class ElasticMonitoringExecuter {
                     monitoringDocument.setValue(count);
                 }
             }
-            monitoringDocument.check();
+
+            if(monitoringDocument.isActive()) {
+                monitoringDocument.check();
+            } else {
+                monitoringDocument.ok();
+            }
+
             monitoringDocument.setMessage(searchResult.getStatusMessage());
             monitoringDocument.setValue("baseUrl", baseUrl);
             monitoringDocument.setValue("query", query);

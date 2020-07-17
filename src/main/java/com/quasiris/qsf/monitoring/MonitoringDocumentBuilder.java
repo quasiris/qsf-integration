@@ -17,6 +17,7 @@ public class MonitoringDocumentBuilder<T extends Comparable> {
     private T maxWarnLimit;
     private T minErrorLimit;
     private T maxErrorLimit;
+    private boolean active = true;
 
 
     /** Constructs a new MonitoringDocumentBuilder. */
@@ -129,6 +130,16 @@ public class MonitoringDocumentBuilder<T extends Comparable> {
         return this;
     }
 
+    /**
+     *
+     * @param active the active flag.
+     * @return MonitoringDocumentBuilder
+     */
+    public MonitoringDocumentBuilder active(boolean active) {
+        this.active = active;
+        return this;
+    }
+
 
     /**
      * Creates the MonitoringDocument.
@@ -147,6 +158,7 @@ public class MonitoringDocumentBuilder<T extends Comparable> {
         monitoringDocument.setMaxWarnLimit(maxWarnLimit);
         monitoringDocument.setMinErrorLimit(minErrorLimit);
         monitoringDocument.setMaxErrorLimit(maxErrorLimit);
+        monitoringDocument.setActive(active);
         return monitoringDocument;
     }
 }
