@@ -31,12 +31,12 @@ public class QSFExceptionConverter {
         if(debugId == null && "json".equals(debugType)) {
             Map<String, String> json = new HashMap<>();
             for(Debug debug : debugList) {
-                Object debugText = debugToType(debugType, debug);
+                String debugText = debugToText(debug).toString();
                 if(debugText == null) {
                     debugText = "";
                 }
                 if(!Strings.isNullOrEmpty(debug.getId())) {
-                    json.put(debug.getId(), debugText.toString());
+                    json.put(debug.getId(), debugText);
                 }
             }
             return json;
