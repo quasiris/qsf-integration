@@ -6,6 +6,7 @@ All notable changes qsf-integration project will be documented in this file.
 - implement a method to create a custom monitoring
 - implement addFilter method to simplify the creation of filter
 - implement a flag to deactive a monitoring
+- add the possibility to set a field and a direction in the sort of the search query
 
 ### Removed
 
