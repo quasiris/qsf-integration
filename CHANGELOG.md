@@ -12,6 +12,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Deprecated
 
 ### Fixed
+- AbstractQueryParser: don't parse the query if there are no tokens 
 
 ## [2.10]
 ### Added
