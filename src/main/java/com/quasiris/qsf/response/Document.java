@@ -58,6 +58,24 @@ public class Document {
         return String.valueOf(value);
     }
 
+    public List<String> getValues(String fieldName) {
+        Object value = getFieldValueAsObject(fieldName);
+        List<String> ret = new ArrayList<>();
+        if(value == null) {
+            return ret;
+        }
+
+        if(value instanceof List) {
+            List values = (List) value;
+            for(Object v : values) {
+                ret.add(v.toString());
+            }
+        } else {
+            ret.add(value.toString());
+        }
+        return ret;
+    }
+
 
     public Object getFieldValueAsObject(String fieldName) {
         return document.get(fieldName);

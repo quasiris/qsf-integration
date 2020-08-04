@@ -3,6 +3,18 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- implement a helper function in Document to get all values as a list
+
+### Removed
+
+### Changed
+
+### Deprecated
+
+### Fixed
+
+## [2.10]
+### Added
 - implement a method to create a custom monitoring
 - implement addFilter method to simplify the creation of filter
 - implement a flag to deactive a monitoring
