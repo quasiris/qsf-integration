@@ -28,7 +28,7 @@ The requirements that can be solved with the QSF are structured as follows:
 - easy to use paging, filtering, facetting, sorting, boosting
 - decoupling of the search technology from the functional requirements
 - full flexibility for the functional design with an easy extensibility in all process steps
-- easy intetration with REST
+- easy integration with REST
 - easy integration of tracking systems
 
 
