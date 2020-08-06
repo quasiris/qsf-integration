@@ -1,5 +1,7 @@
 package com.quasiris.qsf.monitoring;
 
+import java.time.Instant;
+
 /**
  * A builder to easily create monitoring documents.
  *
@@ -25,9 +27,16 @@ public class MonitoringDocumentBuilder<T extends Comparable> {
     }
 
     /**
-     * @return MonitoringDocumentBuilder
+     * @return MonitoringDocumentBuilder for Long
      */
-    public static MonitoringDocumentBuilder aMonitoringLong() {
+    public static MonitoringDocumentBuilder<Long> aMonitoringLong() {
+        return new MonitoringDocumentBuilder<>();
+    }
+
+    /**
+     * @return MonitoringDocumentBuilder for Instant
+     */
+    public static MonitoringDocumentBuilder<Instant> aMonitoringInstant() {
         return new MonitoringDocumentBuilder<>();
     }
 

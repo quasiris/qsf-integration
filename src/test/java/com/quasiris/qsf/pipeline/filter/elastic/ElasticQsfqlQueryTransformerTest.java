@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.Sort;
 import com.quasiris.qsf.query.parser.QsfqlParserTest;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -15,13 +15,24 @@ import org.junit.Test;
 public class ElasticQsfqlQueryTransformerTest {
 
     @Test
-    public void transformSort() throws Exception {
+    public void transformSortMapping() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
         String sort = "[{\"price\": {\"order\": \"asc\",\"mode\": \"avg\"}}]";
         transformer.addSortMapping("name_asc", sort);
         ObjectNode elasticQuery = transform(transformer,  "sort=name_asc");
         Assert.assertEquals("asc", elasticQuery.get("sort").get(0).get("price").get("order").asText());
+    }
+
+    @Test
+    public void transformSortField() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setSort(new Sort("price", "asc"));
+
+        ObjectNode elasticQuery = transform(transformer,  searchQuery);
+        Assert.assertEquals("asc", elasticQuery.get("sort").get(0).get("price").asText());
 
     }
 
@@ -171,8 +182,8 @@ public class ElasticQsfqlQueryTransformerTest {
 
     }
 
-    private ObjectNode transform(ElasticQsfqlQueryTransformer transformer, String... parameters) throws PipelineContainerException {
-        SearchQuery searchQuery = QsfqlParserTest.createQuery(parameters);
+
+    private ObjectNode transform(ElasticQsfqlQueryTransformer transformer, SearchQuery searchQuery) throws PipelineContainerException {
         PipelineContainer pipelineContainer = new PipelineContainer(null, null);
         pipelineContainer.setSearchQuery(searchQuery);
 
@@ -180,6 +191,11 @@ public class ElasticQsfqlQueryTransformerTest {
 
         ObjectNode elasticQuery = transformer.getElasticQuery();
         return elasticQuery;
+    }
+
+    private ObjectNode transform(ElasticQsfqlQueryTransformer transformer, String... parameters) throws PipelineContainerException {
+        SearchQuery searchQuery = QsfqlParserTest.createQuery(parameters);
+        return transform(transformer, searchQuery);
     }
 
 }

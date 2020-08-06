@@ -27,6 +27,9 @@ public abstract class AbstractQueryParser {
     }
 
     public void parse() {
+        if(tokens.isEmpty()) {
+            return;
+        }
 
         init();
         processNext();

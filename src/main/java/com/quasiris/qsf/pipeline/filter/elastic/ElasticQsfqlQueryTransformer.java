@@ -10,7 +10,9 @@ import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
+import com.quasiris.qsf.query.Sort;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,23 +63,49 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public void transformSort() {
         try {
-            String sort = null;
-            if (getSearchQuery().getSort() == null) {
-                sort = sortMapping.get(defaultSort);
-            } else {
-                sort = sortMapping.get(getSearchQuery().getSort().getSort());
-                if (sort == null) {
-                    sort = sortMapping.get(defaultSort);
-                }
-            }
-            if (sort == null) {
+            Sort sort = getSearchQuery().getSort();
+            if(sort == null && defaultSort == null) {
                 return;
             }
-            ArrayNode sortJson = (ArrayNode) getObjectMapper().readTree(sort);
+            if (sort == null) {
+                sort = new Sort(defaultSort);
+            }
+
+            ArrayNode sortJson = transformSortWithField(sort);
+            if(sortJson == null) {
+                sortJson = transformSortWithMapping(sort);
+            }
+            if(sortJson == null) {
+                return;
+            }
             getElasticQuery().set("sort", sortJson);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected ArrayNode transformSortWithField(Sort sort) throws IOException {
+        if(sort == null || sort.getField() == null) {
+            return null;
+        }
+        if(sort.getDirection() == null) {
+            sort.setDirection("asc");
+        }
+
+        String sortJson = "[{\"" + sort.getField() + "\": \"" + sort.getDirection() + "\"}]";
+        return (ArrayNode) getObjectMapper().readTree(sortJson);
+
+    }
+
+    protected ArrayNode transformSortWithMapping(Sort sort) throws IOException {
+        if(sort == null || sort.getSort() == null) {
+            return null;
+        }
+        String sortJson = sortMapping.get(sort.getSort());
+        if(sortJson == null) {
+            return null;
+        }
+        return (ArrayNode) getObjectMapper().readTree(sortJson);
     }
 
     public void transformFilters() throws PipelineContainerException {

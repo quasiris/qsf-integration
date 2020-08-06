@@ -25,25 +25,36 @@ public class QSQLRequestFilter extends AbstractFilter {
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
         if(pipelineContainer.getRequest() != null && "POST".equals(pipelineContainer.getRequest().getMethod())) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                SearchQuery searchQuery = objectMapper.readValue(pipelineContainer.getRequest().getInputStream(), SearchQuery.class);
-                searchQuery = setDefaults(searchQuery);
-                pipelineContainer.setSearchQuery(searchQuery);
-            } catch (Exception e) {
-                throw new PipelineContainerException("Could not read convert search query, because: " + e.getMessage() , e);
-            }
-
+            handlePOSTRequest(pipelineContainer);
         } else {
-            QsfqlParser qsfqlParser = new QsfqlParser(pipelineContainer.getRequest().getParameterMap());
-            SearchQuery searchQuery = qsfqlParser.getQuery();
-            searchQuery = setDefaults(searchQuery);
-            pipelineContainer.setSearchQuery(searchQuery);
+            handleGETRequest(pipelineContainer);
         }
         return pipelineContainer;
     }
 
-    private SearchQuery setDefaults(SearchQuery searchQuery) {
+    protected void handlePOSTRequest(PipelineContainer pipelineContainer) throws PipelineContainerException {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            SearchQuery searchQuery = objectMapper.readValue(pipelineContainer.getRequest().getInputStream(), SearchQuery.class);
+            searchQuery = setDefaults(searchQuery);
+            pipelineContainer.setSearchQuery(searchQuery);
+        } catch (Exception e) {
+            throw new PipelineContainerException("Could not read convert search query, because: " + e.getMessage() , e);
+        }
+    }
+
+
+    protected void handleGETRequest(PipelineContainer pipelineContainer) throws PipelineContainerException {
+        QsfqlParser qsfqlParser = new QsfqlParser(pipelineContainer.getRequest().getParameterMap());
+        SearchQuery searchQuery = qsfqlParser.getQuery();
+        searchQuery = setDefaults(searchQuery);
+        pipelineContainer.setSearchQuery(searchQuery);
+    }
+
+
+
+
+    protected SearchQuery setDefaults(SearchQuery searchQuery) {
         if(searchQuery.getRows() == null) {
             searchQuery.setRows(defaultRows);
         }
