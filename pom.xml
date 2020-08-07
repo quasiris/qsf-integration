@@ -14,8 +14,8 @@
     </properties>
 
     <scm>
-        <connection>scm:git:https://github.com/quasiris/qsf-integration.git</connection>
-        <developerConnection>scm:git:https://github.com/quasiris/qsf-integration.git</developerConnection>
+        <connection>scm:git:https://gitlab.quasiris.de/qsc/qsf-integration.git</connection>
+        <developerConnection>scm:git:https://gitlab.quasiris.de/qsc/qsf-integration.git</developerConnection>
         <url>https://github.com/quasiris/qsf-integration</url>
     <tag>HEAD</tag>
   </scm>
