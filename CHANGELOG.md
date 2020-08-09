@@ -3,6 +3,19 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+
+
+### Removed
+
+### Changed
+
+### Deprecated
+
+### Fixed
+
+
+## [2.11]
+### Added
 - implement a helper function in Document to get all values as a list
 
 ### Removed
