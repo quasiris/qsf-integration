@@ -6,6 +6,8 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A util for converting dates.
@@ -50,4 +52,22 @@ public class DateUtil {
         SimpleDateFormat formatter = new SimpleDateFormat(pattern);
         return formatter.parse(date);
     }
+
+    private static Map<Integer, String> patterns = new HashMap<>();
+    static {
+        patterns.put("2020-08-06".length(), "yyyy-MM-dd");
+        patterns.put("2020-08-06T22:18:26+0000".length(), "yyyy-MM-dd'T'HH:mm:ssZ");
+        patterns.put("2020-08-06T22:18:26.528+0000".length(), "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        patterns.put("2020-08-06T22:18:26.528+00:00".length(), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    }
+
+    public static Date getDate(String date) throws ParseException {
+        String pattern = patterns.get(date.length());
+        if(pattern == null) {
+            throw new ParseException("For the date " + date + " no pattern is defined.", 0);
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        return formatter.parse(date);
+    }
+
 }
