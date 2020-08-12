@@ -150,13 +150,28 @@ public class ElasticMonitoringExecuter {
                 defaultRows(1);
 
         for(MonitoringDocument monitoringDocument : monitoringDocumentList) {
-            if(monitoringDocument.getType().equals("document")) {
+            if(monitoringDocument.isTypeDocument()) {
+                elasticFilterBuilder.
+                        mapField(monitoringDocument.getFieldName(), monitoringDocument.getFieldName());
+            }
+
+            if(monitoringDocument.isTypeProcessingTimeFull()) {
                 elasticFilterBuilder.
                         mapField(monitoringDocument.getFieldName(), monitoringDocument.getFieldName());
                 elasticFilterBuilder.
                         mapSort(monitoringDocument.getFieldName(), "[{\"" + monitoringDocument.getFieldName() + "\": {\"order\": \"asc\"}}]").
                         defaultSort(monitoringDocument.getFieldName());
             }
+
+            if(monitoringDocument.isTypeProcessingTimeUpdate()) {
+                elasticFilterBuilder.
+                        mapField(monitoringDocument.getFieldName(), monitoringDocument.getFieldName());
+                elasticFilterBuilder.
+                        mapSort(monitoringDocument.getFieldName(), "[{\"" + monitoringDocument.getFieldName() + "\": {\"order\": \"desc\"}}]").
+                        defaultSort(monitoringDocument.getFieldName());
+            }
+
+
 
 
             if(monitoringDocument.getType().equals("facet")) {
@@ -199,7 +214,10 @@ public class ElasticMonitoringExecuter {
                 monitoringDocument.setValue(searchResult.getTotal());
             }
 
-            if(monitoringDocument.getType().equals("document")) {
+            if(monitoringDocument.isTypeDocument() ||
+                    monitoringDocument.isTypeProcessingTimeFull() ||
+                    monitoringDocument.isTypeProcessingTimeUpdate()) {
+
                 Document document = searchResult.getDocuments().stream().findFirst().orElse(null);
                 if(document != null && monitoringDocument.getDataType().equals("Instant")) {
 

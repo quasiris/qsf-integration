@@ -62,9 +62,6 @@ public class MonitoringBuilder {
             aMonitoringDocument().
             withErrorLimitHours(error).
             withWarnLimitHours(warn).
-            withMonitoringId("processingTime").
-            withName("Processing Time").
-            withType("document").
             active(active).
             build();
         this.monitoringDocuments.add(monitoringDocument);

@@ -4,6 +4,8 @@ All notable changes qsf-integration project will be documented in this file.
 ## [Unreleased]
 ### Added
 - DateUtil - implement an intelligent matching of the date pattern for ISO 8601 dates
+- implement a processing time monitoring for update feeds
+
 ### Removed
 
 ### Changed

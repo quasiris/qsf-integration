@@ -22,11 +22,31 @@ public class MonitoringProcessingTimeBuilder extends MonitoringDocumentBuilder<I
     public static MonitoringProcessingTimeBuilder aMonitoringDocument() {
         MonitoringProcessingTimeBuilder monitoringProcessingTimeBuilder = new MonitoringProcessingTimeBuilder();
         monitoringProcessingTimeBuilder.
-                withType("document").
-                withFieldName("processingtime").
-                withMonitoringId("processingTime").
-                withName("Processing Time");
+                withProcessingTimeFull().
+                withFieldName("processingtime");
         return monitoringProcessingTimeBuilder;
+    }
+
+    /**
+     * Use a full feed processing time monitoring.
+     * @return MonitoringProcessingTimeBuilder
+     */
+    public MonitoringProcessingTimeBuilder withProcessingTimeFull() {
+        withType("processingTimeFull");
+        withMonitoringId("proccessingTimeFull");
+        withName("Processing Time Full");
+        return this;
+    }
+
+    /**
+     * Use a update feed processing time monitoring.
+     * @return MonitoringProcessingTimeBuilder
+     */
+    public MonitoringProcessingTimeBuilder withProcessingTimeUpdate() {
+        withType("processingTimeUpdate");
+        withMonitoringId("proccessingTimeUpdate");
+        withName("Processing Time Update");
+        return this;
     }
 
     /**

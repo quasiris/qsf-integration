@@ -96,6 +96,18 @@ public class MonitoringDocument<T extends Comparable> extends Document {
         return getFieldValue(type);
     }
 
+    public boolean isTypeDocument() {
+        return getType().equals("document");
+    }
+
+    public boolean isTypeProcessingTimeFull() {
+        return getType().equals("processingTimeFull");
+    }
+
+    public boolean isTypeProcessingTimeUpdate() {
+        return getType().equals("processingTimeUpdate");
+    }
+
     /**
      * Setter for property 'type'.
      *
