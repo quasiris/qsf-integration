@@ -46,6 +46,85 @@ public class MonitoringBuilder {
 
 
     /**
+     * Create a new monitoring for a update feed of the processing time of a document.
+     * The monitoring query must be sorted descending by the processingtime.
+     * The value of the first document is used to compare the processingtime.
+     *
+     * The name of the field must be processingtime.
+     *
+     * @param error the maximum age in hours for the error limit.
+     * @param warn the maximum age in hours for the warn limit.
+     * @param active flag to active or deactivate the monitoring.
+     * @return the {@link MonitoringBuilder}
+     */
+    public MonitoringBuilder processingTimeUpdate(int error, int warn, boolean active) {
+        MonitoringDocument<Instant> monitoringDocument = MonitoringProcessingTimeBuilder.
+                aMonitoringDocument().
+                withProcessingTimeUpdate().
+                withErrorLimitHours(error).
+                withWarnLimitHours(warn).
+                active(active).
+                build();
+        this.monitoringDocuments.add(monitoringDocument);
+        return this;
+    }
+
+    /**
+     * Create a new monitoring for a update feed of the processing time of a document.
+     * The monitoring query must be sorted ascending by the processingtime.
+     * The value of the first document is used to compare the processingtime.
+     *
+     * The name of the field must be processingtime.
+     *
+     * @param error the maximum age in hours for the error limit.
+     * @param warn the maximum age in hours for the warn limit.
+     * @return the {@link MonitoringBuilder}
+     */
+    public MonitoringBuilder processingTimeUpdate(int error, int warn) {
+        return processingTimeUpdate(error, warn, true);
+    }
+
+    /**
+     * Create a new monitoring for a full feed of the processing time of a document.
+     * The monitoring query must be sorted ascending by the processingtime.
+     * The value of the first document is used to compare the processingtime.
+     *
+     * The name of the field must be processingtime.
+     *
+     * @param error the maximum age in hours for the error limit.
+     * @param warn the maximum age in hours for the warn limit.
+     * @param active flag to active or deactivate the monitoring.
+     * @return the {@link MonitoringBuilder}
+     */
+    public MonitoringBuilder processingTimeFull(int error, int warn, boolean active) {
+        MonitoringDocument<Instant> monitoringDocument = MonitoringProcessingTimeBuilder.
+                aMonitoringDocument().
+                withProcessingTimeFull().
+                withErrorLimitHours(error).
+                withWarnLimitHours(warn).
+                active(active).
+                build();
+        this.monitoringDocuments.add(monitoringDocument);
+        return this;
+    }
+
+    /**
+     * Create a new monitoring for a full feed of the processing time of a document.
+     * The monitoring query must be sorted ascending by the processingtime.
+     * The value of the first document is used to compare the processingtime.
+     *
+     * The name of the field must be processingtime.
+     *
+     * @param error the maximum age in hours for the error limit.
+     * @param warn the maximum age in hours for the warn limit.
+     * @return the {@link MonitoringBuilder}
+     */
+    public MonitoringBuilder processingTimeFull(int error, int warn) {
+        return processingTimeFull(error, warn, true);
+    }
+
+
+    /**
      * Create a new monitoring of the processing time of a document.
      * The monitoring query must be sorted ascending by the processingtime.
      * The value of the first document is used to compare the processingtime.
@@ -56,6 +135,7 @@ public class MonitoringBuilder {
      * @param warn the maximum age in hours for the warn limit.
      * @param active flag to active or deactivate the monitoring.
      * @return the {@link MonitoringBuilder}
+     * @deprecated use processingTimeFull instead
      */
     public MonitoringBuilder processingTime(int error, int warn, boolean active) {
         MonitoringDocument<Instant> monitoringDocument = MonitoringProcessingTimeBuilder.
@@ -78,6 +158,7 @@ public class MonitoringBuilder {
      * @param error the maximum age in hours for the error limit.
      * @param warn the maximum age in hours for the warn limit.
      * @return the {@link MonitoringBuilder}
+     * @deprecated use processingTimeFull instead
      */
     public MonitoringBuilder processingTime(int error, int warn) {
         return processingTime(error, warn, true);
