@@ -1,0 +1,36 @@
+# see: https://docs.gitlab.com/ee/ci/
+.maven-dind_template: &maven-dind
+  image: maven:3-jdk-11
+  services:
+    - docker:dind
+
+variables:
+  INVENTORY: dev
+  MAVEN_CLI_OPTS: "-s $MAVEN_SETTINGS -B"
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "" # see: https://github.com/docker-library/docker/pull/166
+
+stages:
+  - build
+  - push
+
+build-artifacts:
+  <<: *maven-dind
+  stage: build
+  allow_failure: false
+  script: "mvn $MAVEN_CLI_OPTS clean package"
+
+push-artifacts:
+  <<: *maven-dind
+  stage: push
+  allow_failure: false
+  script: "mvn $MAVEN_CLI_OPTS -DskipTests deploy"
+  retry: 2
+  artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    paths:
+      - target/*.jar
+      - ./*.md
+    expire_in: 1 days
+  dependencies: [] # disable artifact passing
