@@ -212,8 +212,9 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>quasiris-snapshots</id>
+            <name>Quasiris Snapshot Repository</name>
+            <url>${nexus.base.url}/repository/maven-snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
