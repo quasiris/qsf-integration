@@ -135,7 +135,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                         bucket.getSubFacet(),
                         filterType,
                         filterValueEncoded + treeFilterSeperator);
-                facetValue.setSubFacet(subFacet);
+                facetValue.setChildren(subFacet);
             }
             facet.getValues().add(facetValue);
         }

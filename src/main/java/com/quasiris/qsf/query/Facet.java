@@ -17,7 +17,7 @@ public class Facet {
 
     private String exclude;
 
-    private Facet subFacet;
+    private Facet children;
 
     public String getId() {
         return id;
@@ -67,12 +67,23 @@ public class Facet {
         this.type = type;
     }
 
-    public Facet getSubFacet() {
-        return subFacet;
+
+    /**
+     * Getter for property 'children'.
+     *
+     * @return Value for property 'children'.
+     */
+    public Facet getChildren() {
+        return children;
     }
 
-    public void setSubFacet(Facet subFacet) {
-        this.subFacet = subFacet;
+    /**
+     * Setter for property 'children'.
+     *
+     * @param children Value to set for property 'children'.
+     */
+    public void setChildren(Facet children) {
+        this.children = children;
     }
 
     /**

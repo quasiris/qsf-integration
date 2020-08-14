@@ -138,7 +138,7 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
         subFacet.setId("name.keyword");
         subFacet.setName("name");
 
-        tagkeysFacet.setSubFacet(subFacet);
+        tagkeysFacet.setChildren(subFacet);
         searchQuery.addFacet(tagkeysFacet);
         PipelineContainer pipelineContainer = PipelineExecuter.create().
                 pipeline(pipeline).
@@ -165,10 +165,10 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
         Assert.assertEquals(Long.valueOf(5), facetValue.getCount());
         Assert.assertEquals("tagkeys=name", facetValue.getFilter());
 
-        Assert.assertEquals("tagkeys", facetValue.getSubFacet().getId());
-        Assert.assertEquals("tagkeys", facetValue.getSubFacet().getName());
+        Assert.assertEquals("tagkeys", facetValue.getChildren().getId());
+        Assert.assertEquals("tagkeys", facetValue.getChildren().getName());
 
-        FacetValue subFacetValue = facetValue.getSubFacet().getValues().get(0);
+        FacetValue subFacetValue = facetValue.getChildren().getValues().get(0);
         Assert.assertEquals("Darmstadt", subFacetValue.getValue() );
         Assert.assertEquals(Long.valueOf(1), subFacetValue.getCount() );
 

@@ -9,6 +9,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Removed
 
 ### Changed
+- rename subfacet to children
 
 ### Deprecated
 - MonitoringBuilder.processingTime is deprecated and will be removed in the next release. Use the processingTimeFull or processingTimeUpdate instead

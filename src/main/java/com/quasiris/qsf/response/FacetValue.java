@@ -24,7 +24,7 @@ public class FacetValue {
 
     private Boolean selected;
 
-    private Facet subFacet;
+    private Facet children;
 
     public String getValue() {
         return value;
@@ -50,12 +50,22 @@ public class FacetValue {
         this.filter = filter;
     }
 
-    public Facet getSubFacet() {
-        return subFacet;
+    /**
+     * Getter for property 'children'.
+     *
+     * @return Value for property 'children'.
+     */
+    public Facet getChildren() {
+        return children;
     }
 
-    public void setSubFacet(Facet subFacet) {
-        this.subFacet = subFacet;
+    /**
+     * Setter for property 'children'.
+     *
+     * @param children Value to set for property 'children'.
+     */
+    public void setChildren(Facet children) {
+        this.children = children;
     }
 
     /**
@@ -82,7 +92,7 @@ public class FacetValue {
                 "value='" + value + '\'' +
                 ", count=" + count +
                 ", filter='" + filter + '\'' +
-                ", subFacet=" + subFacet +
+                ", children=" + children +
                 '}';
     }
 }

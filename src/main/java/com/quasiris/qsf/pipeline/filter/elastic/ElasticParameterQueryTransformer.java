@@ -181,8 +181,8 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
         ObjectNode aggs = (ObjectNode) type;
 
-        if(facet.getSubFacet() != null) {
-            JsonNode subAggs = createAgg(facet.getSubFacet(), true);
+        if(facet.getChildren() != null) {
+            JsonNode subAggs = createAgg(facet.getChildren(), true);
             aggs.set("aggs", subAggs);
         }
 
