@@ -31,6 +31,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
     private static Logger LOG = LoggerFactory.getLogger(SpellCheckElasticFilter.class);
 
     private int minTokenLenght = 4;
+    private int maxTokenLenght = 10;
 
     private String baseUrl;
 
@@ -58,6 +59,10 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
 
     private void process(PipelineContainer pipelineContainer) throws IOException, PipelineContainerException {
+
+        if(pipelineContainer.getSearchQuery().getQueryToken().size() > maxTokenLenght) {
+            return;
+        }
 
         List<String> elasticQueries = new ArrayList<>();
         List<SpellCheckToken> spellCheckTokens = new ArrayList<>();
@@ -246,5 +251,23 @@ public class SpellCheckElasticFilter extends AbstractFilter {
      */
     public void setSentenceScoringEnabled(boolean sentenceScoringEnabled) {
         this.sentenceScoringEnabled = sentenceScoringEnabled;
+    }
+
+    /**
+     * Setter for property 'minTokenLenght'.
+     *
+     * @param minTokenLenght Value to set for property 'minTokenLenght'.
+     */
+    public void setMinTokenLenght(int minTokenLenght) {
+        this.minTokenLenght = minTokenLenght;
+    }
+
+    /**
+     * Setter for property 'maxTokenLenght'.
+     *
+     * @param maxTokenLenght Value to set for property 'maxTokenLenght'.
+     */
+    public void setMaxTokenLenght(int maxTokenLenght) {
+        this.maxTokenLenght = maxTokenLenght;
     }
 }

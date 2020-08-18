@@ -15,6 +15,7 @@ All notable changes qsf-integration project will be documented in this file.
 - MonitoringBuilder.processingTime is deprecated and will be removed in the next release. Use the processingTimeFull or processingTimeUpdate instead
 
 ### Fixed
+- SpellCheckElasticFilter - implement max token length
 
 
 ## [2.11]
