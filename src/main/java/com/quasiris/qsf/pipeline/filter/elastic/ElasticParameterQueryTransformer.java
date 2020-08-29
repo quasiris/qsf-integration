@@ -2,9 +2,10 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.exception.DebugType;
+import com.quasiris.qsf.json.JsonBuilder;
+import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.web.RequestParser;
@@ -12,7 +13,12 @@ import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.util.PrintUtil;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by mki on 04.02.17.
@@ -42,24 +48,31 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         this.pipelineContainer = pipelineContainer;
         this.searchQuery = pipelineContainer.getSearchQuery();
 
+        try {
 
-        transformParameter();
-        transformSourceFields();
-        transformDebug();
-        transformAggregations();
+            transformParameter();
+            transformSourceFields();
+            transformDebug();
+            transformAggregations();
+        } catch (JsonBuilderException e){
+            throw new RuntimeException(e);
+        }
 
         return elasticQuery;
     }
 
-    public void transformSourceFields() {
+    public void transformSourceFields() throws JsonBuilderException {
         if(sourceFields == null) {
             return;
         }
-        ArrayNode sourceFieldArray = objectMapper.createArrayNode();
+
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.array();
+
         for(String field : sourceFields) {
-            sourceFieldArray.add(field);
+            jsonBuilder.addValue(field);
         }
-        elasticQuery.set("_source", sourceFieldArray);
+        elasticQuery.set("_source", jsonBuilder.get());
     }
 
     public void transformDebug() {
@@ -68,20 +81,25 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         }
     }
 
-    public void transformAggregations() {
-        ObjectNode aggregationsRequest  = null;
-        for(Facet aggregation : aggregations) {
+    public void transformAggregations() throws JsonBuilderException {
+
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.object();
+        boolean hasAggs = false;
+        for (Facet aggregation : aggregations) {
             JsonNode agg = createAgg(aggregation, false);
-            aggregationsRequest = addAgg(aggregationsRequest, agg);
+            jsonBuilder.json(agg);
+            hasAggs = true;
         }
 
-        for(Slider slider : sliders) {
+        for (Slider slider : sliders) {
             JsonNode agg = createSlider(slider);
-            aggregationsRequest = addAgg(aggregationsRequest, agg);
+            jsonBuilder.json(agg);
+            hasAggs = true;
         }
 
-        if(aggregationsRequest != null) {
-            elasticQuery.set("aggs", aggregationsRequest.get("aggs"));
+        if (hasAggs) {
+            elasticQuery.set("aggs", jsonBuilder.get());
         }
 
     }
@@ -112,7 +130,9 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         String request = "";
         try {
             request = ProfileLoader.loadProfile(profile, replaceMap);
-            elasticQuery = (ObjectNode) getObjectMapper().readTree(request);
+            JsonBuilder jsonBuilder = new JsonBuilder();
+            jsonBuilder.string(request);
+            elasticQuery = (ObjectNode) jsonBuilder.get();
         }
         catch (Exception e) {
             if(pipelineContainer.isDebugEnabled()) {
@@ -130,73 +150,63 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         return printer;
     }
 
-    private ObjectNode addAgg(ObjectNode aggregations, JsonNode agg) {
-        if(aggregations == null) {
-            aggregations = (ObjectNode) objectMapper.createObjectNode().set("aggs", objectMapper.createObjectNode());
-        }
-        ((ObjectNode)aggregations.get("aggs")).setAll((ObjectNode) agg);
-        return aggregations;
-    }
-
 
     private JsonNode createSlider(Slider slider) {
-        ObjectNode aggField = objectMapper.createObjectNode().
-                put("field", slider.getId());
-        JsonNode type =
-                objectMapper.createObjectNode().set(
-                        slider.getType(),aggField
-                );
-        String name = slider.getName();
-        JsonNode agg =
-                objectMapper.createObjectNode().set(
-                        name,type
-                );
-        return agg;
-    }
 
+        try {
+            JsonBuilder jsonBuilder = new JsonBuilder();
+            jsonBuilder.
+                    object(slider.getName()).
+                    object(slider.getType()).
+                    value("field", slider.getId());
+
+            return jsonBuilder.get();
+        } catch (JsonBuilderException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private JsonNode createAgg(Facet facet, boolean isSubFacet) {
-        ObjectNode aggField = objectMapper.createObjectNode().
-                put("field", facet.getId());
 
-        if(facet.getInclude() != null) {
-            aggField.put("include", facet.getInclude());
+        try {
+
+            String name = facet.getName();
+            if(isSubFacet) {
+                name = "subFacet";
+            }
+
+            JsonBuilder jsonBuilder = new JsonBuilder();
+            jsonBuilder.
+                    object(name).
+                    object(facet.getType()).
+                        value("field", facet.getId()).
+                        value("include", facet.getInclude()).
+                        value("exclude", facet.getExclude()).
+                        value("size", facet.getSize());
+            if(facet.getSortBy() != null) {
+                jsonBuilder.
+                stash().
+                    object("order").
+                    value(facet.getSortBy(), facet.getSortOrder()).
+                unstash();
+            }
+
+
+            if(facet.getChildren() != null) {
+                jsonBuilder.root().path(name);
+                JsonNode subAggs = createAgg(facet.getChildren(), true);
+                jsonBuilder.json("aggs", subAggs);
+            }
+
+            return jsonBuilder.get();
+
+        } catch (JsonBuilderException e) {
+            throw new RuntimeException(e);
         }
 
-        if(facet.getExclude() != null) {
-            aggField.put("exclude", facet.getExclude());
-        }
 
-        if(facet.getSortBy() != null) {
-            aggField.set("order", objectMapper.createObjectNode().put(facet.getSortBy(), facet.getSortOrder()));
-        }
-
-        if(facet.getSize() != null) {
-            aggField.put("size", facet.getSize());
-        }
-        JsonNode type =
-                objectMapper.createObjectNode().set(
-                        facet.getType(),aggField
-                );
-
-        ObjectNode aggs = (ObjectNode) type;
-
-        if(facet.getChildren() != null) {
-            JsonNode subAggs = createAgg(facet.getChildren(), true);
-            aggs.set("aggs", subAggs);
-        }
-
-
-        String name = facet.getName();
-        if(isSubFacet) {
-            name = "subFacet";
-        }
-        JsonNode agg =
-                objectMapper.createObjectNode().set(
-                        name,type
-                );
-        return agg;
     }
+
 
 
     public PipelineContainer getPipelineContainer() {

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
+import com.quasiris.qsf.json.JsonBuilder;
+import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.query.Facet;
@@ -36,10 +38,14 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
         super.transform(pipelineContainer);
 
-        transformQuery();
-        transformSort();
-        transformFilters();
-        transformPaging();
+        try {
+            transformQuery();
+            transformSort();
+            transformFilters();
+            transformPaging();
+        } catch (JsonBuilderException e) {
+            throw new PipelineContainerException(e.getMessage(), e);
+        }
 
 
         return getElasticQuery();
@@ -47,7 +53,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
 
     @Override
-    public void transformAggregations() {
+    public void transformAggregations() throws JsonBuilderException {
         if(getSearchQuery().getFacetList() != null) {
             for(Facet facet : getSearchQuery().getFacetList()) {
                 addAggregation(facet);
@@ -84,7 +90,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         }
     }
 
-    protected ArrayNode transformSortWithField(Sort sort) throws IOException {
+    protected ArrayNode transformSortWithField(Sort sort) throws JsonBuilderException {
         if(sort == null || sort.getField() == null) {
             return null;
         }
@@ -93,11 +99,13 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         }
 
         String sortJson = "[{\"" + sort.getField() + "\": \"" + sort.getDirection() + "\"}]";
-        return (ArrayNode) getObjectMapper().readTree(sortJson);
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.string(sortJson);
+        return (ArrayNode) jsonBuilder.get();
 
     }
 
-    protected ArrayNode transformSortWithMapping(Sort sort) throws IOException {
+    protected ArrayNode transformSortWithMapping(Sort sort) throws JsonBuilderException {
         if(sort == null || sort.getSort() == null) {
             return null;
         }
@@ -105,10 +113,12 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         if(sortJson == null) {
             return null;
         }
-        return (ArrayNode) getObjectMapper().readTree(sortJson);
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.string(sortJson);
+        return (ArrayNode) jsonBuilder.get();
     }
 
-    public void transformFilters() throws PipelineContainerException {
+    public void transformFilters() throws JsonBuilderException {
         if(elasticVersion < 2) {
             transformFiltersVersionOlder2();
             return;
@@ -124,28 +134,41 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         transformFilters("must_not", FilterOperator.NOT);
     }
 
-    public void transformFiltersVersionOlder2() throws PipelineContainerException {
-        ArrayNode filters = getObjectMapper().createArrayNode();
-        for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
-            ArrayNode filter = transformTermsFilter(searchFilter);
-            if(filter != null) {
-                filters.addAll(filter);
-            }
-        }
-        if(filters.size() == 0) {
+    public void transformFiltersVersionOlder2() throws JsonBuilderException {
+
+        if(getSearchQuery().getSearchFilterList().size() == 0) {
             return;
         }
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.
+                object("bool").
+                array("must");
 
-        ObjectNode must = getObjectMapper().createObjectNode();
-        must.set("must", filters);
+        for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
 
-        ObjectNode bool = getObjectMapper().createObjectNode();
-        bool.set("bool", must);
+            String elasticField = mapFilterField(searchFilter.getName());
+            if(elasticField == null) {
+                elasticField = searchFilter.getId();
+            }
+            if(elasticField == null) {
+                throw new IllegalArgumentException("There is no field name defined.");
+            }
+
+            for(String value : searchFilter.getValues()) {
+                jsonBuilder.stash();
+                jsonBuilder.object();
+                jsonBuilder.object(searchFilter.getFilterType().getCode());
+                jsonBuilder.value(elasticField, value);
+                jsonBuilder.unstash();
+            }
+
+        }
+
         ObjectNode query = (ObjectNode) getElasticQuery().get("query").get("filtered");
         if(query == null) {
-            throw new PipelineContainerException("There is no filtered query defined in the profile " + getProfile());
+            throw new JsonBuilderException("There is no filtered query defined in the profile " + getProfile());
         }
-        query.set("filter", bool);
+        query.set("filter", jsonBuilder.get());
 
     }
 
