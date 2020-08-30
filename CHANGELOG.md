@@ -7,6 +7,7 @@ All notable changes qsf-integration project will be documented in this file.
 - implement a processing time monitoring for update feeds
 - add gitlab-ci
 - add a java json builder
+- add a json substitutor
 
 ### Removed
 
