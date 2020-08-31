@@ -294,14 +294,14 @@ public class JsonBuilderTest {
     @Test
     public void testValue() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
-        jsonBuilder.value("foo", "bar");
+        jsonBuilder.object("foo", "bar");
         JSONAssert.assertEquals("{\"foo\":\"bar\"}", jsonBuilder.writeAsString(), true);
     }
 
     @Test
     public void testValueWithNullKey() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
-        jsonBuilder.object().value(null, "bar");
+        jsonBuilder.object().object(null, "bar");
         JSONAssert.assertEquals("{}", jsonBuilder.writeAsString(), true);
     }
 
@@ -348,7 +348,7 @@ public class JsonBuilderTest {
         valueMap.put("$foo", "bar");
 
         JsonBuilder jsonBuilder = new JsonBuilder();
-        jsonBuilder.value("$foo", "bar");
+        jsonBuilder.object("$foo", "bar");
         jsonBuilder.replace(valueMap);
 
         JSONAssert.assertEquals("{\"bar\": \"bar\"}", jsonBuilder.writeAsString(), true);

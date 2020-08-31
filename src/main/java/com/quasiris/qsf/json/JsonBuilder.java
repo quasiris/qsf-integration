@@ -159,7 +159,7 @@ public class JsonBuilder {
         }
     }
 
-    public JsonBuilder value(String fieldName, Object value) throws JsonBuilderException {
+    public JsonBuilder object(String fieldName, Object value) throws JsonBuilderException {
 
         if(value == null || fieldName == null) {
             return this;

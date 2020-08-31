@@ -158,7 +158,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 jsonBuilder.stash();
                 jsonBuilder.object();
                 jsonBuilder.object(searchFilter.getFilterType().getCode());
-                jsonBuilder.value(elasticField, value);
+                jsonBuilder.object(elasticField, value);
                 jsonBuilder.unstash();
             }
 

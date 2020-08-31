@@ -158,7 +158,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             jsonBuilder.
                     object(slider.getName()).
                     object(slider.getType()).
-                    value("field", slider.getId());
+                    object("field", slider.getId());
 
             return jsonBuilder.get();
         } catch (JsonBuilderException e) {
@@ -179,15 +179,15 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             jsonBuilder.
                     object(name).
                     object(facet.getType()).
-                        value("field", facet.getId()).
-                        value("include", facet.getInclude()).
-                        value("exclude", facet.getExclude()).
-                        value("size", facet.getSize());
+                    object("field", facet.getId()).
+                    object("include", facet.getInclude()).
+                    object("exclude", facet.getExclude()).
+                    object("size", facet.getSize());
             if(facet.getSortBy() != null) {
                 jsonBuilder.
                 stash().
                     object("order").
-                    value(facet.getSortBy(), facet.getSortOrder()).
+                    object(facet.getSortBy(), facet.getSortOrder()).
                 unstash();
             }
 

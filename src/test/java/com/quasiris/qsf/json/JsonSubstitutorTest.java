@@ -22,7 +22,7 @@ public class JsonSubstitutorTest {
     @Test
     public void testReplaceKey() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
-        jsonBuilder.value("$foo", "bar");
+        jsonBuilder.object("$foo", "bar");
 
         Map<String, Object> valueMap = new HashMap<>();
         valueMap.put("$foo", "bar");
@@ -37,7 +37,7 @@ public class JsonSubstitutorTest {
     @Test
     public void testReplaceValue() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
-        jsonBuilder.value("foo", "$bar");
+        jsonBuilder.object("foo", "$bar");
 
         Map<String, Object> valueMap = new HashMap<>();
         valueMap.put("$bar", "foo");
@@ -53,7 +53,7 @@ public class JsonSubstitutorTest {
     public void testReplaceArray() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.
-                value("foo", "bar").
+                object("foo", "bar").
                 array("array").
                 addValue("eins").
                 addValue("zwei").
