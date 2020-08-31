@@ -239,6 +239,13 @@ public class JsonBuilder {
         return this;
     }
 
+    public JsonBuilder replace(Map<String, Object> valueMap) throws JsonBuilderException {
+        JsonSubstitutor jsonSubstitutor = new JsonSubstitutor(valueMap);
+        this.root = jsonSubstitutor.replace(this.root);
+        this.current = this.root;
+        return this;
+    }
+
     public String writeAsString() throws JsonProcessingException {
         return mapper.writeValueAsString(this.root);
     }

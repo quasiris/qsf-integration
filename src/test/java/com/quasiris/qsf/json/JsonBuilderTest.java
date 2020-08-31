@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class JsonBuilderTest {
 
 
@@ -337,6 +340,18 @@ public class JsonBuilderTest {
         jsonBuilder.root();
         jsonBuilder.paths("n1/n2/n4");
 
+    }
+
+    @Test
+    public void testReplace() throws Exception {
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("$foo", "bar");
+
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.value("$foo", "bar");
+        jsonBuilder.replace(valueMap);
+
+        JSONAssert.assertEquals("{\"bar\": \"bar\"}", jsonBuilder.writeAsString(), true);
     }
 
 }
