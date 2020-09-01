@@ -8,6 +8,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add gitlab-ci
 - add a java json builder
 - add a json substitutor
+- add a loop filter
 
 ### Removed
 
