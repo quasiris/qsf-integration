@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline;
 
 import com.quasiris.qsf.pipeline.filter.ConditionFilter;
 import com.quasiris.qsf.pipeline.filter.Filter;
+import com.quasiris.qsf.pipeline.filter.LoopFilter;
 import com.quasiris.qsf.pipeline.filter.ParallelFilter;
 
 import java.util.HashSet;
@@ -20,6 +21,8 @@ public class PipelineBuilder {
     private ParallelFilter parallelFilter;
 
     private ConditionFilter conditionFilter;
+
+    private LoopFilter loopFilter;
 
     public static PipelineBuilder create() {
         return new PipelineBuilder();
@@ -54,6 +57,14 @@ public class PipelineBuilder {
             return pipelineBuilder;
         }
 
+        if(parent.loopFilter != null) {
+            parent.loopFilter.setPipeline(this.build());
+            PipelineBuilder pipelineBuilder = new PipelineBuilder();
+            pipelineBuilder.setParent(parent);
+            pipelineBuilder.pipeline(id);
+            return pipelineBuilder;
+        }
+
         throw new RuntimeException("This should never happen.");
     }
 
@@ -82,6 +93,20 @@ public class PipelineBuilder {
             throw new PipelineContainerException("There is no pipeline defined for the conditional.");
         }
         parent.conditionFilter.setPipeline(this.build());
+        return parent;
+    }
+
+    public PipelineBuilder loop(Predicate<PipelineContainer> predicate) {
+        loopFilter = new LoopFilter(pipeline.getId(), predicate);
+        pipeline.addFilter(loopFilter);
+        return this;
+    }
+
+    public PipelineBuilder endLoop() throws PipelineContainerException {
+        if(parent == null) {
+            throw new PipelineContainerException("There is no pipeline defined for the loop.");
+        }
+        parent.loopFilter.setPipeline(this.build());
         return parent;
     }
 
