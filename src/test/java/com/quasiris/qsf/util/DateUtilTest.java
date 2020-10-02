@@ -3,14 +3,7 @@ package com.quasiris.qsf.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
-import java.util.Calendar;
 import java.util.Date;
-
-import static org.junit.Assert.*;
 
 public class DateUtilTest {
 
@@ -25,5 +18,12 @@ public class DateUtilTest {
     public void getDateWithoutTime() throws Exception {
         Date date = DateUtil.getDate("2020-08-06");
         Assert.assertNotNull(date);
+    }
+
+    @Test
+    public void getDateAsString() throws Exception {
+        Date date = DateUtil.getDate("2020-08-06T00:00:00.000+0200");
+        String dateString = DateUtil.getDate(date);
+        Assert.assertEquals("2020-08-06T00:00:00.000+0200", dateString);
     }
 }

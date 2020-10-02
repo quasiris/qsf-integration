@@ -70,4 +70,10 @@ public class DateUtil {
         return formatter.parse(date);
     }
 
+    public static String getDate(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat(ELASTIC_DATE_PATTERN_MICROSECONDS);
+        return formatter.format(date);
+    }
+
+
 }
