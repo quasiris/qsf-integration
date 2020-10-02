@@ -75,5 +75,9 @@ public class DateUtil {
         return formatter.format(date);
     }
 
+    public static String now() {
+        return getDate(new Date());
+    }
+
 
 }
