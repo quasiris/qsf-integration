@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -22,6 +25,7 @@ public class JsonBuilder {
     private JsonNode current;
     private Stack<JsonNode> stash = new Stack<>();
     private Map<String, JsonNode> stashMap = new HashMap<>();
+    private Map<String, Object> valueMap = new HashMap<>();
 
 
     public JsonBuilder root() throws JsonBuilderException {
@@ -134,6 +138,29 @@ public class JsonBuilder {
         return this;
     }
 
+    public JsonBuilder classpath(String classpath)  throws JsonBuilderException {
+        try {
+
+            InputStream in = JsonBuilder.class.getClassLoader()
+                    .getResourceAsStream(classpath);
+            if(in == null) {
+                throw new JsonBuilderException("The resource " + classpath + " does not exists.");
+            }
+
+            // TODO try to remove IOUtils
+            String string = IOUtils.toString(in, Charset.forName("UTF-8"));
+            IOUtils.closeQuietly(in);
+
+            return string(string);
+        } catch (IOException e) {
+            throw new JsonBuilderException(e);
+        }
+    }
+
+    public static JsonBuilder create() {
+        return new JsonBuilder();
+    }
+
     public JsonBuilder string( String string)  throws JsonBuilderException {
         try {
             JsonNode jsonNode = mapper.readTree(string);
@@ -243,6 +270,16 @@ public class JsonBuilder {
         JsonSubstitutor jsonSubstitutor = new JsonSubstitutor(valueMap);
         this.root = jsonSubstitutor.replace(this.root);
         this.current = this.root;
+        return this;
+    }
+
+    public JsonBuilder replace() throws JsonBuilderException {
+        this.replace(this.valueMap);
+        return this;
+    }
+
+    public JsonBuilder valueMap(String key, Object value) {
+        this.valueMap.put("$" + key, value);
         return this;
     }
 

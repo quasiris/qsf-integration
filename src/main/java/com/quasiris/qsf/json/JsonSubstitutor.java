@@ -19,7 +19,7 @@ public class JsonSubstitutor {
         this.valueMap = valueMap;
     }
     
-    public JsonNode replace(JsonNode node) {
+    public JsonNode replace(JsonNode node) throws JsonBuilderException {
         if(this.valueMap == null) {
             return node;
         }
@@ -32,13 +32,23 @@ public class JsonSubstitutor {
             if(next.getKey().startsWith("$")) {
                 JsonNode oldNode = node.get(next.getKey());
                 Object value = valueMap.get(next.getKey());
-                if(value != null) {
+                if(value instanceof ObjectNode) {
+                    ObjectNode objectNode = (ObjectNode) value;
+                    if(!objectNode.fields().hasNext()) {
+                        throw new JsonBuilderException("The object for " + next.getKey() + " must contain at least one field.");
+                    }
+                    Map.Entry<String, JsonNode> field = objectNode.fields().next();
+                    addToNode.put(field.getKey(), field.getValue());
+                    removeFromNode.add(next.getKey());
+                } else if(value != null) {
                     addToNode.put(value.toString(), oldNode);
                     removeFromNode.add(next.getKey());
                 }
             }
 
-            if(next.getValue().isValueNode() && next.getValue().textValue().startsWith("$")) {
+            if(next.getValue().isValueNode() &&
+                    next.getValue().textValue() != null &&
+                    next.getValue().textValue().startsWith("$")) {
                 ObjectMapper mapper = new ObjectMapper();
                 String key = next.getValue().textValue();
                 Object value = valueMap.get(key);
@@ -56,7 +66,7 @@ public class JsonSubstitutor {
             Iterator<JsonNode> arrayIterator = arrayNode.iterator();
             while (arrayIterator.hasNext()) {
                 JsonNode next = arrayIterator.next();
-                if (next.isValueNode() && next.textValue().startsWith("$")) {
+                if (next.isValueNode() && next.textValue() != null && next.textValue().startsWith("$")) {
                     ObjectMapper mapper = new ObjectMapper();
                     String key = next.textValue();
                     Object value = valueMap.get(key);
@@ -65,6 +75,7 @@ public class JsonSubstitutor {
                         addToArrayNode.addAll(jsonNodeToList(newValue));
                     }
                 } else {
+                    next = replace(next);
                     addToArrayNode.add(next);
                 }
             }

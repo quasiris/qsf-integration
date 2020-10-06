@@ -81,4 +81,43 @@ public class JsonSubstitutorTest {
     }
 
 
+
+    @Test
+    public void testNestedReplaceArray() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.classpath("com/quasiris/qsf/json/test-nested-replace-array.json");
+
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("$foo", "bar");
+
+        jsonBuilder.replace(valueMap);
+
+        JSONAssert.assertEquals(
+                "{ \"must\" : [ { \"foo\" : \"bar\", \"bool\" : { } } ] }",
+                jsonBuilder.writeAsString(),
+                true);
+    }
+
+    @Test
+    public void testdReplaceObjectNode() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.classpath("com/quasiris/qsf/json/test-replace-object-node.json");
+
+        JsonBuilder replaceBuilder = new JsonBuilder();
+        replaceBuilder.
+                object("foo", "bar");
+
+
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("$replaceMe", replaceBuilder.get());
+
+        jsonBuilder.replace(valueMap);
+
+        JSONAssert.assertEquals(
+                "{\"alice\" : \"bob\", \"foo\" : \"bar\"}",
+                jsonBuilder.writeAsString(),
+                true);
+    }
+
+
 }
