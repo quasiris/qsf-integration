@@ -119,5 +119,21 @@ public class JsonSubstitutorTest {
                 true);
     }
 
+    @Test
+    public void testdRemoveObjectNode() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.classpath("com/quasiris/qsf/json/test-remove-object-node.json");
+
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("$removeMe", new EmptyNode());
+
+        jsonBuilder.replace(valueMap);
+
+        JSONAssert.assertEquals(
+                "{\"alice\" : \"bob\"}",
+                jsonBuilder.writeAsString(),
+                true);
+    }
+
 
 }

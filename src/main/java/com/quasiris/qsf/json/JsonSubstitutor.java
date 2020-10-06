@@ -32,7 +32,9 @@ public class JsonSubstitutor {
             if(next.getKey().startsWith("$")) {
                 JsonNode oldNode = node.get(next.getKey());
                 Object value = valueMap.get(next.getKey());
-                if(value instanceof ObjectNode) {
+                if(value instanceof EmptyNode) {
+                    removeFromNode.add(next.getKey());
+                } else if(value instanceof ObjectNode) {
                     ObjectNode objectNode = (ObjectNode) value;
                     if(!objectNode.fields().hasNext()) {
                         throw new JsonBuilderException("The object for " + next.getKey() + " must contain at least one field.");
