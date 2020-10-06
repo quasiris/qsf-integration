@@ -1,8 +1,12 @@
 package com.quasiris.qsf.pipeline;
 
+import com.quasiris.qsf.exception.Debug;
 import com.quasiris.qsf.pipeline.filter.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mki on 11.11.17.
@@ -26,7 +30,6 @@ public class PipelineExecuterService {
             filter.init();
         }
 
-
         for(Filter filter : pipeline.getFilterList()) {
             failOnError(pipelineContainer);
             try {
@@ -36,6 +39,9 @@ public class PipelineExecuterService {
                     pipelineContainer = filter.filter(pipelineContainer);
                 } else {
                     LOG.debug("The filter: " + filter.getId() + " is not active.");
+                }
+                if(pipelineContainer.isDebugEnabled()) {
+                    debugRuntime(pipelineContainer, filter);
                 }
                 LOG.debug("The filter: " + filter.getId() + " took: " + filter.getCurrentTime() + " ms.");
             } catch (Exception e) {
@@ -52,6 +58,22 @@ public class PipelineExecuterService {
         long took = System.currentTimeMillis() - start;
         LOG.debug("The pipeline: " + pipeline.getId() + " took: " + took + " ms.");
         return pipelineContainer;
+    }
+
+    private void debugRuntime(PipelineContainer pipelineContainer, Filter filter) {
+        Debug debug = pipelineContainer.getDebugStack().stream().
+                filter(d -> "_runtime".equals(d.getId())).
+                findFirst().
+                orElse(null);
+        if(debug == null) {
+            debug = new Debug();
+            debug.setId("_runtime");
+            debug.setDebugObject(new ArrayList<String>());
+            pipelineContainer.debug(debug);
+        }
+
+        List<String> runtime = (List<String>) debug.getDebugObject();
+        runtime.add(filter.getId() + " took: " + filter.getCurrentTime() + " ms.");
     }
 
     public static void failOnError(PipelineContainer pipelineContainer) throws PipelineContainerException {
