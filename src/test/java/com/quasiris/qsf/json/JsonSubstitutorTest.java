@@ -120,6 +120,44 @@ public class JsonSubstitutorTest {
     }
 
     @Test
+    public void testdReplaceObjectNodeWithMultipleKeys() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.classpath("com/quasiris/qsf/json/test-replace-object-node.json");
+
+        JsonNode replaceMe = JsonBuilder.create().
+                classpath("com/quasiris/qsf/json/test-replace-object-node-with-multiple-keys.json").get();
+
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("$replaceMe", replaceMe);
+
+        jsonBuilder.replace(valueMap);
+
+        JSONAssert.assertEquals(
+                "{\"alice\" : \"bob\", \"eins\" : \"1\", \"zwei\" : \"2\", \"drei\" : \"3\"}",
+                jsonBuilder.writeAsString(),
+                true);
+    }
+
+    @Test
+    public void testdReplaceObjectNodeWithNoKey() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.classpath("com/quasiris/qsf/json/test-replace-object-node.json");
+
+        JsonNode replaceMe = JsonBuilder.create().string("{}").get();
+
+
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("$replaceMe", replaceMe);
+
+        jsonBuilder.replace(valueMap);
+
+        JSONAssert.assertEquals(
+                "{\"alice\" : \"bob\"}",
+                jsonBuilder.writeAsString(),
+                true);
+    }
+
+    @Test
     public void testdRemoveObjectNode() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.classpath("com/quasiris/qsf/json/test-remove-object-node.json");

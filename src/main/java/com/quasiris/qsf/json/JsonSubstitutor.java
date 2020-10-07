@@ -36,11 +36,11 @@ public class JsonSubstitutor {
                     removeFromNode.add(next.getKey());
                 } else if(value instanceof ObjectNode) {
                     ObjectNode objectNode = (ObjectNode) value;
-                    if(!objectNode.fields().hasNext()) {
-                        throw new JsonBuilderException("The object for " + next.getKey() + " must contain at least one field.");
+                    Iterator<Map.Entry<String, JsonNode>> fieldsIt = objectNode.fields();
+                    while(fieldsIt.hasNext()) {
+                        Map.Entry<String, JsonNode> field = fieldsIt.next();
+                        addToNode.put(field.getKey(), field.getValue());
                     }
-                    Map.Entry<String, JsonNode> field = objectNode.fields().next();
-                    addToNode.put(field.getKey(), field.getValue());
                     removeFromNode.add(next.getKey());
                 } else if(value != null) {
                     addToNode.put(value.toString(), oldNode);
