@@ -3,7 +3,9 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- implement a logic to remove json nodes with the json substitutor
+- JsonBuilder: implement a logic to remove json nodes with the json substitutor
+- JsonBuilder: allow to replace multiple json keys
+- PipelineBuilder: allow to set an id for loop and condition filter for better debugging 
 
 ### Removed
 

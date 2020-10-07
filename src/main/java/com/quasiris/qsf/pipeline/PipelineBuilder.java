@@ -83,7 +83,12 @@ public class PipelineBuilder {
     }
 
     public PipelineBuilder conditional(Predicate<PipelineContainer> predicate) {
+        return conditional(null, predicate);
+    }
+
+    public PipelineBuilder conditional(String id, Predicate<PipelineContainer> predicate) {
         conditionFilter = new ConditionFilter(pipeline.getId(), predicate);
+        conditionFilter.setId(id);
         pipeline.addFilter(conditionFilter);
         return this;
     }
@@ -96,10 +101,14 @@ public class PipelineBuilder {
         return parent;
     }
 
-    public PipelineBuilder loop(Predicate<PipelineContainer> predicate) {
+    public PipelineBuilder loop(String id, Predicate<PipelineContainer> predicate) {
         loopFilter = new LoopFilter(pipeline.getId(), predicate);
+        loopFilter.setId(id);
         pipeline.addFilter(loopFilter);
         return this;
+    }
+    public PipelineBuilder loop(Predicate<PipelineContainer> predicate) {
+       return loop(null, predicate);
     }
 
     public PipelineBuilder endLoop() throws PipelineContainerException {
