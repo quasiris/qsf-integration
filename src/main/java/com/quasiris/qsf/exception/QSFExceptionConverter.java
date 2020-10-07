@@ -1,7 +1,10 @@
 package com.quasiris.qsf.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainerDebugException;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
@@ -87,13 +90,18 @@ public class QSFExceptionConverter {
 
     public static StringBuilder debugToText(Debug debug) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
+        prettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+
         StringBuilder builder = new StringBuilder();
 
         Object formatted = null;
         DebugType debugType = debug.getType();
         if (debugType.isJson() || debugType.isObject()) {
             try {
-                formatted = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(debug.getDebugObject());
+                formatted = mapper.writer(prettyPrinter).writeValueAsString(debug.getDebugObject());
             } catch (JsonProcessingException e) {
                 formatted = ExceptionUtils.getStackTrace(e);
             }
