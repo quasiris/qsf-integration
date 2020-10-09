@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
@@ -91,6 +92,9 @@ public class SpellCheckElasticFilter extends AbstractFilter {
             }
         }
 
+        if(pipelineContainer.isDebugEnabled()) {
+            pipelineContainer.debug("spellCheckTokens", DebugType.JSON, spellCheckTokens);
+        }
 
         List<Score> correctedQueryVariants = new ArrayList<>();
         correctedQueryVariants.add(new Score("", 0.0));
