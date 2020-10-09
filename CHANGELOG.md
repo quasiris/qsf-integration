@@ -14,6 +14,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Deprecated
 
 ### Fixed
+- fix usage of reserved chars in suggest
 
 
 
