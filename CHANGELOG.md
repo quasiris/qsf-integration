@@ -7,6 +7,7 @@ All notable changes qsf-integration project will be documented in this file.
 - JsonBuilder: allow to replace multiple json keys
 - PipelineBuilder: allow to set an id for loop and condition filter for better debugging
 - SuggestQueryTransoformer: implement qsfql filter
+- add a SearchQueryFilter
 
 ### Removed
 
