@@ -13,8 +13,13 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Deprecated
 
+
 ### Fixed
 - fix usage of reserved chars in suggest
+
+
+### Breaking changes
+- - ElasticQsfqlQueryTransformer it is not possible to override detailed methods for transforming a filter. Implement a own FilterTransformer for this purpose.
 
 
 
