@@ -1,8 +1,13 @@
 package com.quasiris.qsf.pipeline.filter.elastic.suggest;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
+import com.quasiris.qsf.json.JsonBuilderException;
+import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticParameterQueryTransformer;
 import com.quasiris.qsf.pipeline.filter.elastic.Profiles;
+import com.quasiris.qsf.pipeline.filter.elastic.QsfqlFilterTransformer;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.util.ElasticUtil;
@@ -24,6 +29,27 @@ public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
     }
 
     public SuggestQueryTransoformer() {
+    }
+
+    public void transformFilters() throws JsonBuilderException {
+        QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
+                getObjectMapper(),
+                getElasticQuery(),
+                getSearchQuery()
+        );
+        filterTransformer.transformFilters();
+    }
+
+    @Override
+    public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
+        super.transform(pipelineContainer);
+
+        try {
+            transformFilters();
+        } catch (JsonBuilderException e) {
+            throw new PipelineContainerException(e.getMessage(), e);
+        }
+        return getElasticQuery();
     }
 
     @Override

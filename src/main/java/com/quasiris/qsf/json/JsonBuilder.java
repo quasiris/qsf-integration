@@ -100,6 +100,13 @@ public class JsonBuilder {
         return json(key, jsonNode.get(key));
     }
 
+    public JsonBuilder newJson(JsonNode jsonNode) {
+        root = jsonNode;
+        current = root;
+        return this;
+    }
+
+
     public JsonBuilder json(String fieldName, JsonNode jsonNode)  throws JsonBuilderException {
         if(root == null) {
             root = mapper.createObjectNode();
@@ -286,6 +293,11 @@ public class JsonBuilder {
     public String writeAsString() throws JsonProcessingException {
         return mapper.writeValueAsString(this.root);
     }
+
+    public String writeCurrentAsString() throws JsonProcessingException {
+        return mapper.writeValueAsString(this.current);
+    }
+
 
     public JsonNode getCurrent() {
         return current;

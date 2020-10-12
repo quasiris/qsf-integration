@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class QsfqlFilterTransformer {
 
 
-    private Integer elasticVersion;
+    private Integer elasticVersion = 6;
 
     private ObjectMapper objectMapper;
 
@@ -34,6 +34,13 @@ public class QsfqlFilterTransformer {
     private Map<String, String> filterRules = new HashMap<>();
 
     private Map<String, String> filterMapping = new HashMap<>();
+
+
+    public QsfqlFilterTransformer(ObjectMapper objectMapper, ObjectNode elasticQuery, SearchQuery searchQuery) {
+        this.objectMapper = objectMapper;
+        this.elasticQuery = elasticQuery;
+        this.searchQuery = searchQuery;
+    }
 
 
     public QsfqlFilterTransformer(Integer elasticVersion, ObjectMapper objectMapper, ObjectNode elasticQuery, SearchQuery searchQuery, Map<String, String> filterRules, Map<String, String> filterMapping) {
