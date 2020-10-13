@@ -8,6 +8,11 @@ All notable changes qsf-integration project will be documented in this file.
 - PipelineBuilder: allow to set an id for loop and condition filter for better debugging
 - SuggestQueryTransoformer: implement qsfql filter
 - add a SearchQueryFilter
+- delete for elastic http client
+- improve debugging of pipeline run
+- implement debugging for spellcheck
+- improve date utils
+- support for array pretty print
 
 ### Removed
 
