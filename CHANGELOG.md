@@ -12,6 +12,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Removed
 
 ### Changed
+- increase version of junit
 
 ### Deprecated
 
