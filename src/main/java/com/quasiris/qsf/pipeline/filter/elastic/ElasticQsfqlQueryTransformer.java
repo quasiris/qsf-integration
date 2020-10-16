@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Strings;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.pipeline.PipelineContainer;
@@ -20,6 +21,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     private String defaultSort;
     private Map<String, String> filterMapping = new HashMap<>();
     private Map<String, String> filterRules = new HashMap<>();
+    private Map<String, String> sortRules = new HashMap<>();
     private Integer defaultRows = 10;
     private Integer rows;
     private Integer defaultPage = 1;
@@ -91,11 +93,27 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             sort.setDirection("asc");
         }
 
-        String sortJson = "[{\"" + sort.getField() + "\": \"" + sort.getDirection() + "\"}]";
+        String fieldName = sort.getField();
+        String elasticField = mapSortField(fieldName);
+
+
+        String sortJson = "[{\"" + elasticField + "\": \"" + sort.getDirection() + "\"}]";
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.string(sortJson);
         return (ArrayNode) jsonBuilder.get();
 
+    }
+
+    public String mapSortField(String fieldName) {
+        for(Map.Entry<String, String> rule : getSortRules().entrySet()) {
+            String pattern = rule.getKey();
+            String replacement = rule.getValue();
+            String elasticField = fieldName.replaceAll(pattern, replacement);
+            if(!Strings.isNullOrEmpty(elasticField)) {
+                return elasticField;
+            }
+        }
+        return fieldName;
     }
 
     protected ArrayNode transformSortWithMapping(Sort sort) throws JsonBuilderException {
@@ -182,6 +200,10 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         filterRules.put(pattern, replacement);
     }
 
+    public void addSortRule(String pattern, String replacement) {
+        sortRules.put(pattern, replacement);
+    }
+
     public Map<String, String> getSortMapping() {
         return sortMapping;
     }
@@ -246,6 +268,24 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
      */
     public void setFilterRules(Map<String, String> filterRules) {
         this.filterRules = filterRules;
+    }
+
+    /**
+     * Getter for property 'sortRules'.
+     *
+     * @return Value for property 'sortRules'.
+     */
+    public Map<String, String> getSortRules() {
+        return sortRules;
+    }
+
+    /**
+     * Setter for property 'sortRules'.
+     *
+     * @param sortRules Value to set for property 'sortRules'.
+     */
+    public void setSortRules(Map<String, String> sortRules) {
+        this.sortRules = sortRules;
     }
 
     /**

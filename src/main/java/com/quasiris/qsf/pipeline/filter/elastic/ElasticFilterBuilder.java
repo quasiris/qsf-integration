@@ -186,6 +186,10 @@ public class ElasticFilterBuilder {
         getElasticQsfqlQueryTransformer().addFilterRule(pattern, replacement);
         return this;
     }
+    public ElasticFilterBuilder addSortRule(String pattern, String replacement) {
+        getElasticQsfqlQueryTransformer().addSortRule(pattern, replacement);
+        return this;
+    }
 
     public ElasticFilterBuilder queryTransformer(QueryTransformerIF queryTransformer) {
         if( queryTransformer instanceof ElasticQsfqlQueryTransformer) {
