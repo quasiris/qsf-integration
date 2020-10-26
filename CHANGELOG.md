@@ -4,6 +4,7 @@ All notable changes qsf-integration project will be documented in this file.
 ## [Unreleased]
 ### Added
 - implement sort rules
+- add minTokenWeight for Spellcheck
 
 ### Removed
 

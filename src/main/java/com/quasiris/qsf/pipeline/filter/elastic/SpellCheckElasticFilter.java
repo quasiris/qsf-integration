@@ -33,6 +33,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     private int minTokenLenght = 4;
     private int maxTokenLenght = 10;
+    private int minTokenWeight = 5;
 
     private String baseUrl;
 
@@ -75,7 +76,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
                 continue;
             }
 
-            String elasticRequest  = "{\"query\": {\"fuzzy\": {\"text.keyword\": {\"value\": \"" + JsonUtil.encode(token.getValue().toLowerCase()) + "\",\"fuzziness\": \"AUTO\"}}}}";
+            String elasticRequest  = "{\"query\": {\"bool\": { \"must\": [ {\"fuzzy\": {\"text.keyword\": {\"value\": \""+JsonUtil.encode(token.getValue().toLowerCase())+"\",\"fuzziness\": \"AUTO\"}}},{\"range\": {\"weight\": {\"gte\": "+getMinTokenWeight()+"}}}]}}}";
             elasticQueries.add(elasticRequest);
             spellCheckToken.setElasticResultPojnter(elasticQueries.size()-1);
         }
@@ -273,5 +274,13 @@ public class SpellCheckElasticFilter extends AbstractFilter {
      */
     public void setMaxTokenLenght(int maxTokenLenght) {
         this.maxTokenLenght = maxTokenLenght;
+    }
+
+    public int getMinTokenWeight() {
+        return minTokenWeight;
+    }
+
+    public void setMinTokenWeight(int minTokenWeight) {
+        this.minTokenWeight = minTokenWeight;
     }
 }
