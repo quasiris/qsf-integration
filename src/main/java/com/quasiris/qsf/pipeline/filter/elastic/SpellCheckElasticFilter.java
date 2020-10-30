@@ -33,7 +33,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     private int minTokenLenght = 4;
     private int maxTokenLenght = 10;
-    private int minTokenWeight = 5;
+    private int minTokenWeight = 1;
 
     private String baseUrl;
 
