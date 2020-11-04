@@ -12,6 +12,7 @@ public class SearchQuery {
 
     private String originalQuery;
     private boolean queryChanged = false;
+    private List<String> queryChangedReasons;
     private Boolean tracking;
 
     private List<Token> queryToken = new ArrayList<>();
@@ -251,6 +252,31 @@ public class SearchQuery {
      */
     public void setQueryChanged(boolean queryChanged) {
         this.queryChanged = queryChanged;
+    }
+
+    /**
+     * Getter for property 'queryChangedReasons'.
+     *
+     * @return Value for property 'queryChangedReasons'.
+     */
+    public List<String> getQueryChangedReasons() {
+        return queryChangedReasons;
+    }
+
+    /**
+     * Setter for property 'queryChangedReasons'.
+     *
+     * @param queryChangedReasons Value to set for property 'queryChangedReasons'.
+     */
+    public void setQueryChangedReasons(List<String> queryChangedReasons) {
+        this.queryChangedReasons = queryChangedReasons;
+    }
+
+    public void addQueryChangedReason(String reason) {
+        if(this.queryChangedReasons == null) {
+            this.queryChangedReasons = new ArrayList<>();
+        }
+        this.queryChangedReasons.add(reason);
     }
 
     @Override

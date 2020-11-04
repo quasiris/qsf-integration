@@ -131,6 +131,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
             searchQuery.setOriginalQuery(searchQuery.getQ());
             searchQuery.setQ(corrected.getText());
             searchQuery.setQueryChanged(true);
+            searchQuery.addQueryChangedReason("spellcheck");
         }
     }
 

@@ -100,6 +100,7 @@ public class TrackingFilter extends AbstractFilter {
             tracking.setValue("q", searchQuery.getOriginalQuery());
             tracking.addValue("changedQuery", searchQuery.getQ());
             tracking.setValue("queryChanged", true);
+            tracking.setValue("queryChangedReasons", searchQuery.getQueryChangedReasons());
         } else {
             tracking.setValue("q", searchQuery.getQ());
         }

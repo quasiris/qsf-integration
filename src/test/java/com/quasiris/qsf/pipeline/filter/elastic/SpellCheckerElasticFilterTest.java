@@ -7,12 +7,16 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.TokenizerFilter;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
+import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.in;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Created by tbl on 11.4.20.
@@ -50,8 +54,11 @@ public class SpellCheckerElasticFilterTest extends AbstractPipelineTest {
                 httpRequest(httpServletRequest).
                 execute();
 
-        Assert.assertEquals("magenta", pipelineContainer.getSearchQuery().getQ());
-        Assert.assertEquals("Mgenta", pipelineContainer.getSearchQuery().getOriginalQuery());
+        SearchQuery searchQuery = pipelineContainer.getSearchQuery();
+        Assert.assertEquals("magenta", searchQuery.getQ());
+        Assert.assertEquals("Mgenta", searchQuery.getOriginalQuery());
+        assertThat("spellcheck", is(in(searchQuery.getQueryChangedReasons())));
+
         Assert.assertTrue(pipelineContainer.getSearchQuery().isQueryChanged());
 
     }
