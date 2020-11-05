@@ -289,6 +289,10 @@ public class JsonBuilder {
         this.valueMap.put("$" + key, value);
         return this;
     }
+    public JsonBuilder valueMap(Map<String, Object> valueMap) {
+        this.valueMap.putAll(valueMap);
+        return this;
+    }
 
     public String writeAsString() throws JsonProcessingException {
         return mapper.writeValueAsString(this.root);
@@ -306,4 +310,18 @@ public class JsonBuilder {
     public JsonNode get() {
         return root;
     }
+
+    public JsonBuilder include(String id, JsonBuilder jsonBuilder) throws JsonBuilderException {
+        jsonBuilder.valueMap = mergeValueMap(this.valueMap, jsonBuilder.valueMap);
+        jsonBuilder.replace();
+        this.valueMap(id, jsonBuilder.get());
+        return this;
+    }
+
+    private Map<String, Object> mergeValueMap(Map<String, Object> left, Map<String, Object> right ) {
+        Map<String, Object> valueMap = new HashMap<>(left);
+        valueMap.putAll(right);
+        return valueMap;
+    }
+
 }
