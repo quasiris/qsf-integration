@@ -126,14 +126,14 @@ public class QsfqlFilterTransformer {
 
 
 
-    public void transformFiltersCurrentVersion() {
+    public void transformFiltersCurrentVersion() throws JsonBuilderException {
         transformFilters("must", FilterOperator.AND);
         transformFiltersOr();
         transformFilters("must_not", FilterOperator.NOT);
     }
 
 
-    public void transformFilters(String elasticOperator, FilterOperator filterOperator) {
+    public void transformFilters(String elasticOperator, FilterOperator filterOperator) throws JsonBuilderException {
         List<SearchFilter> searchFilterList = getSearchQuery().getSearchFilterList().stream().
                 filter(sf -> sf.getFilterOperator().equals(filterOperator)).
                 collect(Collectors.toList());
@@ -155,7 +155,7 @@ public class QsfqlFilterTransformer {
 
     // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
     // TODO implement range queries for date
-    public ArrayNode computeFilter(List<SearchFilter> searchFilterList) {
+    public ArrayNode computeFilter(List<SearchFilter> searchFilterList) throws JsonBuilderException {
         ArrayNode filters = getObjectMapper().createArrayNode();
         for (SearchFilter searchFilter : searchFilterList) {
             ArrayNode filter = null;
@@ -183,7 +183,7 @@ public class QsfqlFilterTransformer {
         return filters;
     }
 
-    public ArrayNode transformTermsFilter(SearchFilter searchFilter) {
+    public ArrayNode transformTermsFilter(SearchFilter searchFilter) throws JsonBuilderException {
 
         String elasticField = mapFilterField(searchFilter.getName());
         if(elasticField == null) {
@@ -193,18 +193,19 @@ public class QsfqlFilterTransformer {
             throw new IllegalArgumentException("There is no field name defined.");
         }
 
-        ArrayNode arrayNode = getObjectMapper().createArrayNode();
-        for(String filterValue : searchFilter.getValues()) {
-            ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set(searchFilter.getFilterType().getCode(),
-                    getObjectMapper().createObjectNode().put(elasticField, filterValue));
-            arrayNode.add(filter);
-        }
+        JsonBuilder jsonBuilder = JsonBuilder.create().array();
 
-        return arrayNode;
+        for(String filterValue : searchFilter.getValues()) {
+            jsonBuilder.stash();
+            jsonBuilder.object(searchFilter.getFilterType().getCode());
+            jsonBuilder.object(elasticField, filterValue);
+            jsonBuilder.unstash();
+        }
+        return (ArrayNode) jsonBuilder.unstash().get();
 
     }
 
-    public ArrayNode transformRangeFilter(SearchFilter searchFilter) {
+    public ArrayNode transformRangeFilter(SearchFilter searchFilter) throws JsonBuilderException {
 
         String elasticField = getFilterMapping().get(searchFilter.getName());
         if (Strings.isNullOrEmpty(elasticField)) {
@@ -215,38 +216,36 @@ public class QsfqlFilterTransformer {
                     "the filter is missing");
         }
 
-        ObjectNode range = null;
+        JsonBuilder rangeBuilder = JsonBuilder.create().
+            array().
+            object("range").
+            object(elasticField);
 
         if(searchFilter.getFilterDataType().isNumber()) {
             RangeFilterValue<Double> rangeFilterValue = searchFilter.getRangeValue(Double.class);
-            range = getObjectMapper().
-                    createObjectNode().
-                    put(rangeFilterValue.getLowerBound().getOperator(), rangeFilterValue.getMinValue()).
-                    put(rangeFilterValue.getUpperBound().getOperator(), rangeFilterValue.getMaxValue());
+            rangeBuilder.
+                    object(rangeFilterValue.getLowerBound().getOperator(), rangeFilterValue.getMinValue()).
+                    object(rangeFilterValue.getUpperBound().getOperator(), rangeFilterValue.getMaxValue());
         } else if (searchFilter.getFilterDataType().isString()) {
             RangeFilterValue<String> rangeFilterValue = searchFilter.getRangeValue(String.class);
-            range = getObjectMapper().
-                    createObjectNode().
-                    put(rangeFilterValue.getLowerBound().getOperator(), rangeFilterValue.getMinValue()).
-                    put(rangeFilterValue.getUpperBound().getOperator(), rangeFilterValue.getMaxValue());
+            rangeBuilder.
+                    object(rangeFilterValue.getLowerBound().getOperator(), rangeFilterValue.getMinValue()).
+                    object(rangeFilterValue.getUpperBound().getOperator(), rangeFilterValue.getMaxValue());
+
         } else if(searchFilter.getFilterDataType().isDate()) {
             RangeFilterValue<Date> rangeFilterValue = searchFilter.getRangeValue(Date.class);
             // TODO transform the date in the correct format
             String minValue = rangeFilterValue.getMinValue().toString();
             String maxValue = rangeFilterValue.getMaxValue().toString();
-            range = getObjectMapper().
-                    createObjectNode().
-                    put(rangeFilterValue.getLowerBound().getOperator(), minValue).
-                    put(rangeFilterValue.getUpperBound().getOperator(), maxValue);
+            rangeBuilder.
+                    object(rangeFilterValue.getLowerBound().getOperator(), minValue).
+                    object(rangeFilterValue.getUpperBound().getOperator(), maxValue);
         } else {
             throw new IllegalArgumentException("For the data type " + searchFilter.getFilterDataType().getCode() +
                     " no implementation is available.");
         }
 
-        ObjectNode filter = (ObjectNode) getObjectMapper().createObjectNode().set("range",
-                getObjectMapper().createObjectNode().set(elasticField, range));
-
-        return getObjectMapper().createArrayNode().add(filter);
+        return (ArrayNode) rangeBuilder.root().get();
 
     }
 
@@ -305,7 +304,7 @@ public class QsfqlFilterTransformer {
 
 
 
-    public void transformFiltersOr() {
+    public void transformFiltersOr() throws JsonBuilderException {
         List<SearchFilter> searchFilterList = getSearchQuery().getSearchFilterList().stream().
                 filter(sf -> sf.getFilterOperator().equals(FilterOperator.OR)).
                 collect(Collectors.toList());

@@ -41,11 +41,12 @@ public class JsonBuilderTest {
         JSONAssert.assertEquals("{\"foo\" : {}}", jsonBuilder.writeAsString(), true);
     }
 
-    @Test(expected = JsonBuilderException.class)
+    @Test
     public void testObjectWithArray() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.array();
         jsonBuilder.object("foo");
+        JSONAssert.assertEquals("[{\"foo\" : {}}]", jsonBuilder.writeAsString(), true);
     }
 
 

@@ -217,9 +217,9 @@ public class JsonBuilder {
         ObjectNode objectNode = mapper.createObjectNode();
 
         if(current.isArray()) {
-            throw new JsonBuilderException("The current node is an array. An object node is expected.");
-        }
-        if(current.isObject()) {
+            this.object();
+            ((ObjectNode) current).set(fieldName, objectNode);
+        } else if(current.isObject()) {
             ((ObjectNode) current).set(fieldName, objectNode);
         }
         current = objectNode;
