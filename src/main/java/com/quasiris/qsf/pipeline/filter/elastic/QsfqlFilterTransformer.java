@@ -156,8 +156,9 @@ public class QsfqlFilterTransformer {
     // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
     // TODO implement range queries for date
     public ArrayNode computeFilter(List<SearchFilter> searchFilterList) throws JsonBuilderException {
-        ArrayNode filters = getObjectMapper().createArrayNode();
+        JsonBuilder filters = JsonBuilder.create().array();
         for (SearchFilter searchFilter : searchFilterList) {
+            filters.stash();
             ArrayNode filter = null;
             switch (searchFilter.getFilterType()) {
                 case TERM:
@@ -177,10 +178,11 @@ public class QsfqlFilterTransformer {
 
 
             if(filter != null) {
-                filters.addAll(filter);
+                filters.addJson(filter);
             }
+            filters.unstash();
         }
-        return filters;
+        return (ArrayNode) filters.get();
     }
 
     public ArrayNode transformTermsFilter(SearchFilter searchFilter) throws JsonBuilderException {
@@ -309,35 +311,35 @@ public class QsfqlFilterTransformer {
                 filter(sf -> sf.getFilterOperator().equals(FilterOperator.OR)).
                 collect(Collectors.toList());
 
+        boolean hasFilter = false;
+
+        JsonBuilder shouldList = JsonBuilder.create().array();
         for(SearchFilter searchFilter : searchFilterList) {
+            JsonBuilder shouldBuilder = JsonBuilder.create().
+                    object("bool").
+                    array("should");
             ArrayNode filters = computeFilter(Arrays.asList(searchFilter));
             if (filters.size() == 0) {
-                return;
+                continue;
             }
-
-
-            ObjectNode should = getObjectMapper().createObjectNode();
-            should.set("should", filters);
-
-            ObjectNode bool = getObjectMapper().createObjectNode();
-
-            bool.set("bool", should);
-
-            ObjectNode filterBool = getFilterBool();
-            ArrayNode must = (ArrayNode) filterBool.get("must");
-            if (must == null) {
-                filterBool.set("must", getObjectMapper().createArrayNode());
-                must = (ArrayNode) filterBool.get("must");
-            }
-
-            must.add(bool);
+            shouldBuilder.addJson(filters);
+            shouldList.addJson(shouldBuilder.root().get());
+            hasFilter = true;
         }
+
+        if(!hasFilter) {
+            return;
+        }
+
+
+        ObjectNode filterBool = getFilterBool();
+        ArrayNode must = (ArrayNode) filterBool.get("must");
+        if (must == null) {
+            filterBool.set("must", getObjectMapper().createArrayNode());
+            must = (ArrayNode) filterBool.get("must");
+        }
+
+        must.addAll((ArrayNode) shouldList.root().get());
     }
-
-
-
-
-
-
 
 }

@@ -128,8 +128,9 @@ public class JsonBuilder {
         }
         if(current.isObject()) {
             throw new JsonBuilderException("The current node is an object. An array node is expected.");
-        }
-        if(current.isArray()) {
+        } else if(current.isArray() && jsonNode.isArray()) {
+            ((ArrayNode) current).addAll((ArrayNode) jsonNode);
+        } else if(current.isArray()) {
             ((ArrayNode) current).add(jsonNode);
         }
         return this;
