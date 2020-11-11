@@ -33,6 +33,31 @@ public class JsonBuilder {
         return this;
     }
 
+    public boolean exists(String paths) throws JsonBuilderException {
+        try {
+            stash();
+            paths(paths);
+            unstash();
+            return true;
+        } catch (JsonBuilderException e) {
+            unstash();
+            return false;
+        }
+    }
+
+    public JsonBuilder pathsForceCreate(String paths) throws JsonBuilderException {
+
+            String[] pathesSplit = paths.split(Pattern.quote("/"));
+            for (String path : pathesSplit) {
+                try {
+                    path(path);
+                } catch (JsonBuilderException e) {
+                    object(path);
+                }
+            }
+            return this;
+    }
+
     public JsonBuilder paths(String paths) throws JsonBuilderException {
         try {
             String[] pathesSplit = paths.split(Pattern.quote("/"));

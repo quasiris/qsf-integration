@@ -2,6 +2,7 @@ package com.quasiris.qsf.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -322,6 +323,36 @@ public class JsonBuilderTest {
         jsonBuilder.object("n33");
         JSONAssert.assertEquals("{\"n1\":{\"n2\":{\"n3\":{\"n4\":{}},\"n33\":{}}}}", jsonBuilder.writeAsString(), true);
     }
+
+    @Test
+    public void testExistsTrue() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.object("n1").object("n2");
+        jsonBuilder.root();
+        boolean exists = jsonBuilder.exists("n1/n2");
+        Assert.assertTrue(exists);
+    }
+
+    @Test
+    public void testExistsFalse() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.object("n1").object("n2");
+        jsonBuilder.root();
+        boolean exists = jsonBuilder.exists("n1/n2/n3");
+        Assert.assertFalse(exists);
+    }
+
+
+    @Test
+    public void testPathsForceCreate() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.object("n1").object("n2");
+        jsonBuilder.root();
+        jsonBuilder.pathsForceCreate("n1/n2/n3/n4");
+        jsonBuilder.object("n33");
+        JSONAssert.assertEquals("{\"n1\":{\"n2\":{\"n3\":{\"n4\":{\"n33\":{}}}}}}", jsonBuilder.writeAsString(), true);
+    }
+
 
     @Test
     public void testPaths() throws Exception {
