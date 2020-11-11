@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 
 public class QsfqlFilterTransformer {
 
+    private String filterPath;
+
+    private String filterVariable;
 
     private Integer elasticVersion = 6;
 
@@ -269,40 +272,21 @@ public class QsfqlFilterTransformer {
 
     }
 
-    public ObjectNode getFilterBool() {
-        ObjectNode bool = getBoolQuery();
+    public ObjectNode getFilterBool() throws JsonBuilderException {
+        JsonBuilder jsonBuilder = JsonBuilder.create().newJson(getElasticQuery());
 
-        ObjectNode filter = (ObjectNode) bool.get("filter");
-        if(filter == null) {
-            bool = (ObjectNode) bool.set("filter", getObjectMapper().createObjectNode());
-            filter = (ObjectNode) bool.get("filter");
+        if(filterPath != null) {
+            jsonBuilder.pathsForceCreate(filterPath + "/bool");
+        } else if(filterPath == null && filterVariable == null && jsonBuilder.exists("query/function_score/query")) {
+            throw new IllegalArgumentException("This is not supported anymore. Use filterPath or filterVariable to set the filters.");
+            // jsonBuilder.pathsForceCreate("query/function_score/query/bool/filter/bool");
+        } else {
+            jsonBuilder.pathsForceCreate("query/bool/filter/bool");
         }
-
-        ObjectNode filterBool = (ObjectNode) filter.get("bool");
-        if(filterBool == null) {
-            filter = (ObjectNode) filter.set("bool", getObjectMapper().createObjectNode());
-            filterBool = (ObjectNode) filter.get("bool");
-        }
-        return filterBool;
-    }
-
-
-    public ObjectNode getBoolQuery() {
-        ObjectNode query = (ObjectNode) getElasticQuery().get("query");
-        ObjectNode functionScore = (ObjectNode) query.get("function_score");
-        if(functionScore != null) {
-            query = (ObjectNode) functionScore.get("query");
-        }
-
-
-
-        ObjectNode bool = (ObjectNode) query.get("bool");
-        if(bool == null) {
-            bool = getObjectMapper().createObjectNode();
-            query.set("bool", bool);
-        }
+        ObjectNode bool = (ObjectNode) jsonBuilder.getCurrent();
         return bool;
     }
+
 
 
 
