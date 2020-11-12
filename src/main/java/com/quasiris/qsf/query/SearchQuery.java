@@ -172,7 +172,7 @@ public class SearchQuery {
         this.parameters = parameters;
     }
 
-    public void addParameter(String key, String value) {
+    public void addParameter(String key, Object value) {
         if(this.parameters == null) {
             this.parameters = new HashMap<>();
         }
