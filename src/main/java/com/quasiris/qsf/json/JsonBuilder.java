@@ -316,6 +316,9 @@ public class JsonBuilder {
     }
 
     public JsonBuilder valueMap(String key, Object value) {
+        if(value == null) {
+            value = new EmptyNode();
+        }
         this.valueMap.put("$" + key, value);
         return this;
     }
