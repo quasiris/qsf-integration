@@ -4,10 +4,11 @@ import com.quasiris.qsf.pipeline.filter.ConditionFilter;
 import com.quasiris.qsf.pipeline.filter.SleepFilter;
 import com.quasiris.qsf.pipeline.filter.UnitTestingFilter;
 import com.quasiris.qsf.test.AbstractPipelineTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by mki on 18.4.20.
@@ -28,21 +29,21 @@ public class ConditionalPipelineTest extends AbstractPipelineTest {
 
 
         ConditionFilter conditionFilter = (ConditionFilter) pipeline.getFilterList().get(1);
-        Assert.assertEquals("first-sleep", pipeline.getFilterList().get(0).getId());
-        Assert.assertEquals("conditional-pipeline", conditionFilter.getPipeline().getId());
+        assertEquals("first-sleep", pipeline.getFilterList().get(0).getId());
+        assertEquals("conditional-pipeline", conditionFilter.getPipeline().getId());
 
         UnitTestingFilter unitTestingFilter = (UnitTestingFilter) conditionFilter.getPipeline().getFilterList().get(0);
-        Assert.assertEquals("conditional-filter", unitTestingFilter.getId());
+        assertEquals("conditional-filter", unitTestingFilter.getId());
 
         PipelineContainer pipelineContainer = PipelineExecuter.create().
                 pipeline(pipeline).
                 execute();
 
         if(!pipelineContainer.isSuccess()) {
-            Assert.fail();
+            fail();
         }
 
-        Assert.assertNotNull(pipelineContainer.getSearchResult("conditional-filter"));
+        assertNotNull(pipelineContainer.getSearchResult("conditional-filter"));
 
 
     }
@@ -61,21 +62,21 @@ public class ConditionalPipelineTest extends AbstractPipelineTest {
 
 
         ConditionFilter conditionFilter = (ConditionFilter) pipeline.getFilterList().get(1);
-        Assert.assertEquals("first-sleep", pipeline.getFilterList().get(0).getId());
-        Assert.assertEquals("conditional-pipeline", conditionFilter.getPipeline().getId());
+        assertEquals("first-sleep", pipeline.getFilterList().get(0).getId());
+        assertEquals("conditional-pipeline", conditionFilter.getPipeline().getId());
 
         UnitTestingFilter unitTestingFilter = (UnitTestingFilter) conditionFilter.getPipeline().getFilterList().get(0);
-        Assert.assertEquals("conditional-filter", unitTestingFilter.getId());
+        assertEquals("conditional-filter", unitTestingFilter.getId());
 
         PipelineContainer pipelineContainer = PipelineExecuter.create().
                 pipeline(pipeline).
                 execute();
 
         if(!pipelineContainer.isSuccess()) {
-            Assert.fail();
+            fail();
         }
 
-        Assert.assertNull(pipelineContainer.getSearchResult("conditional-filter"));
+        assertNull(pipelineContainer.getSearchResult("conditional-filter"));
 
 
     }

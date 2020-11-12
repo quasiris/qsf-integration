@@ -3,8 +3,9 @@ package com.quasiris.qsf.exception;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerDebugException;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DebugUtilTest {
 
@@ -12,7 +13,7 @@ public class DebugUtilTest {
     public void testError2Html() {
         PipelineContainerException pipelineContainerException = new PipelineContainerException("test error");
         String html =  QSFExceptionConverter.error2Html(pipelineContainerException);
-        Assert.assertTrue(html.contains("test error"));
+        assertTrue(html.contains("test error"));
     }
 
 
@@ -27,8 +28,8 @@ public class DebugUtilTest {
         PipelineContainerException ex = new PipelineContainerException(pipelineContainer, "test error");
 
         String html =  QSFExceptionConverter.error2Html(ex);
-        Assert.assertTrue(html.contains("test error"));
-        Assert.assertTrue(html.contains("test debug"));
+        assertTrue(html.contains("test error"));
+        assertTrue(html.contains("test debug"));
     }
 
     @Test
@@ -42,7 +43,7 @@ public class DebugUtilTest {
         PipelineContainerDebugException ex = new PipelineContainerDebugException(pipelineContainer);
 
         String html =  QSFExceptionConverter.debugToHtml(ex);
-        Assert.assertTrue(html.contains("test debug"));
+        assertTrue(html.contains("test debug"));
     }
 
 }

@@ -1,22 +1,22 @@
 package com.quasiris.qsf.query;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PosTagTest {
 
 
     @Test
     public void isOneOfStringValue() {
-        Assert.assertTrue(PosTag.isOneOfValue("<ART>", PosTag.SYM, PosTag.BRAND, PosTag.ART));
-        Assert.assertFalse(PosTag.isOneOfValue("<ART>", PosTag.SYM, PosTag.BRAND));
+        assertTrue(PosTag.isOneOfValue("<ART>", PosTag.SYM, PosTag.BRAND, PosTag.ART));
+        assertFalse(PosTag.isOneOfValue("<ART>", PosTag.SYM, PosTag.BRAND));
     }
 
     @Test
     public void isOneOfValue() {
-        Assert.assertTrue(PosTag.isOneOfValue(PosTag.ART, PosTag.SYM, PosTag.BRAND, PosTag.ART));
-        Assert.assertFalse(PosTag.isOneOfValue(PosTag.ART, PosTag.SYM, PosTag.BRAND));
+        assertTrue(PosTag.isOneOfValue(PosTag.ART, PosTag.SYM, PosTag.BRAND, PosTag.ART));
+        assertFalse(PosTag.isOneOfValue(PosTag.ART, PosTag.SYM, PosTag.BRAND));
     }
 }

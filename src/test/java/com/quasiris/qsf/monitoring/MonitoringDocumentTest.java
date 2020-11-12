@@ -2,14 +2,15 @@ package com.quasiris.qsf.monitoring;
 
 import com.quasiris.qsf.util.DateUtil;
 import com.quasiris.qsf.util.QsfInstant;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class MonitoringDocumentTest {
 

@@ -8,8 +8,9 @@ import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.solr.JsonMonitoringFilter;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.test.AbstractPipelineTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by mki on 25.02.18.
@@ -42,8 +43,8 @@ public class JsonMonitoringFilterTest extends AbstractPipelineTest {
 
 
         SearchResult solrSearchResult = pipelineContainer.getSearchResult("solr");
-        Assert.assertEquals(Integer.valueOf(500), solrSearchResult.getStatusCode());
-        Assert.assertEquals("200", solrSearchResult.getDocuments().get(0).getFieldValue("status"));
-        Assert.assertEquals("500", solrSearchResult.getDocuments().get(1).getFieldValue("status"));
+        assertEquals(Integer.valueOf(500), solrSearchResult.getStatusCode());
+        assertEquals("200", solrSearchResult.getDocuments().get(0).getFieldValue("status"));
+        assertEquals("500", solrSearchResult.getDocuments().get(1).getFieldValue("status"));
     }
 }

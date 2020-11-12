@@ -9,10 +9,12 @@ import com.quasiris.qsf.response.Facet;
 import com.quasiris.qsf.response.FacetValue;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.test.AbstractPipelineTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by mki on 07.11.17.
@@ -22,10 +24,12 @@ public class SolrPipelineTest extends AbstractPipelineTest {
 
     private boolean debug = false;
 
-    @Test(expected = PipelineContainerDebugException.class)
+    @Test
     public void debug() throws Exception {
-        this.debug = true;
-        testSolrPipeline();
+        Assertions.assertThrows(PipelineContainerDebugException.class, () -> {
+            this.debug = true;
+            testSolrPipeline();
+        });
     }
 
 
@@ -65,7 +69,7 @@ public class SolrPipelineTest extends AbstractPipelineTest {
                         build()).
                 build();
 
-        Assert.assertNotNull(pipeline.print(""));
+        assertNotNull(pipeline.print(""));
 
         HttpServletRequest httpServletRequest = Mockfactory.createHttpServletRequest("http://localhost?q=*:*&foo=bar");
 
@@ -77,33 +81,33 @@ public class SolrPipelineTest extends AbstractPipelineTest {
 
 
         if(!pipelineContainer.isSuccess()) {
-            Assert.fail();
+            fail();
         }
 
         SearchResult searchResult = pipelineContainer.getSearchResult("products");
-        Assert.assertEquals(Long.valueOf(34), searchResult.getTotal());
-        Assert.assertEquals(9,searchResult.getDocuments().size());
+        assertEquals(Long.valueOf(34), searchResult.getTotal());
+        assertEquals(9,searchResult.getDocuments().size());
 
         Document document = searchResult.getDocuments().get(0);
-        Assert.assertEquals(7, document.getFieldCount());
-        Assert.assertEquals("6.99", document.getFieldValue("price"));
-        Assert.assertEquals("Roger Zelazny", document.getFieldValue("author"));
-        Assert.assertEquals("fantasy", document.getFieldValue("genre"));
-        Assert.assertEquals("0380014300", document.getFieldValue("id"));
-        Assert.assertEquals("0380014300", document.getFieldValue("productId"));
-        Assert.assertEquals("http://quasiris.de/shop/products/0380014300", document.getFieldValue("url"));
-        Assert.assertEquals("true", document.getFieldValue("stock"));
+        assertEquals(7, document.getFieldCount());
+        assertEquals("6.99", document.getFieldValue("price"));
+        assertEquals("Roger Zelazny", document.getFieldValue("author"));
+        assertEquals("fantasy", document.getFieldValue("genre"));
+        assertEquals("0380014300", document.getFieldValue("id"));
+        assertEquals("0380014300", document.getFieldValue("productId"));
+        assertEquals("http://quasiris.de/shop/products/0380014300", document.getFieldValue("url"));
+        assertEquals("true", document.getFieldValue("stock"));
 
         Facet facet = searchResult.getFacetById("author");
-        Assert.assertEquals("Autor", facet.getName());
-        Assert.assertEquals("author", facet.getId());
-        Assert.assertEquals(Long.valueOf(22), facet.getCount());
-        Assert.assertEquals(Long.valueOf(32), facet.getResultCount());
+        assertEquals("Autor", facet.getName());
+        assertEquals("author", facet.getId());
+        assertEquals(Long.valueOf(22), facet.getCount());
+        assertEquals(Long.valueOf(32), facet.getResultCount());
 
         FacetValue facetValue = facet.getValues().get(0);
-        Assert.assertEquals("george", facetValue.getValue());
-        Assert.assertEquals(Long.valueOf(3), facetValue.getCount());
-        Assert.assertEquals("author=george", facetValue.getFilter());
+        assertEquals("george", facetValue.getValue());
+        assertEquals(Long.valueOf(3), facetValue.getCount());
+        assertEquals("author=george", facetValue.getFilter());
 
     }
 

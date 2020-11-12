@@ -1,9 +1,11 @@
 package com.quasiris.qsf.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DateUtilTest {
 
@@ -11,25 +13,25 @@ public class DateUtilTest {
     public void getDateDifferentTimezoneFormat() throws Exception {
         Date date1 = DateUtil.getDate("2020-08-06T22:18:26.528+0000");
         Date date2 = DateUtil.getDate("2020-08-06T22:18:26.528+00:00");
-        Assert.assertEquals(date1, date2);
+        assertEquals(date1, date2);
     }
 
     @Test
     public void getDateWithoutTime() throws Exception {
         Date date = DateUtil.getDate("2020-08-06");
-        Assert.assertNotNull(date);
+        assertNotNull(date);
     }
 
     @Test
     public void testNow() throws Exception {
         String date = DateUtil.now();
-        Assert.assertNotNull(date);
+        assertNotNull(date);
     }
 
     @Test
     public void getDateAsString() throws Exception {
         Date date = DateUtil.getDate("2020-08-06T00:00:00.000+0200");
         String dateString = DateUtil.getDate(date);
-        Assert.assertNotNull(dateString);
+        assertNotNull(dateString);
     }
 }

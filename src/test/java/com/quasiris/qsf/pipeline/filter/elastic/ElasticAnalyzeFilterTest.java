@@ -9,10 +9,11 @@ import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.test.AbstractPipelineTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by mki on 11.02.18.
@@ -42,7 +43,7 @@ public class ElasticAnalyzeFilterTest extends AbstractPipelineTest {
                 filter(elasticAnalyzeFilter).
                 build();
 
-        Assert.assertNotNull(pipeline.print(""));
+        assertNotNull(pipeline.print(""));
 
         HttpServletRequest httpServletRequest = Mockfactory.createHttpServletRequest("http://localhost?q=kündigen");
 
@@ -52,17 +53,17 @@ public class ElasticAnalyzeFilterTest extends AbstractPipelineTest {
                 execute();
 
         if(!pipelineContainer.isSuccess()) {
-            Assert.fail();
+            fail();
         }
 
         SearchResult analyzeResult = pipelineContainer.getSearchResult("analyze");
-        Assert.assertEquals(2, analyzeResult.getDocuments().size());
+        assertEquals(2, analyzeResult.getDocuments().size());
         Document first = analyzeResult.getDocuments().get(0);
 
-        Assert.assertEquals("beenden", first.getFieldValue("token"));
-        Assert.assertEquals(Integer.valueOf(0), first.getFieldValueAsInteger("start_offset"));
-        Assert.assertEquals(Integer.valueOf(8), first.getFieldValueAsInteger("end_offset"));
-        Assert.assertEquals("SYNONYM", first.getFieldValue("type"));
+        assertEquals("beenden", first.getFieldValue("token"));
+        assertEquals(Integer.valueOf(0), first.getFieldValueAsInteger("start_offset"));
+        assertEquals(Integer.valueOf(8), first.getFieldValueAsInteger("end_offset"));
+        assertEquals("SYNONYM", first.getFieldValue("type"));
 
     }
 

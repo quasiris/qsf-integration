@@ -1,7 +1,12 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.quasiris.qsf.mock.Mockfactory;
-import com.quasiris.qsf.pipeline.*;
+import com.quasiris.qsf.pipeline.Pipeline;
+import com.quasiris.qsf.pipeline.PipelineBuilder;
+import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.pipeline.PipelineContainerDebugException;
+import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.response.Document;
@@ -9,11 +14,11 @@ import com.quasiris.qsf.response.Facet;
 import com.quasiris.qsf.response.FacetValue;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.test.AbstractPipelineTest;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by mki on 11.02.18.
@@ -70,7 +75,7 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
                             build()).
                     build();
 
-            Assert.assertNotNull(pipeline.print(""));
+            assertNotNull(pipeline.print(""));
 
             HttpServletRequest httpServletRequest = Mockfactory.createHttpServletRequest("http://localhost?q=darmstadt&foo=bar&f.place=city&page=1");
 
@@ -80,27 +85,27 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
                     execute();
 
             if(!pipelineContainer.isSuccess()) {
-                Assert.fail();
+                fail();
             }
 
             SearchResult searchResult = pipelineContainer.getSearchResult("products");
-            Assert.assertEquals(Long.valueOf(1), searchResult.getTotal());
-            Assert.assertEquals(1,searchResult.getDocuments().size());
+            assertEquals(Long.valueOf(1), searchResult.getTotal());
+            assertEquals(1,searchResult.getDocuments().size());
 
             Document document = searchResult.getDocuments().get(0);
-            Assert.assertEquals(2, document.getFieldCount());
+            assertEquals(2, document.getFieldCount());
 
 
             Facet facet = searchResult.getFacetById("places");
-            //Assert.assertEquals("Places", facet.getName());
-            Assert.assertEquals("places", facet.getId());
-            Assert.assertEquals(Long.valueOf(1), facet.getCount());
-            Assert.assertEquals(Long.valueOf(1), facet.getResultCount());
+            //assertEquals("Places", facet.getName());
+            assertEquals("places", facet.getId());
+            assertEquals(Long.valueOf(1), facet.getCount());
+            assertEquals(Long.valueOf(1), facet.getResultCount());
 
             FacetValue facetValue = facet.getValues().get(0);
-            Assert.assertEquals("city", facetValue.getValue());
-            Assert.assertEquals(Long.valueOf(1), facetValue.getCount());
-            Assert.assertEquals("places=city", facetValue.getFilter());
+            assertEquals("city", facetValue.getValue());
+            assertEquals(Long.valueOf(1), facetValue.getCount());
+            assertEquals("places=city", facetValue.getFilter());
 
         }
 
@@ -122,7 +127,7 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
                         build()).
                 build();
 
-        Assert.assertNotNull(pipeline.print(""));
+        assertNotNull(pipeline.print(""));
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQ("darmstadt");
@@ -146,7 +151,7 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
                 execute();
 
         if(!pipelineContainer.isSuccess()) {
-            Assert.fail();
+            fail();
         }
 
         SearchResult searchResult = pipelineContainer.getSearchResult("osm");
@@ -155,22 +160,22 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
 
 
         Facet tagkeys = searchResult.getFacetById("tagkeys");
-        Assert.assertEquals("tagkeys", tagkeys.getName());
-        Assert.assertEquals("tagkeys", tagkeys.getId());
-        Assert.assertEquals(Long.valueOf(10), tagkeys.getCount());
-        Assert.assertEquals(Long.valueOf(21), tagkeys.getResultCount());
+        assertEquals("tagkeys", tagkeys.getName());
+        assertEquals("tagkeys", tagkeys.getId());
+        assertEquals(Long.valueOf(10), tagkeys.getCount());
+        assertEquals(Long.valueOf(21), tagkeys.getResultCount());
 
         FacetValue facetValue = tagkeys.getValues().get(0);
-        Assert.assertEquals("name", facetValue.getValue());
-        Assert.assertEquals(Long.valueOf(5), facetValue.getCount());
-        Assert.assertEquals("tagkeys=name", facetValue.getFilter());
+        assertEquals("name", facetValue.getValue());
+        assertEquals(Long.valueOf(5), facetValue.getCount());
+        assertEquals("tagkeys=name", facetValue.getFilter());
 
-        Assert.assertEquals("tagkeys", facetValue.getChildren().getId());
-        Assert.assertEquals("tagkeys", facetValue.getChildren().getName());
+        assertEquals("tagkeys", facetValue.getChildren().getId());
+        assertEquals("tagkeys", facetValue.getChildren().getName());
 
         FacetValue subFacetValue = facetValue.getChildren().getValues().get(0);
-        Assert.assertEquals("Darmstadt", subFacetValue.getValue() );
-        Assert.assertEquals(Long.valueOf(1), subFacetValue.getCount() );
+        assertEquals("Darmstadt", subFacetValue.getValue() );
+        assertEquals(Long.valueOf(1), subFacetValue.getCount() );
 
     }
 

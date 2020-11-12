@@ -1,8 +1,8 @@
 package com.quasiris.qsf.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.Arrays;
@@ -16,7 +16,7 @@ public class JsonSubstitutorTest {
     public void testNull() throws Exception {
         JsonSubstitutor jsonSubstitutor = new JsonSubstitutor(null);
         JsonNode json = jsonSubstitutor.replace(null);
-        Assert.assertNull(json);
+        Assertions.assertNull(json);
     }
 
     @Test

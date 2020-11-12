@@ -3,10 +3,11 @@ package com.quasiris.qsf.pipeline;
 import com.quasiris.qsf.pipeline.filter.ParallelFilter;
 import com.quasiris.qsf.pipeline.filter.SleepFilter;
 import com.quasiris.qsf.test.AbstractPipelineTest;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by mki on 28.2.18.
@@ -33,20 +34,20 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
 
 
         ParallelFilter parallelFilter = (ParallelFilter) pipeline.getFilterList().get(0);
-        Assert.assertEquals("parallel.ParallelFilter", pipeline.getFilterList().get(0).getId());
-        Assert.assertEquals("first-sleep", parallelFilter.getPipelines().get(0).getId());
-        Assert.assertEquals("second-sleep", parallelFilter.getPipelines().get(1).getId());
-        Assert.assertEquals("third-sleep", parallelFilter.getPipelines().get(2).getId());
+        assertEquals("parallel.ParallelFilter", pipeline.getFilterList().get(0).getId());
+        assertEquals("first-sleep", parallelFilter.getPipelines().get(0).getId());
+        assertEquals("second-sleep", parallelFilter.getPipelines().get(1).getId());
+        assertEquals("third-sleep", parallelFilter.getPipelines().get(2).getId());
 
         PipelineContainer pipelineContainer = PipelineExecuter.create().
                 pipeline(pipeline).
                 execute();
 
         if(!pipelineContainer.isSuccess()) {
-            Assert.fail();
+            fail();
         }
 
-        MatcherAssert.assertThat("currentTime", pipelineContainer.currentTime(), Matchers.lessThan(1100L));
+        assertThat("currentTime", pipelineContainer.currentTime(), Matchers.lessThan(1100L));
     }
 
     @Test
@@ -69,11 +70,11 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
                 failOnError(false).
                 execute();
 
-        Assert.assertFalse(pipelineContainer.isSuccess());
-        Assert.assertNotNull("first sleep is available", pipelineContainer.getSearchResult("first-sleep"));
-        Assert.assertNull(pipelineContainer.getSearchResult("second-sleep"));
+        assertFalse(pipelineContainer.isSuccess());
+        assertNotNull(pipelineContainer.getSearchResult("first-sleep"), "first sleep is available");
+        assertNull(pipelineContainer.getSearchResult("second-sleep"));
 
-        MatcherAssert.assertThat("currentTime", pipelineContainer.currentTime(), Matchers.lessThan(2100L));
+        assertThat("currentTime", pipelineContainer.currentTime(), Matchers.lessThan(2100L));
     }
 
 
@@ -93,10 +94,10 @@ public class ParallelPipelineTest extends AbstractPipelineTest {
                 execute();
 
         if(!pipelineContainer.isSuccess()) {
-            Assert.fail();
+            fail();
         }
 
-        MatcherAssert.assertThat("currentTime", pipelineContainer.currentTime(), Matchers.greaterThan(1999L));
+        assertThat("currentTime", pipelineContainer.currentTime(), Matchers.greaterThan(1999L));
     }
 
 

@@ -1,17 +1,22 @@
 package com.quasiris.qsf.pipeline.filter;
 
 import com.quasiris.qsf.mock.Mockfactory;
-import com.quasiris.qsf.pipeline.*;
+import com.quasiris.qsf.pipeline.Pipeline;
+import com.quasiris.qsf.pipeline.PipelineBuilder;
+import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilterBuilder;
 import com.quasiris.qsf.pipeline.filter.elastic.MockElasticClient;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.test.AbstractPipelineTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by mki on 07.11.17.
@@ -56,7 +61,7 @@ public class SearchIntentLocationTest extends AbstractPipelineTest {
                 filter(new SearchIntentLocationFilter()).
                 build();
 
-        Assert.assertNotNull(pipeline.print(""));
+        assertNotNull(pipeline.print(""));
 
 
         HttpServletRequest httpServletRequest = Mockfactory.createHttpServletRequest("http://localhost/foo/bar?q=Dr.%20Thomas%20M%C3%BCller%20Darmstadt");
@@ -67,22 +72,22 @@ public class SearchIntentLocationTest extends AbstractPipelineTest {
                 execute();
 
         if(!pipelineContainer.isSuccess()) {
-            Assert.fail();
+            fail();
         }
 
         SearchResult searchResult = pipelineContainer.getSearchResult("search-intent");
         searchResult.setTime(pipelineContainer.currentTime());
 
-        Assert.assertEquals(Long.valueOf(1), searchResult.getTotal());
-        Assert.assertEquals(1,searchResult.getDocuments().size());
+        assertEquals(Long.valueOf(1), searchResult.getTotal());
+        assertEquals(1,searchResult.getDocuments().size());
 
         Document document = searchResult.getDocuments().get(0);
-        Assert.assertEquals(2, document.getFieldCount());
-        Assert.assertEquals("Darmstadt", document.getFieldValue("location"));
-        Assert.assertEquals("Dr. Thomas Müller", document.getFieldValue("other"));
+        assertEquals(2, document.getFieldCount());
+        assertEquals("Darmstadt", document.getFieldValue("location"));
+        assertEquals("Dr. Thomas Müller", document.getFieldValue("other"));
 
         SearchResult locationLookup = pipelineContainer.getSearchResult("locationLookup");
-        Assert.assertEquals("places", locationLookup.getFacets().get(0).getName());
+        assertEquals("places", locationLookup.getFacets().get(0).getName());
 
 
     }
