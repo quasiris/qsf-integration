@@ -28,6 +28,9 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     private Integer elasticVersion = 6;
 
+    private String filterPath;
+    private String filterVariable;
+
 
     @Override
     public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
@@ -136,7 +139,9 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 getElasticQuery(),
                 getSearchQuery(),
                 getFilterRules(),
-                getFilterMapping()
+                getFilterMapping(),
+                filterPath,
+                filterVariable
         );
         filterTransformer.transformFilters();
     }
@@ -304,5 +309,41 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
      */
     public void setRows(Integer rows) {
         this.rows = rows;
+    }
+
+    /**
+     * Getter for property 'filterPath'.
+     *
+     * @return Value for property 'filterPath'.
+     */
+    public String getFilterPath() {
+        return filterPath;
+    }
+
+    /**
+     * Setter for property 'filterPath'.
+     *
+     * @param filterPath Value to set for property 'filterPath'.
+     */
+    public void setFilterPath(String filterPath) {
+        this.filterPath = filterPath;
+    }
+
+    /**
+     * Getter for property 'filterVariable'.
+     *
+     * @return Value for property 'filterVariable'.
+     */
+    public String getFilterVariable() {
+        return filterVariable;
+    }
+
+    /**
+     * Setter for property 'filterVariable'.
+     *
+     * @param filterVariable Value to set for property 'filterVariable'.
+     */
+    public void setFilterVariable(String filterVariable) {
+        this.filterVariable = filterVariable;
     }
 }
