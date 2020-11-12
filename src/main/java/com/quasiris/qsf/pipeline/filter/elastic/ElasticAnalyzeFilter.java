@@ -40,7 +40,7 @@ public class ElasticAnalyzeFilter extends AbstractFilter {
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
-        Map<String, String> parameters = new HashMap<>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("field", field);
         parameters.put("query", pipelineContainer.getSearchQuery().getQ());
 

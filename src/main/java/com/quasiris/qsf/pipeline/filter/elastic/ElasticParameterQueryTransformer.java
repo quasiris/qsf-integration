@@ -105,7 +105,8 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     }
 
     public void transformParameter() {
-        Map<String, String> rawValues = RequestParser.getRequestParameter(pipelineContainer);
+        Map<String, Object> rawValues = new HashMap<>();
+        rawValues.putAll(RequestParser.getRequestParameter(pipelineContainer));
 
 
         for(Map.Entry<String, String> param :profileParameter.entrySet()) {
@@ -124,7 +125,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             rawValues.put("param." + param.getKey(), param.getValue());
         }
 
-        Map<String, String> replaceMap = ProfileLoader.encodeParameters(rawValues);
+        Map<String, Object> replaceMap = ProfileLoader.encodeParameters(rawValues);
 
 
         String request = "";

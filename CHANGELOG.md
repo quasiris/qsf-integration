@@ -18,6 +18,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Breaking Changes
 -  the filters can not be set automatically in a combination with a function_score query. For this purpose a filterPath or filterVariable must be configured
+- change parameter value type in search query to object
 ### Deprecated
 
 ### Fixed

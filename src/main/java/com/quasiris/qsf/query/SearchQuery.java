@@ -34,7 +34,7 @@ public class SearchQuery {
 
     private String requestOrigin;
 
-    private Map<String, String> parameters;
+    private Map<String, Object> parameters;
 
     public String getQ() {
         return q;
@@ -150,17 +150,17 @@ public class SearchQuery {
     }
 
 
-    public Map<String, String> getParameters() {
+    public Map<String, Object> getParameters() {
         return parameters;
     }
 
-    public Map<String, String> getParametersWithPrefix(String prefix) {
-        Map<String, String> prefixMap = new HashMap<>();
+    public Map<String, Object> getParametersWithPrefix(String prefix) {
+        Map<String, Object> prefixMap = new HashMap<>();
         if(this.parameters == null) {
             return prefixMap;
         }
 
-        for(Map.Entry<String, String> entry : parameters.entrySet()) {
+        for(Map.Entry<String, Object> entry : parameters.entrySet()) {
             prefixMap.put(prefix + "." + entry.getKey(), entry.getValue());
         }
 
@@ -168,7 +168,7 @@ public class SearchQuery {
     }
 
 
-    public void setParameters(Map<String, String> parameters) {
+    public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
     }
 

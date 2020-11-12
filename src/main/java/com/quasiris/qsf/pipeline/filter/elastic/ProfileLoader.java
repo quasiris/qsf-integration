@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ProfileLoader {
 
-    public static String loadProfile(String filename, Map<String, String> vars) throws IOException {
+    public static String loadProfile(String filename, Map<String, Object> vars) throws IOException {
         String profile = null;
         if (filename.startsWith("classpath://")) {
             profile = loadProfileFromClasspath(filename);
@@ -25,7 +25,7 @@ public class ProfileLoader {
         }
 
 
-        for (Map.Entry<String, String> entry : vars.entrySet()) {
+        for (Map.Entry<String, Object> entry : vars.entrySet()) {
             if(entry.getValue() == null) {
                 entry.setValue("null");
             }
@@ -53,14 +53,14 @@ public class ProfileLoader {
         return profile;
     }
 
-    public static Map<String, String> encodeParameters(Map<String, String> rawValues) {
-        Map<String, String> escapedValues = rawValues.entrySet().stream().collect(HashMap::new,
+    public static Map<String, Object> encodeParameters(Map<String, Object> rawValues) {
+        Map<String, Object> escapedValues = rawValues.entrySet().stream().collect(HashMap::new,
                 (m,e)->m.put(e.getKey() + ".escaped", escapeValue(e.getValue())), HashMap::putAll);
 
         Map<String, String> encodedValues = rawValues.entrySet().stream().collect(HashMap::new,
-                (m,e)->m.put(e.getKey() + ".encoded", JsonUtil.encode(e.getValue())), HashMap::putAll);
+                (m,e)->m.put(e.getKey() + ".encoded", JsonUtil.encode(e.getValue().toString())), HashMap::putAll);
 
-        Map<String, String> replaceMap = new HashMap<>(escapedValues);
+        Map<String, Object> replaceMap = new HashMap<>(escapedValues);
         replaceMap.putAll(encodedValues);
         replaceMap.putAll(rawValues);
         return replaceMap;
@@ -76,8 +76,11 @@ public class ProfileLoader {
         return ret;
     }
 
-    public static String escapeValue(String value) {
-        String escapedValue = ElasticUtil.escape(value);
+    public static String escapeValue(Object value) {
+        if(value == null) {
+            return null;
+        }
+        String escapedValue = ElasticUtil.escape(value.toString());
         String encodedValue = JsonUtil.encode(escapedValue);
         return encodedValue;
     }
