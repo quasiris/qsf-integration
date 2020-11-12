@@ -271,5 +271,19 @@ public class ElasticFilterBuilder {
         return this;
     }
 
+    public ElasticFilterBuilder filterVariable(String filterVariable) {
+        getElasticQsfqlQueryTransformer().setFilterVariable(filterVariable);
+        return this;
+    }
+
+    public ElasticFilterBuilder filterVariable() {
+        return filterVariable("filter");
+    }
+
+    public ElasticFilterBuilder filterPath(String filterPath) {
+        getElasticQsfqlQueryTransformer().setFilterPath(filterPath);
+        return this;
+    }
+
 
 }
