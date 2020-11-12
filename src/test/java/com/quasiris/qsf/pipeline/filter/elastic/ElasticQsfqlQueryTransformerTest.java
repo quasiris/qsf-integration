@@ -321,6 +321,7 @@ public class ElasticQsfqlQueryTransformerTest {
         ObjectNode elasticQuery = transform(transformer,  "q=foo");
         assertEquals(10, elasticQuery.get("size").asInt());
         assertEquals(0, elasticQuery.get("from").asInt());
+        assertEquals("foo", elasticQuery.get("query").get("bool").get("must").get(0).get("dis_max").get("queries").get(0).get("query_string").get("query").asText());
         Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
     }
 

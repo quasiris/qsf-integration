@@ -133,6 +133,10 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             request = ProfileLoader.loadProfile(profile, replaceMap);
             JsonBuilder jsonBuilder = new JsonBuilder();
             jsonBuilder.string(request);
+            for(Map.Entry<String, Object> e : replaceMap.entrySet()) {
+                jsonBuilder.valueMap(e.getKey(), e.getValue());
+            }
+            jsonBuilder.replace();
             elasticQuery = (ObjectNode) jsonBuilder.get();
         }
         catch (Exception e) {
