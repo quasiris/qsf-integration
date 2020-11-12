@@ -46,6 +46,10 @@ public class JsonBuilder {
     }
 
     public JsonBuilder pathsForceCreate(String paths) throws JsonBuilderException {
+            if(current == null) {
+                object();
+                root();
+            }
 
             String[] pathesSplit = paths.split(Pattern.quote("/"));
             for (String path : pathesSplit) {
