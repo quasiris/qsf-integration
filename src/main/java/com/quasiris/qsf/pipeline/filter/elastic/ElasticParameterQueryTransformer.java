@@ -32,7 +32,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     protected ObjectNode elasticQuery;
 
     protected String profile;
-    protected Map<String, String> profileParameter = new HashMap<>();
+    protected Map<String, Object> profileParameter = new HashMap<>();
 
     protected List<Facet> aggregations = new ArrayList<>();
     protected List<Slider> sliders = new ArrayList<>();
@@ -109,7 +109,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         rawValues.putAll(RequestParser.getRequestParameter(pipelineContainer));
 
 
-        for(Map.Entry<String, String> param :profileParameter.entrySet()) {
+        for(Map.Entry<String, Object> param :profileParameter.entrySet()) {
             rawValues.put("profile." + param.getKey(), param.getValue());
         }
 
@@ -230,7 +230,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         this.profile = profile;
     }
 
-    public void setProfileParameter(String key, String value) {
+    public void setProfileParameter(String key, Object value) {
         this.profileParameter.put(key, value);
     }
 

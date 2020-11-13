@@ -225,7 +225,7 @@ public class ElasticFilterBuilder {
         return this;
     }
 
-    public ElasticFilterBuilder profileParameter(String key, String value) {
+    public ElasticFilterBuilder profileParameter(String key, Object value) {
         getElasticQsfqlQueryTransformer().setProfileParameter(key, value);
         getElasticParameterQueryTransformer().setProfileParameter(key, value);
         return this;

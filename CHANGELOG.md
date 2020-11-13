@@ -17,8 +17,9 @@ All notable changes qsf-integration project will be documented in this file.
 - migrate to junit 5 jupiter
 
 ### Breaking Changes
--  the filters can not be set automatically in a combination with a function_score query. For this purpose a filterPath or filterVariable must be configured
+- the filters can not be set automatically in a combination with a function_score query. For this purpose a filterPath or filterVariable must be configured
 - change parameter value type in search query to object
+- change parameter value type in elastic transformer to object
 ### Deprecated
 
 ### Fixed
