@@ -24,6 +24,9 @@ public class QsfqlFilterMapper {
 
     private Map<String, String> filterMapping = new HashMap<>();
 
+    public QsfqlFilterMapper() {
+    }
+
     public QsfqlFilterMapper(List<SearchFilter> searchFilters) {
         this.searchFilters = searchFilters;
     }
