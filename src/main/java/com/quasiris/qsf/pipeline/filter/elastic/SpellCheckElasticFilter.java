@@ -76,7 +76,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
                 continue;
             }
 
-            String elasticRequest  = "{\"query\": {\"bool\": { \"must\": [ {\"fuzzy\": {\"text.keyword\": {\"value\": \""+JsonUtil.encode(token.getValue().toLowerCase())+"\",\"fuzziness\": \"AUTO\"}}},{\"range\": {\"weight\": {\"gte\": "+getMinTokenWeight()+"}}}]}}}";
+            String elasticRequest  = "{\"query\": {\"bool\": { \"must\": [ {\"fuzzy\": {\"variants.spell\": {\"value\": \""+JsonUtil.encode(token.getValue().toLowerCase())+"\",\"fuzziness\": \"AUTO\"}}},{\"range\": {\"weight\": {\"gte\": "+getMinTokenWeight()+"}}}]}}}";
             elasticQueries.add(elasticRequest);
             spellCheckToken.setElasticResultPojnter(elasticQueries.size()-1);
         }
