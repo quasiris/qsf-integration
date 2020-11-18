@@ -7,5 +7,4 @@ jdk:
 sudo: false
 script: mvn clean package -Dgpg.skip=true
 after_success:
-  - mvn clean test cobertura:cobertura coveralls:report
   - bash <(curl -s https://codecov.io/bash)
