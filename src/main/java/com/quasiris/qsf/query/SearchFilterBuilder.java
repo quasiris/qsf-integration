@@ -12,6 +12,8 @@ public final class SearchFilterBuilder {
     private String name;
     private List<String> values;
     private RangeFilterValue<?> rangeValue;
+    private UpperLowerBound lowerBound = UpperLowerBound.LOWER_INCLUDED;
+    private UpperLowerBound upperBound = UpperLowerBound.UPPER_INCLUDED;
 
     private SearchFilterBuilder() {
     }
@@ -19,6 +21,14 @@ public final class SearchFilterBuilder {
     public static SearchFilterBuilder create() {
         return new SearchFilterBuilder();
     }
+
+    public SearchFilterBuilder rangeFilter(Double min, Double max) {
+        rangeValue = new RangeFilterValue<>(min, max);
+        filterType = FilterType.RANGE;
+        filterDataType = FilterDataType.NUMBER;
+        return this;
+    }
+
 
     public SearchFilterBuilder rangeFilter(String min, String max) {
         rangeValue = new RangeFilterValue<>(min, max);
@@ -60,6 +70,26 @@ public final class SearchFilterBuilder {
         return this;
     }
 
+    public SearchFilterBuilder withLowerBoundInclude() {
+        this.lowerBound = UpperLowerBound.UPPER_INCLUDED;
+        return this;
+    }
+
+    public SearchFilterBuilder withLowerBoundExclude() {
+        this.lowerBound = UpperLowerBound.LOWER_EXCLUDED;
+        return this;
+    }
+
+    public SearchFilterBuilder withUpperBoundInclude() {
+        this.upperBound = UpperLowerBound.UPPER_INCLUDED;
+        return this;
+    }
+
+    public SearchFilterBuilder withUpperBoundExclude() {
+        this.upperBound = UpperLowerBound.UPPER_EXCLUDED;
+        return this;
+    }
+
     public SearchFilterBuilder withId(String id) {
         this.id = id;
         return this;
@@ -89,6 +119,11 @@ public final class SearchFilterBuilder {
         searchFilter.setId(id);
         searchFilter.setName(name);
         searchFilter.setValues(values);
+
+        if(rangeValue != null) {
+            this.rangeValue.setLowerBound(lowerBound);
+            this.rangeValue.setUpperBound(upperBound);
+        }
         searchFilter.setRangeValue(rangeValue);
         return searchFilter;
     }

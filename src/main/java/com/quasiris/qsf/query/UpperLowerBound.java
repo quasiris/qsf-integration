@@ -27,4 +27,20 @@ public enum UpperLowerBound {
     public String getOperator() {
         return operator;
     }
+
+    public boolean isLowerIncluded(){
+        return LOWER_INCLUDED.equals(this);
+    }
+
+    public boolean isLowerExcluded(){
+        return LOWER_EXCLUDED.equals(this);
+    }
+
+    public boolean isUpperIncluded(){
+        return UPPER_INCLUDED.equals(this);
+    }
+
+    public boolean isUpperExcluded(){
+        return UPPER_EXCLUDED.equals(this);
+    }
 }

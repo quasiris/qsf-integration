@@ -112,6 +112,53 @@ public class SearchFilter {
         return rangeValue.getMaxValue();
     }
 
+    public UpperLowerBound getLowerBound() {
+        if(rangeValue == null || rangeValue.getLowerBound() == null) {
+            return null;
+        }
+        return rangeValue.getLowerBound();
+    }
+
+    public UpperLowerBound getUpperBound() {
+        if(rangeValue == null || rangeValue.getUpperBound() == null) {
+            return null;
+        }
+        return rangeValue.getUpperBound();
+    }
+
+
+    public boolean isLowerIncluded(){
+        UpperLowerBound lowerBound = getLowerBound();
+        if(lowerBound == null) {
+            return true;
+        }
+        return lowerBound.isLowerIncluded();
+    }
+
+    public boolean isLowerExcluded(){
+        UpperLowerBound lowerBound = getLowerBound();
+        if(lowerBound == null) {
+            return true;
+        }
+        return lowerBound.isLowerExcluded();
+    }
+
+    public boolean isUpperIncluded(){
+        UpperLowerBound upperBound = getUpperBound();
+        if(upperBound == null) {
+            return true;
+        }
+        return upperBound.isUpperIncluded();
+    }
+
+    public boolean isUpperExcluded(){
+        UpperLowerBound upperBound = getUpperBound();
+        if(upperBound == null) {
+            return true;
+        }
+        return upperBound.isUpperExcluded();
+    }
+
     public String getLowerBoundOperator() {
         if(rangeValue == null || rangeValue.getLowerBound() == null) {
             return null;
