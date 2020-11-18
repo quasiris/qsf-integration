@@ -71,7 +71,7 @@ public final class SearchFilterBuilder {
     }
 
     public SearchFilterBuilder withLowerBoundInclude() {
-        this.lowerBound = UpperLowerBound.UPPER_INCLUDED;
+        this.lowerBound = UpperLowerBound.LOWER_INCLUDED;
         return this;
     }
 

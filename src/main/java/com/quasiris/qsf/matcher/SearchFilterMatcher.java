@@ -17,78 +17,49 @@ public class SearchFilterMatcher {
     }
 
     public boolean matchesRangeValue(SearchFilter searchFilter, Double value) {
+        if(value == null) {
+            return false;
+        }
         RangeFilterValue<Double> rangeValue = searchFilter.getRangeValue(Double.class);
         Double minValue = rangeValue.getMinValue();
         Double maxValue = rangeValue.getMaxValue();
 
+        boolean matches = false;
         if(minValue == null && maxValue == null) {
-            return true;
-        }
-
-        if(searchFilter.isUpperExcluded() && minValue == null) {
+            matches = true;
+        } else if(searchFilter.isUpperExcluded() && minValue == null) {
             if(value < maxValue) {
-                return true;
-            } else {
-                return false;
+                matches = true;
             }
-        }
-
-        if(searchFilter.isUpperIncluded() && minValue == null) {
+        } else if(searchFilter.isUpperIncluded() && minValue == null) {
             if(value <= maxValue) {
-                return true;
-            } else {
-                return false;
+                matches = true;
             }
-        }
-
-        if(searchFilter.isLowerExcluded() && maxValue == null) {
+        } else if(searchFilter.isLowerExcluded() && maxValue == null) {
             if(value > minValue) {
-                return true;
-            } else {
-                return false;
+                matches = true;
             }
-        }
-
-        if(searchFilter.isLowerIncluded() && maxValue == null ) {
+        } else if(searchFilter.isLowerIncluded() && maxValue == null ) {
             if(value >= minValue) {
-                return true;
-            } else {
-                return false;
+                matches = true;
             }
-        }
-
-
-        if(searchFilter.isLowerExcluded() && searchFilter.isUpperExcluded()) {
+        } else if(searchFilter.isLowerExcluded() && searchFilter.isUpperExcluded()) {
             if(value > minValue && value < maxValue) {
-                return true;
-            } else {
-                return false;
+                matches = true;
             }
-        }
-
-        if(searchFilter.isLowerIncluded() && searchFilter.isUpperIncluded()) {
+        } else if(searchFilter.isLowerIncluded() && searchFilter.isUpperIncluded()) {
             if(value >= minValue && value <= maxValue) {
-                return true;
-            } else {
-                return false;
+                matches = true;
             }
-        }
-
-        if(searchFilter.isLowerIncluded() && searchFilter.isUpperExcluded()) {
+        } else if(searchFilter.isLowerIncluded() && searchFilter.isUpperExcluded()) {
             if(value >= minValue && value < maxValue) {
-                return true;
-            } else {
-                return false;
+                matches = true;
             }
-        }
-
-        if(searchFilter.isLowerExcluded() && searchFilter.isUpperIncluded()) {
+        } else if(searchFilter.isLowerExcluded() && searchFilter.isUpperIncluded()) {
             if(value > minValue && value <= maxValue) {
-                return true;
-            } else {
-                return false;
+                matches = true;
             }
         }
-        return false;
+        return matches;
     }
 }
