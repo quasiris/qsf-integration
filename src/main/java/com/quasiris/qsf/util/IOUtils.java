@@ -6,6 +6,7 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -111,9 +112,8 @@ public class IOUtils {
     }
 
     public static String getString(String location) throws IOException {
-        return FileUtils.readFileToString(new File(location));
+        return FileUtils.readFileToString(new File(location), Charset.forName("UTF-8"));
     }
-
 
     public static OutputStream getOutputStream(File outputFile) throws IOException {
         return getOutputStream(outputFile.getAbsolutePath());
