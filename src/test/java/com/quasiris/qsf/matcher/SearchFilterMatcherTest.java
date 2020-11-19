@@ -9,11 +9,24 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SearchFilterMatcherTest {
 
+
+    @Test
+    public void testSimpleStringListValue() {
+        SearchFilterMatcher matcher = new SearchFilterMatcher();
+        SearchFilter searchFilter = SearchFilterBuilder.create().withId("farbe").value("grün").value("gelb").build();
+
+        assertTrue(matcher.matches(searchFilter, Arrays.asList("grün", "green")));
+        assertTrue(matcher.matches(searchFilter, Arrays.asList("Grün", "green")));
+        assertFalse(matcher.matches(searchFilter, Arrays.asList("blau", "blue")));
+        assertFalse(matcher.matches(searchFilter, Arrays.asList("Blau", "blue")));
+    }
 
     @Test
     public void testSimpleStringValue() {
@@ -24,7 +37,6 @@ class SearchFilterMatcherTest {
         assertTrue(matcher.matches(searchFilter, "Grün"));
         assertFalse(matcher.matches(searchFilter, "blau"));
         assertFalse(matcher.matches(searchFilter, "Blau"));
-
     }
 
     @Test
@@ -38,6 +50,17 @@ class SearchFilterMatcherTest {
         assertFalse(matcher.matches(searchFilter, "Blau"));
 
     }
+
+    @Test
+    public void testRangeValueLowerIncludedWithLists() {
+        SearchFilterMatcher matcher = new SearchFilterMatcher();
+        SearchFilter searchFilter = SearchFilterBuilder.create().withId("speicher").rangeFilter(128.0, null).build();
+
+        assertFalse(matcher.matchesRangeValue(searchFilter, Arrays.asList(126.0 ,127.0)));
+        assertTrue(matcher.matchesRangeValue(searchFilter, Arrays.asList(126.0 ,128.0)));
+        assertTrue(matcher.matchesRangeValue(searchFilter, Arrays.asList(126.0 ,129.0)));
+    }
+
 
     @Test
     public void testRangeValueLowerIncluded() {
@@ -166,7 +189,7 @@ class SearchFilterMatcherTest {
                 withUpperBoundExclude().
                 rangeFilter(toDouble(min), toDouble(max)).
                 build();
-        assertFalse(matcher.matchesRangeValue(searchFilter, null));
+        assertFalse(matcher.matchesRangeValue(searchFilter, toDouble(null)));
     }
 
     private Double toDouble(String value) {

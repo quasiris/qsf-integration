@@ -3,6 +3,8 @@ package com.quasiris.qsf.matcher;
 import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
 
+import java.util.List;
+
 public class SearchFilterMatcher {
 
     private Matcher matcher;
@@ -15,6 +17,17 @@ public class SearchFilterMatcher {
         this.matcher = new ContainsLowerCaseMatcher();
     }
 
+    public boolean matches(SearchFilter searchFilter, List<String> values) {
+        for(String filterValue : searchFilter.getValues()) {
+            for(String value : values) {
+                if (matcher.matches(value, filterValue)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean matches(SearchFilter searchFilter, String value) {
         for(String filterValue : searchFilter.getValues()) {
 
@@ -23,7 +36,16 @@ public class SearchFilterMatcher {
             }
         }
         return false;
+    }
 
+    public boolean matchesRangeValue(SearchFilter searchFilter, List<Double> values) {
+        for(Double value : values) {
+            boolean matches = matchesRangeValue(searchFilter, value);
+            if(matches) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean matchesRangeValue(SearchFilter searchFilter, Double value) {
