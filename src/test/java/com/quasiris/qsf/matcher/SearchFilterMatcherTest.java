@@ -30,10 +30,10 @@ class SearchFilterMatcherTest {
     @Test
     public void testSimpleStringValueContains() {
         SearchFilterMatcher matcher = new SearchFilterMatcher();
-        SearchFilter searchFilter = SearchFilterBuilder.create().withId("farbe").value("grün (metallic)").value("gelb").build();
+        SearchFilter searchFilter = SearchFilterBuilder.create().withId("farbe").value("grün").value("gelb").build();
 
-        assertTrue(matcher.matches(searchFilter, "grün"));
-        assertTrue(matcher.matches(searchFilter, "Grün"));
+        assertTrue(matcher.matches(searchFilter, "grün (metallic)"));
+        assertTrue(matcher.matches(searchFilter, "Grün (metallic)"));
         assertFalse(matcher.matches(searchFilter, "blau"));
         assertFalse(matcher.matches(searchFilter, "Blau"));
 

@@ -8,6 +8,6 @@ public class ContainsLowerCaseMatcher implements Matcher {
         if(left == null || right == null) {
             return false;
         }
-        return right.toLowerCase().contains(left.toLowerCase());
+        return left.toLowerCase().contains(right.toLowerCase());
     }
 }
