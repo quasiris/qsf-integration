@@ -21,10 +21,23 @@ class SearchFilterMatcherTest {
         SearchFilter searchFilter = SearchFilterBuilder.create().withId("farbe").value("grün").value("gelb").build();
 
         assertTrue(matcher.matches(searchFilter, "grün"));
+        assertTrue(matcher.matches(searchFilter, "Grün"));
         assertFalse(matcher.matches(searchFilter, "blau"));
+        assertFalse(matcher.matches(searchFilter, "Blau"));
 
     }
 
+    @Test
+    public void testSimpleStringValueContains() {
+        SearchFilterMatcher matcher = new SearchFilterMatcher();
+        SearchFilter searchFilter = SearchFilterBuilder.create().withId("farbe").value("grün (metallic)").value("gelb").build();
+
+        assertTrue(matcher.matches(searchFilter, "grün"));
+        assertTrue(matcher.matches(searchFilter, "Grün"));
+        assertFalse(matcher.matches(searchFilter, "blau"));
+        assertFalse(matcher.matches(searchFilter, "Blau"));
+
+    }
 
     @Test
     public void testRangeValueLowerIncluded() {

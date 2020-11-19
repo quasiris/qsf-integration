@@ -5,10 +5,20 @@ import com.quasiris.qsf.query.SearchFilter;
 
 public class SearchFilterMatcher {
 
+    private Matcher matcher;
+
+    public SearchFilterMatcher(Matcher matcher) {
+        this.matcher = matcher;
+    }
+
+    public SearchFilterMatcher() {
+        this.matcher = new ContainsLowerCaseMatcher();
+    }
 
     public boolean matches(SearchFilter searchFilter, String value) {
-        for(String v : searchFilter.getValues()) {
-            if(v.equals(value)) {
+        for(String filterValue : searchFilter.getValues()) {
+
+            if(matcher.matches(value, filterValue)) {
                 return true;
             }
         }
