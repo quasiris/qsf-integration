@@ -8,7 +8,6 @@ jdk:
   - openjdk12
   - openjdk13
   - openjdk14
-  - openjdk15
 sudo: false
 script: mvn clean package -Dgpg.skip=true
 after_success:
