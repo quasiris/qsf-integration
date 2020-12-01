@@ -116,6 +116,11 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 return elasticField;
             }
         }
+
+        String sortTargetField = sortMapping.get(fieldName);
+        if(sortTargetField != null) {
+            return sortTargetField;
+        }
         return fieldName;
     }
 
