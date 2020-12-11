@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.exception.DebugType;
+import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
@@ -29,6 +30,8 @@ public class ElasticFilter extends AbstractFilter {
 
     private SearchResultTransformerIF searchResultTransformer;
 
+    private ObjectNode elasticQuery;
+
     @Override
     public void init() {
         super.init();
@@ -39,7 +42,7 @@ public class ElasticFilter extends AbstractFilter {
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
-        ObjectNode elasticQuery = queryTransformer.transform(pipelineContainer);
+        elasticQuery = queryTransformer.transform(pipelineContainer);
 
         pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, baseUrl);
         pipelineContainer.debug(getId() + ".query", DebugType.JSON, elasticQuery);
@@ -91,7 +94,15 @@ public class ElasticFilter extends AbstractFilter {
 
     @Override
     public PipelineContainer onError(PipelineContainer pipelineContainer, Exception e) {
-        LOG.error("The filter: " + getId() + " failed with an error: " + e.getMessage());
+        String query = "";
+        try {
+            if(elasticQuery != null) {
+                query = JsonBuilder.create().newJson(elasticQuery).writeAsString();
+            }
+        } catch (Exception ex) {
+            query = ex.getMessage();
+        }
+        LOG.error("The filter: {} failed with an error: {} for query: {}", getId(), e.getMessage(), query);
         return super.onError(pipelineContainer, e);
     }
 }
