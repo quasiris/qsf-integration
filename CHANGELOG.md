@@ -2,6 +2,7 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
+## [2.14]
 ### Added
 - implement sort rules
 - add minTokenWeight for Spellcheck
@@ -11,6 +12,7 @@ All notable changes qsf-integration project will be documented in this file.
 - jsonBuilder: implement a function to create not existing paths pathsForceCreate
 - elastic QsfqlFilterTransformer - make the location of the filters configurable with filterPath and filterVariable
 - implement a Qsfql SearchFilterMatcher
+- improve error logging for elastic filter
 
 ### Removed
 
