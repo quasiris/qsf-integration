@@ -46,7 +46,9 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     @Override
     public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
         this.pipelineContainer = pipelineContainer;
-        this.searchQuery = pipelineContainer.getSearchQuery();
+        if(this.searchQuery == null) {
+            this.searchQuery = pipelineContainer.getSearchQuery();
+        }
 
         try {
 
@@ -283,5 +285,14 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
      */
     public void setSourceFields(Set<String> sourceFields) {
         this.sourceFields = sourceFields;
+    }
+
+    /**
+     * Setter for property 'searchQuery'.
+     *
+     * @param searchQuery Value to set for property 'searchQuery'.
+     */
+    public void setSearchQuery(SearchQuery searchQuery) {
+        this.searchQuery = searchQuery;
     }
 }

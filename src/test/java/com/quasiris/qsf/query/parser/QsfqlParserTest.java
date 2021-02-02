@@ -1,6 +1,5 @@
 package com.quasiris.qsf.query.parser;
 
-import com.quasiris.qsf.pipeline.PipelineContainerDebugException;
 import com.quasiris.qsf.query.FilterDataType;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.FilterType;
