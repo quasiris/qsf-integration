@@ -43,6 +43,9 @@ public class ElasticFilter extends AbstractFilter {
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
         elasticQuery = queryTransformer.transform(pipelineContainer);
+        if(elasticQuery == null) {
+            return pipelineContainer;
+        }
 
         pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, baseUrl);
         pipelineContainer.debug(getId() + ".query", DebugType.JSON, elasticQuery);

@@ -5,6 +5,10 @@ All notable changes qsf-integration project will be documented in this file.
 ### Added
 - make it possible to set a custom searchQuery object in the elastic query transformer
 
+
+### Changed
+- don't execute the the elastic filter in case the query is null
+
 ## [2.14]
 ### Added
 - implement sort rules
