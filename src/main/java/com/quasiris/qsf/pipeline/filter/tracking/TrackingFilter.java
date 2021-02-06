@@ -79,12 +79,16 @@ public class TrackingFilter extends AbstractFilter {
 
     protected Document getTracking(PipelineContainer pipelineContainer) {
 
-        SearchQuery searchQuery = pipelineContainer.getSearchQuery();
-
-
         Document tracking = new Document();
+
+
+
         tracking.setValue("id", UUID.randomUUID().toString());
         tracking.setValue("timestamp", new Date());
+        SearchQuery searchQuery = pipelineContainer.getSearchQuery();
+        if(searchQuery == null) {
+            return tracking;
+        }
         tracking.setValue("requestId", searchQuery.getRequestId());
         tracking.setValue("requestOrigin", searchQuery.getRequestOrigin());
 
@@ -105,8 +109,9 @@ public class TrackingFilter extends AbstractFilter {
             tracking.setValue("q", searchQuery.getQ());
         }
 
-
-        tracking.setValue("queryTokenCount", searchQuery.getQ().split(" ").length);
+        if(searchQuery.getQ() != null) {
+            tracking.setValue("queryTokenCount", searchQuery.getQ().split(" ").length);
+        }
         tracking.setValue("page", searchQuery.getPage());
         tracking.setValue("rows", searchQuery.getRows());
 
@@ -119,7 +124,7 @@ public class TrackingFilter extends AbstractFilter {
                 }
             }
 
-            if(searchFilter.getMinValue() != null || searchFilter.getMinValue() != null) {
+            if(searchFilter.getMinValue() != null || searchFilter.getMaxValue() != null) {
                 tracking.addValue("filterValue" , searchFilter.getId() + "=" + searchFilter.getMinValue() + "," + searchFilter.getMaxValue());
             }
         }
