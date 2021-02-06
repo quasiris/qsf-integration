@@ -118,6 +118,10 @@ public class TrackingFilter extends AbstractFilter {
                     tracking.addValue("filterValue" , searchFilter.getId() + "=" + value);
                 }
             }
+
+            if(searchFilter.getMinValue() != null || searchFilter.getMinValue() != null) {
+                tracking.addValue("filterValue" , searchFilter.getId() + "=" + searchFilter.getMinValue() + "," + searchFilter.getMaxValue());
+            }
         }
 
         if(searchQuery.getSort() != null) {
