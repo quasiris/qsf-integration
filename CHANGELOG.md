@@ -9,6 +9,9 @@ All notable changes qsf-integration project will be documented in this file.
 ### Changed
 - don't execute the the elastic filter in case the query is null
 
+### Breaking Changes
+- set the default for upper bound range filters to include
+
 ## [2.14]
 ### Added
 - implement sort rules

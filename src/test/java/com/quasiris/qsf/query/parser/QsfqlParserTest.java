@@ -142,7 +142,7 @@ public class QsfqlParserTest {
         assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
         assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
-        assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_EXCLUDED);
+        assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_INCLUDED);
     }
 
     @Test
@@ -155,7 +155,7 @@ public class QsfqlParserTest {
         assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
         assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
-        assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_EXCLUDED);
+        assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_INCLUDED);
     }
 
     @Test

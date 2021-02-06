@@ -18,7 +18,7 @@ public class RangeFilterValue<T> {
     private T maxValue;
 
     private UpperLowerBound lowerBound = UpperLowerBound.LOWER_INCLUDED;
-    private UpperLowerBound upperBound = UpperLowerBound.UPPER_EXCLUDED;
+    private UpperLowerBound upperBound = UpperLowerBound.UPPER_INCLUDED;
 
 
     public T getMinValue() {

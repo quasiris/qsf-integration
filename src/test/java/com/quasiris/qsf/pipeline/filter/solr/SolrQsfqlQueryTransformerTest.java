@@ -73,7 +73,7 @@ public class SolrQsfqlQueryTransformerTest {
         SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
         transformer.addFilterMapping("price", "priceSolrField");
         SolrQuery solrQuery = transform(transformer,  "f.price.range=3,5");
-        assertEquals("{!tag=price}priceSolrField:[3.0 TO 5.0}", solrQuery.getFilterQueries()[0]);
+        assertEquals("{!tag=price}priceSolrField:[3.0 TO 5.0]", solrQuery.getFilterQueries()[0]);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class SolrQsfqlQueryTransformerTest {
         SolrQsfqlQueryTransformer transformer = new SolrQsfqlQueryTransformer();
         transformer.addFilterMapping("price", "priceSolrField");
         SolrQuery solrQuery = transform(transformer,  "f.price.range=min,max");
-        assertEquals("{!tag=price}priceSolrField:[* TO *}", solrQuery.getFilterQueries()[0]);
+        assertEquals("{!tag=price}priceSolrField:[* TO *]", solrQuery.getFilterQueries()[0]);
     }
 
     @Test

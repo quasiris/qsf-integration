@@ -207,7 +207,7 @@ public class ElasticQsfqlQueryTransformerTest {
         ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.price.range=3,5");
 
         assertEquals("3.0", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("priceElasticField").get("gte").asText());
-        assertEquals("5.0", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("priceElasticField").get("lt").asText());
+        assertEquals("5.0", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("priceElasticField").get("lte").asText());
         Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
     }
 
