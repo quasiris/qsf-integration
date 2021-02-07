@@ -7,6 +7,7 @@ import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
+import com.quasiris.qsf.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -136,9 +137,8 @@ public class QsfqlFilterMapper {
 
         } else if(searchFilter.getFilterDataType().isDate()) {
             RangeFilterValue<Date> rangeFilterValue = searchFilter.getRangeValue(Date.class);
-            // TODO transform the date in the correct format
-            String minValue = rangeFilterValue.getMinValue().toString();
-            String maxValue = rangeFilterValue.getMaxValue().toString();
+            String minValue = DateUtil.getDate(rangeFilterValue.getMinValue());
+            String maxValue = DateUtil.getDate(rangeFilterValue.getMaxValue());
             rangeBuilder.
                     object(rangeFilterValue.getLowerBound().getOperator(), minValue).
                     object(rangeFilterValue.getUpperBound().getOperator(), maxValue);

@@ -62,9 +62,11 @@ public class DateUtil {
     }
 
     public static Date getDate(String date) throws ParseException {
+
         String pattern = patterns.get(date.length());
         if(pattern == null) {
-            throw new ParseException("For the date " + date + " no pattern is defined.", 0);
+            // try to parse it as a iso date
+            return Date.from(Instant.parse(date));
         }
         SimpleDateFormat formatter = new SimpleDateFormat(pattern);
         return formatter.parse(date);

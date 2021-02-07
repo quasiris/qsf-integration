@@ -2,7 +2,9 @@ package com.quasiris.qsf.query.parser;
 
 import com.google.common.base.Strings;
 import com.quasiris.qsf.query.*;
+import com.quasiris.qsf.util.DateUtil;
 
+import java.text.ParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -107,6 +109,7 @@ public class QsfqlParser {
         SearchFilter searchFilter = new SearchFilter();
         searchFilter.setFilterType(FilterType.RANGE);
         searchFilter.setFilterOperator(FilterOperator.AND);
+
         RangeFilterValue<Number> rangeFilterValue = new RangeFilterValue<>();
 
         for(String value : filterValues) {
@@ -155,6 +158,51 @@ public class QsfqlParser {
         return searchFilter;
     }
 
+    SearchFilter createDateRangeFilter(String filterName, String[] filterValues) {
+        //SearchFilter<RangeFilterValue<Number>> searchFilter = new SearchFilter<>();
+        SearchFilter searchFilter = new SearchFilter();
+        searchFilter.setFilterType(FilterType.RANGE);
+        searchFilter.setFilterDataType(FilterDataType.DATE);
+        searchFilter.setFilterOperator(FilterOperator.AND);
+
+        RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
+
+        for(String value : filterValues) {
+            String[] valueSplitted = value.split(Pattern.quote(","));
+            if(valueSplitted.length != 2) {
+                throw new IllegalArgumentException("The value of a range searchFilter must be in the format parameter=v1-v2");
+            }
+            String min = valueSplitted[0];
+            String max = valueSplitted[1];
+            try {
+                if(min.startsWith(UpperLowerBound.LOWER_EXCLUDED.getCode())) {
+                    rangeFilterValue.setLowerBound(UpperLowerBound.LOWER_EXCLUDED);
+                    min = min.substring(1);
+                } else if (min.startsWith(UpperLowerBound.LOWER_INCLUDED.getCode())) {
+                    rangeFilterValue.setLowerBound(UpperLowerBound.LOWER_INCLUDED);
+                    min = min.substring(1);
+                }
+
+                if(max.endsWith(UpperLowerBound.UPPER_EXCLUDED.getCode())) {
+                    rangeFilterValue.setUpperBound(UpperLowerBound.UPPER_EXCLUDED);
+                    max = max.substring(0, max.length()-1);
+                } else if (max.endsWith(UpperLowerBound.UPPER_INCLUDED.getCode())) {
+                    rangeFilterValue.setUpperBound(UpperLowerBound.UPPER_INCLUDED);
+                    max = max.substring(0, max.length()-1);
+                }
+                rangeFilterValue.setMinValue(DateUtil.getDate(min));
+                rangeFilterValue.setMaxValue(DateUtil.getDate(max));
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("The min value " + min + " or max value " + max + " is no date value. " + e.getMessage(), e);
+            }
+        }
+
+        searchFilter.setName(filterName);
+        searchFilter.setId(filterName);
+        searchFilter.setRangeValue(rangeFilterValue);
+        return searchFilter;
+    }
+
     void parseFilter(SearchQuery query) {
         for(String name: getParameterNames()) {
             Matcher m = filterPattern.matcher(name);
@@ -186,6 +234,11 @@ public class QsfqlParser {
                     SearchFilter searchFilter = createRangeFilter(filterName, filterValues);
                     searchFilter.setFilterType(FilterType.RANGE);
                     searchFilter.setFilterDataType(FilterDataType.NUMBER);
+                    query.getSearchFilterList().add(searchFilter);
+                } else if (".daterange".equals(filterType)) {
+                    SearchFilter searchFilter = createDateRangeFilter(filterName, filterValues);
+                    searchFilter.setFilterType(FilterType.RANGE);
+                    searchFilter.setFilterDataType(FilterDataType.DATE);
                     query.getSearchFilterList().add(searchFilter);
                 } else if (".tree".equals(filterType)) {
                     List<SearchFilter> searchFilters = createTreeFilter(filterName, filterValues);

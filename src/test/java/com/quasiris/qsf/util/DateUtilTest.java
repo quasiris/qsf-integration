@@ -27,10 +27,15 @@ public class DateUtilTest {
         String date = DateUtil.now();
         assertNotNull(date);
     }
+    @Test
+    public void parseIsoDate() throws Exception {
+        String date = DateUtil.now();
+        assertNotNull(date);
+    }
 
     @Test
     public void getDateAsString() throws Exception {
-        Date date = DateUtil.getDate("2020-08-06T00:00:00.000+0200");
+        Date date = DateUtil.getDate("2021-01-02T23:00:00Z");
         String dateString = DateUtil.getDate(date);
         assertNotNull(dateString);
     }

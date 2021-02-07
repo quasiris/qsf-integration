@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -141,6 +142,19 @@ public class QsfqlParserTest {
         assertEquals(Double.valueOf(5.2), searchFilter.getRangeValue(Double.class).getMaxValue());
         assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.NUMBER);
+        assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
+        assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_INCLUDED);
+    }
+
+    @Test
+    public void testRangeFilterForDateValues() {
+        SearchQuery query = createQuery("f.timestamp.daterange=2021-01-02T23:00:00Z,2021-02-05T20:59:38Z");
+        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        assertEquals("timestamp", searchFilter.getName());
+        assertNotNull(searchFilter.getRangeValue(Date.class).getMinValue());
+        assertNotNull(searchFilter.getRangeValue(Date.class).getMaxValue());
+        assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
+        assertEquals(searchFilter.getFilterDataType(), FilterDataType.DATE);
         assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
         assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_INCLUDED);
     }

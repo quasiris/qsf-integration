@@ -258,6 +258,20 @@ public class ElasticQsfqlQueryTransformerTest {
     }
 
 
+    @DisplayName("Transform date range filter")
+    @Test
+    public void transformDateRangeFilter() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.addFilterMapping("timestamp", "timestamp");
+        ObjectNode elasticQuery = transform(transformer,  "f.timestamp.daterange=2021-01-02T23:00:00Z,2021-02-05T20:59:38Z");
+
+        assertEquals("2021-01-03T00:00:00.000+0100", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("timestamp").get("gte").asText());
+        assertEquals("2021-02-05T21:59:38.000+0100", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("timestamp").get("lte").asText());
+        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+    }
+
+
     @Test
     public void transformFilterWithStaticDefinedFilters() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
