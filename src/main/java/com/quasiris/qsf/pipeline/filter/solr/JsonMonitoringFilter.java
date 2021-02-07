@@ -46,7 +46,10 @@ public class JsonMonitoringFilter extends AbstractFilter {
         int aggregatedStatus = 200;
         try {
             ScriptEngineManager mgr = new ScriptEngineManager();
-            ScriptEngine engine = mgr.getEngineByName("JavaScript");
+            ScriptEngine engine = mgr.getEngineByName("graal.js");
+            if(engine == null) {
+                throw new RuntimeException("Could not load script engine");
+            }
 
             HttpGet httpGet = new HttpGet(url);
 

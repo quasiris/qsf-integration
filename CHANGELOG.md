@@ -10,6 +10,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Changed
 - don't execute the the elastic filter in case the query is null
+- use graal.js as script engine to allow compatibility for jdk15
 
 ### Breaking Changes
 - set the default for upper bound range filters to include
