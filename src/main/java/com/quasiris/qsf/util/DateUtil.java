@@ -73,7 +73,10 @@ public class DateUtil {
     }
 
     public static String getDate(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat(ELASTIC_DATE_PATTERN_MICROSECONDS);
+        return getDate(date, ELASTIC_DATE_PATTERN_MICROSECONDS);
+    }
+    public static String getDate(Date date, String pattern) {
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
         return formatter.format(date);
     }
 

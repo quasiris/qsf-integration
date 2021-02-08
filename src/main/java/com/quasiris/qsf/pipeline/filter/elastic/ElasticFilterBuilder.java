@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.Slider;
+import com.quasiris.qsf.response.mapper.FacetKeyMapper;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -173,6 +174,11 @@ public class ElasticFilterBuilder {
     }
     public ElasticFilterBuilder mapAggregationName(String from, String to) {
         getMappingTransformer().addFacetNameMapping(from, to);
+        return this;
+    }
+
+    public ElasticFilterBuilder facetKeyMapper(String id, FacetKeyMapper facetKeyMapper) {
+        getMappingTransformer().addFacetKeyMapper(id, facetKeyMapper);
         return this;
     }
 

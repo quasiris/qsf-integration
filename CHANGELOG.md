@@ -6,6 +6,7 @@ All notable changes qsf-integration project will be documented in this file.
 - make it possible to set a custom searchQuery object in the elastic query transformer
 - implement tracking for range values
 - implement date range queries for qsfql and elasticsearch
+- implement a facet key mapper for elastic result transformer
 
 
 ### Changed

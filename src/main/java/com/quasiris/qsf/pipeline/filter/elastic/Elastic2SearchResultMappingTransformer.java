@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.*;
 import com.quasiris.qsf.response.*;
+import com.quasiris.qsf.response.mapper.DefaultFacetKeyMapper;
+import com.quasiris.qsf.response.mapper.FacetKeyMapper;
 import com.quasiris.qsf.util.EncodingUtil;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     private Map<String, String> facetMapping = new HashMap<>();
     private Map<String, String> facetNameMapping = new HashMap<>();
+    private Map<String, FacetKeyMapper> facetKeyMapperMap = new HashMap<>();
 
     private Map<String, String> sliderMapping = new HashMap<>();
     private Map<String, String> sliderNameMapping = new HashMap<>();
@@ -116,11 +119,17 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
         facet.setId(facetId);
         facet.setName(name);
-        facet.setCount(Long.valueOf(aggregation.getBuckets().size()));
+        facet.setCount((long) aggregation.getBuckets().size());
 
         Long facetReseultCount = 0L;
+        FacetKeyMapper facetKeyMapper = facetKeyMapperMap.get(facetId);
+        if(facetKeyMapper == null) {
+            facetKeyMapper = new DefaultFacetKeyMapper();
+        }
         for(Bucket bucket : aggregation.getBuckets()) {
-            FacetValue facetValue = new FacetValue(bucket.getKey(), bucket.getDoc_count());
+            String key = facetKeyMapper.map(bucket.getKey());
+
+            FacetValue facetValue = new FacetValue(key, bucket.getDoc_count());
             facetReseultCount = facetReseultCount + facetValue.getCount();
 
             String filterValueEncoded = EncodingUtil.encode(bucket.getKey());
@@ -270,6 +279,10 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     public void addFacetNameMapping(String from, String to) {
         this.facetNameMapping.put(from, to);
+    }
+
+    public void addFacetKeyMapper(String id, FacetKeyMapper facetKeyMapper) {
+        this.facetKeyMapperMap.put(id, facetKeyMapper);
     }
 
 }
