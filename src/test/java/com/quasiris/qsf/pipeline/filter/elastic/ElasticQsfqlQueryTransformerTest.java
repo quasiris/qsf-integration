@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Sort;
 import com.quasiris.qsf.query.parser.QsfqlParserTest;
@@ -269,6 +270,25 @@ public class ElasticQsfqlQueryTransformerTest {
         assertEquals("2021-01-03T00:00:00.000+0100", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("timestamp").get("gte").asText());
         assertEquals("2021-02-05T21:59:38.000+0100", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("timestamp").get("lte").asText());
         Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+    }
+
+    @DisplayName("Transform date range filter")
+    @Test
+    public void transformDateHistogramFacet() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+
+        Facet facet = new Facet();
+        facet.setId("timestamp");
+        facet.setName("searchQueries");
+        facet.setType("date_histogram");
+        transformer.addAggregation(facet);
+        ObjectNode elasticQuery = transform(transformer,  "q=*");
+
+        assertEquals("timestamp", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("field").asText());
+        assertEquals("hour", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("calendar_interval").asText());
+        assertEquals("Europe/Berlin", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("time_zone").asText());
+        assertEquals("0", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("min_doc_count").asText());
     }
 
 

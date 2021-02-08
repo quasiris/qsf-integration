@@ -190,6 +190,14 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
                     object("include", facet.getInclude()).
                     object("exclude", facet.getExclude()).
                     object("size", facet.getSize());
+
+            if("date_histogram".equals(facet.getType())) {
+                jsonBuilder.
+                    object("calendar_interval", "hour").
+                    object("time_zone", "Europe/Berlin").
+                    object("min_doc_count", 0);
+            }
+
             if(facet.getSortBy() != null) {
                 jsonBuilder.
                 stash().

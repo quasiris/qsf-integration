@@ -7,6 +7,7 @@ All notable changes qsf-integration project will be documented in this file.
 - implement tracking for range values
 - implement date range queries for qsfql and elasticsearch
 - implement a facet key mapper for elastic result transformer
+- implement a date histogram facet for elastic
 
 
 ### Changed
