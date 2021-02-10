@@ -39,6 +39,7 @@ public class QsfqlParser {
     void parseMeta(SearchQuery query) {
         query.setRequestId(getParameter("requestId", UUID.randomUUID().toString()));
         query.setDebug(getParameterAsBoolean("debug", query.isDebug()));
+        query.setTracking(getParameterAsBoolean("tracking", Boolean.FALSE));
     }
 
     void parseQuery(SearchQuery query) {
