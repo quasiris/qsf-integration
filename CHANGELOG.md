@@ -2,6 +2,7 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
+## [2.15]
 ### Added
 - make it possible to set a custom searchQuery object in the elastic query transformer
 - implement tracking for range values
