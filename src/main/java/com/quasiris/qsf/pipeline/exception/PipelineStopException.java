@@ -1,4 +1,6 @@
-package com.quasiris.qsf.pipeline;
+package com.quasiris.qsf.pipeline.exception;
+
+import com.quasiris.qsf.pipeline.PipelineContainer;
 
 /**
  * Created by tbl on 8.3.21.

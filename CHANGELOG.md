@@ -4,6 +4,7 @@ All notable changes qsf-integration project will be documented in this file.
 ## [Unreleased]
 ### Added
 - add a possibility to stop a running pipeline
+- add a possibility to restart a running pipeline
 
 ### Changed
 

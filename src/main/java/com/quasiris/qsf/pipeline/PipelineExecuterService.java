@@ -1,6 +1,8 @@
 package com.quasiris.qsf.pipeline;
 
 import com.quasiris.qsf.exception.Debug;
+import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
+import com.quasiris.qsf.pipeline.exception.PipelineStopException;
 import com.quasiris.qsf.pipeline.filter.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +32,15 @@ public class PipelineExecuterService {
             filter.init();
         }
 
-        pipelineContainer = filter(pipelineContainer);
+        int restartCount = 0;
+        while(restartCount < 2) {
+            try {
+                pipelineContainer = filter(pipelineContainer);
+                restartCount = 1000;
+            } catch (PipelineRestartException e) {
+                restartCount++;
+            }
+        }
 
         failOnError(pipelineContainer);
 
@@ -42,7 +52,7 @@ public class PipelineExecuterService {
         return pipelineContainer;
     }
 
-    private PipelineContainer filter(PipelineContainer pipelineContainer) throws PipelineContainerException {
+    private PipelineContainer filter(PipelineContainer pipelineContainer) throws PipelineContainerException, PipelineRestartException {
         for(Filter filter : pipeline.getFilterList()) {
             failOnError(pipelineContainer);
             try {
@@ -60,6 +70,9 @@ public class PipelineExecuterService {
             } catch(PipelineStopException stop)  {
                 LOG.debug("The filter: " + filter.getId() + " was stopped.");
                 return pipelineContainer;
+            } catch(PipelineRestartException restart)  {
+                LOG.debug("The filter: " + filter.getId() + " initiated a restart of the pipeline.");
+                throw restart;
             } catch (Exception e) {
                 LOG.debug("The filter: " + filter.getId() + " failed with an error: " + e.getMessage());
                 filter.onError(pipelineContainer, e);
