@@ -30,25 +30,7 @@ public class PipelineExecuterService {
             filter.init();
         }
 
-        for(Filter filter : pipeline.getFilterList()) {
-            failOnError(pipelineContainer);
-            try {
-                LOG.debug("The filter: " + filter.getId() + " started.");
-                filter.start();
-                if(filter.isActive() && pipelineContainer.isFilterActive(filter.getId())) {
-                    pipelineContainer = filter.filter(pipelineContainer);
-                } else {
-                    LOG.debug("The filter: " + filter.getId() + " is not active.");
-                }
-                if(pipelineContainer.isDebugEnabled()) {
-                    debugRuntime(pipelineContainer, filter);
-                }
-                LOG.debug("The filter: " + filter.getId() + " took: " + filter.getCurrentTime() + " ms.");
-            } catch (Exception e) {
-                LOG.debug("The filter: " + filter.getId() + " failed with an error: " + e.getMessage());
-                filter.onError(pipelineContainer, e);
-            }
-        }
+        pipelineContainer = filter(pipelineContainer);
 
         failOnError(pipelineContainer);
 
@@ -57,6 +39,32 @@ public class PipelineExecuterService {
         }
         long took = System.currentTimeMillis() - start;
         LOG.debug("The pipeline: " + pipeline.getId() + " took: " + took + " ms.");
+        return pipelineContainer;
+    }
+
+    private PipelineContainer filter(PipelineContainer pipelineContainer) throws PipelineContainerException {
+        for(Filter filter : pipeline.getFilterList()) {
+            failOnError(pipelineContainer);
+            try {
+                LOG.debug("The filter: " + filter.getId() + " started.");
+                filter.start();
+                if(pipelineContainer.isDebugEnabled()) {
+                    debugRuntime(pipelineContainer, filter);
+                }
+                if(filter.isActive() && pipelineContainer.isFilterActive(filter.getId())) {
+                    pipelineContainer = filter.filter(pipelineContainer);
+                } else {
+                    LOG.debug("The filter: " + filter.getId() + " is not active.");
+                }
+                LOG.debug("The filter: " + filter.getId() + " took: " + filter.getCurrentTime() + " ms.");
+            } catch(PipelineStopException stop)  {
+                LOG.debug("The filter: " + filter.getId() + " was stopped.");
+                return pipelineContainer;
+            } catch (Exception e) {
+                LOG.debug("The filter: " + filter.getId() + " failed with an error: " + e.getMessage());
+                filter.onError(pipelineContainer, e);
+            }
+        }
         return pipelineContainer;
     }
 
