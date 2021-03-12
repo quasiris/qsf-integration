@@ -2,6 +2,20 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [Unreleased]
+### Added
+
+
+### Changed
+
+### Breaking Changes
+
+### Deprecated
+- don't use the request response from the pipeline countainer directly
+- use the conditions instead of the notActiveFilters
+- the success object is replaced by a status object
+- the message is replaced by a status object
+- the timeout is indicated by a status code
+
 ## [2.15]
 ### Added
 - make it possible to set a custom searchQuery object in the elastic query transformer

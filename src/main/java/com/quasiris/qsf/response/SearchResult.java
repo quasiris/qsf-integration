@@ -15,10 +15,18 @@ public class SearchResult{
 
     private Object rawResponse;
 
+    /**
+     * use status object
+     */
+    @Deprecated
     private Integer statusCode;
 
     private String name;
 
+    /**
+     * use status object
+     */
+    @Deprecated
     private String statusMessage;
 
     private List<Document> documents;
@@ -57,10 +65,18 @@ public class SearchResult{
         this.documents = documents;
     }
 
+    /**
+     * use status object
+     */
+    @Deprecated
     public String getStatusMessage() {
         return statusMessage;
     }
 
+    /**
+     * use status object
+     */
+    @Deprecated
     public void setStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
     }
@@ -73,10 +89,18 @@ public class SearchResult{
         this.rawResponse = rawResponse;
     }
 
+    /**
+     * use status object
+     */
+    @Deprecated
     public void setStatusCode(Integer statusCode) {
         this.statusCode = statusCode;
     }
 
+    /**
+     * use status object
+     */
+    @Deprecated
     public Integer getStatusCode() {
         return statusCode;
     }

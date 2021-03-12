@@ -21,6 +21,7 @@ public class PipelineContainer {
     public PipelineContainer() {
     }
 
+    @Deprecated
     public PipelineContainer(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
         this.response = response;
@@ -28,18 +29,43 @@ public class PipelineContainer {
 
     private String requestId;
 
+    /**
+     * use the context
+     */
+    @Deprecated
     private Map<String, String> parameter = new HashMap<>();
 
+    /**
+     * Use conditionals
+     */
+    @Deprecated
     private List<String> notActiveFilters = new ArrayList<>();
 
+    /**
+     * use status object
+     */
+    @Deprecated
     private boolean success = true;
 
+    /**
+     * use status object
+     */
+    @Deprecated
     private StringBuffer message = new StringBuffer();
 
     private boolean debug = false;
 
+    /**
+     * use status object
+     */
+    @Deprecated
     private boolean timeout = false;
 
+
+    /**
+     * the filter must decide this
+     */
+    @Deprecated
     private boolean failOnError = true;
 
     private List<Debug> debugStack = new ArrayList<>();
@@ -51,7 +77,17 @@ public class PipelineContainer {
 
     private Map<String, ? super Object> context = new HashMap<>();
 
+    /**
+     * map the request to the search Query object and
+     * use the SearchQuery
+     */
+    @Deprecated
     private HttpServletRequest request;
+
+    /**
+     * we need this somewhere?
+     */
+    @Deprecated
     private HttpServletResponse response;
 
     private Long startTime = System.currentTimeMillis();
@@ -102,10 +138,19 @@ public class PipelineContainer {
         return System.currentTimeMillis() - this.startTime;
     }
 
+    /**
+     * map the request to the search Query object and
+     * use the SearchQuery
+     */
+    @Deprecated
     public HttpServletRequest getRequest() {
         return request;
     }
 
+    /**
+     * we need this somewhere?
+     */
+    @Deprecated
     public HttpServletResponse getResponse() {
         return response;
     }
@@ -144,6 +189,10 @@ public class PipelineContainer {
         return debugStack;
     }
 
+    /**
+     * use status object
+     */
+    @Deprecated
     public void error(String message) {
         this.success = false;
         if(Strings.isNullOrEmpty(message)) {
@@ -155,6 +204,10 @@ public class PipelineContainer {
         this.message.append(message);
     }
 
+    /**
+     * use status object
+     */
+    @Deprecated
     public void error(Throwable e) {
         if (e instanceof TimeoutException) {
             timeout = true;
@@ -163,6 +216,10 @@ public class PipelineContainer {
         error(Throwables.getStackTraceAsString(e));
     }
 
+    /**
+     * use status object
+     */
+    @Deprecated
     public String getMessage() {
         return message.toString();
     }
@@ -171,6 +228,10 @@ public class PipelineContainer {
         return success;
     }
 
+    /**
+     * use status object
+     */
+    @Deprecated
     public boolean isTimeout() {
         return timeout;
     }
@@ -183,38 +244,71 @@ public class PipelineContainer {
         this.response = response;
     }
 
+    /**
+     * the filter must decide this
+     */
+    @Deprecated
     public boolean isFailOnError() {
         return failOnError;
     }
 
+    /**
+     * the filter must decide this
+     */
+    @Deprecated
     public void setFailOnError(boolean failOnError) {
         this.failOnError = failOnError;
     }
 
+    /**
+     * Use conditionals
+     */
+    @Deprecated
     public void deactivateFilter(String filterId) {
         notActiveFilters.add(filterId);
     }
 
+    /**
+     * Use conditionals
+     */
+    @Deprecated
     public void activateFilter(String filterId) {
         notActiveFilters.remove(filterId);
     }
 
+    /**
+     * Use conditionals
+     */
+    @Deprecated
     public boolean isFilterActive(String filterId) {
         return !notActiveFilters.contains(filterId);
     }
 
+    /**
+     * Use the context
+     */
+    @Deprecated
     public void setParameter(String key, String value) {
         this.parameter.put(key,value);
     }
 
+    /**
+     * Use the context
+     */
+    @Deprecated
     public String getParameter(String key) {
         return this.parameter.get(key);
     }
 
+    /**
+     * Use the context
+     */
+    @Deprecated
     public Map<String, String> getParameters() {
         return this.parameter;
     }
 
+    @Deprecated
     public Document getFirstDocumentOrNull(String resultSetId) {
         SearchResult searchResult = searchResults.get(resultSetId);
         if(searchResult == null) {
