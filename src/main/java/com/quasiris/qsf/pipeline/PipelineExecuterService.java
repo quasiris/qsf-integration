@@ -23,7 +23,7 @@ public class PipelineExecuterService {
         this.pipeline = pipeline;
     }
 
-    public PipelineContainer execute(PipelineContainer pipelineContainer) throws PipelineContainerException {
+    public PipelineContainer execute(PipelineContainer pipelineContainer) throws PipelineContainerException, PipelineRestartException {
 
         pipelineContainer.start();
         long start = System.currentTimeMillis();
@@ -38,7 +38,11 @@ public class PipelineExecuterService {
                 pipelineContainer = filter(pipelineContainer);
                 restartCount = 1000;
             } catch (PipelineRestartException e) {
-                restartCount++;
+                if(e.getStartPipelineId().equals(pipeline.getId())) {
+                    restartCount++;
+                } else {
+                    throw e;
+                }
             }
         }
 

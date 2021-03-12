@@ -1,7 +1,5 @@
 package com.quasiris.qsf.pipeline.exception;
 
-import com.quasiris.qsf.pipeline.PipelineContainer;
-
 /**
  * Created by tbl on 12.3.21.
  *
@@ -11,27 +9,18 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
  */
 public class PipelineRestartException extends Exception {
 
-    private PipelineContainer pipelineContainer;
+    private String startPipelineId;
 
-    public PipelineRestartException(PipelineContainer pipelineContainer, String errorMessage, Throwable cause) {
-        super(errorMessage, cause);
-        this.pipelineContainer = pipelineContainer;
+
+    public PipelineRestartException(String startPipelineId) {
+        this.startPipelineId = startPipelineId;
     }
 
-    public PipelineRestartException(String errorMessage, Throwable cause) {
-        super(errorMessage, cause);
+    public String getStartPipelineId() {
+        return startPipelineId;
     }
 
-    public PipelineRestartException(String errorMessage) {
-        super(errorMessage);
-    }
-
-    public PipelineRestartException(PipelineContainer pipelineContainer, String errorMessage) {
-        super(errorMessage);
-        this.pipelineContainer = pipelineContainer;
-    }
-
-    public PipelineContainer getPipelineContainer() {
-        return pipelineContainer;
+    public void setStartPipelineId(String startPipelineId) {
+        this.startPipelineId = startPipelineId;
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
@@ -41,6 +42,8 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     private boolean sentenceScoringEnabled = true;
 
+    private String restartPipelineId;
+
     public SpellCheckElasticFilter(String baseUrl) {
         this.baseUrl = baseUrl;
     }
@@ -60,7 +63,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
     }
 
 
-    private void process(PipelineContainer pipelineContainer) throws IOException, PipelineContainerException {
+    private void process(PipelineContainer pipelineContainer) throws IOException, PipelineContainerException, PipelineRestartException {
 
         if(pipelineContainer.getSearchQuery().getQueryToken().size() > maxTokenLenght) {
             return;
@@ -132,6 +135,9 @@ public class SpellCheckElasticFilter extends AbstractFilter {
             searchQuery.setQ(corrected.getText());
             searchQuery.setQueryChanged(true);
             searchQuery.addQueryChangedReason("spellcheck");
+            if(restartPipelineId != null) {
+                throw new PipelineRestartException(restartPipelineId);
+            }
         }
     }
 
@@ -283,5 +289,14 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     public void setMinTokenWeight(int minTokenWeight) {
         this.minTokenWeight = minTokenWeight;
+    }
+
+    /**
+     * Setter for property 'restartPipelineId'.
+     *
+     * @param restartPipelineId Value to set for property 'restartPipelineId'.
+     */
+    public void setRestartPipelineId(String restartPipelineId) {
+        this.restartPipelineId = restartPipelineId;
     }
 }
