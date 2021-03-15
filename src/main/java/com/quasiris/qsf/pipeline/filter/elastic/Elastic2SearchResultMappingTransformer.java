@@ -221,12 +221,14 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
             String fieldName = entry.getKey();
             List<Map<String, Object>> values = (List) fields.get(fieldName);
-            if(values == null) {
+            List<String> mappedFieldNames = fieldMapping.get(fieldName);
+            if(values == null && mappedFieldNames != null) {
                 for(Hit hit : entry.getValue().getHits().getHits()) {
                     Document innerDocument = transformHit(hit);
-                    document.addChildDocument(fieldName, innerDocument);
+                    for(String mappedFieldName : mappedFieldNames) {
+                        document.addChildDocument(mappedFieldName, innerDocument);
+                    }
                 }
-
             } else if(values != null) {
                 int valueOffset = 0;
                 for (Map<String, Object> value : values) {
