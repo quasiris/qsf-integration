@@ -41,24 +41,36 @@ public class SearchQuery {
     public SearchQuery(SearchQuery searchQuery) {
         this.originalQuery = searchQuery.getOriginalQuery();
         this.queryChanged = searchQuery.isQueryChanged();
-        this.queryChangedReasons = new ArrayList<>(searchQuery.getQueryChangedReasons());
+        if(searchQuery.getQueryChangedReasons() != null) {
+            this.queryChangedReasons = new ArrayList<>(searchQuery.getQueryChangedReasons());
+        }
         this.tracking = searchQuery.getTracking();
         // TODO we need a deep copy?
-        this.queryToken = new ArrayList<>(queryToken);
+        if(searchQuery.getQueryToken() != null) {
+            this.queryToken = new ArrayList<>(searchQuery.getQueryToken());
+        }
         this.q = searchQuery.getQ();
         this.requestId = searchQuery.getRequestId();
 
         // TODO we need a deep copy?
-        this.searchFilterList = new ArrayList<>(searchQuery.getSearchFilterList());
+        if(searchQuery.getSearchFilterList() != null) {
+            this.searchFilterList = new ArrayList<>(searchQuery.getSearchFilterList());
+        }
 
         // TODO we need a deep copy?
-        this.facetList = new ArrayList<>(searchQuery.getFacetList());
+        if(searchQuery.getFacetList() != null) {
+            this.facetList = new ArrayList<>(searchQuery.getFacetList());
+        }
         this.sort = searchQuery.getSort();
         this.page = searchQuery.getPage();
         this.rows = searchQuery.getRows();
         this.debug = searchQuery.isDebug();
         this.requestOrigin = searchQuery.getRequestOrigin();
-        this.parameters = new HashMap<>(searchQuery.getParameters());
+
+        // TODO we need a deep copy?
+        if(searchQuery.getParameters() != null) {
+            this.parameters = new HashMap<>(searchQuery.getParameters());
+        }
     }
 
 
