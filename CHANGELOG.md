@@ -5,6 +5,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Added
 - add a possibility to stop a running pipeline
 - add a possibility to restart a running pipeline
+- add mapping for inner hits for collapsing
 
 ### Changed
 

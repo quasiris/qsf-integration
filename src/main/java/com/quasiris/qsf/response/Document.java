@@ -143,6 +143,22 @@ public class Document {
         }
     }
 
+    public void addChildDocument(String name, Document childDocument) {
+        List<Document> childDocuments = getChildDocument(name);
+        childDocuments.add(childDocument);
+        this.getDocument().put(name, childDocuments);
+    }
+
+    public List<Document> getChildDocument(String name) {
+        Object existing = this.getDocument().get(name);
+        if(existing == null) {
+            return new ArrayList<>();
+        } else if(existing instanceof List) {
+            return (List<Document>) existing;
+        }
+        throw new IllegalArgumentException("The field " + name + " is no child field.");
+    }
+
     public void setValue(String name, Object value) {
         this.getDocument().put(name, value);
     }

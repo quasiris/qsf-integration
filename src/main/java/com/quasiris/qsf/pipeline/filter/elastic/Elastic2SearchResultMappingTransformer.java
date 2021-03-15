@@ -167,11 +167,11 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             Map fields = mapper.readValue(objectNode.toString(), Map.class);
 
             if(innerHits != null) {
-                transformInnerHits(fields, innerHits);
+                transformInnerHits(document, fields, innerHits);
             }
 
             if(fieldMapping.size() == 0) {
-                document.setDocument(fields);
+                document.getDocument().putAll(fields);
             } else {
                 for(Map.Entry<String, List<String>> mapping : fieldMapping.entrySet()) {
                     String key = mapping.getKey();
@@ -217,11 +217,17 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     }
 
-    public void transformInnerHits(Map fields, LinkedHashMap<String, InnerHitResult> innerHits) {
+    public void transformInnerHits(Document document,Map fields, LinkedHashMap<String, InnerHitResult> innerHits) {
         for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
             String fieldName = entry.getKey();
             List<Map<String, Object>> values = (List) fields.get(fieldName);
-            if(values != null) {
+            if(values == null) {
+                for(Hit hit : entry.getValue().getHits().getHits()) {
+                    Document innerDocument = transformHit(hit);
+                    document.addChildDocument(fieldName, innerDocument);
+                }
+
+            } else if(values != null) {
                 int valueOffset = 0;
                 for (Map<String, Object> value : values) {
                     value.put("_score", 0.0);
