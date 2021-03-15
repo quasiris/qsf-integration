@@ -36,6 +36,33 @@ public class SearchQuery {
 
     private Map<String, Object> parameters;
 
+    public SearchQuery() {}
+
+    public SearchQuery(SearchQuery searchQuery) {
+        this.originalQuery = searchQuery.getOriginalQuery();
+        this.queryChanged = searchQuery.isQueryChanged();
+        this.queryChangedReasons = new ArrayList<>(searchQuery.getQueryChangedReasons());
+        this.tracking = searchQuery.getTracking();
+        // TODO we need a deep copy?
+        this.queryToken = new ArrayList<>(queryToken);
+        this.q = searchQuery.getQ();
+        this.requestId = searchQuery.getRequestId();
+
+        // TODO we need a deep copy?
+        this.searchFilterList = new ArrayList<>(searchQuery.getSearchFilterList());
+
+        // TODO we need a deep copy?
+        this.facetList = new ArrayList<>(searchQuery.getFacetList());
+        this.sort = searchQuery.getSort();
+        this.page = searchQuery.getPage();
+        this.rows = searchQuery.getRows();
+        this.debug = searchQuery.isDebug();
+        this.requestOrigin = searchQuery.getRequestOrigin();
+        this.parameters = new HashMap<>(searchQuery.getParameters());
+    }
+
+
+
     public String getQ() {
         return q;
     }
@@ -278,6 +305,8 @@ public class SearchQuery {
         }
         this.queryChangedReasons.add(reason);
     }
+
+
 
     @Override
     public String toString() {

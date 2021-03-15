@@ -54,8 +54,7 @@ public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
 
     @Override
     public void transformParameter() {
-
-        SearchQuery searchQuery = getPipelineContainer().getSearchQuery();
+        this.searchQuery = new SearchQuery(getPipelineContainer().getSearchQuery());
         String query = searchQuery.getQ();
         if(query.endsWith(" ")) {
             query = query + "*";
