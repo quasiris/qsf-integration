@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InnerHitResult {
-    private InnerHits hits;
+    private Hits hits;
 
-    public InnerHits getHits() {
+    public Hits getHits() {
         return hits;
     }
 
-    public void setHits(InnerHits hits) {
+    public void setHits(Hits hits) {
         this.hits = hits;
     }
 
     @Override
     public String toString() {
-        return "InnerHitResult{" +
+        return "Hits{" +
                 ", hits=" + hits +
                 '}';
     }

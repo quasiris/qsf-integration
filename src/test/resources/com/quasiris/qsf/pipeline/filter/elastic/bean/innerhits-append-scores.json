@@ -1,0 +1,467 @@
+{
+  "took": 162,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 21,
+      "relation": "eq"
+    },
+    "max_score": 8.665197,
+    "hits": [
+      {
+        "_index": "ecommerce",
+        "_type": "_doc",
+        "_id": "prod-000-000-000-001",
+        "_score": 8.665197,
+        "_source": {
+          "snippets": [
+            {
+              "title": "Features"
+            },
+            {
+              "title": "Technical Specs"
+            },
+            {
+              "title": "Refund"
+            },
+            {
+              "title": "Conditions"
+            }
+          ],
+          "description": "Buy one, get other for free",
+          "title": "Samsung Galaxy s21",
+          "url": "product/50001"
+        },
+        "matched_queries": [
+          "classic_search",
+          "snippet_search"
+        ],
+        "inner_hits": {
+          "snippets_doc_search": {
+            "hits": {
+              "total": {
+                "value": 4,
+                "relation": "eq"
+              },
+              "max_score": 1.7206709,
+              "hits": [
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-001",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 2
+                  },
+                  "_score": 1.7206709,
+                  "inner_hits": {
+                    "snippets_questions_doc_search": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-001",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 3
+                  },
+                  "_score": 1.6069539,
+                  "inner_hits": {
+                    "snippets_questions_doc_search": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-001",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 0
+                  },
+                  "_score": 1.5739989,
+                  "inner_hits": {
+                    "snippets_questions_doc_search": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "snippets": {
+            "hits": {
+              "total": {
+                "value": 4,
+                "relation": "eq"
+              },
+              "max_score": 20.477938,
+              "hits": [
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-001",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 2
+                  },
+                  "_score": 20.477938,
+                  "matched_queries": [
+                    "snippets_ranking_idf"
+                  ],
+                  "inner_hits": {
+                    "snippets_questions_vector": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    },
+                    "snippets_questions_idf": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-001",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 1
+                  },
+                  "_score": 15.996389,
+                  "matched_queries": [
+                    "snippets_ranking_idf"
+                  ],
+                  "inner_hits": {
+                    "snippets_questions_vector": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    },
+                    "snippets_questions_idf": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-001",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 3
+                  },
+                  "_score": 14.501116,
+                  "matched_queries": [
+                    "snippets_ranking_idf"
+                  ],
+                  "inner_hits": {
+                    "snippets_questions_vector": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    },
+                    "snippets_questions_idf": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "_index": "ecommerce",
+        "_type": "_doc",
+        "_id": "prod-000-000-000-002",
+        "_score": 7.445296,
+        "_source": {
+          "snippets": [
+            {
+              "title": "Features"
+            },
+            {
+              "title": "Technical Specs"
+            },
+            {
+              "title": "Refund"
+            },
+            {
+              "title": "Conditions"
+            }
+          ],
+          "description": "Buy one, pay for two",
+          "title": "Samsung Galaxy s21e",
+          "url": "product/50002"
+        },
+        "matched_queries": [
+          "classic_search",
+          "snippet_search"
+        ],
+        "inner_hits": {
+          "snippets_doc_search": {
+            "hits": {
+              "total": {
+                "value": 4,
+                "relation": "eq"
+              },
+              "max_score": 1.7206709,
+              "hits": [
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-002",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 2
+                  },
+                  "_score": 1.7206709,
+                  "inner_hits": {
+                    "snippets_questions_doc_search": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-002",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 3
+                  },
+                  "_score": 1.6069539,
+                  "inner_hits": {
+                    "snippets_questions_doc_search": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-002",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 0
+                  },
+                  "_score": 1.5739989,
+                  "inner_hits": {
+                    "snippets_questions_doc_search": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "snippets": {
+            "hits": {
+              "total": {
+                "value": 4,
+                "relation": "eq"
+              },
+              "max_score": 20.477938,
+              "hits": [
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-002",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 2
+                  },
+                  "_score": 20.477938,
+                  "matched_queries": [
+                    "snippets_ranking_idf"
+                  ],
+                  "inner_hits": {
+                    "snippets_questions_vector": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    },
+                    "snippets_questions_idf": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-002",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 1
+                  },
+                  "_score": 15.996389,
+                  "matched_queries": [
+                    "snippets_ranking_idf"
+                  ],
+                  "inner_hits": {
+                    "snippets_questions_vector": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    },
+                    "snippets_questions_idf": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                },
+                {
+                  "_index": "ecommerce",
+                  "_type": "_doc",
+                  "_id": "prod-000-000-000-002",
+                  "_nested": {
+                    "field": "snippets",
+                    "offset": 3
+                  },
+                  "_score": 14.501116,
+                  "matched_queries": [
+                    "snippets_ranking_idf"
+                  ],
+                  "inner_hits": {
+                    "snippets_questions_vector": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    },
+                    "snippets_questions_idf": {
+                      "hits": {
+                        "total": {
+                          "value": 0,
+                          "relation": "eq"
+                        },
+                        "max_score": null,
+                        "hits": []
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -227,7 +227,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                     value.put("_score", 0.0);
                     value.put("_offset", valueOffset++);
                 }
-                for (InnerHit innerHit : entry.getValue().getHits().getHits()) {
+                for (Hit innerHit : entry.getValue().getHits().getHits()) {
                     Integer offset = innerHit.get_nested().getOffset();
                     values.get(offset).put("_score", innerHit.get_score());
                 }

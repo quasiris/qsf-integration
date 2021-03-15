@@ -9,6 +9,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Changed
 
 ### Breaking Changes
+- use the Hit datastructure for innerhits in elastic result
 
 ### Deprecated
 - don't use the request response from the pipeline countainer directly

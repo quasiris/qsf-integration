@@ -20,6 +20,7 @@ public class Hit {
     private ObjectNode _source;
     private ObjectNode _explanation;
     private LinkedHashMap<String, InnerHitResult> inner_hits;
+    private InnerHitNested _nested;
 
     private Map<String, List<String>> highlight;
 
@@ -88,6 +89,34 @@ public class Hit {
         this.highlight = highlight;
     }
 
+    /**
+     * Setter for property 'inner_hits'.
+     *
+     * @param inner_hits Value to set for property 'inner_hits'.
+     */
+    public void setInner_hits(LinkedHashMap<String, InnerHitResult> inner_hits) {
+        this.inner_hits = inner_hits;
+    }
+
+    /**
+     * Getter for property '_nested'.
+     *
+     * @return Value for property '_nested'.
+     */
+    public InnerHitNested get_nested() {
+        return _nested;
+    }
+
+    /**
+     * Setter for property '_nested'.
+     *
+     * @param _nested Value to set for property '_nested'.
+     */
+    public void set_nested(InnerHitNested _nested) {
+        this._nested = _nested;
+    }
+
+
     @Override
     public String toString() {
         return "Hit{" +
@@ -96,6 +125,9 @@ public class Hit {
                 ", _id='" + _id + '\'' +
                 ", _score=" + _score +
                 ", _source=" + _source +
+                ", _explanation=" + _explanation +
+                ", inner_hits=" + inner_hits +
+                ", _nested=" + _nested +
                 ", highlight=" + highlight +
                 '}';
     }
