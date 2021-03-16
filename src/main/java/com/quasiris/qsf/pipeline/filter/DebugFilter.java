@@ -9,10 +9,9 @@ public class DebugFilter extends AbstractFilter {
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) {
-        if(pipelineContainer.getRequest() == null) {
-            return pipelineContainer;
-        }
-        if("true".equals(pipelineContainer.getRequest().getParameter("debug"))) {
+        if(pipelineContainer.getSearchQuery() != null && pipelineContainer.getSearchQuery().isDebug()) {
+            pipelineContainer.setDebug(true);
+        } else if(pipelineContainer.getRequest() != null && "true".equals(pipelineContainer.getRequest().getParameter("debug"))) {
             pipelineContainer.setDebug(true);
         }
         return pipelineContainer;
