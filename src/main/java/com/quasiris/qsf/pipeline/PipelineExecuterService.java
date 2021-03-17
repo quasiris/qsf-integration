@@ -62,17 +62,20 @@ public class PipelineExecuterService {
             try {
                 LOG.debug("The filter: " + filter.getId() + " started.");
                 filter.start();
-                if(pipelineContainer.isDebugEnabled()) {
-                    debugRuntime(pipelineContainer, filter);
-                }
                 if(filter.isActive() && pipelineContainer.isFilterActive(filter.getId())) {
                     pipelineContainer = filter.filter(pipelineContainer);
                 } else {
                     LOG.debug("The filter: " + filter.getId() + " is not active.");
                 }
+                if(pipelineContainer.isDebugEnabled()) {
+                    debugRuntime(pipelineContainer, filter);
+                }
                 LOG.debug("The filter: " + filter.getId() + " took: " + filter.getCurrentTime() + " ms.");
             } catch(PipelineStopException stop)  {
                 LOG.debug("The filter: " + filter.getId() + " was stopped.");
+                if(pipelineContainer.isDebugEnabled()) {
+                    debugRuntime(pipelineContainer, filter);
+                }
                 return pipelineContainer;
             } catch(PipelineRestartException restart)  {
                 LOG.debug("The filter: " + filter.getId() + " initiated a restart of the pipeline.");
