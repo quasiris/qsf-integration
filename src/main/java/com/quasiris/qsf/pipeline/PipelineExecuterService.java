@@ -79,9 +79,15 @@ public class PipelineExecuterService {
                 return pipelineContainer;
             } catch(PipelineRestartException restart)  {
                 LOG.debug("The filter: " + filter.getId() + " initiated a restart of the pipeline.");
+                if(pipelineContainer.isDebugEnabled()) {
+                    debugRuntime(pipelineContainer, filter);
+                }
                 throw restart;
             } catch (Exception e) {
                 LOG.debug("The filter: " + filter.getId() + " failed with an error: " + e.getMessage());
+                if(pipelineContainer.isDebugEnabled()) {
+                    debugRuntime(pipelineContainer, filter);
+                }
                 filter.onError(pipelineContainer, e);
             }
         }
