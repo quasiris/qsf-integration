@@ -19,6 +19,9 @@ All notable changes qsf-integration project will be documented in this file.
 - the message is replaced by a status object
 - the timeout is indicated by a status code
 
+### Fixed
+- keep the order of the configured facets for the elastic result mapper
+
 ## [2.15]
 ### Added
 - make it possible to set a custom searchQuery object in the elastic query transformer

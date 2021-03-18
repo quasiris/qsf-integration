@@ -16,15 +16,15 @@ import java.util.*;
  */
 public class Elastic2SearchResultMappingTransformer implements SearchResultTransformerIF {
 
-    private Map<String, List<String>> fieldMapping = new HashMap<>();
+    private Map<String, List<String>> fieldMapping = new LinkedHashMap<>();
 
 
-    private Map<String, String> facetMapping = new HashMap<>();
-    private Map<String, String> facetNameMapping = new HashMap<>();
-    private Map<String, FacetKeyMapper> facetKeyMapperMap = new HashMap<>();
+    private Map<String, String> facetMapping = new LinkedHashMap<>();
+    private Map<String, String> facetNameMapping = new LinkedHashMap<>();
+    private Map<String, FacetKeyMapper> facetKeyMapperMap = new LinkedHashMap<>();
 
-    private Map<String, String> sliderMapping = new HashMap<>();
-    private Map<String, String> sliderNameMapping = new HashMap<>();
+    private Map<String, String> sliderMapping = new LinkedHashMap<>();
+    private Map<String, String> sliderNameMapping = new LinkedHashMap<>();
 
 
     private String filterPrefix = "";
@@ -61,6 +61,12 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             return;
         }
 
+        for(Map.Entry<String, String> facetName : facetNameMapping.entrySet()) {
+            if(!facetMapping.containsKey(facetName.getKey()) &&
+                    !sliderMapping.containsKey(facetName.getKey())) {
+                facetMapping.put(facetName.getKey(), facetName.getKey());
+            }
+        }
 
         // for backward compatibility
         // if no mapping is defined for a aggregation a default facet mapping is configured
