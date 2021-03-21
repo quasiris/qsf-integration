@@ -1,6 +1,5 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -10,8 +9,6 @@ import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class QsfqlFilterTransformer {
@@ -28,21 +25,21 @@ public class QsfqlFilterTransformer {
 
     private SearchQuery searchQuery;
 
-    private Map<String, String> filterRules = new HashMap<>();
+    private Map<String, String> filterRules;
 
-    private Map<String, String> filterMapping = new HashMap<>();
+    private Map<String, String> filterMapping;
 
 
     private QsfqlFilterMapper filterMapper;
 
-    private boolean multiSelectFilter = false;
+    private boolean multiSelectFilter;
 
 
     public QsfqlFilterTransformer(ObjectMapper objectMapper, ObjectNode elasticQuery, SearchQuery searchQuery) {
         this.objectMapper = objectMapper;
         this.elasticQuery = elasticQuery;
         this.searchQuery = searchQuery;
-        this.filterMapper = new QsfqlFilterMapper(searchQuery.getSearchFilterList());
+        this.filterMapper = new QsfqlFilterMapper();
     }
 
 
@@ -64,14 +61,10 @@ public class QsfqlFilterTransformer {
         this.filterMapping = filterMapping;
         this.filterPath = filterPath;
         this.filterVariable = filterVariable;
-        this.filterMapper = new QsfqlFilterMapper(searchQuery.getSearchFilterList());
+        this.filterMapper = new QsfqlFilterMapper();
         this.filterMapper.setFilterMapping(filterMapping);
         this.filterMapper.setFilterRules(filterRules);
         this.multiSelectFilter = multiSelectFilter;
-    }
-
-    public ObjectNode getElasticQuery() {
-        return elasticQuery;
     }
 
 
@@ -82,11 +75,6 @@ public class QsfqlFilterTransformer {
 
     public ObjectMapper getObjectMapper() {
         return objectMapper;
-    }
-
-
-    private SearchQuery getSearchQuery() {
-        return searchQuery;
     }
 
     public Map<String, String> getFilterMapping() {
@@ -119,8 +107,8 @@ public class QsfqlFilterTransformer {
         JsonBuilder filterBuilder = JsonBuilder.create();
 
 
-        ArrayNode filters = filterMapper.computeFilterForOperator(FilterOperator.AND);
-        ArrayNode orFilters = filterMapper.createFiltersOr();
+        ArrayNode filters = filterMapper.computeFilterForOperator(FilterOperator.AND, searchQuery.getSearchFilterList());
+        ArrayNode orFilters = filterMapper.createFiltersOr(searchQuery.getSearchFilterList());
         filters.addAll(orFilters);
         if(filters != null && filters.size() > 0) {
             filterBuilder.
@@ -130,7 +118,7 @@ public class QsfqlFilterTransformer {
                     addJson(filters);
         }
 
-        ArrayNode notFilters = filterMapper.computeFilterForOperator(FilterOperator.NOT);
+        ArrayNode notFilters = filterMapper.computeFilterForOperator(FilterOperator.NOT, searchQuery.getSearchFilterList());
         if(notFilters != null && notFilters.size() > 0) {
             filterBuilder.
                     root().
@@ -138,8 +126,6 @@ public class QsfqlFilterTransformer {
                     array("must_not").
                     addJson(notFilters);
         }
-
-
 
         JsonBuilder.create().
                 newJson(elasticQuery).
@@ -150,7 +136,7 @@ public class QsfqlFilterTransformer {
 
     public void transformFiltersVersionOlder2() throws JsonBuilderException {
 
-        if(getSearchQuery().getSearchFilterList().size() == 0) {
+        if(searchQuery.getSearchFilterList().size() == 0) {
             return;
         }
         JsonBuilder jsonBuilder = new JsonBuilder();
@@ -158,7 +144,7 @@ public class QsfqlFilterTransformer {
                 object("bool").
                 array("must");
 
-        for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
+        for (SearchFilter searchFilter : searchQuery.getSearchFilterList()) {
 
             String elasticField = filterMapper.mapFilterField(searchFilter.getName());
             if(elasticField == null) {
@@ -189,87 +175,25 @@ public class QsfqlFilterTransformer {
 
 
     public void transformFiltersCurrentVersion() throws JsonBuilderException {
-        if(filterMapper.getSearchFilters().size() == 0) {
+        if(searchQuery.getSearchFilterList().size() == 0) {
             return;
         }
-        ObjectNode filters = getFilterAsJson();
+        ObjectNode filters = filterMapper.getFilterAsJson(searchQuery.getSearchFilterList());
 
         elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("query/bool/filter").json("bool", filters).get();
     }
 
-    public ObjectNode getFilterAsJson() throws JsonBuilderException {
-        ObjectNode filterBool = (ObjectNode) JsonBuilder.create().object().get();
-        transformFilters(filterBool, "must", FilterOperator.AND);
-        transformFiltersOr(filterBool);
-        transformFilters(filterBool, "must_not", FilterOperator.NOT);
-        return filterBool;
-    }
+
 
     public void transformFiltersMultiselect() throws JsonBuilderException {
-        if(filterMapper.getSearchFilters().size() == 0) {
+        if(searchQuery.getSearchFilterList().size() == 0) {
             return;
         }
-        ObjectNode filters = getFilterAsJson();
+        ObjectNode filters = filterMapper.getFilterAsJson(searchQuery.getSearchFilterList());
         elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("post_filter").json("bool", filters).get();
     }
 
-    public void transformFilters(ObjectNode filterBool, String elasticOperator, FilterOperator filterOperator) throws JsonBuilderException {
-
-        ArrayNode filters = filterMapper.computeFilterForOperator(filterOperator);
-        if(filters == null || filters.size() == 0) {
-            return;
-        }
-        ArrayNode filter = (ArrayNode) filterBool.get(elasticOperator);
-
-        if(filter != null && filter.isArray()) {
-            for (Iterator<JsonNode> it = filter.iterator(); it.hasNext();) {
-                filters.add(it.next());
-            }
-        }
-        filterBool.set(elasticOperator, filters);
+    public ObjectNode getElasticQuery() {
+        return elasticQuery;
     }
-
-    public ObjectNode getPostFilter() throws JsonBuilderException {
-        JsonBuilder jsonBuilder = JsonBuilder.create().newJson(getElasticQuery());
-        jsonBuilder.pathsForceCreate("post_filter/bool");
-        ObjectNode postFilter = (ObjectNode) jsonBuilder.getCurrent();
-        return postFilter;
-
-
-    }
-    public ObjectNode getFilterBool() throws JsonBuilderException {
-        JsonBuilder jsonBuilder = JsonBuilder.create().newJson(getElasticQuery());
-
-        if(filterPath != null) {
-            jsonBuilder.pathsForceCreate(filterPath + "/bool");
-        } else if(filterPath == null && filterVariable == null && jsonBuilder.exists("query/function_score/query")) {
-            throw new IllegalArgumentException("This is not supported anymore. Use filterPath or filterVariable to set the filters.");
-            // jsonBuilder.pathsForceCreate("query/function_score/query/bool/filter/bool");
-        } else {
-            // LOG.warn ...
-            jsonBuilder.pathsForceCreate("query/bool/filter/bool");
-        }
-        ObjectNode bool = (ObjectNode) jsonBuilder.getCurrent();
-        return bool;
-    }
-
-
-
-    public void transformFiltersOr(ObjectNode filterBool) throws JsonBuilderException {
-
-        ArrayNode orFilters = filterMapper.createFiltersOr();
-
-        if(orFilters == null || orFilters.size() == 0) {
-            return;
-        }
-
-        ArrayNode must = (ArrayNode) filterBool.get("must");
-        if (must == null) {
-            filterBool.set("must", getObjectMapper().createArrayNode());
-            must = (ArrayNode) filterBool.get("must");
-        }
-
-        must.addAll(orFilters);
-    }
-
 }

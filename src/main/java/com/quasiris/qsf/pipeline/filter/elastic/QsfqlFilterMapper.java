@@ -1,6 +1,9 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
@@ -12,6 +15,7 @@ import com.quasiris.qsf.util.DateUtil;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,20 +23,16 @@ import java.util.stream.Collectors;
 public class QsfqlFilterMapper {
 
 
-    private List<SearchFilter> searchFilters;
-
     private Map<String, String> filterRules = new HashMap<>();
 
     private Map<String, String> filterMapping = new HashMap<>();
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     public QsfqlFilterMapper() {
     }
 
-    public QsfqlFilterMapper(List<SearchFilter> searchFilters) {
-        this.searchFilters = searchFilters;
-    }
-
-    public ArrayNode computeFilterForOperator(FilterOperator filterOperator) throws JsonBuilderException {
+    public ArrayNode computeFilterForOperator(FilterOperator filterOperator, List<SearchFilter> searchFilters) throws JsonBuilderException {
         List<SearchFilter> searchFilterList = searchFilters.stream().
                 filter(sf -> sf.getFilterOperator().equals(filterOperator)).
                 collect(Collectors.toList());
@@ -151,7 +151,7 @@ public class QsfqlFilterMapper {
 
     }
 
-    public ArrayNode createFiltersOr() throws JsonBuilderException {
+    public ArrayNode createFiltersOr(List<SearchFilter> searchFilters)  throws JsonBuilderException {
         List<SearchFilter> searchFilterList = searchFilters.stream().
                 filter(sf -> sf.getFilterOperator().equals(FilterOperator.OR)).
                 collect(Collectors.toList());
@@ -173,22 +173,47 @@ public class QsfqlFilterMapper {
 
     }
 
-    /**
-     * Getter for property 'searchFilters'.
-     *
-     * @return Value for property 'searchFilters'.
-     */
-    public List<SearchFilter> getSearchFilters() {
-        return searchFilters;
+    public ObjectNode getFilterAsJson(List<SearchFilter> searchFilters) throws JsonBuilderException {
+        ObjectNode filterBool = (ObjectNode) JsonBuilder.create().object().get();
+        transformFilters(filterBool, "must", FilterOperator.AND, searchFilters);
+        transformFiltersOr(filterBool, searchFilters);
+        transformFilters(filterBool, "must_not", FilterOperator.NOT, searchFilters);
+        return filterBool;
     }
 
-    /**
-     * Setter for property 'searchFilters'.
-     *
-     * @param searchFilters Value to set for property 'searchFilters'.
-     */
-    public void setSearchFilters(List<SearchFilter> searchFilters) {
-        this.searchFilters = searchFilters;
+    public void transformFilters(ObjectNode filterBool, String elasticOperator, FilterOperator filterOperator, List<SearchFilter> searchFilters) throws JsonBuilderException {
+
+        ArrayNode filters = computeFilterForOperator(filterOperator, searchFilters);
+        if(filters == null || filters.size() == 0) {
+            return;
+        }
+        ArrayNode filter = (ArrayNode) filterBool.get(elasticOperator);
+
+        if(filter != null && filter.isArray()) {
+            for (Iterator<JsonNode> it = filter.iterator(); it.hasNext();) {
+                filters.add(it.next());
+            }
+        }
+        filterBool.set(elasticOperator, filters);
+    }
+
+
+
+    public void transformFiltersOr(ObjectNode filterBool, List<SearchFilter> searchFilters) throws JsonBuilderException {
+
+        ArrayNode orFilters = createFiltersOr(searchFilters);
+
+        if(orFilters == null || orFilters.size() == 0) {
+            return;
+        }
+
+        ArrayNode must = (ArrayNode) filterBool.get("must");
+        if (must == null) {
+            filterBool.set("must", objectMapper.createArrayNode());
+            must = (ArrayNode) filterBool.get("must");
+        }
+
+        must.addAll(orFilters);
     }
 
     /**
