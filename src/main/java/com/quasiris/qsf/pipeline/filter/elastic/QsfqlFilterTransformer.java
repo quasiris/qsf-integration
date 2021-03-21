@@ -61,9 +61,11 @@ public class QsfqlFilterTransformer {
         this.filterMapping = filterMapping;
         this.filterPath = filterPath;
         this.filterVariable = filterVariable;
+
         this.filterMapper = new QsfqlFilterMapper();
         this.filterMapper.setFilterMapping(filterMapping);
         this.filterMapper.setFilterRules(filterRules);
+
         this.multiSelectFilter = multiSelectFilter;
     }
 

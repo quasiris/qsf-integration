@@ -72,12 +72,18 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
     public void transformAggregationsMultiSelect() throws JsonBuilderException {
+        QsfqlFilterMapper filterMapper = new QsfqlFilterMapper();
+        filterMapper.setFilterMapping(this.filterMapping);
+        filterMapper.setFilterRules(this.filterRules);
 
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object();
         boolean hasAggs = false;
         for (Facet aggregation : aggregations) {
-            JsonNode agg = AggregationMapper.createAgg(aggregation, false);
+
+            ObjectNode filters  = filterMapper.getFilterAsJson(searchQuery.getSearchFilterList());
+
+            JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters);
             jsonBuilder.json(agg);
             hasAggs = true;
         }
