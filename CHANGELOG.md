@@ -11,6 +11,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Breaking Changes
 - use the Hit datastructure for innerhits in elastic result
+- remove support for static defined filters in elastic profiles
 
 ### Deprecated
 - don't use the request response from the pipeline countainer directly

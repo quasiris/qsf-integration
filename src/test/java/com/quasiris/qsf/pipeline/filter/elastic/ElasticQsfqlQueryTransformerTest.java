@@ -291,18 +291,6 @@ public class ElasticQsfqlQueryTransformerTest {
         assertEquals("0", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("min_doc_count").asText());
     }
 
-
-    @Test
-    public void transformFilterWithStaticDefinedFilters() throws Exception {
-        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
-        transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location-with-static-defined-filters.json");
-        transformer.addFilterMapping("brand", "brandElasticField");
-        transformer.addFilterMapping("color", "colorElasticField");
-        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
-        assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("term").get("colorElasticField").asText());
-        assertEquals("alice", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(2).get("term").get("staticElasticField").asText());
-    }
-
     @Test
     public void transformFilterVersion1() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
