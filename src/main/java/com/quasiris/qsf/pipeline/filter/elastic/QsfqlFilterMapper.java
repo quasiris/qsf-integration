@@ -174,6 +174,9 @@ public class QsfqlFilterMapper {
     }
 
     public ObjectNode getFilterAsJson(List<SearchFilter> searchFilters) throws JsonBuilderException {
+        if(searchFilters.size() == 0) {
+            return null;
+        }
         ObjectNode filterBool = (ObjectNode) JsonBuilder.create().object().get();
         transformFilters(filterBool, "must", FilterOperator.AND, searchFilters);
         transformFiltersOr(filterBool, searchFilters);

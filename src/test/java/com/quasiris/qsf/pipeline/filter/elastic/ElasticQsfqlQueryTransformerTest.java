@@ -364,6 +364,107 @@ public class ElasticQsfqlQueryTransformerTest {
         Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
     }
 
+    @DisplayName("Transform facet")
+    @Test
+    public void transformFacet() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+
+        Facet brand = new Facet();
+        brand.setId("brand");
+        brand.setName("brand");
+        transformer.addAggregation(brand);
+
+        Facet stock = new Facet();
+        stock.setId("stock");
+        stock.setName("stock");
+        transformer.addAggregation(stock);
+
+
+        ObjectNode elasticQuery = transform(transformer,  "q=*");
+
+        assertEquals("brand", elasticQuery.get("aggs").get("brand").get("terms").get("field").asText());
+        assertEquals("stock", elasticQuery.get("aggs").get("stock").get("terms").get("field").asText());
+    }
+
+    @DisplayName("Transform facet with multi select filters")
+    @Test
+    public void transformFacetFilterMultiselect() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+
+        Facet brand = new Facet();
+        brand.setId("brand");
+        brand.setName("brand");
+        transformer.addAggregation(brand);
+
+        Facet stock = new Facet();
+        stock.setId("stock");
+        stock.setName("stock");
+        transformer.addAggregation(stock);
+
+        Facet type = new Facet();
+        type.setId("type");
+        type.setName("type");
+        transformer.addAggregation(type);
+
+        transformer.addFilterMapping("brand", "brandElasticField");
+        transformer.addFilterMapping("stock", "stockElasticField");
+        transformer.addFilterMapping("type", "typeElasticField");
+
+        ObjectNode elasticQuery = transform(transformer,  "q=*", "f.brand=waldschuh", "f.stock=true");
+
+        assertEquals("true", elasticQuery.get("aggs").get("brand_filter_wrapper").get("filter").get("must").get(0).get("term").get("stockElasticField").asText());
+        assertEquals("brand", elasticQuery.get("aggs").get("brand_filter_wrapper").get("aggs").get("brand").get("terms").get("field").asText());
+
+        assertEquals("waldschuh", elasticQuery.get("aggs").get("stock_filter_wrapper").get("filter").get("must").get(0).get("term").get("brandElasticField").asText());
+        assertEquals("stock", elasticQuery.get("aggs").get("stock_filter_wrapper").get("aggs").get("stock").get("terms").get("field").asText());
+
+        assertEquals("waldschuh", elasticQuery.get("aggs").get("type_filter_wrapper").get("filter").get("must").get(0).get("term").get("brandElasticField").asText());
+        assertEquals("true", elasticQuery.get("aggs").get("type_filter_wrapper").get("filter").get("must").get(1).get("term").get("stockElasticField").asText());
+        assertEquals("type", elasticQuery.get("aggs").get("type_filter_wrapper").get("aggs").get("type").get("terms").get("field").asText());
+
+        assertEquals("waldschuh", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
+        assertEquals("true", elasticQuery.get("post_filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
+
+    }
+
+    @DisplayName("Transform facet with multi select filters and no filter is queried")
+    @Test
+    public void transformFacetFilterMultiselectNoFilterInQuery() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+
+        Facet brand = new Facet();
+        brand.setId("brand");
+        brand.setName("brand");
+        transformer.addAggregation(brand);
+
+        Facet stock = new Facet();
+        stock.setId("stock");
+        stock.setName("stock");
+        transformer.addAggregation(stock);
+
+        Facet type = new Facet();
+        type.setId("type");
+        type.setName("type");
+        transformer.addAggregation(type);
+
+        transformer.addFilterMapping("brand", "brandElasticField");
+        transformer.addFilterMapping("stock", "stockElasticField");
+        transformer.addFilterMapping("type", "typeElasticField");
+
+        ObjectNode elasticQuery = transform(transformer,  "q=*");
+
+        assertEquals("brand", elasticQuery.get("aggs").get("brand").get("terms").get("field").asText());
+        assertEquals("stock", elasticQuery.get("aggs").get("stock").get("terms").get("field").asText());
+        assertEquals("type", elasticQuery.get("aggs").get("type").get("terms").get("field").asText());
+
+
+    }
+
     @DisplayName("Transform date range filter")
     @Test
     public void transformDateHistogramFacet() throws Exception {
