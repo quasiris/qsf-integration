@@ -53,7 +53,9 @@ public class QsfqlFilterTransformer {
                                   Map<String, String> filterRules,
                                   Map<String, String> filterMapping,
                                   String filterPath,
-                                  String filterVariable) {
+                                  String filterVariable,
+                                  boolean multiSelectFilter
+    ) {
         this.elasticVersion = elasticVersion;
         this.objectMapper = objectMapper;
         this.elasticQuery = elasticQuery;
@@ -65,6 +67,7 @@ public class QsfqlFilterTransformer {
         this.filterMapper = new QsfqlFilterMapper(searchQuery.getSearchFilterList());
         this.filterMapper.setFilterMapping(filterMapping);
         this.filterMapper.setFilterRules(filterRules);
+        this.multiSelectFilter = multiSelectFilter;
     }
 
     public ObjectNode getElasticQuery() {
@@ -96,6 +99,7 @@ public class QsfqlFilterTransformer {
     public void transformFilters() throws JsonBuilderException {
         if(multiSelectFilter) {
             transformFiltersMultiselect();
+            return;
         }
 
         if(filterVariable != null) {
@@ -198,10 +202,12 @@ public class QsfqlFilterTransformer {
 
 
     public void transformFiltersMultiselect() throws JsonBuilderException {
-        ObjectNode filterBool = (ObjectNode) JsonBuilder.create().object("bool").get();
+        ObjectNode filterBool = (ObjectNode) JsonBuilder.create().object().get();
         transformFilters(filterBool, "must", FilterOperator.AND);
         transformFiltersOr(filterBool);
         transformFilters(filterBool, "must_not", FilterOperator.NOT);
+
+        elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("post_filter").json("bool", filterBool).get();
     }
 
     public void transformFilters(ObjectNode filterBool, String elasticOperator, FilterOperator filterOperator) throws JsonBuilderException {

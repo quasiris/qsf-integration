@@ -31,6 +31,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     private String filterPath;
     private String filterVariable;
 
+    private boolean multiSelectFilter;
+
 
     @Override
     public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
@@ -146,28 +148,10 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 getFilterRules(),
                 getFilterMapping(),
                 filterPath,
-                filterVariable
+                filterVariable,
+                multiSelectFilter
         );
         filterTransformer.transformFilters();
-    }
-
-
-
-    public ObjectNode getBoolQuery() {
-        ObjectNode query = (ObjectNode) getElasticQuery().get("query");
-        ObjectNode functionScore = (ObjectNode) query.get("function_score");
-        if(functionScore != null) {
-            query = (ObjectNode) functionScore.get("query");
-        }
-
-
-
-        ObjectNode bool = (ObjectNode) query.get("bool");
-        if(bool == null) {
-            bool = objectMapper.createObjectNode();
-            query.set("bool", bool);
-        }
-        return bool;
     }
 
     public void transformPaging() {
@@ -350,5 +334,23 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
      */
     public void setFilterVariable(String filterVariable) {
         this.filterVariable = filterVariable;
+    }
+
+    /**
+     * Getter for property 'multiSelectFilter'.
+     *
+     * @return Value for property 'multiSelectFilter'.
+     */
+    public boolean isMultiSelectFilter() {
+        return multiSelectFilter;
+    }
+
+    /**
+     * Setter for property 'multiSelectFilter'.
+     *
+     * @param multiSelectFilter Value to set for property 'multiSelectFilter'.
+     */
+    public void setMultiSelectFilter(boolean multiSelectFilter) {
+        this.multiSelectFilter = multiSelectFilter;
     }
 }
