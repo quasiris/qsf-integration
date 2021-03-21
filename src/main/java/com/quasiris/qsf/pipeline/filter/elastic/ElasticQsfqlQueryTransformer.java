@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
@@ -8,6 +9,7 @@ import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.query.Sort;
 
 import java.util.*;
@@ -59,7 +61,36 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 addAggregation(facet);
             }
         }
-        super.transformAggregations();
+
+        if(multiSelectFilter) {
+            transformAggregationsMultiSelect();
+        } else {
+            super.transformAggregations();
+        }
+
+
+    }
+
+    public void transformAggregationsMultiSelect() throws JsonBuilderException {
+
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.object();
+        boolean hasAggs = false;
+        for (Facet aggregation : aggregations) {
+            JsonNode agg = AggregationMapper.createAgg(aggregation, false);
+            jsonBuilder.json(agg);
+            hasAggs = true;
+        }
+
+        for (Slider slider : sliders) {
+            JsonNode agg = AggregationMapper.createSlider(slider);
+            jsonBuilder.json(agg);
+            hasAggs = true;
+        }
+
+        if (hasAggs) {
+            elasticQuery.set("aggs", jsonBuilder.get());
+        }
 
     }
 

@@ -4,11 +4,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.Slider;
+
+import java.util.List;
 
 public class AggregationMapper {
 
     public static JsonNode createAgg(Facet facet, boolean isSubFacet) {
+        return createAgg(facet, isSubFacet, null);
+    }
+
+    public static JsonNode createAgg(Facet facet, boolean isSubFacet, List<SearchFilter> searchFilterList) {
 
         try {
 
@@ -46,6 +53,10 @@ public class AggregationMapper {
                 jsonBuilder.root().path(name);
                 JsonNode subAggs = createAgg(facet.getChildren(), true);
                 jsonBuilder.json("aggs", subAggs);
+            }
+
+            if(searchFilterList != null) {
+
             }
 
             return jsonBuilder.get();

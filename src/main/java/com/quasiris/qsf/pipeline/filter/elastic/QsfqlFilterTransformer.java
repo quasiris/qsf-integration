@@ -192,22 +192,25 @@ public class QsfqlFilterTransformer {
         if(filterMapper.getSearchFilters().size() == 0) {
             return;
         }
-        ObjectNode filterBool = (ObjectNode) JsonBuilder.create().object().get();
-        transformFilters(filterBool, "must", FilterOperator.AND);
-        transformFiltersOr(filterBool);
-        transformFilters(filterBool,"must_not", FilterOperator.NOT);
+        ObjectNode filters = getFilterAsJson();
 
-        elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("query/bool/filter").json("bool", filterBool).get();
+        elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("query/bool/filter").json("bool", filters).get();
     }
 
-
-    public void transformFiltersMultiselect() throws JsonBuilderException {
+    public ObjectNode getFilterAsJson() throws JsonBuilderException {
         ObjectNode filterBool = (ObjectNode) JsonBuilder.create().object().get();
         transformFilters(filterBool, "must", FilterOperator.AND);
         transformFiltersOr(filterBool);
         transformFilters(filterBool, "must_not", FilterOperator.NOT);
+        return filterBool;
+    }
 
-        elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("post_filter").json("bool", filterBool).get();
+    public void transformFiltersMultiselect() throws JsonBuilderException {
+        if(filterMapper.getSearchFilters().size() == 0) {
+            return;
+        }
+        ObjectNode filters = getFilterAsJson();
+        elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("post_filter").json("bool", filters).get();
     }
 
     public void transformFilters(ObjectNode filterBool, String elasticOperator, FilterOperator filterOperator) throws JsonBuilderException {
