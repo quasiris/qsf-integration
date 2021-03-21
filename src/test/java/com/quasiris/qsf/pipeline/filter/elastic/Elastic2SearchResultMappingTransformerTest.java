@@ -33,15 +33,16 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void transformInnerhitsCollapse() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFieldMapping("id", "id");
+        transformer.addFieldMapping("title", "title");
+        transformer.addFieldMapping("description", "description");
+        transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
         ElasticResult elasticResult = readElasticResultFromFile("innerhits-collapse.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 
         List<Document> productTypeGrouped = searchResult.getDocuments().get(0).getChildDocument("product_type_grouped");
         assertEquals(5, productTypeGrouped.size());
         assertEquals("iphone Handy Hülle blau title-id-doc-02", productTypeGrouped.get(1).getFieldValue("title"));
-
-
-        System.out.println(searchResult);
 
     }
 
