@@ -41,8 +41,6 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     protected Set<String> sourceFields;
 
-
-
     @Override
     public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
         this.pipelineContainer = pipelineContainer;
@@ -89,13 +87,13 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         jsonBuilder.object();
         boolean hasAggs = false;
         for (Facet aggregation : aggregations) {
-            JsonNode agg = createAgg(aggregation, false);
+            JsonNode agg = AggregationMapper.createAgg(aggregation, false);
             jsonBuilder.json(agg);
             hasAggs = true;
         }
 
         for (Slider slider : sliders) {
-            JsonNode agg = createSlider(slider);
+            JsonNode agg = AggregationMapper.createSlider(slider);
             jsonBuilder.json(agg);
             hasAggs = true;
         }
@@ -156,73 +154,6 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         PrintUtil.printKeyValue(printer, indent, "profile", profile);
         return printer;
     }
-
-
-    private JsonNode createSlider(Slider slider) {
-
-        try {
-            JsonBuilder jsonBuilder = new JsonBuilder();
-            jsonBuilder.
-                    object(slider.getName()).
-                    object(slider.getType()).
-                    object("field", slider.getId());
-
-            return jsonBuilder.get();
-        } catch (JsonBuilderException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private JsonNode createAgg(Facet facet, boolean isSubFacet) {
-
-        try {
-
-            String name = facet.getName();
-            if(isSubFacet) {
-                name = "subFacet";
-            }
-
-            JsonBuilder jsonBuilder = new JsonBuilder();
-            jsonBuilder.
-                    object(name).
-                    object(facet.getType()).
-                    object("field", facet.getId()).
-                    object("include", facet.getInclude()).
-                    object("exclude", facet.getExclude()).
-                    object("size", facet.getSize());
-
-            if("date_histogram".equals(facet.getType())) {
-                jsonBuilder.
-                    object("calendar_interval", "hour").
-                    object("time_zone", "Europe/Berlin").
-                    object("min_doc_count", 0);
-            }
-
-            if(facet.getSortBy() != null) {
-                jsonBuilder.
-                stash().
-                    object("order").
-                    object(facet.getSortBy(), facet.getSortOrder()).
-                unstash();
-            }
-
-
-            if(facet.getChildren() != null) {
-                jsonBuilder.root().path(name);
-                JsonNode subAggs = createAgg(facet.getChildren(), true);
-                jsonBuilder.json("aggs", subAggs);
-            }
-
-            return jsonBuilder.get();
-
-        } catch (JsonBuilderException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
-
 
     public PipelineContainer getPipelineContainer() {
         return pipelineContainer;
