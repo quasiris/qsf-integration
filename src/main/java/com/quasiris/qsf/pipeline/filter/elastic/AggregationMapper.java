@@ -55,7 +55,10 @@ public class AggregationMapper {
             if(filters != null) {
                 JsonBuilder aggFilterWrapper = JsonBuilder.create().
                         object(name + "_filter_wrapper").
-                        json("filter", filters).
+                        stash().
+                        object("filter").
+                        json("bool", filters).
+                        unstash().
                         json("aggs", jsonBuilder.get());
 
                 jsonBuilder = aggFilterWrapper;

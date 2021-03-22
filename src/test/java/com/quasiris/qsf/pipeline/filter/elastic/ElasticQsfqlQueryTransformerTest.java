@@ -395,17 +395,17 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setMultiSelectFilter(true);
 
         Facet brand = new Facet();
-        brand.setId("brand");
+        brand.setId("brandElasticField");
         brand.setName("brand");
         transformer.addAggregation(brand);
 
         Facet stock = new Facet();
-        stock.setId("stock");
+        stock.setId("stockElasticField");
         stock.setName("stock");
         transformer.addAggregation(stock);
 
         Facet type = new Facet();
-        type.setId("type");
+        type.setId("typeElasticField");
         type.setName("type");
         transformer.addAggregation(type);
 
@@ -415,19 +415,49 @@ public class ElasticQsfqlQueryTransformerTest {
 
         ObjectNode elasticQuery = transform(transformer,  "q=*", "f.brand=waldschuh", "f.stock=true");
 
-        assertEquals("true", elasticQuery.get("aggs").get("brand_filter_wrapper").get("filter").get("must").get(0).get("term").get("stockElasticField").asText());
-        assertEquals("brand", elasticQuery.get("aggs").get("brand_filter_wrapper").get("aggs").get("brand").get("terms").get("field").asText());
+        assertEquals("true", elasticQuery.get("aggs").get("brand_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("stockElasticField").asText());
+        assertEquals("brandElasticField", elasticQuery.get("aggs").get("brand_filter_wrapper").get("aggs").get("brand").get("terms").get("field").asText());
 
-        assertEquals("waldschuh", elasticQuery.get("aggs").get("stock_filter_wrapper").get("filter").get("must").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("stock", elasticQuery.get("aggs").get("stock_filter_wrapper").get("aggs").get("stock").get("terms").get("field").asText());
+        assertEquals("waldschuh", elasticQuery.get("aggs").get("stock_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
+        assertEquals("stockElasticField", elasticQuery.get("aggs").get("stock_filter_wrapper").get("aggs").get("stock").get("terms").get("field").asText());
 
-        assertEquals("waldschuh", elasticQuery.get("aggs").get("type_filter_wrapper").get("filter").get("must").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("true", elasticQuery.get("aggs").get("type_filter_wrapper").get("filter").get("must").get(1).get("term").get("stockElasticField").asText());
-        assertEquals("type", elasticQuery.get("aggs").get("type_filter_wrapper").get("aggs").get("type").get("terms").get("field").asText());
+
+
+        assertEquals("waldschuh", elasticQuery.get("aggs").get("type_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
+        assertEquals("true", elasticQuery.get("aggs").get("type_filter_wrapper").get("filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
+        assertEquals("typeElasticField", elasticQuery.get("aggs").get("type_filter_wrapper").get("aggs").get("type").get("terms").get("field").asText());
 
         assertEquals("waldschuh", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
         assertEquals("true", elasticQuery.get("post_filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
+    }
 
+    @DisplayName("Transform facet with multi select filters")
+    @Test
+    public void transformWaldlaufer() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+
+        Facet farbe = new Facet();
+        farbe.setId("attr_farbe.keyword");
+        farbe.setName("farbe");
+        transformer.addAggregation(farbe);
+
+        Facet futter = new Facet();
+        futter.setId("attr_futter.keyword");
+        futter.setName("futter");
+        transformer.addAggregation(futter);
+
+        Facet form = new Facet();
+        form.setId("attr_form.keyword");
+        form.setName("form");
+        transformer.addAggregation(form);
+
+        transformer.addFilterMapping("farbe", "attr_farbe.keyword");
+        transformer.addFilterMapping("futter", "attr_futter.keyword");
+        transformer.addFilterMapping("form", "attr_form.keyword");
+
+        ObjectNode elasticQuery = transform(transformer,  "q=*", "f.farbe=Schwarz", "f.futter=Leder");
     }
 
     @DisplayName("Transform facet with multi select filters and no filter is queried")

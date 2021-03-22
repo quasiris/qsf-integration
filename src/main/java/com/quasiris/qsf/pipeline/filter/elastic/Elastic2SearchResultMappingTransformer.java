@@ -70,7 +70,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
         // for backward compatibility
         // if no mapping is defined for a aggregation a default facet mapping is configured
-        for(Map.Entry<String, Aggregation> aggregation : elasticResult.getAggregations().entrySet()) {
+        for(Map.Entry<String, Aggregation> aggregation : elasticResult.getAggregations().getAggregations().entrySet()) {
             if(!facetMapping.containsKey(aggregation.getKey()) &&
                     !sliderMapping.containsKey(aggregation.getKey())) {
                 facetMapping.put(aggregation.getKey(), aggregation.getKey());
@@ -79,7 +79,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
 
         for(Map.Entry<String, String> mapping : facetMapping.entrySet()) {
-            Aggregation aggregation = elasticResult.getAggregations().get(mapping.getKey());
+            Aggregation aggregation = elasticResult.getAggregations().getAggregations().get(mapping.getKey());
             if(aggregation == null) {
                 continue;
             }
@@ -88,7 +88,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
 
         for(Map.Entry<String, String> mapping : sliderMapping.entrySet()) {
-            Aggregation aggregation = elasticResult.getAggregations().get(mapping.getKey());
+            Aggregation aggregation = elasticResult.getAggregations().getAggregations().get(mapping.getKey());
             if(aggregation == null) {
                 continue;
             }

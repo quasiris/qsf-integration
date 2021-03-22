@@ -22,8 +22,8 @@ public class ElasticResultTest {
         assertEquals(139727L,elasticResult.getHits().getTotal().longValue());
 
 
-        assertEquals("village", elasticResult.getAggregations().get("places").getBuckets().get(0).getKey());
-        assertEquals(Long.valueOf(7427L), elasticResult.getAggregations().get("places").getBuckets().get(0).getDoc_count());
+        assertEquals("village", elasticResult.getAggregations().getAggregations().get("places").getBuckets().get(0).getKey());
+        assertEquals(Long.valueOf(7427L), elasticResult.getAggregations().getAggregations().get("places").getBuckets().get(0).getDoc_count());
     }
 
     @Test
@@ -36,7 +36,7 @@ public class ElasticResultTest {
         assertEquals(139727L,elasticResult.getHits().getTotal().longValue());
 
 
-        assertEquals("village", elasticResult.getAggregations().get("places").getBuckets().get(0).getKey());
-        assertEquals(Long.valueOf(7427L), elasticResult.getAggregations().get("places").getBuckets().get(0).getDoc_count());
+        assertEquals("village", elasticResult.getAggregations().getAggregations().get("places").getBuckets().get(0).getKey());
+        assertEquals(Long.valueOf(7427L), elasticResult.getAggregations().getAggregations().get("places").getBuckets().get(0).getDoc_count());
     }
 }

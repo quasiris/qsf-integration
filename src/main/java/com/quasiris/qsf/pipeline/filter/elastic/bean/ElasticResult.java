@@ -2,8 +2,6 @@ package com.quasiris.qsf.pipeline.filter.elastic.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.Map;
-
 /**
  * Created by mki on 19.11.17.
  */
@@ -14,7 +12,7 @@ public class ElasticResult {
 
     private Hits hits;
 
-    private Map<String, Aggregation> aggregations;
+    private Aggregations aggregations;
 
     public long getTook() {
         return took;
@@ -32,11 +30,21 @@ public class ElasticResult {
         this.hits = hits;
     }
 
-    public Map<String, Aggregation> getAggregations() {
+    /**
+     * Getter for property 'aggregations'.
+     *
+     * @return Value for property 'aggregations'.
+     */
+    public Aggregations getAggregations() {
         return aggregations;
     }
 
-    public void setAggregations(Map<String, Aggregation> aggregations) {
+    /**
+     * Setter for property 'aggregations'.
+     *
+     * @param aggregations Value to set for property 'aggregations'.
+     */
+    public void setAggregations(Aggregations aggregations) {
         this.aggregations = aggregations;
     }
 

@@ -46,6 +46,24 @@ class Elastic2SearchResultMappingTransformerTest {
 
     }
 
+    @Test
+    void transformFilteredAggregation() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFieldMapping("id", "id");
+        transformer.addFieldMapping("title", "title");
+        transformer.addFieldMapping("description", "description");
+        transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
+        ElasticResult elasticResult = readElasticResultFromFile("filtered-agg.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+
+        assertEquals(3, searchResult.getFacets().size());
+        assertEquals(10, searchResult.getFacetById("farbe").getValues().size());
+        assertEquals("farbe", searchResult.getFacetById("farbe").getId());
+        assertEquals("farbe", searchResult.getFacetById("farbe").getName());
+        assertEquals("Schwarz", searchResult.getFacetById("farbe").getValues().get(0).getValue());
+
+    }
+
     public ElasticResult readElasticResultFromFile(String fileName) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String file = "src/test/resources/com/quasiris/qsf/pipeline/filter/elastic/bean/" + fileName;
