@@ -83,7 +83,11 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         boolean hasAggs = false;
         for (Facet aggregation : aggregations) {
 
-            List<SearchFilter> excludeFilters = searchQuery.getSearchFilterList().stream().filter(f -> !filterMapping.get(f.getId()).equals(aggregation.getId())).collect(Collectors.toList());
+
+
+            List<SearchFilter> excludeFilters = searchQuery.getSearchFilterList().stream().
+                    filter(f -> !filterMapper.mapFilterField(f.getId()).equals(aggregation.getId())).
+                    collect(Collectors.toList());
             ObjectNode filters  = filterMapper.getFilterAsJson(excludeFilters);
 
             JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters);
