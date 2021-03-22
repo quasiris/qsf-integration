@@ -5,6 +5,7 @@ import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Sort;
 import com.quasiris.qsf.query.parser.QsfqlParserTest;
@@ -387,9 +388,9 @@ public class ElasticQsfqlQueryTransformerTest {
         assertEquals("stock", elasticQuery.get("aggs").get("stock").get("terms").get("field").asText());
     }
 
-    @DisplayName("Transform facet with multi select filters")
+    @DisplayName("Transform facet with multi select filters with or operator")
     @Test
-    public void transformFacetFilterMultiselect() throws Exception {
+    public void transformFacetFilterMultiselectOperatorOr() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
         transformer.setProfile(Profiles.matchAll());
         transformer.setMultiSelectFilter(true);
@@ -397,16 +398,19 @@ public class ElasticQsfqlQueryTransformerTest {
         Facet brand = new Facet();
         brand.setId("brandElasticField");
         brand.setName("brand");
+        brand.setOperator(FilterOperator.OR);
         transformer.addAggregation(brand);
 
         Facet stock = new Facet();
         stock.setId("stockElasticField");
         stock.setName("stock");
+        stock.setOperator(FilterOperator.OR);
         transformer.addAggregation(stock);
 
         Facet type = new Facet();
         type.setId("typeElasticField");
         type.setName("type");
+        type.setOperator(FilterOperator.OR);
         transformer.addAggregation(type);
 
         transformer.addFilterMapping("brand", "brandElasticField");
@@ -419,6 +423,55 @@ public class ElasticQsfqlQueryTransformerTest {
         assertEquals("brandElasticField", elasticQuery.get("aggs").get("brand_filter_wrapper").get("aggs").get("brand").get("terms").get("field").asText());
 
         assertEquals("waldschuh", elasticQuery.get("aggs").get("stock_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
+        assertEquals("stockElasticField", elasticQuery.get("aggs").get("stock_filter_wrapper").get("aggs").get("stock").get("terms").get("field").asText());
+
+
+
+        assertEquals("waldschuh", elasticQuery.get("aggs").get("type_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
+        assertEquals("true", elasticQuery.get("aggs").get("type_filter_wrapper").get("filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
+        assertEquals("typeElasticField", elasticQuery.get("aggs").get("type_filter_wrapper").get("aggs").get("type").get("terms").get("field").asText());
+
+        assertEquals("waldschuh", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
+        assertEquals("true", elasticQuery.get("post_filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
+    }
+
+   @DisplayName("Transform facet with multi select filters with AND operator")
+    @Test
+    public void transformFacetFilterMultiselectOperatorAnd() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+
+        Facet brand = new Facet();
+        brand.setId("brandElasticField");
+        brand.setName("brand");
+        brand.setOperator(FilterOperator.AND);
+        transformer.addAggregation(brand);
+
+        Facet stock = new Facet();
+        stock.setId("stockElasticField");
+        stock.setName("stock");
+        stock.setOperator(FilterOperator.AND);
+        transformer.addAggregation(stock);
+
+        Facet type = new Facet();
+        type.setId("typeElasticField");
+        type.setName("type");
+        type.setOperator(FilterOperator.AND);
+        transformer.addAggregation(type);
+
+        transformer.addFilterMapping("brand", "brandElasticField");
+        transformer.addFilterMapping("stock", "stockElasticField");
+        transformer.addFilterMapping("type", "typeElasticField");
+
+        ObjectNode elasticQuery = transform(transformer,  "q=*", "f.brand=waldschuh", "f.stock=true");
+
+        assertEquals("waldschuh", elasticQuery.get("aggs").get("brand_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
+        assertEquals("true", elasticQuery.get("aggs").get("brand_filter_wrapper").get("filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
+        assertEquals("brandElasticField", elasticQuery.get("aggs").get("brand_filter_wrapper").get("aggs").get("brand").get("terms").get("field").asText());
+
+        assertEquals("waldschuh", elasticQuery.get("aggs").get("stock_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
+        assertEquals("true", elasticQuery.get("aggs").get("stock_filter_wrapper").get("filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
         assertEquals("stockElasticField", elasticQuery.get("aggs").get("stock_filter_wrapper").get("aggs").get("stock").get("terms").get("field").asText());
 
 
