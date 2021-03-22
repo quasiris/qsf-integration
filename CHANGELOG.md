@@ -1,7 +1,19 @@
 # Changelog
 All notable changes qsf-integration project will be documented in this file.
 
-## [Unreleased]
+## [UNRELEASED]
+### Added
+- add an operator to the facet to implement multi select facets
+
+### Changed
+
+### Breaking Changes
+
+### Deprecated
+
+### Fixed
+
+## [2.16]
 ### Added
 - add a possibility to stop a running pipeline
 - add a possibility to restart a running pipeline

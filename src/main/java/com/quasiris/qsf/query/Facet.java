@@ -19,6 +19,8 @@ public class Facet {
 
     private Facet children;
 
+    private FilterOperator operator = FilterOperator.AND;
+
     public String getId() {
         return id;
     }
@@ -122,6 +124,23 @@ public class Facet {
         this.exclude = exclude;
     }
 
+    /**
+     * Getter for property 'operator'.
+     *
+     * @return Value for property 'operator'.
+     */
+    public FilterOperator getOperator() {
+        return operator;
+    }
+
+    /**
+     * Setter for property 'operator'.
+     *
+     * @param operator Value to set for property 'operator'.
+     */
+    public void setOperator(FilterOperator operator) {
+        this.operator = operator;
+    }
 
     @Override
     public String toString() {

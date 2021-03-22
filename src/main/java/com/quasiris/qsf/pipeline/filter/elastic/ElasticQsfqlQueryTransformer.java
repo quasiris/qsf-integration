@@ -9,6 +9,7 @@ import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.query.Sort;
@@ -83,11 +84,14 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         boolean hasAggs = false;
         for (Facet aggregation : aggregations) {
 
-
-
-            List<SearchFilter> excludeFilters = searchQuery.getSearchFilterList().stream().
-                    filter(f -> !filterMapper.mapFilterField(f.getId()).equals(aggregation.getId())).
-                    collect(Collectors.toList());
+            List<SearchFilter> excludeFilters;
+            if(aggregation.getOperator().equals(FilterOperator.AND)) {
+                excludeFilters = searchQuery.getSearchFilterList();
+            } else {
+                excludeFilters = searchQuery.getSearchFilterList().stream().
+                        filter(f -> !filterMapper.mapFilterField(f.getId()).equals(aggregation.getId())).
+                        collect(Collectors.toList());
+            }
             ObjectNode filters  = filterMapper.getFilterAsJson(excludeFilters);
 
             JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters);
