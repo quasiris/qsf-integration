@@ -90,7 +90,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         }
 
         for (Slider slider : sliders) {
-            ObjectNode filters = getFilterAsJson(filterMapper, slider.getId(), FilterOperator.AND);
+            ObjectNode filters = getFilterAsJson(filterMapper, slider.getId(), FilterOperator.OR);
             JsonNode agg = AggregationMapper.createSlider(slider, filters);
             jsonBuilder.json(agg);
             hasAggs = true;
