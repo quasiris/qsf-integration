@@ -72,6 +72,10 @@ public class AggregationMapper {
     }
 
     public static JsonNode createSlider(Slider slider) {
+        return createSlider(slider, null);
+    }
+
+    public static JsonNode createSlider(Slider slider, JsonNode filters) {
 
         try {
             JsonBuilder jsonBuilder = new JsonBuilder();
@@ -79,6 +83,18 @@ public class AggregationMapper {
                     object(slider.getName()).
                     object(slider.getType()).
                     object("field", slider.getId());
+
+            if(filters != null) {
+                JsonBuilder aggFilterWrapper = JsonBuilder.create().
+                        object(slider.getName() + "_filter_wrapper").
+                        stash().
+                        object("filter").
+                        json("bool", filters).
+                        unstash().
+                        json("aggs", jsonBuilder.get());
+
+                jsonBuilder = aggFilterWrapper;
+            }
 
             return jsonBuilder.get();
         } catch (JsonBuilderException e) {

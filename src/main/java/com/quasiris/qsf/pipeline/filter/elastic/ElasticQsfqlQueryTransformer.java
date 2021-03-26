@@ -83,24 +83,15 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         jsonBuilder.object();
         boolean hasAggs = false;
         for (Facet aggregation : aggregations) {
-
-            List<SearchFilter> excludeFilters;
-            if(aggregation.getOperator().equals(FilterOperator.AND)) {
-                excludeFilters = searchQuery.getSearchFilterList();
-            } else {
-                excludeFilters = searchQuery.getSearchFilterList().stream().
-                        filter(f -> !filterMapper.mapFilterField(f.getId()).equals(aggregation.getId())).
-                        collect(Collectors.toList());
-            }
-            ObjectNode filters  = filterMapper.getFilterAsJson(excludeFilters);
-
+            ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getOperator());
             JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters);
             jsonBuilder.json(agg);
             hasAggs = true;
         }
 
         for (Slider slider : sliders) {
-            JsonNode agg = AggregationMapper.createSlider(slider);
+            ObjectNode filters = getFilterAsJson(filterMapper, slider.getId(), FilterOperator.AND);
+            JsonNode agg = AggregationMapper.createSlider(slider, filters);
             jsonBuilder.json(agg);
             hasAggs = true;
         }
@@ -109,6 +100,19 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             elasticQuery.set("aggs", jsonBuilder.get());
         }
 
+    }
+
+    private ObjectNode getFilterAsJson(QsfqlFilterMapper filterMapper, String id, FilterOperator operator ) throws JsonBuilderException{
+        List<SearchFilter> excludeFilters;
+        if(operator.equals(FilterOperator.AND)) {
+            excludeFilters = searchQuery.getSearchFilterList();
+        } else {
+            excludeFilters = searchQuery.getSearchFilterList().stream().
+                    filter(f -> !filterMapper.mapFilterField(f.getId()).equals(id)).
+                    collect(Collectors.toList());
+        }
+        ObjectNode filters  = filterMapper.getFilterAsJson(excludeFilters);
+        return filters;
     }
 
     public void transformQuery() {
