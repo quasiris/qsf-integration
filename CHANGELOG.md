@@ -5,6 +5,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Added
 - add an operator to the facet to implement multi select facets
 - implement multi select faceting for sliders
+- add a data structure for redirects
 
 ### Changed
 

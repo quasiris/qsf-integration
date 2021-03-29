@@ -47,6 +47,8 @@ public class SearchResult{
 
     private Paging paging;
 
+    private Redirect redirect;
+
     private Map<String, Object> context;
 
     public String getName() {
@@ -255,6 +257,24 @@ public class SearchResult{
         context.put(name, value);
     }
 
+    /**
+     * Getter for property 'redirect'.
+     *
+     * @return Value for property 'redirect'.
+     */
+    public Redirect getRedirect() {
+        return redirect;
+    }
+
+    /**
+     * Setter for property 'redirect'.
+     *
+     * @param redirect Value to set for property 'redirect'.
+     */
+    public void setRedirect(Redirect redirect) {
+        this.redirect = redirect;
+    }
+
     @Override
     public String toString() {
         return "SearchResult{" +
@@ -268,8 +288,11 @@ public class SearchResult{
                 ", total=" + total +
                 ", maxScore=" + maxScore +
                 ", facets=" + facets +
+                ", sliders=" + sliders +
                 ", facetCount=" + facetCount +
                 ", paging=" + paging +
+                ", redirect=" + redirect +
+                ", context=" + context +
                 '}';
     }
 }
