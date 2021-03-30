@@ -10,8 +10,8 @@ import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Sort;
 import com.quasiris.qsf.query.parser.QsfqlParserTest;
 import com.quasiris.qsf.test.converter.NullValueConverter;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -353,7 +353,7 @@ public class ElasticQsfqlQueryTransformerTest {
     }
 
 
-    @Ignore
+    @Disabled
     @DisplayName("Transform date range filter")
     @Test
     public void transformDateRangeFilter() throws Exception {
