@@ -5,6 +5,7 @@ import com.quasiris.qsf.pipeline.filter.web.RequestParser;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.util.PrintUtil;
 import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.apache.solr.client.solrj.SolrQuery;
 
 import java.util.*;
@@ -49,11 +50,11 @@ public class SolrParameterQueryTransformer implements QueryTransformerIF {
             replaceMap.put("param." + param.getKey(), param.getValue());
         }
 
-        StrSubstitutor strSubstitutor = new StrSubstitutor(replaceMap);
+        StringSubstitutor stringSubstitutor = new StringSubstitutor(replaceMap);
 
         for(Map.Entry<String, List<String>> parameter: parameters.entrySet()) {
             for(String value: parameter.getValue()) {
-                String replacedValue = strSubstitutor.replace(value);
+                String replacedValue = stringSubstitutor.replace(value);
                 solrQuery.add(parameter.getKey(),replacedValue);
             }
         }

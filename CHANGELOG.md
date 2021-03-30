@@ -8,6 +8,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add a data structure for redirects
 
 ### Changed
+- use StringSubstitutor instead of StrSubstitutor because it is deprecated
 
 ### Breaking Changes
 

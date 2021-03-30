@@ -1,18 +1,22 @@
 package com.quasiris.qsf.pipeline.filter.solr;
 
 import com.google.common.base.Strings;
+import com.quasiris.qsf.response.Document;
 import com.quasiris.qsf.response.Facet;
+import com.quasiris.qsf.response.FacetValue;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.util.EncodingUtil;
-import com.quasiris.qsf.response.Document;
-import com.quasiris.qsf.response.FacetValue;
 import com.quasiris.qsf.util.PrintUtil;
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mki on 11.11.17.
@@ -85,11 +89,11 @@ public class Solr2SearchResultMappingTransformer implements SearchResultTransfor
             replaceMap.put(fieldName, String.valueOf(value));
         }
 
-        StrSubstitutor strSubstitutor = new StrSubstitutor(replaceMap);
+        StringSubstitutor stringSubstitutor = new StringSubstitutor(replaceMap);
         for(Map.Entry<String, String> textEntry: resultFields.entrySet()) {
             String fieldName = textEntry.getKey();
             String fieldValue = textEntry.getValue();
-            String replacedValue = strSubstitutor.replace(fieldValue);
+            String replacedValue = stringSubstitutor.replace(fieldValue);
             document.getDocument().put(fieldName, replacedValue);
         }
 

@@ -5,7 +5,7 @@ import com.google.common.io.Files;
 import com.quasiris.qsf.util.ElasticUtil;
 import com.quasiris.qsf.util.JsonUtil;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,8 +30,8 @@ public class ProfileLoader {
                 entry.setValue("null");
             }
         }
-        StrSubstitutor strSubstitutor = new StrSubstitutor(vars);
-        profile = strSubstitutor.replace(profile);
+        StringSubstitutor stringSubstitutor = new StringSubstitutor(vars);
+        profile = stringSubstitutor.replace(profile);
         return profile;
     }
 
