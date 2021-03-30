@@ -6,6 +6,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add an operator to the facet to implement multi select facets
 - implement multi select faceting for sliders
 - add a data structure for redirects
+- implement a DocumentStringSubstitutor to replace all variables in a string with the values of the document
 
 ### Changed
 - use StringSubstitutor instead of StrSubstitutor because it is deprecated
