@@ -64,12 +64,6 @@ class Elastic2SearchResultMappingTransformerTest {
 
     }
 
-    @Test
-    void testJupiter() throws Exception {
-        assertEquals("foo", "bar");
-
-    }
-
     public ElasticResult readElasticResultFromFile(String fileName) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String file = "src/test/resources/com/quasiris/qsf/pipeline/filter/elastic/bean/" + fileName;
