@@ -10,8 +10,8 @@ import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Sort;
 import com.quasiris.qsf.query.parser.QsfqlParserTest;
 import com.quasiris.qsf.test.converter.NullValueConverter;
+import com.quasiris.qsf.util.DateUtil;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,6 +19,8 @@ import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 /**
  * Created by mki on 04.02.18.
  */
@@ -353,7 +355,6 @@ public class ElasticQsfqlQueryTransformerTest {
     }
 
 
-    @Disabled
     @DisplayName("Transform date range filter")
     @Test
     public void transformDateRangeFilter() throws Exception {
@@ -362,7 +363,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("timestamp", "timestamp");
         ObjectNode elasticQuery = transform(transformer,  "f.timestamp.daterange=2021-01-02T23:00:00Z,2021-02-05T20:59:38Z");
 
-        assertEquals("2021-01-03T00:00:00.000+0100", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("timestamp").get("gte").asText());
+        assertTrue(DateUtil.isDateEqual("2021-01-03T00:00:00.000+0100", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("timestamp").get("gte").asText()));
         assertEquals("2021-02-05T21:59:38.000+0100", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("timestamp").get("lte").asText());
         Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
     }

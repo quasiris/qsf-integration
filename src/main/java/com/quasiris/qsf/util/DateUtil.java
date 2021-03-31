@@ -80,6 +80,15 @@ public class DateUtil {
         return formatter.format(date);
     }
 
+    public static boolean isDateEqual(String date1, String date2) throws ParseException {
+        Date d1 = getDate(date1);
+        Date d2 = getDate(date2);
+        return isDateEqual(d1, d2);
+    }
+
+    public static boolean isDateEqual(Date date1, Date date2) {
+        return date1.compareTo(date2) == 0;
+    }
     public static String now() {
         return getDate(new Date());
     }
