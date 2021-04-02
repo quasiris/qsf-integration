@@ -23,7 +23,10 @@ public class ProfileLoader {
         } else {
             profile = loadProfileFromFile(filename);
         }
+        return replaceParameters(profile, vars);
+    }
 
+    public static String replaceParameters(String profile, Map<String, Object> vars) {
 
         for (Map.Entry<String, Object> entry : vars.entrySet()) {
             if(entry.getValue() == null) {
@@ -33,6 +36,7 @@ public class ProfileLoader {
         StringSubstitutor stringSubstitutor = new StringSubstitutor(vars);
         profile = stringSubstitutor.replace(profile);
         return profile;
+
     }
 
     public static String loadProfileFromClasspath(String filename) throws IOException {

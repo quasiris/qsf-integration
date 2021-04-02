@@ -14,6 +14,7 @@ import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.util.PrintUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,7 +131,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
         String request = "";
         try {
-            request = ProfileLoader.loadProfile(profile, replaceMap);
+            request = loadProfile(replaceMap);
             JsonBuilder jsonBuilder = new JsonBuilder();
             jsonBuilder.string(request);
             for(Map.Entry<String, Object> e : replaceMap.entrySet()) {
@@ -147,6 +148,10 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             throw new RuntimeException("Could not load elastic query from profile: " + profile, e);
         }
 
+    }
+
+    public String loadProfile(Map<String, Object> values) throws IOException {
+        return ProfileLoader.loadProfile(profile, values);
     }
 
     public StringBuilder print(String indent) {
