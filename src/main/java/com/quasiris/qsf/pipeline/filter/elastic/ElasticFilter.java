@@ -10,6 +10,7 @@ import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
 import com.quasiris.qsf.response.SearchResult;
 import com.quasiris.qsf.util.PrintUtil;
+import com.quasiris.qsf.util.UrlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public class ElasticFilter extends AbstractFilter {
             return pipelineContainer;
         }
 
-        pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, baseUrl);
+        pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, UrlUtil.removePassword(baseUrl));
         pipelineContainer.debug(getId() + ".query", DebugType.JSON, elasticQuery);
 
         ElasticResult elasticResult = elasticClient.request(baseUrl + "/_search", elasticQuery);

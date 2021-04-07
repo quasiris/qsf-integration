@@ -11,6 +11,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add a new parameter ctrl - to control search actions like load more facets
 - add a splitter to easily split values
 - implement a feature to load more facets in qsfql
+- remove password from url in Elastic Filter debug output
 
 ### Changed
 - use StringSubstitutor instead of StrSubstitutor because it is deprecated
