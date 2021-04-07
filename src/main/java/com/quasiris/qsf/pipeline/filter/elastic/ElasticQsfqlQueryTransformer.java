@@ -8,6 +8,7 @@ import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.query.Control;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
@@ -48,6 +49,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             transformSort();
             transformFilters();
             transformPaging();
+            transformAggregations();
         } catch (JsonBuilderException e) {
             throw new PipelineContainerException(e.getMessage(), e);
         }
@@ -61,6 +63,9 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public void transformAggregations() throws JsonBuilderException {
         if(getSearchQuery().getFacetList() != null) {
             for(Facet facet : getSearchQuery().getFacetList()) {
+                if(Control.isLoadMoreFacets(searchQuery)) {
+                    facet.setSize(1000);
+                }
                 addAggregation(facet);
             }
         }

@@ -1,5 +1,6 @@
 package com.quasiris.qsf.query.parser;
 
+import com.quasiris.qsf.query.Control;
 import com.quasiris.qsf.query.FilterDataType;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.FilterType;
@@ -23,6 +24,12 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class QsfqlParserTest {
 
+    @Test
+    public void testControl() {
+        SearchQuery query = createQuery("ctrl=loadMoreFacets,modified");
+        assertTrue(Control.isLoadMoreFacets(query));
+        assertTrue(Control.isModified(query));
+    }
     @Test
     public void testCtrl() {
         SearchQuery query = createQuery("ctrl=loadMoreFacets,modified");

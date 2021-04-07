@@ -10,6 +10,7 @@ All notable changes qsf-integration project will be documented in this file.
 - make it possible to override the loading of a profile
 - add a new parameter ctrl - to control search actions like load more facets
 - add a splitter to easily split values
+- implement a feature to load more facets in qsfql
 
 ### Changed
 - use StringSubstitutor instead of StrSubstitutor because it is deprecated
