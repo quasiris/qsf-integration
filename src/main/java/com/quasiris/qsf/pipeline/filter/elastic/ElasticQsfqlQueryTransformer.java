@@ -63,10 +63,13 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public void transformAggregations() throws JsonBuilderException {
         if(getSearchQuery().getFacetList() != null) {
             for(Facet facet : getSearchQuery().getFacetList()) {
-                if(Control.isLoadMoreFacets(searchQuery)) {
-                    facet.setSize(1000);
-                }
                 addAggregation(facet);
+            }
+        }
+
+        if(Control.isLoadMoreFacets(searchQuery)) {
+            for(Facet facet : aggregations) {
+                facet.setSize(1000);
             }
         }
 
