@@ -2,6 +2,7 @@ package com.quasiris.qsf.query.parser;
 
 import com.google.common.base.Strings;
 import com.quasiris.qsf.query.*;
+import com.quasiris.qsf.text.Splitter;
 import com.quasiris.qsf.util.DateUtil;
 
 import java.text.ParseException;
@@ -32,9 +33,17 @@ public class QsfqlParser {
         parsePaging(query);
         parseSort(query);
         parseFilter(query);
+        parseCtrl(query);
         return query;
     }
 
+    void parseCtrl(SearchQuery query) {
+        String ctrl = getParameter("ctrl");
+        if(Strings.isNullOrEmpty(ctrl)) {
+            return;
+        }
+        query.setCtrl(Splitter.splitToSet(getParameter("ctrl")));
+    }
 
     void parseMeta(SearchQuery query) {
         query.setRequestId(getParameter("requestId", UUID.randomUUID().toString()));

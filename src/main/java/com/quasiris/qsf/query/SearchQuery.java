@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by mki on 11.11.16.
@@ -35,6 +36,8 @@ public class SearchQuery {
     private String requestOrigin;
 
     private Map<String, Object> parameters;
+
+    private Set<String> ctrl;
 
     public SearchQuery() {}
 
@@ -318,7 +321,30 @@ public class SearchQuery {
         this.queryChangedReasons.add(reason);
     }
 
+    /**
+     * Getter for property 'ctrl'.
+     *
+     * @return Value for property 'ctrl'.
+     */
+    public Set<String> getCtrl() {
+        return ctrl;
+    }
 
+    /**
+     * Setter for property 'ctrl'.
+     *
+     * @param ctrl Value to set for property 'ctrl'.
+     */
+    public void setCtrl(Set<String> ctrl) {
+        this.ctrl = ctrl;
+    }
+
+    public boolean isCtrl(String value) {
+        if(this.ctrl == null) {
+            return false;
+        }
+        return this.ctrl.contains(value);
+    }
 
     @Override
     public String toString() {

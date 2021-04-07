@@ -8,6 +8,8 @@ All notable changes qsf-integration project will be documented in this file.
 - add a data structure for redirects
 - implement a DocumentStringSubstitutor to replace all variables in a string with the values of the document
 - make it possible to override the loading of a profile
+- add a new parameter ctrl - to control search actions like load more facets
+- add a splitter to easily split values
 
 ### Changed
 - use StringSubstitutor instead of StrSubstitutor because it is deprecated

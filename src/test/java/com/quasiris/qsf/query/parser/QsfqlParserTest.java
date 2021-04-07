@@ -24,6 +24,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class QsfqlParserTest {
 
     @Test
+    public void testCtrl() {
+        SearchQuery query = createQuery("ctrl=loadMoreFacets,modified");
+        assertTrue(query.isCtrl("loadMoreFacets"));
+        assertTrue(query.isCtrl("modified"));
+        assertFalse(query.isCtrl("foo"));
+    }
+
+    @Test
     public void testSort() {
         SearchQuery query = createQuery("sort=name");
         assertEquals("name", query.getSort().getSort());
