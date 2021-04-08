@@ -140,7 +140,8 @@ public class PipelineContainer {
 
     /**
      * map the request to the search Query object and
-     * use the SearchQuery
+     * TODO use the SearchQuery
+     * @return request
      */
     @Deprecated
     public HttpServletRequest getRequest() {
@@ -148,7 +149,8 @@ public class PipelineContainer {
     }
 
     /**
-     * we need this somewhere?
+     * TODO we need this somewhere?
+     * @return response
      */
     @Deprecated
     public HttpServletResponse getResponse() {
@@ -190,7 +192,8 @@ public class PipelineContainer {
     }
 
     /**
-     * use status object
+     * TODO use status object
+     * @param message param
      */
     @Deprecated
     public void error(String message) {
@@ -205,7 +208,8 @@ public class PipelineContainer {
     }
 
     /**
-     * use status object
+     * TODO use status object
+     * @param e param
      */
     @Deprecated
     public void error(Throwable e) {
@@ -217,7 +221,8 @@ public class PipelineContainer {
     }
 
     /**
-     * use status object
+     * TODO use status object
+     * @return message
      */
     @Deprecated
     public String getMessage() {
@@ -229,7 +234,8 @@ public class PipelineContainer {
     }
 
     /**
-     * use status object
+     * TODO use status object
+     * @return true if timeout
      */
     @Deprecated
     public boolean isTimeout() {
@@ -245,7 +251,8 @@ public class PipelineContainer {
     }
 
     /**
-     * the filter must decide this
+     * TODO the filter must decide this
+     * @return true if fail on any error
      */
     @Deprecated
     public boolean isFailOnError() {
@@ -253,7 +260,8 @@ public class PipelineContainer {
     }
 
     /**
-     * the filter must decide this
+     * TODO the filter must decide this
+     * @param failOnError param
      */
     @Deprecated
     public void setFailOnError(boolean failOnError) {
@@ -261,7 +269,8 @@ public class PipelineContainer {
     }
 
     /**
-     * Use conditionals
+     * TODO Use conditionals
+     * @param filterId param
      */
     @Deprecated
     public void deactivateFilter(String filterId) {
@@ -269,7 +278,8 @@ public class PipelineContainer {
     }
 
     /**
-     * Use conditionals
+     * TODO Use conditionals
+     * @param filterId param
      */
     @Deprecated
     public void activateFilter(String filterId) {
@@ -277,7 +287,9 @@ public class PipelineContainer {
     }
 
     /**
-     * Use conditionals
+     * TODO Use conditionals
+     * @param filterId param
+     * @return true if active
      */
     @Deprecated
     public boolean isFilterActive(String filterId) {
@@ -285,7 +297,9 @@ public class PipelineContainer {
     }
 
     /**
-     * Use the context
+     * TODO Use the context
+     * @param key param
+     * @param value param
      */
     @Deprecated
     public void setParameter(String key, String value) {
@@ -293,7 +307,9 @@ public class PipelineContainer {
     }
 
     /**
-     * Use the context
+     * TODO Use the context
+     * @param key param
+     * @return param
      */
     @Deprecated
     public String getParameter(String key) {
@@ -301,7 +317,8 @@ public class PipelineContainer {
     }
 
     /**
-     * Use the context
+     * TODO Use the context
+     * @return params
      */
     @Deprecated
     public Map<String, String> getParameters() {

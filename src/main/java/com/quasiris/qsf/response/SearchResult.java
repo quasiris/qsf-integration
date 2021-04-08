@@ -68,7 +68,8 @@ public class SearchResult{
     }
 
     /**
-     * use status object
+     * TODO use status object
+     * @return status message
      */
     @Deprecated
     public String getStatusMessage() {
@@ -76,7 +77,8 @@ public class SearchResult{
     }
 
     /**
-     * use status object
+     * TODO use status object
+     * @param statusMessage param
      */
     @Deprecated
     public void setStatusMessage(String statusMessage) {
@@ -92,7 +94,8 @@ public class SearchResult{
     }
 
     /**
-     * use status object
+     * TODO use status object
+     * @param statusCode param
      */
     @Deprecated
     public void setStatusCode(Integer statusCode) {
@@ -100,7 +103,8 @@ public class SearchResult{
     }
 
     /**
-     * use status object
+     * TODO use status object
+     * @return status code
      */
     @Deprecated
     public Integer getStatusCode() {
