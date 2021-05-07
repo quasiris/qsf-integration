@@ -1,4 +1,4 @@
-package com.quasiris.qsf.query.parser;
+package com.quasiris.qsf.pipeline.filter.qsql.parser;
 
 import com.google.common.base.Strings;
 import com.quasiris.qsf.query.*;

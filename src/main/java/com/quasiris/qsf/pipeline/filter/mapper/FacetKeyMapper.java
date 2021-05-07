@@ -1,4 +1,4 @@
-package com.quasiris.qsf.response.mapper;
+package com.quasiris.qsf.pipeline.filter.mapper;
 
 public interface FacetKeyMapper {
 

@@ -1,7 +1,7 @@
 package com.quasiris.qsf.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class Request {
         this.method = httpServletRequest.getMethod();
 
         this.query = httpServletRequest.getQueryString();
-        if(Strings.isNullOrEmpty(this.query)) {
+        if(StringUtils.isEmpty(this.query)) {
             this.url = httpServletRequest.getRequestURL().toString();
         } else {
             this.url = httpServletRequest.getRequestURL().append("?").append(this.query).toString();

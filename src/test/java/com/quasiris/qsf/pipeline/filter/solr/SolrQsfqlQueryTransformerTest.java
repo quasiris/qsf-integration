@@ -2,7 +2,7 @@ package com.quasiris.qsf.pipeline.filter.solr;
 
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.query.parser.QsfqlParserTest;
+import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.junit.jupiter.api.Test;
 

@@ -8,7 +8,7 @@ import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Sort;
-import com.quasiris.qsf.query.parser.QsfqlParserTest;
+import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
 import com.quasiris.qsf.test.converter.NullValueConverter;
 import com.quasiris.qsf.util.DateUtil;
 import org.junit.jupiter.api.Assertions;

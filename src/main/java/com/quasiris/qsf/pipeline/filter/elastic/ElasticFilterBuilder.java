@@ -3,7 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.Slider;
-import com.quasiris.qsf.response.mapper.FacetKeyMapper;
+import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 
 import java.util.HashSet;
 import java.util.Set;

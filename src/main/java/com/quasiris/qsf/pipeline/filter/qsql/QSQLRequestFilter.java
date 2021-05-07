@@ -5,7 +5,7 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.query.parser.QsfqlParser;
+import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParser;
 
 /**
  * Created by mki on 12.11.17.
