@@ -13,6 +13,7 @@ import java.net.URLDecoder;
 import java.security.Principal;
 import java.util.*;
 
+@Deprecated
 public class QSFHttpServletRequest implements HttpServletRequest {
 
     private String url;

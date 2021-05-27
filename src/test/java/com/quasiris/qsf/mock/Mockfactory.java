@@ -39,6 +39,7 @@ public class Mockfactory {
         return httpClient;
     }
 
+    @Deprecated
     public static HttpServletRequest createHttpServletRequest(String url){
         try {
             return new QSFHttpServletRequest(url);
