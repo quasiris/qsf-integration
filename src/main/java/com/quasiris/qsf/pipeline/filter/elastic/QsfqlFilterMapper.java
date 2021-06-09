@@ -118,6 +118,9 @@ public class QsfqlFilterMapper {
     public ArrayNode transformRangeFilter(SearchFilter searchFilter) throws JsonBuilderException {
 
         String elasticField = mapFilterField(searchFilter.getName());
+        if(elasticField == null) {
+            elasticField = searchFilter.getId();
+        }
 
         JsonBuilder rangeBuilder = JsonBuilder.create().
                 array().
