@@ -168,4 +168,18 @@ public class MonitoringResponse {
         left.setTime(left.getTime() + right.getTime());
         return left;
     }
+
+    public static MonitoringResponse merge(MonitoringResponse... monitoringResponses) {
+        MonitoringResponse ret = null;
+
+        for(MonitoringResponse monitoringResponse : monitoringResponses) {
+            if(ret == null) {
+                ret = monitoringResponse;
+                continue;
+            }
+            ret = merge(ret, monitoringResponse);
+        }
+
+        return ret;
+    }
 }

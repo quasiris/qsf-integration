@@ -128,4 +128,17 @@ public class SearchResponse {
         return searchResponse;
 
     }
+    public static SearchResponse createEmpty(String q, long duration) {
+        SearchResponse searchResponse = new SearchResponse();
+        searchResponse.setCurrentTime(new Date());
+        searchResponse.setTime(duration);
+
+        if(q != null) {
+            searchResponse.setRequest(new Request());
+            searchResponse.getRequest().setQuery(q);
+        }
+        searchResponse.setStatusCode(200);
+        return searchResponse;
+
+    }
 }
