@@ -3,7 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.*;
-import com.quasiris.qsf.response.*;
+import com.quasiris.qsf.dto.response.*;
 import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 import com.quasiris.qsf.util.EncodingUtil;

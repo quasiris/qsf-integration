@@ -5,8 +5,8 @@ import com.google.common.base.Throwables;
 import com.quasiris.qsf.exception.Debug;
 import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.response.Document;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.dto.response.SearchResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

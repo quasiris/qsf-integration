@@ -3,7 +3,7 @@ package com.quasiris.qsf.pipeline.filter.tracking;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
-import com.quasiris.qsf.response.Document;
+import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;

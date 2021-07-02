@@ -1,6 +1,6 @@
 package com.quasiris.qsf.text;
 
-import com.quasiris.qsf.response.Document;
+import com.quasiris.qsf.dto.response.Document;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

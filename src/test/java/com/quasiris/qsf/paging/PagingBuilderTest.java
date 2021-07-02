@@ -1,6 +1,6 @@
 package com.quasiris.qsf.paging;
 
-import com.quasiris.qsf.response.Paging;
+import com.quasiris.qsf.dto.response.Paging;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

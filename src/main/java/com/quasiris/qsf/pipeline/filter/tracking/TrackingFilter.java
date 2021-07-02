@@ -6,8 +6,8 @@ import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.response.Document;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.dto.response.SearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

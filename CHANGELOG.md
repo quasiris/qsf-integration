@@ -2,6 +2,10 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+## [3.0]
+### Changed
+- use qsf-dto 1.0.0 dependency
+
 ## [2.18]
 ### Added
 - add methods to easily merge monitoring responses and create a empty search response

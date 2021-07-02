@@ -2,7 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.tracking.TrackingFilter;
-import com.quasiris.qsf.response.Document;
+import com.quasiris.qsf.dto.response.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

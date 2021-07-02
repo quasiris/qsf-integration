@@ -3,7 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
 import com.quasiris.qsf.pipeline.filter.elastic.client.StandardElasticClient;
-import com.quasiris.qsf.response.Document;
+import com.quasiris.qsf.dto.response.Document;
 
 import java.io.IOException;
 import java.text.DateFormat;

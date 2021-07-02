@@ -2,8 +2,8 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
-import com.quasiris.qsf.response.Document;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.dto.response.SearchResult;
 
 /**
  * Created by mki on 04.02.18.

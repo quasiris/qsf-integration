@@ -1,9 +1,9 @@
 package com.quasiris.qsf.pipeline.filter.solr;
 
-import com.quasiris.qsf.response.Facet;
-import com.quasiris.qsf.response.FacetValue;
-import com.quasiris.qsf.response.SearchResult;
-import com.quasiris.qsf.response.Document;
+import com.quasiris.qsf.dto.response.Facet;
+import com.quasiris.qsf.dto.response.FacetValue;
+import com.quasiris.qsf.dto.response.SearchResult;
+import com.quasiris.qsf.dto.response.Document;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 

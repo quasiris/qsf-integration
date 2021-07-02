@@ -3,7 +3,7 @@ package com.quasiris.qsf.health;
 import com.quasiris.qsf.pipeline.*;
 import com.quasiris.qsf.pipeline.filter.solr.SolrFilterBuilder;
 import com.quasiris.qsf.pipeline.filter.solr.SolrParameterQueryTransformer;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.SearchResult;
 
 import java.util.ArrayList;
 import java.util.List;

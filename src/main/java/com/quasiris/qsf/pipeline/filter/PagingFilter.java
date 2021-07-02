@@ -2,9 +2,9 @@ package com.quasiris.qsf.pipeline.filter;
 
 import com.quasiris.qsf.paging.PagingBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
-import com.quasiris.qsf.response.Page;
-import com.quasiris.qsf.response.Paging;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.Page;
+import com.quasiris.qsf.dto.response.Paging;
+import com.quasiris.qsf.dto.response.SearchResult;
 
 /**
  * Created by mki on 21.01.18.

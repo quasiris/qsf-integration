@@ -4,7 +4,7 @@ import com.quasiris.qsf.paging.PagingBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.response.*;
+import com.quasiris.qsf.dto.response.*;
 
 /**
  * Created by mki on 21.01.18.

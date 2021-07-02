@@ -1,6 +1,6 @@
 package com.quasiris.qsf.monitoring;
 
-import com.quasiris.qsf.response.Document;
+import com.quasiris.qsf.dto.response.Document;
 
 /**
  * Created by tbl on 22.05.19.

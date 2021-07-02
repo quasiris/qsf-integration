@@ -8,7 +8,7 @@ import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.util.PrintUtil;
 import com.quasiris.qsf.util.UrlUtil;
 import org.slf4j.Logger;

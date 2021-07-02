@@ -2,8 +2,8 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
-import com.quasiris.qsf.response.Document;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.dto.response.SearchResult;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

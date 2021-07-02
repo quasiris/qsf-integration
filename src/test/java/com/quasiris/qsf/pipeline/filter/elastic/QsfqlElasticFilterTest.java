@@ -9,10 +9,10 @@ import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.response.Document;
-import com.quasiris.qsf.response.Facet;
-import com.quasiris.qsf.response.FacetValue;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.dto.response.Facet;
+import com.quasiris.qsf.dto.response.FacetValue;
+import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.junit.jupiter.api.Test;
 

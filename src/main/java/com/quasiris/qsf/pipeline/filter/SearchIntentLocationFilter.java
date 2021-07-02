@@ -4,8 +4,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.response.Document;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.text.TextUtils;
 
 import java.util.*;

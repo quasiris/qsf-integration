@@ -1,7 +1,7 @@
 package com.quasiris.qsf.pipeline.filter;
 
 import com.quasiris.qsf.pipeline.PipelineContainer;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.SearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

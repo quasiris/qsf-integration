@@ -2,10 +2,10 @@ package com.quasiris.qsf.pipeline.filter.elastic.suggest;
 
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
-import com.quasiris.qsf.response.Document;
-import com.quasiris.qsf.response.FacetValue;
-import com.quasiris.qsf.response.FacetValueCountComparator;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.dto.response.FacetValue;
+import com.quasiris.qsf.dto.response.FacetValueCountComparator;
+import com.quasiris.qsf.dto.response.SearchResult;
 
 import java.util.*;
 

@@ -1,7 +1,7 @@
 package com.quasiris.qsf.paging;
 
-import com.quasiris.qsf.response.Page;
-import com.quasiris.qsf.response.Paging;
+import com.quasiris.qsf.dto.response.Page;
+import com.quasiris.qsf.dto.response.Paging;
 
 import java.math.BigDecimal;
 

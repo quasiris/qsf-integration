@@ -4,10 +4,11 @@ import com.quasiris.qsf.pipeline.*;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilterBuilder;
 import com.quasiris.qsf.pipeline.filter.elastic.Profiles;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.response.Document;
-import com.quasiris.qsf.response.Facet;
-import com.quasiris.qsf.response.MonitoringResponse;
-import com.quasiris.qsf.response.SearchResult;
+import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.dto.response.Facet;
+import com.quasiris.qsf.dto.response.MonitoringResponse;
+import com.quasiris.qsf.dto.response.SearchResult;
+import com.quasiris.qsf.response.MonitoringResponseFactory;
 import com.quasiris.qsf.util.DateUtil;
 
 import java.util.ArrayList;
@@ -249,7 +250,7 @@ public class ElasticMonitoringExecuter {
             setStatus(monitoringDocument.getStatus());
             monitoring.addDocument(monitoringDocument);
         }
-        return MonitoringResponse.create(monitoring, status);
+        return MonitoringResponseFactory.create(monitoring, status);
     }
 
     /**
