@@ -3,7 +3,7 @@
 	<groupId>com.quasiris.qsf</groupId>
 	<artifactId>qsf-integration</artifactId>
 	<packaging>jar</packaging>
-	<version>2.18-SNAPSHOT</version>
+	<version>2.18</version>
 	<name>qsf-integration</name>
 	<url>https://www.quasiris.de/de/quasiris-search-cloud/</url>
     <description>Quasiris Search Framework for search integration</description>
@@ -17,7 +17,7 @@
         <connection>scm:git:${gitlab.qsc.url}/qsf-integration.git</connection>
         <developerConnection>scm:git:${gitlab.qsc.url}/qsf-integration.git</developerConnection>
         <url>https://github.com/quasiris/qsf-integration</url>
-    <tag>HEAD</tag>
+    <tag>qsf-integration-2.18</tag>
   </scm>
 
     <dependencies>
