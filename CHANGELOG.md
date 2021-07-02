@@ -2,6 +2,18 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+## [2.18]
+### Added
+- add methods to easily merge monitoring responses and create a empty search response
+- add createFilters method
+
+### Changed
+- update guava version
+
+### Deprecated
+- deprecate QSFHttpServletRequest
+
+## [2.17]
 ### Added
 - add an operator to the facet to implement multi select facets
 - implement multi select faceting for sliders
@@ -12,14 +24,11 @@ All notable changes qsf-integration project will be documented in this file.
 - add a splitter to easily split values
 - implement a feature to load more facets in qsfql
 - remove password from url in Elastic Filter debug output
-- add createFilters method
 
 ### Changed
 - use StringSubstitutor instead of StrSubstitutor because it is deprecated
 
 ### Breaking Changes
-
-### Deprecated
 
 ### Fixed
 - fix test execution by updating maven-surefire-plugin
