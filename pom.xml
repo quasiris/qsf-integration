@@ -3,7 +3,7 @@
 	<groupId>com.quasiris.qsf</groupId>
 	<artifactId>qsf-integration</artifactId>
 	<packaging>jar</packaging>
-	<version>2.19-SNAPSHOT</version>
+	<version>3.0-SNAPSHOT</version>
 	<name>qsf-integration</name>
 	<url>https://www.quasiris.de/de/quasiris-search-cloud/</url>
     <description>Quasiris Search Framework for search integration</description>
@@ -21,6 +21,11 @@
   </scm>
 
     <dependencies>
+        <dependency>
+            <groupId>com.quasiris.qsf</groupId>
+            <artifactId>qsf-dto</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
