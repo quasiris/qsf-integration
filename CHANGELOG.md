@@ -5,6 +5,7 @@ All notable changes qsf-integration project will be documented in this file.
 ## [3.0]
 ### Changed
 - use qsf-dto 1.0.0 dependency
+- move some dto methods to factory classes
 
 ## [2.18]
 ### Added
