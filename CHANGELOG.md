@@ -2,6 +2,11 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+## [3.1]
+### Changed
+- use qsf-commons dependency
+- update jackson-dataformat-yaml to 2.10.3
+
 ## [3.0]
 ### Changed
 - use qsf-dto 1.0.0 dependency
