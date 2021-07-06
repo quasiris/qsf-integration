@@ -97,6 +97,9 @@ public class QsfqlFilterMapper {
     }
 
     public String mapFilterField(String fieldName) {
+        if(fieldName == null) {
+            return null;
+        }
         String elasticField = getFilterMapping().get(fieldName);
         if(!Strings.isNullOrEmpty(elasticField)) {
             return elasticField;
