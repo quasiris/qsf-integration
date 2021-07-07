@@ -5,6 +5,7 @@ All notable changes qsf-integration project will be documented in this file.
 ## [3.1]
 ### Added
 - add mapper for SearchQuery and SearchQueryDTO
+- add QsfSearchQueryParser for migration
 
 ### Changed
 - use qsf-commons dependency
