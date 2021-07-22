@@ -5,6 +5,7 @@ import java.util.List;
 public class TestCase {
 
     private String id;
+    private String env;
 
     private List<String> envs;
 
@@ -142,5 +143,23 @@ public class TestCase {
      */
     public void setEnvs(List<String> envs) {
         this.envs = envs;
+    }
+
+    /**
+     * Getter for property 'env'.
+     *
+     * @return Value for property 'env'.
+     */
+    public String getEnv() {
+        return env;
+    }
+
+    /**
+     * Setter for property 'env'.
+     *
+     * @param env Value to set for property 'env'.
+     */
+    public void setEnv(String env) {
+        this.env = env;
     }
 }

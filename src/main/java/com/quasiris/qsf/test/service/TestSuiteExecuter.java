@@ -55,6 +55,7 @@ public class TestSuiteExecuter {
             TestExecuter testExecuter = null;
             try {
                 TestCase testCase = getTestCase(testCaseId.getId());
+                testCase.setEnv(testSuite.getDefaultEnv());
 
                 if(testSuite.getBaseUrl() != null &&
                         testSuite.getEnv() != null &&

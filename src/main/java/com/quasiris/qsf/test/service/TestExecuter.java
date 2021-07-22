@@ -317,6 +317,12 @@ public class TestExecuter {
 
     public List<AssertionResult> assertDocument(Document expected, Integer expectedPsition, SearchResult actual) {
         List<AssertionResult> assertionDocuments = new ArrayList<>();
+
+        if(expected.getDocument().get("_envs") != null) {
+            if(!expected.getValues("_envs").contains(testCase.getEnv())) {
+                return assertionDocuments;
+            }
+        }
         if(expected.getDocument().get("_total") != null) {
             OperatorParser operatorParser = new OperatorParser(expected.getDocument().get("_total"));
             operatorParser.parse();
@@ -345,7 +351,12 @@ public class TestExecuter {
             position = expected.getDocument().get("_position").toString();
         }
 
-        if (position == null) {
+        if(actual.getDocuments() == null) {
+            testCaseResult.getAssertionResults().add(AssertionResultBuilder.create().
+                    name(globalName("no documents in searchResult")).
+                    failed().
+                    build());
+        } else if (position == null) {
             if(expectedPsition < actual.getDocuments().size()) {
                 List<AssertionResult> assertionResults = assertDocument(expected, actual.getDocuments().get(expectedPsition));
                 assertionDocuments.addAll(assertionResults);
