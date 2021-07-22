@@ -45,7 +45,9 @@ public class SolrFilter extends AbstractFilter {
         SolrQuery solrQuery = queryTransformer.transform(pipelineContainer);
 
 
-        pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, query2url(this.solrBaseUrl, solrQuery));
+        if(pipelineContainer.isDebugEnabled()) {
+            pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, query2url(this.solrBaseUrl, solrQuery));
+        }
 
         SolrClient solrClient = SolrClientFactory.getSolrClient(solrBaseUrl);
         if(solrClient == null) {
@@ -53,7 +55,10 @@ public class SolrFilter extends AbstractFilter {
             SolrClientFactory.setSolrClient(solrClient, solrBaseUrl);
         }
         QueryResponse solrResponse = solrClient.query(solrQuery);
-        pipelineContainer.debug(getId() + ".result", DebugType.STRING, queryResponse2Json(solrResponse));
+
+        if(pipelineContainer.isDebugEnabled()) {
+            pipelineContainer.debug(getId() + ".result", DebugType.STRING, queryResponse2Json(solrResponse));
+        }
 
         SearchResult searchResult = searchResultTransformer.transform(solrResponse);
         searchResult.setName(resultSetId);
