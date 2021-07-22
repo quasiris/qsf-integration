@@ -42,14 +42,19 @@ public class TestSuiteExecuter {
 
         init();
 
-        for(String testCaseId : this.testSuite.getTestCases()) {
-            if(testCaseId.startsWith("#")) {
+        for(TestCase testCaseId : this.testSuite.getTestCases()) {
+            if(testCaseId.getId().startsWith("#")) {
                 // comment ... ignore
+                continue;
+            }
+
+            if(testCaseId.getEnvs() != null && !testCaseId.getEnvs().contains(this.testSuite.getDefaultEnv())) {
+                // test is disabled for this env
                 continue;
             }
             TestExecuter testExecuter = null;
             try {
-                TestCase testCase = getTestCase(testCaseId);
+                TestCase testCase = getTestCase(testCaseId.getId());
 
                 if(testSuite.getBaseUrl() != null &&
                         testSuite.getEnv() != null &&
@@ -66,7 +71,7 @@ public class TestSuiteExecuter {
 
                 if (testCase.getQuery().getAlternativeQueries() != null) {
                     for (String queryAlternative : testCase.getQuery().getAlternativeQueries()) {
-                        TestCase alternativeTestCase = getTestCase(testCaseId);
+                        TestCase alternativeTestCase = getTestCase(testCaseId.getId());
                         String encoded = UrlUtil.encode(queryAlternative);
                         String newUrl = UrlUtil.replaceQueryParameter(alternativeTestCase.getQuery().getUrl(), "q", encoded);
                         alternativeTestCase.getQuery().setUrl(newUrl);
@@ -80,7 +85,7 @@ public class TestSuiteExecuter {
                 }
             } catch (Exception e) {
                 assertionResults.add(AssertionResultBuilder.create().
-                        name(testCaseId).
+                        name(testCaseId.getId()).
                         message(e.getMessage()).
                         failed().
                         build());

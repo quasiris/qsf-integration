@@ -1,8 +1,13 @@
 package com.quasiris.qsf.test.dto;
 
+import java.util.List;
+
 public class TestCase {
 
     private String id;
+
+    private List<String> envs;
+
     private String name;
 
     private String comment;
@@ -121,6 +126,21 @@ public class TestCase {
         this.name = name;
     }
 
+    /**
+     * Getter for property 'envs'.
+     *
+     * @return Value for property 'envs'.
+     */
+    public List<String> getEnvs() {
+        return envs;
+    }
 
-
+    /**
+     * Setter for property 'envs'.
+     *
+     * @param envs Value to set for property 'envs'.
+     */
+    public void setEnvs(List<String> envs) {
+        this.envs = envs;
+    }
 }

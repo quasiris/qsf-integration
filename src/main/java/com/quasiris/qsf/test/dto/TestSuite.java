@@ -10,7 +10,7 @@ public class TestSuite {
     private String defaultEnv;
     private String baseUrl;
     private String location;
-    private List<String> testCases;
+    private List<TestCase> testCases;
 
     /**
      * Getter for property 'location'.
@@ -30,23 +30,6 @@ public class TestSuite {
         this.location = location;
     }
 
-    /**
-     * Getter for property 'testCases'.
-     *
-     * @return Value for property 'testCases'.
-     */
-    public List<String> getTestCases() {
-        return testCases;
-    }
-
-    /**
-     * Setter for property 'testCases'.
-     *
-     * @param testCases Value to set for property 'testCases'.
-     */
-    public void setTestCases(List<String> testCases) {
-        this.testCases = testCases;
-    }
 
     /**
      * Getter for property 'env'.
@@ -100,5 +83,23 @@ public class TestSuite {
      */
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    /**
+     * Getter for property 'testCases'.
+     *
+     * @return Value for property 'testCases'.
+     */
+    public List<TestCase> getTestCases() {
+        return testCases;
+    }
+
+    /**
+     * Setter for property 'testCases'.
+     *
+     * @param testCases Value to set for property 'testCases'.
+     */
+    public void setTestCases(List<TestCase> testCases) {
+        this.testCases = testCases;
     }
 }
