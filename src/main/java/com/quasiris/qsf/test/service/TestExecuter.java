@@ -346,14 +346,24 @@ public class TestExecuter {
         }
 
         if (position == null) {
-            List<AssertionResult> assertionResults = assertDocument(expected, actual.getDocuments().get(expectedPsition));
-            assertionDocuments.addAll(assertionResults);
+            if(expectedPsition < actual.getDocuments().size()) {
+                List<AssertionResult> assertionResults = assertDocument(expected, actual.getDocuments().get(expectedPsition));
+                assertionDocuments.addAll(assertionResults);
+            } else {
+                testCaseResult.getAssertionResults().add(AssertionResultBuilder.create().
+                        name(globalName("no document at position " + expectedPsition)).
+                        failed().
+                        build());
+            }
         } else if (NumberUtils.isDigits(position)) {
             Integer pos = Integer.valueOf(position);
             if (pos < actual.getDocuments().size()) {
                 assertionDocuments.addAll(assertDocument(expected, actual.getDocuments().get(pos)));
             } else {
-                // assertion fail
+                testCaseResult.getAssertionResults().add(AssertionResultBuilder.create().
+                        name(globalName("no document at position " + pos)).
+                        failed().
+                        build());
             }
         } else if (position.startsWith("top")) {
             Integer pos = Integer.valueOf(position.replaceAll("top", ""));
