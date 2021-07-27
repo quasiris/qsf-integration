@@ -7,6 +7,18 @@ public enum Operator {
 
 
     EQUALS("equals"),
+    EQUALS_IGNORE_CASE("equalsIgnoreCase"),
+    CONTAINS("contains"),
+    CONTAINS_IGNORE_CASE("containsIgnoreCase"),
+    STARTS_WITH("startsWith"),
+    STARTS_WITH_IGNORE_CASE("startsWithIgnoreCase"),
+    IS_DATE_TIME("isDateTime"),
+    IS_PATH("isPath"),
+    IS_URL("isUrl"),
+    IS_BOOLEAN("isBoolean"),
+    IS_NUMBER("isNumber"),
+    IS_STRING("isString"),
+    EXISISTS("exists"),
     GREATER("greeater"),
     GREATER_EQUALS("greeaterequals"),
     LESS("less"),
@@ -18,6 +30,24 @@ public enum Operator {
     private static Map<String, Operator> operatorMapping = new HashMap<>();
     static {
         operatorMapping.put("equals", EQUALS);
+        // deprecated
+        operatorMapping.put("equalsLowerCase", EQUALS_IGNORE_CASE);
+        operatorMapping.put("equalsIgnoreCase", EQUALS_IGNORE_CASE);
+        operatorMapping.put("contains", CONTAINS);
+        // deprecated
+        operatorMapping.put("containsLowerCase", CONTAINS_IGNORE_CASE);
+        operatorMapping.put("containsIgnoreCase", CONTAINS_IGNORE_CASE);
+        operatorMapping.put("startsWith", STARTS_WITH);
+        // deprecated
+        operatorMapping.put("startsWithLowerCase", STARTS_WITH_IGNORE_CASE);
+        operatorMapping.put("startsWithIgnoreCase", STARTS_WITH_IGNORE_CASE);
+        operatorMapping.put("isDateTime", IS_DATE_TIME);
+        operatorMapping.put("isPath", IS_PATH);
+        operatorMapping.put("isUrl", IS_URL);
+        operatorMapping.put("isBoolean", IS_BOOLEAN);
+        operatorMapping.put("isNumber", IS_NUMBER);
+        operatorMapping.put("isString", IS_STRING);
+        operatorMapping.put("exists", EXISISTS);
         operatorMapping.put("=", EQUALS);
         operatorMapping.put("greater", GREATER);
         operatorMapping.put(">", GREATER);

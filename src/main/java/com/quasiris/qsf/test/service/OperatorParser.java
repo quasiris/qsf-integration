@@ -1,5 +1,6 @@
 package com.quasiris.qsf.test.service;
 
+import com.quasiris.qsf.util.DateUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
@@ -50,39 +51,62 @@ public class OperatorParser {
         BigDecimal actualNumer = parseNumber(actual);
         BigDecimal currentNumber = parseNumber(parsedValue);
 
-        if(operator.isEquals()) {
-            if (actualNumer != null && currentNumber != null) {
-                return actualNumer.compareTo(currentNumber) == 0;
-            } else {
-                return parsedValue.equals(actual);
-            }
-        } else if(operator.isGreater()) {
-            if (actualNumer != null && currentNumber != null) {
-                return actualNumer.compareTo(currentNumber) > 0;
-            } else {
-                return actual.toString().compareTo(parsedValue.toString()) > 0;
-            }
-        } else if(operator.isLess()) {
-            if (actualNumer != null && currentNumber != null) {
-                return actualNumer.compareTo(currentNumber) < 0;
-            } else {
-                return actual.toString().compareTo(parsedValue.toString()) < 0;
-            }
-        } else if(operator.isGreaterEquals()) {
-            if (actualNumer != null && currentNumber != null) {
-                return actualNumer.compareTo(currentNumber) >= 0;
-            } else {
-                return actual.toString().compareTo(parsedValue.toString()) >= 0;
-            }
-        } else if(operator.isLessEquals()) {
-            if (actualNumer != null && currentNumber != null) {
-                return actualNumer.compareTo(currentNumber) <= 0;
-            } else {
-                return actual.toString().compareTo(parsedValue.toString()) <= 0;
-            }
-        }
+        switch (operator) {
+            case EQUALS:
+                if (actualNumer != null && currentNumber != null) {
+                    return actualNumer.compareTo(currentNumber) == 0;
+                } else {
+                    return parsedValue.equals(actual);
+                }
+            case GREATER:
+                if (actualNumer != null && currentNumber != null) {
+                    return actualNumer.compareTo(currentNumber) > 0;
+                } else {
+                    return actual.toString().compareTo(parsedValue.toString()) > 0;
+                }
+            case LESS:
+                if (actualNumer != null && currentNumber != null) {
+                    return actualNumer.compareTo(currentNumber) < 0;
+                } else {
+                    return actual.toString().compareTo(parsedValue.toString()) < 0;
+                }
+            case GREATER_EQUALS:
+                if (actualNumer != null && currentNumber != null) {
+                    return actualNumer.compareTo(currentNumber) >= 0;
+                } else {
+                    return actual.toString().compareTo(parsedValue.toString()) >= 0;
+                }
+            case LESS_EQUALS:
+                if (actualNumer != null && currentNumber != null) {
+                    return actualNumer.compareTo(currentNumber) <= 0;
+                } else {
+                    return actual.toString().compareTo(parsedValue.toString()) <= 0;
+                }
+            case STARTS_WITH:
+               return actual.toString().startsWith(parsedValue.toString());
+            case STARTS_WITH_IGNORE_CASE:
+                return actual.toString().toLowerCase().startsWith(parsedValue.toString().toLowerCase());
+            case CONTAINS:
+               return actual.toString().contains(parsedValue.toString());
+            case CONTAINS_IGNORE_CASE:
+                return actual.toString().toLowerCase().contains(parsedValue.toString().toLowerCase());
+            case IS_DATE_TIME:
+                try {
+                    DateUtil.getDate((String) actual);
+                    return true;
+                } catch (Exception e) {
+                   return false;
+                }
+            case IS_BOOLEAN:
+                if("true".equals(actual.toString()) || "false".equals(actual.toString())) {
+                    return true;
+                } else {
+                    return false;
+                }
+            default:
+                throw new IllegalArgumentException("The operator " + operator.getCode() + " is not implemented.");
 
-        return false;
+        }
     }
 
     BigDecimal parseNumber(Object value) {

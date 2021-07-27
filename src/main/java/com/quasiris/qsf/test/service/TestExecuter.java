@@ -453,111 +453,19 @@ public class TestExecuter {
 
     public List<AssertionResult>  assertStringValue(String fieldName, String expectedValue, String actualValue) {
         List<AssertionResult> assertionDocuments = new ArrayList<>();
-        String operator = "equals";
-        String[] splitted = expectedValue.split(Pattern.quote(":="));
-        if(splitted.length == 2) {
-            operator = splitted[0];
-            expectedValue = splitted[1];
-        }
+        OperatorParser operatorParser = new OperatorParser(expectedValue);
+        operatorParser.parse();
+        String message = "Check value for field: " + fieldName + " " + operatorParser.getOperator().getCode() + " " + expectedValue;
 
-        if(actualValue == null) {
-            String message = "Check value for field: " + fieldName + " " + operator + " " + expectedValue + " but the value is null in the result.";
+        if(actualValue != null && operatorParser.eval(actualValue)) {
             AssertionResult assertionResult = new AssertionResult(message);
-            assertionResult.setStatus(Status.FAILED);
-            assertionResult.setName(globalName("Field " + fieldName + " not exists"));
-            assertionDocuments.add(assertionResult);
-        } else if("equals".equals(operator)) {
-            String message = "Check value for field: " + fieldName + " equals " + expectedValue;
-            AssertionResult assertionResult = new AssertionResult();
-            assertionResult.setName(globalName("Field " + fieldName + " equals " + expectedValue));
-            if(expectedValue.equals(actualValue)) {
-                assertionResult.setStatus(Status.SUCCESS);
-                assertionResult.setMessage(message);
-            } else {
-                assertionResult.setStatus(Status.FAILED);
-                assertionResult.setMessage(message + " but was: " + actualValue);
-            }
-            assertionDocuments.add(assertionResult);
-        } else if("startsWith".equals(operator)) {
-            String message = "Check value for field: " + fieldName + " startsWith " + expectedValue;
-            AssertionResult assertionResult = new AssertionResult();
-            assertionResult.setName(globalName("Field " + fieldName + " startsWith " + expectedValue));
-            if(actualValue.startsWith(expectedValue)) {
-                assertionResult.setStatus(Status.SUCCESS);
-                assertionResult.setMessage(message);
-            } else {
-                assertionResult.setStatus(Status.FAILED);
-                assertionResult.setMessage(message + " but was: " + actualValue);
-            }
-            assertionDocuments.add(assertionResult);
-        } else if("startsWithLowerCase".equals(operator)) {
-            String message = "Check value for field: " + fieldName + " startsWithLowerCase " + expectedValue.toLowerCase();
-            AssertionResult assertionResult = new AssertionResult();
-            assertionResult.setName(globalName("Field " + fieldName + " startsWithLowerCase " + expectedValue));
-            if(actualValue.toLowerCase().startsWith(expectedValue.toLowerCase())) {
-                assertionResult.setStatus(Status.SUCCESS);
-                assertionResult.setMessage(message);
-            } else {
-                assertionResult.setStatus(Status.FAILED);
-                assertionResult.setMessage(message + " but was: " + actualValue.toLowerCase());
-            }
-            assertionDocuments.add(assertionResult);
-        } else if("contains".equals(operator)) {
-            String message = "Check value for field: " + fieldName + " contains " + expectedValue;
-            AssertionResult assertionResult = new AssertionResult();
-            assertionResult.setName(globalName("Field " + fieldName + " contains " + expectedValue));
-            if(actualValue.contains(expectedValue)) {
-                assertionResult.setStatus(Status.SUCCESS);
-                assertionResult.setMessage(message);
-            } else {
-                assertionResult.setStatus(Status.FAILED);
-                assertionResult.setMessage(message + " but was: " + actualValue);
-            }
-            assertionDocuments.add(assertionResult);
-        } else if("containsLowerCase".equals(operator)) {
-            String message = "Check value for field: " + fieldName + " containsLowerCase " + expectedValue.toLowerCase();
-            AssertionResult assertionResult = new AssertionResult();
-            assertionResult.setName(globalName("Field " + fieldName + " containsLowerCase " + expectedValue));
-            if(actualValue.toLowerCase().contains(expectedValue.toLowerCase())) {
-                assertionResult.setStatus(Status.SUCCESS);
-                assertionResult.setMessage(message);
-            } else {
-                assertionResult.setStatus(Status.FAILED);
-                assertionResult.setMessage(message + " but was: " + actualValue.toLowerCase());
-            }
-            assertionDocuments.add(assertionResult);
-        } else if("isDateTime".equals(operator)) {
-            String message = "Check field: " + fieldName + " is a dateTime value";
-            AssertionResult assertionResult = new AssertionResult();
-            assertionResult.setName(globalName("Field " + fieldName + " is dateTime value"));
-
-            try {
-                DateUtil.getDate(actualValue);
-                assertionResult.setStatus(Status.SUCCESS);
-                assertionResult.setMessage(message);
-            } catch (ParseException e) {
-                assertionResult.setStatus(Status.FAILED);
-                assertionResult.setMessage(message + " but: " + actualValue + " is not a valid date value.");
-            }
-            assertionDocuments.add(assertionResult);
-        } else if("isBoolean".equals(operator)) {
-            String message = "Check field: " + fieldName + " is a boolean value";
-            AssertionResult assertionResult = new AssertionResult();
-            assertionResult.setName(globalName("Field " + fieldName + " is a boolean value"));
-
-            if("true".equals(actualValue.toLowerCase()) || "false".equals(actualValue.toLowerCase())) {
-                assertionResult.setStatus(Status.SUCCESS);
-                assertionResult.setMessage(message);
-            } else {
-                assertionResult.setStatus(Status.FAILED);
-                assertionResult.setMessage(message + " but: " + actualValue + " is not a valid boolean value.");
-            }
+            assertionResult.setStatus(Status.SUCCESS);
+            assertionResult.setName(globalName(message));
             assertionDocuments.add(assertionResult);
         } else {
-            String message = "Check value for field: " + fieldName + " failed. Unknown operator: " + operator;
             AssertionResult assertionResult = new AssertionResult(message);
-            assertionResult.setName(globalName("Field " + fieldName + " Unknown operator: " + operator));
             assertionResult.setStatus(Status.FAILED);
+            assertionResult.setName(globalName(message + " but was: " + actualValue));
             assertionDocuments.add(assertionResult);
         }
         return assertionDocuments;
