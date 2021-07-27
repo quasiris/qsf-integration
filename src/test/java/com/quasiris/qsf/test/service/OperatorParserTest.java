@@ -13,10 +13,29 @@ public class OperatorParserTest {
 
     }
 
+    // to test strings with a colon, a operator is required
+    // exampl: =:https://www.quasiris.de
+    @Test
+    public void testDefaultOperatorWithColon() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            OperatorParser parser = new OperatorParser("https://www.quasiris.de");
+            parser.eval("https://www.quasiris.de");
+        });
+
+
+
+    }
+
     @Test
     public void testEqualstOperatorWithString() {
         OperatorParser parser = new OperatorParser("equals:foo");
         assertTrue(parser.eval("foo"));
+    }
+
+    @Test
+    public void testEqualstOperatorWithMultipleColons() {
+        OperatorParser parser = new OperatorParser("=:https://www.quasiris.de");
+        assertTrue(parser.eval("https://www.quasiris.de"));
     }
 
     @Test

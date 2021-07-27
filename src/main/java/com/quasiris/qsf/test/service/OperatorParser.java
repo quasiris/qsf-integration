@@ -26,10 +26,12 @@ public class OperatorParser {
     }
 
     protected void parseString(String stringValue) {
-        String[] splitted = stringValue.split(":");
-        if(splitted.length > 1) {
+        String[] splitted = stringValue.split(":", 2);
+        if(splitted.length == 1) {
+            this.operator = Operator.EQUALS;
+            this.parsedValue = stringValue;
+        } else if(splitted.length == 2) {
             this.operator = Operator.getOperator(splitted[0]);
-            // TODO handle situation whit a : in the parsedValue
             String value = splitted[1];
             if(NumberUtils.isDigits(value)) {
                 this.parsedValue = NumberUtils.createNumber(value);
@@ -38,8 +40,7 @@ public class OperatorParser {
             }
 
         } else {
-            this.operator = Operator.EQUALS;
-            this.parsedValue = stringValue;
+            throw new IllegalArgumentException("The value " + stringValue + " can not be parsed.");
         }
     }
 
