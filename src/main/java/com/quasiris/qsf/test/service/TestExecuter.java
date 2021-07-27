@@ -353,7 +353,7 @@ public class TestExecuter {
 
         if(actual.getDocuments() == null) {
             testCaseResult.getAssertionResults().add(AssertionResultBuilder.create().
-                    name(globalName("no documents in searchResult")).
+                    name(globalName("no documents in searchResult " + actual.getName())).
                     failed().
                     build());
         } else if (position == null) {

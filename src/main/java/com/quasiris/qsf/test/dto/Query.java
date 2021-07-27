@@ -3,13 +3,14 @@ package com.quasiris.qsf.test.dto;
 import com.quasiris.qsf.dto.query.SearchQueryDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public class Query {
 
     private String url;
     private SearchQueryDTO searchQuery;
 
-    private List<String> alternativeQueries;
+    private List<Map<String, Object>> variations;
 
     /**
      * Getter for property 'url'.
@@ -48,20 +49,20 @@ public class Query {
     }
 
     /**
-     * Getter for property 'alternativeQueries'.
+     * Getter for property 'variations'.
      *
-     * @return Value for property 'alternativeQueries'.
+     * @return Value for property 'variations'.
      */
-    public List<String> getAlternativeQueries() {
-        return alternativeQueries;
+    public List<Map<String, Object>> getVariations() {
+        return variations;
     }
 
     /**
-     * Setter for property 'alternativeQueries'.
+     * Setter for property 'variations'.
      *
-     * @param alternativeQueries Value to set for property 'alternativeQueries'.
+     * @param variations Value to set for property 'variations'.
      */
-    public void setAlternativeQueries(List<String> alternativeQueries) {
-        this.alternativeQueries = alternativeQueries;
+    public void setVariations(List<Map<String, Object>> variations) {
+        this.variations = variations;
     }
 }

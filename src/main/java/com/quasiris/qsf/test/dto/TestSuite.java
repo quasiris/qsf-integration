@@ -8,7 +8,6 @@ public class TestSuite {
     private Map<String, Environment> env;
 
     private String defaultEnv;
-    private String baseUrl;
     private String location;
     private List<TestCase> testCases;
 
@@ -65,24 +64,6 @@ public class TestSuite {
      */
     public void setDefaultEnv(String defaultEnv) {
         this.defaultEnv = defaultEnv;
-    }
-
-    /**
-     * Getter for property 'baseUrl'.
-     *
-     * @return Value for property 'baseUrl'.
-     */
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    /**
-     * Setter for property 'baseUrl'.
-     *
-     * @param baseUrl Value to set for property 'baseUrl'.
-     */
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
     }
 
     /**

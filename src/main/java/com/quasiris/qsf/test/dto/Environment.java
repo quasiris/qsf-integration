@@ -1,24 +1,26 @@
 package com.quasiris.qsf.test.dto;
 
+import java.util.Map;
+
 public class Environment {
 
-    private String baseUrl;
+    private Map<String, Object> variables;
 
     /**
-     * Getter for property 'baseUrl'.
+     * Getter for property 'variables'.
      *
-     * @return Value for property 'baseUrl'.
+     * @return Value for property 'variables'.
      */
-    public String getBaseUrl() {
-        return baseUrl;
+    public Map<String, Object> getVariables() {
+        return variables;
     }
 
     /**
-     * Setter for property 'baseUrl'.
+     * Setter for property 'variables'.
      *
-     * @param baseUrl Value to set for property 'baseUrl'.
+     * @param variables Value to set for property 'variables'.
      */
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
     }
 }

@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.quasiris.qsf.test.builder.AssertionResultBuilder;
 import com.quasiris.qsf.test.dto.AssertionResult;
+import com.quasiris.qsf.test.dto.Environment;
 import com.quasiris.qsf.test.dto.TestCase;
 import com.quasiris.qsf.test.dto.TestCaseResult;
 import com.quasiris.qsf.test.dto.TestSuite;
+import com.quasiris.qsf.util.TextUtil;
 import com.quasiris.qsf.util.UrlUtil;
 
 import java.io.File;
@@ -17,7 +19,9 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TestSuiteExecuter {
 
@@ -57,26 +61,28 @@ public class TestSuiteExecuter {
                 TestCase testCase = getTestCase(testCaseId.getId());
                 testCase.setEnv(testSuite.getDefaultEnv());
 
-                if(testSuite.getBaseUrl() != null &&
-                        testSuite.getEnv() != null &&
-                        testSuite.getDefaultEnv() != null &&
-                        testSuite.getEnv().get(testSuite.getDefaultEnv()) != null
-                ) {
-                    String url = testCase.getQuery().getUrl().replace(testSuite.getBaseUrl(), testSuite.getEnv().get(testSuite.getDefaultEnv()).getBaseUrl());
-                    testCase.getQuery().setUrl(url);
-                }
+                Environment environment = testSuite.getEnv().get(testSuite.getDefaultEnv());
 
-                testExecuter = new TestExecuter(testCase);
-                TestCaseResult testCaseResult = testExecuter.execute();
-                assertionResults.addAll(testCaseResult.getAssertionResults());
+                if (testCase.getQuery().getVariations() == null) {
+                    if (environment != null) {
+                        String url = TextUtil.replace(testCase.getQuery().getUrl(), environment.getVariables());
+                        testCase.getQuery().setUrl(url);
+                    }
 
-                if (testCase.getQuery().getAlternativeQueries() != null) {
-                    for (String queryAlternative : testCase.getQuery().getAlternativeQueries()) {
+                    testExecuter = new TestExecuter(testCase);
+                    TestCaseResult testCaseResult = testExecuter.execute();
+                    assertionResults.addAll(testCaseResult.getAssertionResults());
+                } else {
+                    for (Map<String, Object> variations : testCase.getQuery().getVariations()) {
                         TestCase alternativeTestCase = getTestCase(testCaseId.getId());
-                        String encoded = UrlUtil.encode(queryAlternative);
-                        String newUrl = UrlUtil.replaceQueryParameter(alternativeTestCase.getQuery().getUrl(), "q", encoded);
-                        alternativeTestCase.getQuery().setUrl(newUrl);
-                        String name = alternativeTestCase.getName() + " " + queryAlternative;
+
+                        Map<String, Object> variables = new HashMap<>(environment.getVariables());
+                        variables.putAll(variations);
+                        variables = UrlUtil.encode(variables, ".encoded");
+
+                        String url = TextUtil.replace(testCase.getQuery().getUrl(), variables);
+                        alternativeTestCase.getQuery().setUrl(url);
+                        String name = alternativeTestCase.getName() + " " + variables.get("q");
                         alternativeTestCase.setName(name);
                         testExecuter = new TestExecuter(alternativeTestCase);
                         TestCaseResult alternativeTestCaseResult = testExecuter.execute();
