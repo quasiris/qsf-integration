@@ -22,7 +22,11 @@ public class OperatorParserTest {
             parser.eval("https://www.quasiris.de");
         });
 
-
+    }
+    @Test
+    public void testDefaultOperatorWithTextAndColon() {
+        OperatorParser parser = new OperatorParser("Telefone bei TechMarkt: günstig kaufen");
+        assertTrue(parser.eval("Telefone bei TechMarkt: günstig kaufen"));
 
     }
 
@@ -31,6 +35,7 @@ public class OperatorParserTest {
         OperatorParser parser = new OperatorParser("equals:foo");
         assertTrue(parser.eval("foo"));
     }
+
 
     @Test
     public void testEqualstOperatorWithMultipleColons() {

@@ -30,6 +30,10 @@ public class OperatorParser {
         if(splitted.length == 1) {
             this.operator = Operator.EQUALS;
             this.parsedValue = stringValue;
+        } else if(splitted.length == 2 && splitted[0].contains(" ")) {
+            // operators have no whitespace, fallback to the default operator
+            this.operator = Operator.EQUALS;
+            this.parsedValue = stringValue;
         } else if(splitted.length == 2) {
             this.operator = Operator.getOperator(splitted[0]);
             String value = splitted[1];
