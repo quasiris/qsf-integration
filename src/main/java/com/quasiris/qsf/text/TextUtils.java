@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 /**
  * Created by mki on 17.12.17.
  */
+@Deprecated // move to qsf-commons
 public class TextUtils {
 
 
