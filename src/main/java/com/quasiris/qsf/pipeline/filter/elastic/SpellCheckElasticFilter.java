@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.pipeline.exception.PipelineConfigException;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
@@ -16,9 +17,11 @@ import com.quasiris.qsf.pipeline.filter.elastic.client.QSFHttpClient;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Token;
 import com.quasiris.qsf.util.JsonUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.Transient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -44,6 +47,9 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     private String restartPipelineId;
 
+    public SpellCheckElasticFilter() {
+    }
+
     public SpellCheckElasticFilter(String baseUrl) {
         this.baseUrl = baseUrl;
     }
@@ -58,6 +64,9 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
+        if(StringUtils.isEmpty(baseUrl)) {
+            throw new PipelineConfigException(pipelineContainer, "Required parameter baseUrl MUST NOT be empty!");
+        }
         process(pipelineContainer);
         return pipelineContainer;
     }
@@ -243,6 +252,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
      *
      * @return Value for property 'elasticClient'.
      */
+    @Transient
     public MultiElasticClientIF getElasticClient() {
         return elasticClient;
     }
@@ -252,6 +262,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
      *
      * @param elasticClient Value to set for property 'elasticClient'.
      */
+    @Transient
     public void setElasticClient(MultiElasticClientIF elasticClient) {
         this.elasticClient = elasticClient;
     }
@@ -265,6 +276,10 @@ public class SpellCheckElasticFilter extends AbstractFilter {
         this.sentenceScoringEnabled = sentenceScoringEnabled;
     }
 
+    public boolean isSentenceScoringEnabled() {
+        return sentenceScoringEnabled;
+    }
+
     /**
      * Setter for property 'minTokenLenght'.
      *
@@ -274,6 +289,10 @@ public class SpellCheckElasticFilter extends AbstractFilter {
         this.minTokenLenght = minTokenLenght;
     }
 
+    public int getMinTokenLenght() {
+        return minTokenLenght;
+    }
+
     /**
      * Setter for property 'maxTokenLenght'.
      *
@@ -281,6 +300,10 @@ public class SpellCheckElasticFilter extends AbstractFilter {
      */
     public void setMaxTokenLenght(int maxTokenLenght) {
         this.maxTokenLenght = maxTokenLenght;
+    }
+
+    public int getMaxTokenLenght() {
+        return maxTokenLenght;
     }
 
     public int getMinTokenWeight() {
@@ -298,5 +321,9 @@ public class SpellCheckElasticFilter extends AbstractFilter {
      */
     public void setRestartPipelineId(String restartPipelineId) {
         this.restartPipelineId = restartPipelineId;
+    }
+
+    public String getRestartPipelineId() {
+        return restartPipelineId;
     }
 }

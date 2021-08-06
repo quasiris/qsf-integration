@@ -2,6 +2,9 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+### Added
+- refactor code to support load search-pipelines from yaml
+
 ## [3.1]
 ### Added
 - add mapper for SearchQuery and SearchQueryDTO

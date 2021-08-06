@@ -299,4 +299,59 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         this.facetKeyMapperMap.put(id, facetKeyMapper);
     }
 
+    public Map<String, List<String>> getFieldMapping() {
+        return fieldMapping;
+    }
+
+    public void setFieldMapping(Map<String, List<String>> fieldMapping) {
+        this.fieldMapping = fieldMapping;
+    }
+
+    public Map<String, String> getFacetMapping() {
+        return facetMapping;
+    }
+
+    public void setFacetMapping(Map<String, String> facetMapping) {
+        this.facetMapping = facetMapping;
+    }
+
+    public Map<String, String> getFacetNameMapping() {
+        return facetNameMapping;
+    }
+
+    public void setFacetNameMapping(Map<String, String> facetNameMapping) {
+        this.facetNameMapping = facetNameMapping;
+    }
+
+    public Map<String, FacetKeyMapper> getFacetKeyMapperMap() {
+        return facetKeyMapperMap;
+    }
+
+    public void setFacetKeyMapperMap(Map<String, FacetKeyMapper> facetKeyMapperMap) {
+        this.facetKeyMapperMap = facetKeyMapperMap;
+    }
+
+    public Map<String, String> getSliderMapping() {
+        return sliderMapping;
+    }
+
+    public void setSliderMapping(Map<String, String> sliderMapping) {
+        this.sliderMapping = sliderMapping;
+    }
+
+    public Map<String, String> getSliderNameMapping() {
+        return sliderNameMapping;
+    }
+
+    public void setSliderNameMapping(Map<String, String> sliderNameMapping) {
+        this.sliderNameMapping = sliderNameMapping;
+    }
+
+    public String getFilterPrefix() {
+        return filterPrefix;
+    }
+
+    public void setFilterPrefix(String filterPrefix) {
+        this.filterPrefix = filterPrefix;
+    }
 }

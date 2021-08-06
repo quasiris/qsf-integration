@@ -70,7 +70,7 @@ public class SuggestFilterBuilder {
     }
 
     public SuggestFilterBuilder profileParameter(String key, String value) {
-        suggestQueryTransoformer.setProfileParameter(key, value);
+        suggestQueryTransoformer.addProfileParameter(key, value);
         return this;
     }
 

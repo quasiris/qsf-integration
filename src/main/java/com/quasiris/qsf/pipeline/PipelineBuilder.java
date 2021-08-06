@@ -4,6 +4,7 @@ import com.quasiris.qsf.pipeline.filter.ConditionFilter;
 import com.quasiris.qsf.pipeline.filter.Filter;
 import com.quasiris.qsf.pipeline.filter.LoopFilter;
 import com.quasiris.qsf.pipeline.filter.ParallelFilter;
+import com.quasiris.qsf.pipeline.filter.conditions.FilterCondition;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -82,10 +83,19 @@ public class PipelineBuilder {
         return filter(filter, pipeline.getId());
     }
 
+    @Deprecated // use serializable FilterCondition
     public PipelineBuilder conditional(Predicate<PipelineContainer> predicate) {
         return conditional(null, predicate);
     }
 
+    public PipelineBuilder conditional(String id, FilterCondition condition) {
+        conditionFilter = new ConditionFilter(pipeline.getId(), condition);
+        conditionFilter.setId(id);
+        pipeline.addFilter(conditionFilter);
+        return this;
+    }
+
+    @Deprecated // use serializable FilterCondition
     public PipelineBuilder conditional(String id, Predicate<PipelineContainer> predicate) {
         conditionFilter = new ConditionFilter(pipeline.getId(), predicate);
         conditionFilter.setId(id);

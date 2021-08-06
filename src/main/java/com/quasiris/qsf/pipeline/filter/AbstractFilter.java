@@ -5,6 +5,8 @@ import com.quasiris.qsf.pipeline.PipelineValidation;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.util.PrintUtil;
 
+import java.beans.Transient;
+
 /**
  * Created by mki on 04.11.17.
  */
@@ -31,6 +33,7 @@ public abstract class AbstractFilter implements Filter {
 
     }
 
+    @Transient
     @Override
     public long getCurrentTime() {
         return System.currentTimeMillis() - this.startTime;

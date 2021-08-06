@@ -16,6 +16,9 @@ public class Pipeline {
 
     private List<Filter> filterList = new ArrayList<>();
 
+    public Pipeline() {
+    }
+
     public Pipeline(String id) {
         this.id = id;
     }

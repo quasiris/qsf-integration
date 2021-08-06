@@ -208,6 +208,14 @@ public class TrackingFilter extends AbstractFilter {
         this.customParameter.put(key, value);
     }
 
+    public Map<String, Object> getCustomParameter() {
+        return customParameter;
+    }
+
+    public void setCustomParameter(Map<String, Object> customParameter) {
+        this.customParameter = customParameter;
+    }
+
     /**
      * Getter for property 'resultSetId'.
      *

@@ -88,8 +88,16 @@ public class ElasticFilter extends AbstractFilter {
         this.elasticClient = elasticClient;
     }
 
+    public QueryTransformerIF getQueryTransformer() {
+        return queryTransformer;
+    }
+
     public void setQueryTransformer(QueryTransformerIF queryTransformer) {
         this.queryTransformer = queryTransformer;
+    }
+
+    public SearchResultTransformerIF getSearchResultTransformer() {
+        return searchResultTransformer;
     }
 
     public void setSearchResultTransformer(SearchResultTransformerIF searchResultTransformer) {

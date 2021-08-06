@@ -14,6 +14,7 @@ import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.util.PrintUtil;
 
+import java.beans.Transient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -160,14 +161,17 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         return printer;
     }
 
+    @Transient
     public PipelineContainer getPipelineContainer() {
         return pipelineContainer;
     }
 
+    @Transient
     public SearchQuery getSearchQuery() {
         return searchQuery;
     }
 
+    @Transient
     public ObjectMapper getObjectMapper() {
         return objectMapper;
     }
@@ -176,10 +180,19 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         this.profile = profile;
     }
 
-    public void setProfileParameter(String key, Object value) {
+    public void addProfileParameter(String key, Object value) {
         this.profileParameter.put(key, value);
     }
 
+    public Map<String, Object> getProfileParameter() {
+        return profileParameter;
+    }
+
+    public void setProfileParameter(Map<String, Object> profileParameter) {
+        this.profileParameter = profileParameter;
+    }
+
+    @Transient
     public ObjectNode getElasticQuery() {
         return elasticQuery;
     }
@@ -207,6 +220,14 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         sliders.add(slider);
     }
 
+    public List<Slider> getSliders() {
+        return sliders;
+    }
+
+    public void setSliders(List<Slider> sliders) {
+        this.sliders = sliders;
+    }
+
     public void addAggregation(String name, String field, int size, String sortOrder, String sortBy, String type) {
         Facet facet = new Facet();
         facet.setName(name);
@@ -218,8 +239,20 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         aggregations.add(facet);
     }
 
+    public List<Facet> getAggregations() {
+        return aggregations;
+    }
+
+    public void setAggregations(List<Facet> aggregations) {
+        this.aggregations = aggregations;
+    }
+
     public String getProfile() {
         return profile;
+    }
+
+    public Set<String> getSourceFields() {
+        return sourceFields;
     }
 
     /**
@@ -236,6 +269,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
      *
      * @param searchQuery Value to set for property 'searchQuery'.
      */
+    @Transient
     public void setSearchQuery(SearchQuery searchQuery) {
         this.searchQuery = searchQuery;
     }
