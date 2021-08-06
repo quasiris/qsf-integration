@@ -5,8 +5,8 @@ import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.Facet;
 import com.quasiris.qsf.dto.response.FacetValue;
 import com.quasiris.qsf.dto.response.SearchResult;
-import com.quasiris.qsf.util.EncodingUtil;
 import com.quasiris.qsf.util.PrintUtil;
+import com.quasiris.qsf.util.UrlUtil;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -71,7 +71,7 @@ public class Solr2SearchResultMappingTransformer implements SearchResultTransfor
             for(FacetField.Count count: facetField.getValues()) {
                 FacetValue facetValue = new FacetValue(count.getName(), count.getCount());
                 facetReseultCount = facetReseultCount + facetValue.getCount();
-                facetValue.setFilter(filterPrefix + id + "=" + EncodingUtil.encode(count.getName()));
+                facetValue.setFilter(filterPrefix + id + "=" + UrlUtil.encode(count.getName()));
                 facet.getValues().add(facetValue);
             }
             facet.setResultCount(facetReseultCount);

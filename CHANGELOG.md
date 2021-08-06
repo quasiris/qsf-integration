@@ -2,8 +2,9 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
-### Added
+### Changed
 - refactor code to support load search-pipelines from yaml
+- move some util-functions to qsf-common
 
 ## [3.1]
 ### Added

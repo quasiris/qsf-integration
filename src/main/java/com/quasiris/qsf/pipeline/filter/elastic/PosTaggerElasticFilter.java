@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.commons.text.TextUtils;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
@@ -10,7 +11,6 @@ import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.MultiElasticClientIF;
 import com.quasiris.qsf.query.PosTag;
 import com.quasiris.qsf.query.Token;
-import com.quasiris.qsf.text.TextUtils;
 import com.quasiris.qsf.util.JsonUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;

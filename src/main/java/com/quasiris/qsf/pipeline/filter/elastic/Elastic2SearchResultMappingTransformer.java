@@ -6,7 +6,7 @@ import com.quasiris.qsf.pipeline.filter.elastic.bean.*;
 import com.quasiris.qsf.dto.response.*;
 import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
-import com.quasiris.qsf.util.EncodingUtil;
+import com.quasiris.qsf.util.UrlUtil;
 
 import java.io.IOException;
 import java.util.*;
@@ -138,13 +138,13 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             FacetValue facetValue = new FacetValue(key, bucket.getDoc_count());
             facetReseultCount = facetReseultCount + facetValue.getCount();
 
-            String filterValueEncoded = EncodingUtil.encode(bucket.getKey());
+            String filterValueEncoded = UrlUtil.encode(bucket.getKey());
 
             facetValue.setFilter(filterPrefix + facet.getId() + filterType + "=" + filterValuePrefix + filterValueEncoded);
 
             if(bucket.getSubFacet() != null) {
                 filterType=".tree";
-                String treeFilterSeperator = EncodingUtil.encode(" > ");
+                String treeFilterSeperator = UrlUtil.encode(" > ");
                 Facet subFacet = mapAggregation2Facet(
                         facetId,
                         bucket.getSubFacet(),

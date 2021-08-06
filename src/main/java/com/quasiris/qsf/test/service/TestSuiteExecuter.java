@@ -4,20 +4,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.quasiris.qsf.commons.text.TextUtils;
 import com.quasiris.qsf.test.builder.AssertionResultBuilder;
 import com.quasiris.qsf.test.dto.AssertionResult;
 import com.quasiris.qsf.test.dto.Environment;
 import com.quasiris.qsf.test.dto.TestCase;
 import com.quasiris.qsf.test.dto.TestCaseResult;
 import com.quasiris.qsf.test.dto.TestSuite;
-import com.quasiris.qsf.util.TextUtil;
 import com.quasiris.qsf.util.UrlUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +63,7 @@ public class TestSuiteExecuter {
 
                 if (testCase.getQuery().getVariations() == null) {
                     if (environment != null) {
-                        String url = TextUtil.replace(testCase.getQuery().getUrl(), environment.getVariables());
+                        String url = TextUtils.replace(testCase.getQuery().getUrl(), environment.getVariables());
                         testCase.getQuery().setUrl(url);
                     }
 
@@ -80,7 +78,7 @@ public class TestSuiteExecuter {
                         variables.putAll(variations);
                         variables = UrlUtil.encode(variables, ".encoded");
 
-                        String url = TextUtil.replace(testCase.getQuery().getUrl(), variables);
+                        String url = TextUtils.replace(testCase.getQuery().getUrl(), variables);
                         alternativeTestCase.getQuery().setUrl(url);
                         String name = alternativeTestCase.getName() + " " + variables.get("q");
                         alternativeTestCase.setName(name);
