@@ -10,7 +10,7 @@ import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Sort;
 import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
 import com.quasiris.qsf.test.converter.NullValueConverter;
-import com.quasiris.qsf.util.DateUtil;
+import com.quasiris.qsf.commons.util.DateUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

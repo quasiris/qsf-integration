@@ -1,6 +1,6 @@
 package com.quasiris.qsf.test.service;
 
-import com.quasiris.qsf.util.DateUtil;
+import com.quasiris.qsf.commons.util.DateUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;

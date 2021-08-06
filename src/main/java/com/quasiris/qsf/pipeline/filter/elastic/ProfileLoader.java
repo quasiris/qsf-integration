@@ -3,7 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.quasiris.qsf.util.ElasticUtil;
-import com.quasiris.qsf.util.JsonUtil;
+import com.quasiris.qsf.commons.util.JsonUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringSubstitutor;
 

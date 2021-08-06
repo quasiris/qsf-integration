@@ -16,7 +16,7 @@ import com.quasiris.qsf.pipeline.filter.elastic.client.MultiElasticClientIF;
 import com.quasiris.qsf.pipeline.filter.elastic.client.QSFHttpClient;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Token;
-import com.quasiris.qsf.util.JsonUtil;
+import com.quasiris.qsf.commons.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

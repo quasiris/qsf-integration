@@ -9,7 +9,7 @@ import com.quasiris.qsf.dto.response.Facet;
 import com.quasiris.qsf.dto.response.MonitoringResponse;
 import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.response.MonitoringResponseFactory;
-import com.quasiris.qsf.util.DateUtil;
+import com.quasiris.qsf.commons.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;

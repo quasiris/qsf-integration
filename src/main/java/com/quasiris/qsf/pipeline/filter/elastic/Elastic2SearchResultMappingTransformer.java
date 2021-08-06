@@ -6,7 +6,7 @@ import com.quasiris.qsf.pipeline.filter.elastic.bean.*;
 import com.quasiris.qsf.dto.response.*;
 import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
-import com.quasiris.qsf.util.UrlUtil;
+import com.quasiris.qsf.commons.util.UrlUtil;
 
 import java.io.IOException;
 import java.util.*;

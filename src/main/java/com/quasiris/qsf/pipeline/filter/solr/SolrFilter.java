@@ -5,7 +5,7 @@ import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.dto.response.SearchResult;
-import com.quasiris.qsf.util.JsonUtil;
+import com.quasiris.qsf.commons.util.JsonUtil;
 import com.quasiris.qsf.util.PrintUtil;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;

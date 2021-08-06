@@ -1,6 +1,6 @@
 package com.quasiris.qsf.ai;
 
-import com.quasiris.qsf.util.IOUtils;
+import com.quasiris.qsf.commons.util.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

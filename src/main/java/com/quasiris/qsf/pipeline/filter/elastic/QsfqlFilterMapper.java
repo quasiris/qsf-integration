@@ -10,7 +10,7 @@ import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.util.DateUtil;
+import com.quasiris.qsf.commons.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.Date;

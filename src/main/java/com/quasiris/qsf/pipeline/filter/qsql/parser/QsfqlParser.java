@@ -1,9 +1,9 @@
 package com.quasiris.qsf.pipeline.filter.qsql.parser;
 
 import com.google.common.base.Strings;
+import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.text.Splitter;
-import com.quasiris.qsf.util.DateUtil;
 
 import java.text.ParseException;
 import java.util.*;

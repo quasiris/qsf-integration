@@ -1,7 +1,7 @@
 package com.quasiris.qsf.monitoring;
 
-import com.quasiris.qsf.util.DateUtil;
-import com.quasiris.qsf.util.QsfInstant;
+import com.quasiris.qsf.commons.util.DateUtil;
+import com.quasiris.qsf.commons.util.QsfInstant;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

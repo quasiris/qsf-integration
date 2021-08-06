@@ -11,7 +11,7 @@ import com.quasiris.qsf.test.dto.Environment;
 import com.quasiris.qsf.test.dto.TestCase;
 import com.quasiris.qsf.test.dto.TestCaseResult;
 import com.quasiris.qsf.test.dto.TestSuite;
-import com.quasiris.qsf.util.UrlUtil;
+import com.quasiris.qsf.commons.util.UrlUtil;
 
 import java.io.File;
 import java.io.IOException;

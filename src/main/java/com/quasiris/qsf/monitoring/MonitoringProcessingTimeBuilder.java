@@ -1,6 +1,6 @@
 package com.quasiris.qsf.monitoring;
 
-import com.quasiris.qsf.util.QsfInstant;
+import com.quasiris.qsf.commons.util.QsfInstant;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

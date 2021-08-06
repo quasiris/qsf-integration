@@ -17,7 +17,7 @@ import com.quasiris.qsf.test.dto.JsonPath;
 import com.quasiris.qsf.test.dto.Status;
 import com.quasiris.qsf.test.dto.TestCase;
 import com.quasiris.qsf.test.dto.TestCaseResult;
-import com.quasiris.qsf.util.DateUtil;
+import com.quasiris.qsf.commons.util.DateUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
