@@ -13,5 +13,5 @@ sudo: false
 script: mvn clean package -Dgpg.skip=true
 after_success:
   - mvn test jacoco:report
-  - if [ "$JAVA_HOME" = "/home/travis/oraclejdk11" ]; then mvn coveralls:report; fi
+  - if [ "$JAVA_HOME" = "/home/travis/oraclejdk8" ]; then mvn cobertura:cobertura coveralls:report; fi
   - bash <(curl -s https://codecov.io/bash)
