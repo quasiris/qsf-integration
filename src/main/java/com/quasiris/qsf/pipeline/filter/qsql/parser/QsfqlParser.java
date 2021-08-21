@@ -1,11 +1,13 @@
 package com.quasiris.qsf.pipeline.filter.qsql.parser;
 
 import com.google.common.base.Strings;
+import com.quasiris.qsf.commons.text.date.HumanDateParser;
 import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.text.Splitter;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -168,6 +170,24 @@ public class QsfqlParser {
         return searchFilter;
     }
 
+
+    SearchFilter createHumanDateFilter(String filterName, Instant start, Instant end) {
+        SearchFilter searchFilter = new SearchFilter();
+        searchFilter.setFilterType(FilterType.RANGE);
+        searchFilter.setFilterDataType(FilterDataType.DATE);
+        searchFilter.setFilterOperator(FilterOperator.AND);
+
+        RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
+        rangeFilterValue.setMinValue(Date.from(start));
+        rangeFilterValue.setMaxValue(Date.from(end));
+
+        searchFilter.setName(filterName);
+        searchFilter.setId(filterName);
+        searchFilter.setRangeValue(rangeFilterValue);
+        return searchFilter;
+    }
+
+
     SearchFilter createDateRangeFilter(String filterName, String[] filterValues) {
         //SearchFilter<RangeFilterValue<Number>> searchFilter = new SearchFilter<>();
         SearchFilter searchFilter = new SearchFilter();
@@ -175,8 +195,16 @@ public class QsfqlParser {
         searchFilter.setFilterDataType(FilterDataType.DATE);
         searchFilter.setFilterOperator(FilterOperator.AND);
 
-        RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
+        RangeFilterValue<Date> rangeFilterValue = createRangeFilterValue(filterValues);
 
+        searchFilter.setName(filterName);
+        searchFilter.setId(filterName);
+        searchFilter.setRangeValue(rangeFilterValue);
+        return searchFilter;
+    }
+
+    RangeFilterValue<Date> createRangeFilterValue(String[] filterValues) {
+        RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
         for(String value : filterValues) {
             String[] valueSplitted = value.split(Pattern.quote(","));
             if(valueSplitted.length != 2) {
@@ -206,11 +234,8 @@ public class QsfqlParser {
                 throw new IllegalArgumentException("The min value " + min + " or max value " + max + " is no date value. " + e.getMessage(), e);
             }
         }
+        return rangeFilterValue;
 
-        searchFilter.setName(filterName);
-        searchFilter.setId(filterName);
-        searchFilter.setRangeValue(rangeFilterValue);
-        return searchFilter;
     }
 
     void parseFilter(SearchQuery query) {
@@ -249,6 +274,10 @@ public class QsfqlParser {
                     SearchFilter searchFilter = createDateRangeFilter(filterName, filterValues);
                     searchFilter.setFilterType(FilterType.RANGE);
                     searchFilter.setFilterDataType(FilterDataType.DATE);
+                    query.getSearchFilterList().add(searchFilter);
+                } else if (".humandate".equals(filterType) && filterValues.length == 1) {
+                    HumanDateParser humanDateParser = new HumanDateParser(filterValues[0]);
+                    SearchFilter searchFilter = createHumanDateFilter(filterName, humanDateParser.getStart(), humanDateParser.getEnd());
                     query.getSearchFilterList().add(searchFilter);
                 } else if (".tree".equals(filterType)) {
                     List<SearchFilter> searchFilters = createTreeFilter(filterName, filterValues);
