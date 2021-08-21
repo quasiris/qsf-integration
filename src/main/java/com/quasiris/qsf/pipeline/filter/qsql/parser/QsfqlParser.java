@@ -180,6 +180,8 @@ public class QsfqlParser {
         RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
         rangeFilterValue.setMinValue(Date.from(start));
         rangeFilterValue.setMaxValue(Date.from(end));
+        rangeFilterValue.setLowerBound(UpperLowerBound.LOWER_INCLUDED);
+        rangeFilterValue.setUpperBound(UpperLowerBound.UPPER_EXCLUDED);
 
         searchFilter.setName(filterName);
         searchFilter.setId(filterName);
