@@ -1,10 +1,13 @@
 package com.quasiris.qsf.pipeline.filter.elastic.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
 /**
  * Created by mki on 04.02.18.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Aggregation {
 
     private Integer doc_count_error_upper_bound;
