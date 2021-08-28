@@ -12,6 +12,14 @@ public class AggregationMapper {
         return createAgg(facet, isSubFacet, null);
     }
 
+    public static String mapType(String type) {
+        if(type.equals("year")) {
+            return "date_histogram";
+        }
+
+        return type;
+    }
+
     public static JsonNode createAgg(Facet facet, boolean isSubFacet, JsonNode filters) {
 
         try {
@@ -24,17 +32,27 @@ public class AggregationMapper {
             JsonBuilder jsonBuilder = new JsonBuilder();
             jsonBuilder.
                     object(name).
-                    object(facet.getType()).
+                    object(mapType(facet.getType())).
                     object("field", facet.getId()).
                     object("include", facet.getInclude()).
-                    object("exclude", facet.getExclude()).
-                    object("size", facet.getSize());
+                    object("exclude", facet.getExclude());
+
 
             if("date_histogram".equals(facet.getType())) {
                 jsonBuilder.
                         object("calendar_interval", "hour").
                         object("time_zone", "Europe/Berlin").
                         object("min_doc_count", 0);
+            } else if ("year".equals(facet.getType())) {
+                jsonBuilder.
+                        object("calendar_interval", "year").
+                        object("time_zone", "Europe/Berlin").
+                        object("format", "yyyy").
+                        object("min_doc_count", 0);
+            } else {
+                jsonBuilder.
+                        object("size", facet.getSize());
+
             }
 
             if(facet.getSortBy() != null) {
