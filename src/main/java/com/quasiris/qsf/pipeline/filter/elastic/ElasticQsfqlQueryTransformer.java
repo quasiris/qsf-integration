@@ -49,7 +49,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             transformSort();
             transformFilters();
             transformPaging();
-            transformAggregations();
         } catch (JsonBuilderException e) {
             throw new PipelineContainerException(e.getMessage(), e);
         }

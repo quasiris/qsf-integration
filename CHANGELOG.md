@@ -13,6 +13,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Deprecated
 
 ### Fixed
+- only call the transformAggregations in one filter
 
 ## [3.3]
 ### Added
