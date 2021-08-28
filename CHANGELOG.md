@@ -5,15 +5,24 @@ All notable changes qsf-integration project will be documented in this file.
 ### Added
 
 ### Changed
-- refactor code to support load search-pipelines from yaml
-- move some util-functions to qsf-common
-- update jackson version
 
 ### Breaking Changes
 
 ### Deprecated
 
 ### Fixed
+
+## [3.3]
+### Added
+- implement a human date filter
+
+## [3.2]
+
+### Changed
+- refactor code to support load search-pipelines from yaml
+- move some util-functions to qsf-common
+- update jackson version
+
 
 ## [3.1]
 ### Added
