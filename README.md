@@ -1,6 +1,6 @@
 # Quasiris Search Framework (QSF) Integration
 
-[![Build Status](https://travis-ci.org/quasiris/qsf-integration.svg?branch=master)](https://travis-ci.org/quasiris/qsf-integration)
+[![Build Status](https://travis-ci.com/quasiris/qsf-integration.svg?branch=master)](https://travis-ci.com/quasiris/qsf-integration)
 [![Coverage Status](https://coveralls.io/repos/github/quasiris/qsf-integration/badge.svg?branch=master)](https://coveralls.io/github/quasiris/qsf-integration?branch=master)
 [![Maven Central](https://img.shields.io/maven-central/v/com.quasiris.qsf/qsf-integration?color=brightgreen)](https://search.maven.org/search?q=a:qsf-integration)
 
