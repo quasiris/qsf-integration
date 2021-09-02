@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.qsql.parser;
 
+import com.quasiris.qsf.commons.util.QsfInstant;
 import com.quasiris.qsf.query.Control;
 import com.quasiris.qsf.query.FilterDataType;
 import com.quasiris.qsf.query.FilterOperator;
@@ -10,6 +11,7 @@ import com.quasiris.qsf.query.UpperLowerBound;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -168,6 +170,21 @@ public class QsfqlParserTest {
         assertEquals("timestamp", searchFilter.getName());
         assertNotNull(searchFilter.getRangeValue(Date.class).getMinValue());
         assertNotNull(searchFilter.getRangeValue(Date.class).getMaxValue());
+        assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
+        assertEquals(searchFilter.getFilterDataType(), FilterDataType.DATE);
+        assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
+        assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_INCLUDED);
+    }
+
+    @Test
+    public void testRangeFilterForDateValuesNOWAndInfinity() {
+        Instant reference = Instant.parse("2021-08-26T10:58:09.000Z");
+        QsfInstant.setNow(reference);
+        SearchQuery query = createQuery("f.timestamp.daterange=NOW,*");
+        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        assertEquals("timestamp", searchFilter.getName());
+        assertEquals(Date.from(reference), searchFilter.getRangeValue(Date.class).getMinValue());
+        assertTrue(searchFilter.getRangeValue(Date.class).getMaxValue().equals(new Date(Long.MAX_VALUE)));
         assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.DATE);
         assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);

@@ -3,8 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
-- implement a year facet type
-- implement a DateFormatFacetKeyMapper
+- implement NOW and * parameter for daterange filter
 
 ### Changed
 
@@ -12,8 +11,10 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Deprecated
 
-### Fixed
-- only call the transformAggregations in one filter
+## [3.4]
+### Added
+- implement a year facet type
+- implement a DateFormatFacetKeyMapper
 
 ## [3.3]
 ### Added

@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.qsql.parser;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.commons.text.date.HumanDateParser;
 import com.quasiris.qsf.commons.util.DateUtil;
+import com.quasiris.qsf.commons.util.QsfInstant;
 import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.text.Splitter;
 
@@ -230,8 +231,24 @@ public class QsfqlParser {
                     rangeFilterValue.setUpperBound(UpperLowerBound.UPPER_INCLUDED);
                     max = max.substring(0, max.length()-1);
                 }
-                rangeFilterValue.setMinValue(DateUtil.getDate(min));
-                rangeFilterValue.setMaxValue(DateUtil.getDate(max));
+
+                if("NOW".equals(min)) {
+                    // TODO consider Time zones
+                    rangeFilterValue.setMinValue(Date.from(QsfInstant.now()));
+                } else if("*".equals(min)) {
+                    rangeFilterValue.setMinValue(new Date(Long.MIN_VALUE));
+                } else {
+                    rangeFilterValue.setMinValue(new Date());
+                }
+
+                if("NOW".equals(max)) {
+                    // TODO consider Time zones
+                    rangeFilterValue.setMaxValue(Date.from(QsfInstant.now()));
+                } else if("*".equals(max)) {
+                    rangeFilterValue.setMaxValue(new Date(Long.MAX_VALUE));
+                } else {
+                    rangeFilterValue.setMaxValue(DateUtil.getDate(min));
+                }
             } catch (ParseException e) {
                 throw new IllegalArgumentException("The min value " + min + " or max value " + max + " is no date value. " + e.getMessage(), e);
             }
