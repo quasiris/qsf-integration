@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.qsql.parser;
 
+import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
 import com.quasiris.qsf.query.Control;
 import com.quasiris.qsf.query.FilterDataType;
@@ -184,7 +185,7 @@ public class QsfqlParserTest {
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals("timestamp", searchFilter.getName());
         assertEquals(Date.from(reference), searchFilter.getRangeValue(Date.class).getMinValue());
-        assertTrue(searchFilter.getRangeValue(Date.class).getMaxValue().equals(new Date(Long.MAX_VALUE)));
+        assertTrue(searchFilter.getRangeValue(Date.class).getMaxValue().equals(DateUtil.max()));
         assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.DATE);
         assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);

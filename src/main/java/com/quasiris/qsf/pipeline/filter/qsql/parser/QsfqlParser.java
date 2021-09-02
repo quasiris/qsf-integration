@@ -236,7 +236,7 @@ public class QsfqlParser {
                     // TODO consider Time zones
                     rangeFilterValue.setMinValue(Date.from(QsfInstant.now()));
                 } else if("*".equals(min)) {
-                    rangeFilterValue.setMinValue(new Date(Long.MIN_VALUE));
+                    rangeFilterValue.setMinValue(DateUtil.min());
                 } else {
                     rangeFilterValue.setMinValue(DateUtil.getDate(min));
                 }
@@ -245,11 +245,11 @@ public class QsfqlParser {
                     // TODO consider Time zones
                     rangeFilterValue.setMaxValue(Date.from(QsfInstant.now()));
                 } else if("*".equals(max)) {
-                    rangeFilterValue.setMaxValue(new Date(Long.MAX_VALUE));
+                    rangeFilterValue.setMaxValue(DateUtil.max());
                 } else {
                     rangeFilterValue.setMaxValue(DateUtil.getDate(max));
                 }
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 throw new IllegalArgumentException("The min value " + min + " or max value " + max + " is no date value. " + e.getMessage(), e);
             }
         }
