@@ -3,13 +3,16 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
-- implement NOW and * parameter for daterange filter
 
 ### Changed
 
 ### Breaking Changes
 
 ### Deprecated
+
+## [3.5]
+### Added
+- implement NOW and * parameter for daterange filter
 
 ## [3.4]
 ### Added
