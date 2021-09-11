@@ -1,7 +1,10 @@
 package com.quasiris.qsf.monitoring;
 
+import com.quasiris.qsf.commons.util.QsfInstant;
+
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -10,6 +13,10 @@ import java.util.List;
 public class MonitoringBuilder {
 
     private List<MonitoringDocument> monitoringDocuments = new ArrayList<>();
+
+    private boolean active = true;
+
+    private Instant pausedUntil;
 
     protected MonitoringBuilder() {
     }
@@ -41,6 +48,23 @@ public class MonitoringBuilder {
         this.monitoringDocuments.add(monitoringDocument);
         return this;
 
+    }
+
+    public MonitoringBuilder active(boolean active) {
+        this.active = active;
+        return this;
+    }
+
+
+    public MonitoringBuilder pausedUntil(Instant pausedUntil) {
+        this.pausedUntil = pausedUntil;
+        return this;
+    }
+
+
+    public MonitoringBuilder pausedUntil(Date pausedUntil) {
+        this.pausedUntil = Instant.ofEpochMilli(pausedUntil.getTime());
+        return this;
     }
 
 
@@ -205,6 +229,10 @@ public class MonitoringBuilder {
      * @return a list of all monitoringDocuments.
      */
     public List<MonitoringDocument> build() {
+        if(pausedUntil != null && pausedUntil.isBefore(QsfInstant.now())) {
+            this.active = false;
+        }
+        monitoringDocuments.stream().forEach(d -> d.setActive(active));
         return monitoringDocuments;
     }
 }

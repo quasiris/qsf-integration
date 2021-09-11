@@ -3,6 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- add a pausedUntil to the monitoring builder
 
 ### Changed
 
