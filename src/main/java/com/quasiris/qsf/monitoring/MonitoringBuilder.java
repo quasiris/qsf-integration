@@ -63,7 +63,11 @@ public class MonitoringBuilder {
 
 
     public MonitoringBuilder pausedUntil(Date pausedUntil) {
-        this.pausedUntil = Instant.ofEpochMilli(pausedUntil.getTime());
+        if(pausedUntil == null) {
+            this.pausedUntil = null;
+        } else {
+            this.pausedUntil = Instant.ofEpochMilli(pausedUntil.getTime());
+        }
         return this;
     }
 
