@@ -1,5 +1,8 @@
 package com.quasiris.qsf.query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Facet {
 
     private String id;
@@ -20,6 +23,8 @@ public class Facet {
     private Facet children;
 
     private FilterOperator operator = FilterOperator.AND;
+
+    private List<SearchFilter> facetFilters = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -210,5 +215,23 @@ public class Facet {
             facet.setSortOrder(sortOrder);
             return facet;
         }
+    }
+
+    /**
+     * Getter for property 'facetFilters'.
+     *
+     * @return Value for property 'facetFilters'.
+     */
+    public List<SearchFilter> getFacetFilters() {
+        return facetFilters;
+    }
+
+    /**
+     * Setter for property 'facetFilters'.
+     *
+     * @param facetFilters Value to set for property 'facetFilters'.
+     */
+    public void setFacetFilters(List<SearchFilter> facetFilters) {
+        this.facetFilters = facetFilters;
     }
 }

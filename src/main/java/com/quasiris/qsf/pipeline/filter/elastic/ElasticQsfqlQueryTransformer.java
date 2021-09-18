@@ -90,14 +90,14 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         jsonBuilder.object();
         boolean hasAggs = false;
         for (Facet aggregation : aggregations) {
-            ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getOperator());
+            ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
             JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters);
             jsonBuilder.json(agg);
             hasAggs = true;
         }
 
         for (Slider slider : sliders) {
-            ObjectNode filters = getFilterAsJson(filterMapper, slider.getId(), FilterOperator.OR);
+            ObjectNode filters = getFilterAsJson(filterMapper, slider.getId(), null, FilterOperator.OR);
             JsonNode agg = AggregationMapper.createSlider(slider, filters);
             jsonBuilder.json(agg);
             hasAggs = true;
@@ -109,15 +109,19 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     }
 
-    private ObjectNode getFilterAsJson(QsfqlFilterMapper filterMapper, String id, FilterOperator operator ) throws JsonBuilderException{
-        List<SearchFilter> excludeFilters;
+    private ObjectNode getFilterAsJson(QsfqlFilterMapper filterMapper, String id, List<SearchFilter> facetFilter, FilterOperator operator ) throws JsonBuilderException{
+        List<SearchFilter> excludeFilters = new ArrayList<>();
         if(operator.equals(FilterOperator.AND)) {
-            excludeFilters = searchQuery.getSearchFilterList();
+            excludeFilters.addAll(searchQuery.getSearchFilterList());
         } else {
             excludeFilters = searchQuery.getSearchFilterList().stream().
                     filter(f -> !filterMapper.mapFilterField(f.getId()).equals(id)).
                     collect(Collectors.toList());
         }
+        if(facetFilter != null) {
+            excludeFilters.addAll(facetFilter);
+        }
+
         ObjectNode filters  = filterMapper.getFilterAsJson(excludeFilters);
         return filters;
     }
