@@ -16,6 +16,7 @@ import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.query.Sort;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -60,9 +61,19 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     @Override
     public void transformAggregations() throws JsonBuilderException {
+        Map<String, Facet> aggregationsMap = aggregations.stream().
+                collect(Collectors.toMap(Facet::getName, Function.identity()));
         if(getSearchQuery().getFacetList() != null) {
             for(Facet facet : getSearchQuery().getFacetList()) {
-                addAggregation(facet);
+                Facet aggregation = aggregationsMap.get(facet.getName());
+                if(aggregation != null) {
+                    // merge
+                    aggregation.setFacetFilters(facet.getFacetFilters());
+
+                } else {
+                    addAggregation(facet);
+                }
+
             }
         }
 

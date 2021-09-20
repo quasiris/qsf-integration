@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.qsql.parser;
 import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
 import com.quasiris.qsf.query.Control;
+import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterDataType;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.FilterType;
@@ -269,6 +270,19 @@ public class QsfqlParserTest {
         });
 
     }
+
+
+    @Test
+    public void tesFacetFilter() {
+        SearchQuery query = createQuery("ff.accountId=1234");
+        Facet facet = query.getFacetList().get(0);
+        assertEquals(facet.getName(), "accountId");
+        assertEquals(facet.getId(), "accountId");
+        //assertEquals(facet.getFacetFilters().get(0).getName(), "accountId");
+        assertEquals(facet.getFacetFilters().get(0).getId(), "accountId");
+        assertEquals(facet.getFacetFilters().get(0).getValues().get(0), "1234");
+    }
+
 
     public static SearchQuery createQuery(String... parameters) {
         Map<String,String[]> parameter = new HashMap<String,String[]>();

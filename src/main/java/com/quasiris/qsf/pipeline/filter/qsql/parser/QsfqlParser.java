@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 public class QsfqlParser {
 
     private static final Pattern filterPattern = Pattern.compile("f\\.([^\\.]+)(.*)");
+    private static final Pattern facetFilterPattern = Pattern.compile("ff\\.([^\\.]+)(.*)");
 
     private Map<String, String[]> parameters;
 
@@ -36,6 +37,7 @@ public class QsfqlParser {
         parsePaging(query);
         parseSort(query);
         parseFilter(query);
+        parseFacetFilter(query);
         parseCtrl(query);
         return query;
     }
@@ -254,6 +256,29 @@ public class QsfqlParser {
             }
         }
         return rangeFilterValue;
+
+    }
+
+    void parseFacetFilter(SearchQuery query) {
+        for(String name: getParameterNames()) {
+            Matcher m = facetFilterPattern.matcher(name);
+            if(m.matches()) {
+                String filterName = m.group(1);
+                String[] filterValues = parameters.get(name);
+                String filterType = m.group(2);
+
+                Facet facet = new Facet();
+                facet.setId(filterName);
+                facet.setName(filterName);
+                SearchFilter searchFilter = SearchFilterBuilder.create().withId(filterName).values(Arrays.asList(filterValues)).build();
+                facet.getFacetFilters().add(searchFilter);
+                if(query.getFacetList() == null) {
+                    query.setFacetList(new ArrayList<>());
+                }
+                query.getFacetList().add(facet);
+
+            }
+        }
 
     }
 
