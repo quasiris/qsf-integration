@@ -39,7 +39,21 @@ public class QsfqlParser {
         parseFilter(query);
         parseFacetFilter(query);
         parseCtrl(query);
+        parseParameter(query);
         return query;
+    }
+
+    void parseParameter(SearchQuery query) {
+        Map<String, Object> copy = new HashMap<>();
+        for(Map.Entry<String, String[]> entry : this.parameters.entrySet()) {
+            if(entry.getValue().length == 1) {
+                copy.put(entry.getKey(),entry.getValue()[0]);
+            } else {
+                copy.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        query.setParameters(copy);
     }
 
     void parseCtrl(SearchQuery query) {

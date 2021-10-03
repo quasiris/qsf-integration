@@ -43,18 +43,24 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     @Override
     public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
-        super.transform(pipelineContainer);
+        this.pipelineContainer = pipelineContainer;
+        if(this.searchQuery == null) {
+            this.searchQuery = pipelineContainer.getSearchQuery();
+        }
 
         try {
+            transformParameter();
+            transformSourceFields();
+            transformDebug();
+            transformAggregations();
             transformQuery();
             transformSort();
             transformFilters();
             transformPaging();
+            replaceParameters();
         } catch (JsonBuilderException e) {
             throw new PipelineContainerException(e.getMessage(), e);
         }
-
-
         return getElasticQuery();
     }
 
