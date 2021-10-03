@@ -323,7 +323,12 @@ public class JsonBuilder {
         return this;
     }
     public JsonBuilder valueMap(Map<String, Object> valueMap) {
-        this.valueMap.putAll(valueMap);
+        if(valueMap == null) {
+            return this;
+        }
+        for(Map.Entry<String, Object> entry : valueMap.entrySet()) {
+            valueMap(entry.getKey(), entry.getValue());
+        }
         return this;
     }
 
