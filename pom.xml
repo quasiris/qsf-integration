@@ -254,9 +254,9 @@
                         </ignores>
                         <excludes>
                             <exclude>com/quasiris/qsf/health/**/*.class</exclude>
-                            <exclude>com/quasiris/qsf/tree/**/*.class</exclude>
-                            <exclude>com/quasiris/qsf/test/dto/*.class</exclude>
-                            <exclude>com/quasiris/qsf/test/builder/*.class</exclude>
+                            <exclude>com/quasiris/qsf/tree/**.class</exclude>
+                            <exclude>com/quasiris/qsf/test/builder/**.class</exclude>
+                            <exclude>com/quasiris/qsf/test/dto/**.class</exclude>
                             <exclude>com/quasiris/qsf/test/response/RequestFactory.class</exclude>
                         </excludes>
                     </instrumentation>
