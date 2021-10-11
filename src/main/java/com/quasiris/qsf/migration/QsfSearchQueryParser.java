@@ -37,7 +37,7 @@ public class QsfSearchQueryParser {
     }
 
     protected SearchQuery handleGETRequest(HttpServletRequest httpServletRequest) {
-        QsfqlParser qsfqlParser = new QsfqlParser(httpServletRequest.getParameterMap());
+        QsfqlParser qsfqlParser = new QsfqlParser(httpServletRequest);
         SearchQuery searchQuery = qsfqlParser.getQuery();
         return searchQuery;
     }

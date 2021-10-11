@@ -45,7 +45,7 @@ public class QSQLRequestFilter extends AbstractFilter {
 
 
     protected void handleGETRequest(PipelineContainer pipelineContainer) throws PipelineContainerException {
-        QsfqlParser qsfqlParser = new QsfqlParser(pipelineContainer.getRequest().getParameterMap());
+        QsfqlParser qsfqlParser = new QsfqlParser(pipelineContainer.getRequest());
         SearchQuery searchQuery = qsfqlParser.getQuery();
         searchQuery = setDefaults(searchQuery);
         pipelineContainer.setSearchQuery(searchQuery);

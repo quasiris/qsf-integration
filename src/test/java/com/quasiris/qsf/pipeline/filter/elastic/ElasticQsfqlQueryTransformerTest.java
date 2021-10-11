@@ -57,6 +57,30 @@ public class ElasticQsfqlQueryTransformerTest {
         assertEquals("asc", elasticQuery.get("sort").get(0).get("price").get("order").asText());
     }
 
+    @Test
+    public void transformSortMappingWithParameter() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        String sort = "[\n" +
+                "    {\n" +
+                "      \"_script\" : {\n" +
+                "        \"script\" : {\n" +
+                "          \"source\" : \"return doc['customerIdsSort'].stream().filter(x -> x.startsWith('{customerId=' + params.accountId)).findFirst().orElse('a');\",\n" +
+                "          \"params\" : {\n" +
+                "            \"accountId\" : \"$query.f.customerId\"\n" +
+                "          }\n" +
+                "        },\n" +
+                "        \"type\" : \"string\",\n" +
+                "        \"order\" : \"desc\"\n" +
+                "      }\n" +
+                "    }\n" +
+                "  ]\n";
+        transformer.addSortMapping("lastPurchased", sort);
+        ObjectNode elasticQuery = transform(transformer,  "sort=lastPurchased", "f.customerId=4711");
+        assertQuery(elasticQuery, "sort-mapping-with-variable.json");
+    }
+
+
     @DisplayName("Transform sort field")
     @ParameterizedTest(name = "{index} => profile=''{0}'' filterPath=''{1}'' filterVariable=''{2}''")
     @CsvSource({
@@ -686,7 +710,7 @@ public class ElasticQsfqlQueryTransformerTest {
         return elasticQuery;
     }
 
-    private ObjectNode transform(ElasticQsfqlQueryTransformer transformer, String... parameters) throws PipelineContainerException {
+    private ObjectNode transform(ElasticQsfqlQueryTransformer transformer, String... parameters) throws Exception {
         SearchQuery searchQuery = QsfqlParserTest.createQuery(parameters);
         return transform(transformer, searchQuery);
     }

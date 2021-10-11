@@ -1,7 +1,9 @@
 package com.quasiris.qsf.pipeline.filter.qsql.parser;
 
 import com.quasiris.qsf.commons.util.DateUtil;
+import com.quasiris.qsf.commons.util.EncodingUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
+import com.quasiris.qsf.pipeline.filter.web.QSFHttpServletRequest;
 import com.quasiris.qsf.query.Control;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterDataType;
@@ -14,12 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,13 +26,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class QsfqlParserTest {
 
     @Test
-    public void testControl() {
+    public void testControl() throws Exception {
         SearchQuery query = createQuery("ctrl=loadMoreFacets,modified");
         assertTrue(Control.isLoadMoreFacets(query));
         assertTrue(Control.isModified(query));
     }
     @Test
-    public void testCtrl() {
+    public void testCtrl() throws Exception {
         SearchQuery query = createQuery("ctrl=loadMoreFacets,modified");
         assertTrue(query.isCtrl("loadMoreFacets"));
         assertTrue(query.isCtrl("modified"));
@@ -43,25 +40,25 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testSort() {
+    public void testSort() throws Exception {
         SearchQuery query = createQuery("sort=name");
         assertEquals("name", query.getSort().getSort());
     }
 
     @Test
-    public void testParameterQ() {
+    public void testParameterQ() throws Exception {
         SearchQuery query = createQuery("q=foo");
         assertEquals("foo", query.getQ());
     }
 
     @Test
-    public void testParameterRequestId() {
+    public void testParameterRequestId() throws Exception {
         SearchQuery query = createQuery("requestId=0815");
         assertEquals("0815", query.getRequestId());
     }
 
     @Test
-    public void testParameterPage() {
+    public void testParameterPage() throws Exception {
         SearchQuery query = createQuery("page=5");
         assertEquals(Integer.valueOf(5), query.getPage());
     }
@@ -74,7 +71,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testParameterRows() {
+    public void testParameterRows() throws Exception {
         SearchQuery query = createQuery("rows=50");
         assertEquals(Integer.valueOf(50), query.getRows());
     }
@@ -87,7 +84,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testEmty() {
+    public void testEmty() throws Exception {
         SearchQuery query = createQuery();
         assertNull(query.getQ());
         assertNotNull(query.getRequestId());
@@ -105,7 +102,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testFilter() {
+    public void testFilter() throws Exception {
         SearchQuery query = createQuery("f.foo=bar");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals(searchFilter.getName(), "foo");
@@ -117,7 +114,7 @@ public class QsfqlParserTest {
 
 
     @Test
-    public void testOrFilter() {
+    public void testOrFilter() throws Exception {
         SearchQuery query = createQuery("f.foo.or=alice", "f.foo.or=bob");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals(searchFilter.getName(), "foo");
@@ -129,7 +126,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testAndFilter() {
+    public void testAndFilter() throws Exception {
         SearchQuery query = createQuery("f.foo.and=alice", "f.foo.and=bob");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals(searchFilter.getName(), "foo");
@@ -141,7 +138,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testFilterWithMultipleValues() {
+    public void testFilterWithMultipleValues() throws Exception {
         SearchQuery query = createQuery("f.foo=bar", "f.foo=alice");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
@@ -153,7 +150,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testRangeFilterForDoubleValues() {
+    public void testRangeFilterForDoubleValues() throws Exception {
         SearchQuery query = createQuery("f.foo.range=0.1,5.2");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
@@ -166,7 +163,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testRangeFilterForDateValues() {
+    public void testRangeFilterForDateValues() throws Exception {
         SearchQuery query = createQuery("f.timestamp.daterange=2021-01-02T23:00:00Z,2021-02-05T20:59:38Z");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals("timestamp", searchFilter.getName());
@@ -179,7 +176,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testRangeFilterForDateValuesNOWAndInfinity() {
+    public void testRangeFilterForDateValuesNOWAndInfinity() throws Exception {
         Instant reference = Instant.parse("2021-08-26T10:58:09.000Z");
         QsfInstant.setNow(reference);
         SearchQuery query = createQuery("f.timestamp.daterange=NOW,*");
@@ -194,7 +191,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testRangeFilterForLongValues() {
+    public void testRangeFilterForLongValues() throws Exception {
         SearchQuery query = createQuery("f.foo.range=3,5");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
@@ -207,7 +204,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testRangeFilterLowerUpperBoundExcluded() {
+    public void testRangeFilterLowerUpperBoundExcluded() throws Exception {
         SearchQuery query = createQuery("f.foo.range={3,5}");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
@@ -220,7 +217,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testRangeFilterLowerUpperBoundIncluded() {
+    public void testRangeFilterLowerUpperBoundIncluded() throws Exception {
         SearchQuery query = createQuery("f.foo.range=[3,5]");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
@@ -233,7 +230,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testSliderFilterForLongValues() {
+    public void testSliderFilterForLongValues() throws Exception {
         SearchQuery query = createQuery("f.foo.slider=3,5");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
@@ -244,7 +241,7 @@ public class QsfqlParserTest {
     }
 
     @Test
-    public void testRangeFilterForMinMaxValues() {
+    public void testRangeFilterForMinMaxValues() throws Exception {
         SearchQuery query = createQuery("f.foo.range=min,max");
         SearchFilter searchFilter = query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
@@ -273,7 +270,7 @@ public class QsfqlParserTest {
 
 
     @Test
-    public void tesFacetFilter() {
+    public void tesFacetFilter() throws Exception {
         SearchQuery query = createQuery("ff.accountId=1234");
         Facet facet = query.getFacetList().get(0);
         assertEquals(facet.getName(), "accountId");
@@ -284,26 +281,26 @@ public class QsfqlParserTest {
     }
 
 
-    public static SearchQuery createQuery(String... parameters) {
-        Map<String,String[]> parameter = new HashMap<String,String[]>();
+    public static SearchQuery createQuery(String... parameters) throws Exception {
+        StringBuilder urlBuilder = new StringBuilder();
         for(String param: parameters) {
             String[] paramSplitted = param.split("=");
-            addParameter(parameter,paramSplitted[0],paramSplitted[1]);
+            addUrlParameter(urlBuilder, paramSplitted[0],paramSplitted[1]);
         }
-        QsfqlParser qsfqlParser = new QsfqlParser(parameter);
+        QSFHttpServletRequest request = new QSFHttpServletRequest(urlBuilder.toString());
+        QsfqlParser qsfqlParser = new QsfqlParser(request);
         SearchQuery query = qsfqlParser.getQuery();
         return query;
     }
 
-    public static void addParameter(Map<String,String[]> parameter, String name, String value) {
-        String[] values = parameter.get(name);
-        if(values == null) {
-            values = new String[0];
+    public static void addUrlParameter(StringBuilder url, String name, String value) {
+        if(url.length() == 0) {
+            url.append("?");
+        } else {
+            url.append("&");
         }
-
-        List<String> valueList = new ArrayList<>(Arrays.asList(values));
-        valueList.add(value);
-        values = valueList.toArray(new String[valueList.size()]);
-        parameter.put(name,values);
+        String encodedValue = EncodingUtil.encode(value);
+        url.append(name).append("=").append(encodedValue);
     }
+
 }

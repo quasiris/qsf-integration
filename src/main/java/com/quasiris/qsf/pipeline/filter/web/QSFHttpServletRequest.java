@@ -36,9 +36,13 @@ public class QSFHttpServletRequest implements HttpServletRequest {
     private void init() throws URISyntaxException {
 
         uri = new URI(url);
+        String query = "";
+        if(uri.getQuery() != null) {
+            query = uri.getQuery();
+        }
         final Iterable<String> parameterList = Splitter.on("&")
                 .omitEmptyStrings()
-                .trimResults().split(uri.getQuery());
+                .trimResults().split(query);
 
         parametersMap = new HashMap<>();
 

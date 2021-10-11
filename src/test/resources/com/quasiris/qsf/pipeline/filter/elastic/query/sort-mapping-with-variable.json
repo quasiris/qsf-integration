@@ -1,0 +1,39 @@
+{
+  "from": 0,
+  "size": 10,
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_all": {}
+        }
+      ],
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "term": {
+                "customerId": "4711"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "sort": [
+    {
+      "_script": {
+        "script": {
+          "source": "return doc['customerIdsSort'].stream().filter(x -> x.startsWith('{customerId=' + params.accountId)).findFirst().orElse('a');",
+          "params": {
+            "accountId": "4711"
+          }
+        },
+        "type": "string",
+        "order": "desc"
+      }
+    }
+  ]
+}

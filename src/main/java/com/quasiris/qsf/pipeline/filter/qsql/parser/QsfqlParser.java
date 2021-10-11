@@ -4,12 +4,30 @@ import com.google.common.base.Strings;
 import com.quasiris.qsf.commons.text.date.HumanDateParser;
 import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
-import com.quasiris.qsf.query.*;
+import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.query.FilterDataType;
+import com.quasiris.qsf.query.FilterOperator;
+import com.quasiris.qsf.query.FilterType;
+import com.quasiris.qsf.query.RangeFilterValue;
+import com.quasiris.qsf.query.SearchFilter;
+import com.quasiris.qsf.query.SearchFilterBuilder;
+import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.Sort;
+import com.quasiris.qsf.query.UpperLowerBound;
 import com.quasiris.qsf.text.Splitter;
 
-import java.text.ParseException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,12 +41,15 @@ public class QsfqlParser {
 
     private Map<String, String[]> parameters;
 
+    private HttpServletRequest httpServletRequest;
+
+
     private SearchQuery query = null;
 
-    public QsfqlParser(Map<String, String[]> parameters) {
-        this.parameters = parameters;
+    public QsfqlParser(HttpServletRequest httpServletRequest) {
+        this.httpServletRequest = httpServletRequest;
+        this.parameters = httpServletRequest.getParameterMap();
     }
-
 
     SearchQuery parse() {
         SearchQuery query = new SearchQuery();
@@ -44,16 +65,12 @@ public class QsfqlParser {
     }
 
     void parseParameter(SearchQuery query) {
-        Map<String, Object> copy = new HashMap<>();
-        for(Map.Entry<String, String[]> entry : this.parameters.entrySet()) {
-            if(entry.getValue().length == 1) {
-                copy.put(entry.getKey(),entry.getValue()[0]);
-            } else {
-                copy.put(entry.getKey(), entry.getValue());
-            }
+        if(httpServletRequest == null) {
+            return;
         }
 
-        query.setParameters(copy);
+        Map<String, Object> params = getRequestParameter(httpServletRequest);
+        query.setParameters(params);
     }
 
     void parseCtrl(SearchQuery query) {
@@ -440,6 +457,46 @@ public class QsfqlParser {
     Set<String> getParameterNames() {
         return this.parameters.keySet();
     }
+
+    public  static Map<String, Object> getRequestParameter(HttpServletRequest request) {
+        Map<String, Object> replaceMap = new HashMap<>();
+        if (request == null) {
+            return replaceMap;
+        }
+        synchronized (request) {
+            Enumeration<String> parameterName = request.getParameterNames();
+            while (parameterName.hasMoreElements()) {
+                String name = parameterName.nextElement();
+                replaceMap.put("query." + name, request.getParameter(name));
+            }
+
+            Enumeration<String> headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String name = headerNames.nextElement();
+                String value = request.getHeader(name);
+                replaceMap.put("header." + name, value);
+            }
+
+
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    String name = cookie.getName();
+                    String value = cookie.getValue();
+                    replaceMap.put("cookie." + name, value);
+                }
+            }
+
+            String path = request.getRequestURI();
+            int pathCounter = 0;
+            for (String pathPart : path.split(Pattern.quote("/"))) {
+                if (!Strings.isNullOrEmpty(pathPart)) {
+                    replaceMap.put("path" + pathCounter++ + ".", pathPart);
+                }
+            }
+            return replaceMap;
+        }
+    }
+
 
 
 }

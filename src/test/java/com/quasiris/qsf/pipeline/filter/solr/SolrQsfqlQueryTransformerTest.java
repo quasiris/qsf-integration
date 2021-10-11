@@ -136,7 +136,7 @@ public class SolrQsfqlQueryTransformerTest {
         assertEquals(Integer.valueOf(20), solrQuery.getStart());
     }
 
-    private SolrQuery transform(SolrQsfqlQueryTransformer transformer, String... parameters) {
+    private SolrQuery transform(SolrQsfqlQueryTransformer transformer, String... parameters) throws Exception {
         SearchQuery searchQuery = QsfqlParserTest.createQuery(parameters);
         PipelineContainer pipelineContainer = new PipelineContainer(null, null);
         pipelineContainer.setSearchQuery(searchQuery);
