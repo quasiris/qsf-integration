@@ -1,5 +1,6 @@
 package com.quasiris.qsf.response;
 
+import com.quasiris.qsf.TestHelper;
 import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.MonitoringResponse;
 import com.quasiris.qsf.dto.response.SearchResult;
@@ -33,7 +34,7 @@ class MonitoringResponseFactoryTest {
         Assertions.assertEquals(monitoringResponse.getStatus(), status);
         Assertions.assertEquals(monitoringResponse.getStatusCode(), statusCode);
         Assertions.assertEquals(monitoringResponse.getTime(), time);
-        checkNearlySameTime(monitoringResponse.getCurrentTime());
+        TestHelper.checkNearlySameTime(monitoringResponse.getCurrentTime());
         Assertions.assertNull(monitoringResponse.getResult());
     }
 
@@ -63,16 +64,9 @@ class MonitoringResponseFactoryTest {
         Assertions.assertEquals(status, monitoringResponse.getStatus());
         Assertions.assertEquals(statusCode, monitoringResponse.getStatusCode());
         Assertions.assertEquals(time, monitoringResponse.getTime());
-        checkNearlySameTime(monitoringResponse.getCurrentTime());
+        TestHelper.checkNearlySameTime(monitoringResponse.getCurrentTime());
         Assertions.assertEquals(document1.getDocument(), monitoringResponse.getResult().get(0));
         Assertions.assertEquals(document2.getDocument(), monitoringResponse.getResult().get(1));
-    }
-
-    private void checkNearlySameTime(Date currentTime) {
-        Date minus1MinDate = new Date(System.currentTimeMillis() - 60 * 1000);
-        Date plus1MinDate = new Date(System.currentTimeMillis() + 60 * 1000);
-        Assertions.assertTrue(currentTime.compareTo(minus1MinDate) > 0 &&
-                currentTime.compareTo(plus1MinDate) < 0);
     }
 
     @Test
@@ -93,7 +87,7 @@ class MonitoringResponseFactoryTest {
         }};
         monObj.setDocument(doc);
         MonitoringResponse actual = MonitoringResponseFactory.create(monObj, time);
-        checkNearlySameTime(actual.getCurrentTime());
+        TestHelper.checkNearlySameTime(actual.getCurrentTime());
         Assertions.assertEquals(time, actual.getTime());
         Assertions.assertEquals(monObj.getStatus(), actual.getStatus());
         Assertions.assertEquals(200, actual.getStatusCode());

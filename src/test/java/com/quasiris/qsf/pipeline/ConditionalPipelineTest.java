@@ -4,6 +4,7 @@ import com.quasiris.qsf.pipeline.filter.ConditionFilter;
 import com.quasiris.qsf.pipeline.filter.SleepFilter;
 import com.quasiris.qsf.pipeline.filter.UnitTestingFilter;
 import com.quasiris.qsf.test.AbstractPipelineTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
@@ -46,6 +47,46 @@ public class ConditionalPipelineTest extends AbstractPipelineTest {
         assertNotNull(pipelineContainer.getSearchResult("conditional-filter"));
 
 
+    }
+
+    @Test
+    public void testConditionalPipelineTimeoutException() throws Exception {
+        Pipeline pipeline = PipelineBuilder.create().
+                pipeline("test-pipeline").
+                timeout(8L).
+                filter(new SleepFilter("first-sleep", 10L)).
+                conditional(alwaysTrue()).
+                    pipeline("conditional-pipeline").
+                    filter(new UnitTestingFilter("conditional-filter")).
+                endConditional().
+                build();
+
+        ConditionFilter conditionFilter = (ConditionFilter) pipeline.getFilterList().get(1);
+        UnitTestingFilter unitTestingFilter = (UnitTestingFilter) conditionFilter.getPipeline().getFilterList().get(0);
+        PipelineExecuter pipelineExecuter = PipelineExecuter.create().pipeline(pipeline);
+
+        Assertions.assertThrows(PipelineContainerException.class,
+                pipelineExecuter::execute);
+    }
+
+    @Test
+    public void testConditionalPipelineDebugEnabled() throws Exception {
+        Pipeline pipeline = PipelineBuilder.create().
+                pipeline("test-pipeline").
+                timeout(15L).
+                filter(new SleepFilter("first-sleep", 10L)).
+                conditional(alwaysTrue()).
+                    pipeline("conditional-pipeline").
+                    filter(new UnitTestingFilter("conditional-filter")).
+                endConditional().
+                build();
+
+        ConditionFilter conditionFilter = (ConditionFilter) pipeline.getFilterList().get(1);
+        UnitTestingFilter unitTestingFilter = (UnitTestingFilter) conditionFilter.getPipeline().getFilterList().get(0);
+        PipelineExecuter pipelineExecuter = PipelineExecuter.create().pipeline(pipeline);
+        pipelineExecuter.enableDebug();
+        Assertions.assertThrows(PipelineContainerDebugException.class,
+                pipelineExecuter::execute);
     }
 
     @Test

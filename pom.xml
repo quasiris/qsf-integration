@@ -251,6 +251,8 @@
                             <ignore>com.quasiris.qsf.test.builder.*</ignore>
                             <ignore>com.quasiris.qsf.test.dto.*</ignore>
                             <ignore>com.quasiris.qsf.test.response.RequestFactory</ignore>
+                            <ignore>com.quasiris.qsf.pipeline.PipelineValidationError</ignore>
+                            <ignore>com.quasiris.qsf.pipeline.PipelineContainerException</ignore>
                         </ignores>
                         <excludes>
                             <exclude>com/quasiris/qsf/health/**/*.class</exclude>
@@ -258,6 +260,8 @@
                             <exclude>com/quasiris/qsf/test/builder/**.class</exclude>
                             <exclude>com/quasiris/qsf/test/dto/**.class</exclude>
                             <exclude>com/quasiris/qsf/test/response/RequestFactory.class</exclude>
+                            <exclude>com/quasiris/qsf/pipeline/PipelineValidationError.class</exclude>
+                            <exclude>com/quasiris/qsf/pipeline/PipelineContainerException.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
