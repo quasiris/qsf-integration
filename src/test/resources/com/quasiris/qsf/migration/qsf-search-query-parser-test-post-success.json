@@ -1,0 +1,40 @@
+{
+  "q": "*",
+  "debug": false,
+  "page": 1,
+  "rows": 1,
+  "requestId": "requestid123",
+  "tracking": false,
+  "sort": {
+    "field": "price",
+    "direction": "asc"
+  },
+  "searchFilters": [
+    {
+      "id": "myid",
+      "name": "main-filter",
+      "values": [
+        "node1 > node2"
+      ]
+    },
+    {
+      "filterDataType": "number",
+      "filterType": "range",
+      "minValue": 0,
+      "maxValue": 10
+    },
+    {
+      "filterDataType": "date",
+      "filterType": "range",
+      "minValue": "2000-08-06",
+      "maxValue": "2020-08-06"
+    },
+    {
+      "filterDataType": "date",
+      "filterType": "relativerange",
+      "values": [
+        "1992"
+      ]
+    }
+  ]
+}
