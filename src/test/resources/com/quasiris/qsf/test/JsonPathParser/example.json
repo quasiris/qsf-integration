@@ -1,0 +1,14 @@
+{
+  "name": "Alexander",
+  "surname": "Pakunin",
+  "tags": [
+    1,
+    2,
+    5,
+    4
+  ],
+  "region": "eu-central-1",
+  "details": {
+    "firstCar": "Mercedes"
+  }
+}

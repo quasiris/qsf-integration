@@ -258,6 +258,9 @@
                             <ignore>com.quasiris.qsf.pipeline.PipelineValidationError</ignore>
                             <ignore>com.quasiris.qsf.pipeline.PipelineContainerException</ignore>
                             <ignore>com.quasiris.qsf.pipeline.exception.*</ignore>
+                            <ignore>com.quasiris.qsf.query.Slider</ignore>
+                            <ignore>com.quasiris.qsf.query.Token</ignore>
+                            <ignore>com.quasiris.qsf.query.DeCompound</ignore>
                         </ignores>
                         <excludes>
                             <exclude>com/quasiris/qsf/exception/**.class</exclude>

@@ -1,12 +1,16 @@
 package com.quasiris.qsf;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -15,7 +19,8 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 public class TestHelper {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
-    private static Logger log = LoggerFactory.getLogger(TestHelper.class);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Logger log = LoggerFactory.getLogger(TestHelper.class);
 
 
     public static void checkNearlySameTime(Date currentTime) {
@@ -36,8 +41,19 @@ public class TestHelper {
         log.info("checkNearlySameTime: actual = {}", actual);
         log.info("checkNearlySameTime: expected = {}", expected);
         Instant actualValue = DATE_TIME_FORMATTER.parse(actual, Instant::from);
-//        Instant expectedValue = DATE_TIME_FORMATTER.parse(expected,Instant::from);
         long actualDifference = SECONDS.between(actualValue, expected);
         Assertions.assertTrue(difference >= actualDifference);
+    }
+
+    public static String getResourceAsString(String filePath) throws IOException {
+        try (InputStream is = TestHelper.class.getResourceAsStream(filePath)) {
+            return IOUtils.toString(is, Charset.defaultCharset());
+        }
+    }
+
+    public static Object getResourceAsObject(String filePath) throws IOException {
+        try (InputStream is = TestHelper.class.getResourceAsStream(filePath)) {
+            return objectMapper.readValue(is, Object.class);
+        }
     }
 }
