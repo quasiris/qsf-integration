@@ -1,0 +1,14 @@
+{
+  "location": "classpath://com/quasiris/qsf/test/testsuite/mytenant/success",
+  "env": {},
+  "testCases": [
+    {
+      "id": "#myid",
+      "name": "myname"
+    },
+    {
+      "id": "success1",
+      "name": "second"
+    }
+  ]
+}

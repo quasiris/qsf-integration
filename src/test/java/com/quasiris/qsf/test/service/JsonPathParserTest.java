@@ -39,6 +39,12 @@ class JsonPathParserTest {
     }
 
     @Test
+    void getValueFromContextNullInputNullResult() throws IOException {
+        String actual = JsonPathParser.getValueFromContext("$.name", null);
+        Assertions.assertNull(actual);
+    }
+
+    @Test
     void getValueFromContextDetailsComplex() throws IOException {
         String fromFile = TestHelper.getResourceAsString("/com/quasiris/qsf/test/JsonPathParser/example.json");
         DocumentContext value = JsonPath.parse(fromFile);

@@ -1,5 +1,6 @@
 package com.quasiris.qsf;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
@@ -55,5 +56,10 @@ public class TestHelper {
         try (InputStream is = TestHelper.class.getResourceAsStream(filePath)) {
             return objectMapper.readValue(is, Object.class);
         }
+    }
+
+    public static void logStructure(Object obj) throws JsonProcessingException {
+        String result = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+        log.info("obj = {}", result);
     }
 }

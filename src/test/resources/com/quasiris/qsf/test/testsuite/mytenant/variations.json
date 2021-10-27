@@ -1,0 +1,17 @@
+{
+  "location": "classpath://com/quasiris/qsf/test/testsuite/mytenant/variations",
+  "defaultEnv": "default",
+  "env": {
+    "default": {
+      "variables": {
+        "q": "*"
+      }
+    }
+  },
+  "testCases": [
+    {
+      "id": "withVariations",
+      "name": "second"
+    }
+  ]
+}
