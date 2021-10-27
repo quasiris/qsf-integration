@@ -195,4 +195,21 @@ class ElasticMonitoringExecuterTest {
             Assertions.assertEquals(monitoringList.size(), monitoringResponse.getResult().size());
         }
     }
+
+    @Test
+    void doMonitoringNotEmptyMonitoringProcessingTimeFullPipelineContainerExceptionEmptyList() throws PipelineContainerDebugException, JsonProcessingException, PipelineContainerException {
+        int error = 0;
+        int warn = 0;
+
+        List<MonitoringDocument> monitoringList = MonitoringBuilder.aMonitoring()
+                .active(false)
+                .processingTimeFull(error, warn, false)
+                .build();
+
+        String baseUrl = "notUrlParam";
+        ElasticMonitoringExecuter elasticMonitoringExecuter = new ElasticMonitoringExecuter(baseUrl, monitoringList);
+        MonitoringResponse monitoringResponse = elasticMonitoringExecuter.doMonitoring();
+
+        System.out.println("monitoringResponse = " + monitoringResponse);
+    }
 }
