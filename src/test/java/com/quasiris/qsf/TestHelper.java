@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -12,6 +14,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class TestHelper {
 
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
     private static Logger log = LoggerFactory.getLogger(TestHelper.class);
 
 
@@ -26,6 +29,15 @@ public class TestHelper {
         log.info("checkNearlySameTime: actual = {}", actual);
         log.info("checkNearlySameTime: expected = {}", expected);
         long actualDifference = SECONDS.between(actual, expected);
+        Assertions.assertTrue(difference >= actualDifference);
+    }
+
+    public static void checkNearlySameTime(String actual, Instant expected, long difference) {
+        log.info("checkNearlySameTime: actual = {}", actual);
+        log.info("checkNearlySameTime: expected = {}", expected);
+        Instant actualValue = DATE_TIME_FORMATTER.parse(actual, Instant::from);
+//        Instant expectedValue = DATE_TIME_FORMATTER.parse(expected,Instant::from);
+        long actualDifference = SECONDS.between(actualValue, expected);
         Assertions.assertTrue(difference >= actualDifference);
     }
 }
