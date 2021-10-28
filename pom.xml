@@ -272,6 +272,9 @@
                             <exclude>com/quasiris/qsf/pipeline/PipelineValidationError.class</exclude>
                             <exclude>com/quasiris/qsf/pipeline/PipelineContainerException.class</exclude>
                             <exclude>com/quasiris/qsf/pipeline/exception/**.class</exclude>
+                            <exclude>com/quasiris/qsf/query/DeCompound.class</exclude>
+                            <exclude>com/quasiris/qsf/query/Token.class</exclude>
+                            <exclude>com/quasiris/qsf/query/Slider.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
