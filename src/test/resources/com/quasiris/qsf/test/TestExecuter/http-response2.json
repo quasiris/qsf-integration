@@ -1,0 +1,12 @@
+{
+  "statusCode": 201,
+  "time": 21,
+  "requestId": "234",
+  "request": {
+    "url": "http://localhost/api/v1/search/tenant/code",
+    "path": "/api/v1/search/tenant/code",
+    "query": "*",
+    "method": "GET",
+    "parameters": {}
+  }
+}

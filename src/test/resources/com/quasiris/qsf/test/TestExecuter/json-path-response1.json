@@ -1,0 +1,46 @@
+{
+  "statusCode": 200,
+  "result": {
+    "fst": {
+      "statusCode": 200,
+      "documents": [],
+      "total": 0,
+      "paging": {
+        "firstPage": {
+          "currentPage": true,
+          "number": 1
+        },
+        "lastPage": {
+          "currentPage": false,
+          "number": 0
+        },
+        "nextPage": {
+          "currentPage": false,
+          "number": 0
+        },
+        "previousPage": {
+          "currentPage": true,
+          "number": 1
+        },
+        "pageCount": 0,
+        "currentPage": 1,
+        "rows": 20
+      },
+      "time": 21,
+      "currentTime": "2021-11-01T03:37:24+0000"
+    }
+  },
+  "time": 21,
+  "requestId": "234",
+  "didYouMeanResult": {
+    "name": "fst",
+    "didYouMean": "first"
+  },
+  "request": {
+    "url": "http://localhost/api/v1/search/tenant/code",
+    "path": "/api/v1/search/tenant/code",
+    "query": "*",
+    "method": "GET",
+    "parameters": {}
+  }
+}

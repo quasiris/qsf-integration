@@ -1,4 +1,6 @@
 {
+  "id": "minimal",
+  "assertions": {},
   "query": {
     "url": "http://localhost/api/v1/search/tenant/code"
   }

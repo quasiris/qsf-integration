@@ -62,4 +62,10 @@ public class TestHelper {
         String result = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         log.info("obj = {}", result);
     }
+
+    public static <T> T getResourceAsInstanse(String filePath, Class<T> resultClass) throws IOException {
+        try (InputStream is = TestHelper.class.getResourceAsStream(filePath)) {
+            return objectMapper.readValue(is, resultClass);
+        }
+    }
 }

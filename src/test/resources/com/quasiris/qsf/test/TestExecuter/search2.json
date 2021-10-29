@@ -1,0 +1,27 @@
+{
+  "id": "search1",
+  "assertions": {
+    "searchResponse": [
+      {
+        "statusCode": 200,
+        "result": {},
+        "time": 10,
+        "requestId": "234",
+        "didYouMeanResult": {
+          "name": "fst",
+          "didYouMean": "first"
+        },
+        "request": {
+          "url": "http://localhost/api/v1/search/tenant/code",
+          "path": "/api/v1/search/tenant/code",
+          "query": "*",
+          "method": "GET",
+          "parameters": {}
+        }
+      }
+    ]
+  },
+  "query": {
+    "url": "http://localhost/api/v1/search/tenant/code"
+  }
+}

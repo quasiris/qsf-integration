@@ -1,0 +1,14 @@
+{
+  "id": "search1",
+  "assertions": {
+    "http": [
+      {
+        "statusCode": 200,
+        "header": []
+      }
+    ]
+  },
+  "query": {
+    "url": "http://localhost/api/v1/search/tenant/code"
+  }
+}
