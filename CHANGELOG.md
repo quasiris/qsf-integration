@@ -3,14 +3,18 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
-- add a pausedUntil to the monitoring builder
-- implement a facet filter
+- add result and parameters to the search query
 
 ### Changed
 
 ### Breaking Changes
 
 ### Deprecated
+
+## [3.8]
+### Added
+- add a pausedUntil to the monitoring builder
+- implement a facet filter
 
 ## [3.5]
 ### Added
