@@ -10,7 +10,7 @@ jdk:
   - openjdk14
   - openjdk15
 sudo: false
-script: mvn clean package -Dgpg.skip=true -U
+script: mvn clean package -Dgpg.skip=true
 after_success:
   - if [ "$JAVA_HOME" = "/usr/lib/jvm/java-1.8.0-openjdk-amd64" ]; then mvn test cobertura:cobertura coveralls:report; fi
   - mvn test jacoco:report
