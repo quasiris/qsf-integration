@@ -73,7 +73,7 @@ public class ConditionalPipelineTest extends AbstractPipelineTest {
     public void testConditionalPipelineDebugEnabled() throws Exception {
         Pipeline pipeline = PipelineBuilder.create().
                 pipeline("test-pipeline").
-                timeout(15L).
+                timeout(100L).
                 filter(new SleepFilter("first-sleep", 10L)).
                 conditional(alwaysTrue()).
                     pipeline("conditional-pipeline").
