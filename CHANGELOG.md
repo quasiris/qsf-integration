@@ -4,12 +4,18 @@ All notable changes qsf-integration project will be documented in this file.
 ## [UNRELEASED]
 ### Added
 - add result and parameters to the search query
+- increase test coverage
 
 ### Changed
 
 ### Breaking Changes
 
 ### Deprecated
+
+## [3.10]
+### Added
+- add result and parameters to the search query
+- increase test coverage
 
 ## [3.8]
 ### Added
