@@ -14,6 +14,7 @@ import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.query.Sort;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -39,6 +40,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     private String filterVariable;
 
     private boolean multiSelectFilter;
+    private String variantId;
 
 
     @Override
@@ -56,8 +58,10 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             transformQuery();
             transformSort();
             transformFilters();
+            transformFilters();
             transformPaging();
             replaceParameters();
+            collapseResults();
         } catch (JsonBuilderException e) {
             throw new PipelineContainerException(e.getMessage(), e);
         }
@@ -120,10 +124,20 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             hasAggs = true;
         }
 
-        if (hasAggs) {
-            elasticQuery.set("aggs", jsonBuilder.get());
+        JsonBuilder aggFilterBuilder = new JsonBuilder().object("bool");
+        if(StringUtils.isNotEmpty(getVariantId())) {
+            aggFilterBuilder.object("must_not")
+                .object("term")
+                    .object("docType.keyword", "variant");
         }
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("filter", aggFilterBuilder.get());
+        if (hasAggs) {
+            map.put("aggs", jsonBuilder.get().deepCopy());
+        }
+        jsonBuilder = new JsonBuilder();
+        jsonBuilder.object("qsc_filtered", map);
+        elasticQuery.set("aggs", jsonBuilder.get());
     }
 
     private ObjectNode getFilterAsJson(QsfqlFilterMapper filterMapper, String id, List<SearchFilter> facetFilter, FilterOperator operator ) throws JsonBuilderException{
@@ -229,7 +243,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 getFilterMapping(),
                 filterPath,
                 filterVariable,
-                multiSelectFilter
+                multiSelectFilter,
+                getVariantId()
         );
         filterTransformer.transformFilters();
     }
@@ -254,6 +269,16 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         getElasticQuery().put("size", rows);
     }
 
+    public void collapseResults() {
+        if(StringUtils.isNotEmpty(getVariantId())) {
+            try {
+                String elasticField = getVariantId()+".keyword";
+                JsonBuilder jsonBuilder = new JsonBuilder().object("field", elasticField);
+                elasticQuery.set("collapse", jsonBuilder.get());
+            } catch (JsonBuilderException ignored) {
+            }
+        }
+    }
 
 
     @Override
@@ -432,5 +457,13 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
      */
     public void setMultiSelectFilter(boolean multiSelectFilter) {
         this.multiSelectFilter = multiSelectFilter;
+    }
+
+    public String getVariantId() {
+        return variantId;
+    }
+
+    public void setVariantId(String variantId) {
+        this.variantId = variantId;
     }
 }

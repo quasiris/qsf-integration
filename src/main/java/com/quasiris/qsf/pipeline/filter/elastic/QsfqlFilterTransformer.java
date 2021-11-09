@@ -6,9 +6,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.FilterOperator;
+import com.quasiris.qsf.query.FilterType;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class QsfqlFilterTransformer {
@@ -33,6 +38,7 @@ public class QsfqlFilterTransformer {
     private QsfqlFilterMapper filterMapper;
 
     private boolean multiSelectFilter;
+    private String variantId;
 
 
     public QsfqlFilterTransformer(ObjectMapper objectMapper, ObjectNode elasticQuery, SearchQuery searchQuery) {
@@ -51,7 +57,8 @@ public class QsfqlFilterTransformer {
                                   Map<String, String> filterMapping,
                                   String filterPath,
                                   String filterVariable,
-                                  boolean multiSelectFilter
+                                  boolean multiSelectFilter,
+                                  String variantId
     ) {
         this.elasticVersion = elasticVersion;
         this.objectMapper = objectMapper;
@@ -67,6 +74,7 @@ public class QsfqlFilterTransformer {
         this.filterMapper.setFilterRules(filterRules);
 
         this.multiSelectFilter = multiSelectFilter;
+        this.variantId = variantId;
     }
 
 
@@ -87,8 +95,14 @@ public class QsfqlFilterTransformer {
 
 
     public void transformFilters() throws JsonBuilderException {
+        // filter for variants here
         if(multiSelectFilter) {
-            transformFiltersMultiselect();
+            List<SearchFilter> postFilters = new ArrayList<>();
+            transformFiltersMultiselect(postFilters);
+            if(StringUtils.isNotEmpty(variantId)) {
+                filterVariants(postFilters);
+            }
+            appendPostFilter(postFilters);
             return;
         }
 
@@ -187,12 +201,27 @@ public class QsfqlFilterTransformer {
 
 
 
-    public void transformFiltersMultiselect() throws JsonBuilderException {
-        if(searchQuery.getSearchFilterList().size() == 0) {
-            return;
+    public void transformFiltersMultiselect(List<SearchFilter> postFilters) {
+        if(searchQuery.getSearchFilterList().size() > 0) {
+            postFilters.addAll(searchQuery.getSearchFilterList());
         }
-        ObjectNode filters = filterMapper.getFilterAsJson(searchQuery.getSearchFilterList());
-        elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("post_filter").json("bool", filters).get();
+    }
+
+    public void filterVariants(List<SearchFilter> postFilters) {
+        SearchFilter variantFilter = new SearchFilter();
+        variantFilter.setName("docType");
+        variantFilter.setValues(Arrays.asList("summary"));
+        variantFilter.setFilterType(FilterType.TERM);
+        variantFilter.setFilterOperator(FilterOperator.NOT);
+
+        postFilters.add(variantFilter);
+    }
+
+    public void appendPostFilter(List<SearchFilter> postFilters) throws JsonBuilderException {
+        if(postFilters.size() > 0) {
+            ObjectNode postFilterNodes = filterMapper.getFilterAsJson(postFilters);
+            elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("post_filter").object("bool", postFilterNodes).get();
+        }
     }
 
     public ObjectNode getElasticQuery() {

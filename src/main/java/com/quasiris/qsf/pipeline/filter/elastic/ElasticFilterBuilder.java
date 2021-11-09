@@ -80,10 +80,8 @@ public class ElasticFilterBuilder {
 
         if(searchResultTransformer != null) {
             elasticFilter.setSearchResultTransformer(searchResultTransformer);
-        } else if(elastic2SearchResultMappingTransformer != null) {
-            elasticFilter.setSearchResultTransformer(elastic2SearchResultMappingTransformer);
         } else {
-            elasticFilter.setSearchResultTransformer(new Elastic2SearchResultMappingTransformer());
+            elasticFilter.setSearchResultTransformer(getMappingTransformer());
         }
         return elasticFilter;
     }
@@ -92,6 +90,7 @@ public class ElasticFilterBuilder {
         if(elastic2SearchResultMappingTransformer == null) {
             elastic2SearchResultMappingTransformer = new Elastic2SearchResultMappingTransformer();
         }
+        elastic2SearchResultMappingTransformer.setVariantId(getElasticQsfqlQueryTransformer().getVariantId());
         return elastic2SearchResultMappingTransformer;
     }
 

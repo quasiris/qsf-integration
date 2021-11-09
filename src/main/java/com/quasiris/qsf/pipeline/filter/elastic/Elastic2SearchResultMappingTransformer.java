@@ -7,6 +7,7 @@ import com.quasiris.qsf.dto.response.*;
 import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 import com.quasiris.qsf.commons.util.UrlUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -26,8 +27,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     private Map<String, String> sliderMapping = new LinkedHashMap<>();
     private Map<String, String> sliderNameMapping = new LinkedHashMap<>();
 
-
     private String filterPrefix = "";
+    private String variantId;
 
     public Elastic2SearchResultMappingTransformer() {
 
@@ -50,10 +51,17 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
 
         mapFacets(elasticResult, searchResult);
-
+        updateTotalDocuments(elasticResult, searchResult);
 
         return searchResult;
 
+    }
+
+    protected void updateTotalDocuments(ElasticResult elasticResult, SearchResult searchResult) {
+        if(elasticResult.getAggregations().getDoc_count() != null && StringUtils.isNotEmpty(getVariantId())) {
+            // TODO totalVariants = total;
+            searchResult.setTotal(elasticResult.getAggregations().getDoc_count());
+        }
     }
 
     protected void mapFacets(ElasticResult elasticResult, SearchResult searchResult) {
@@ -353,5 +361,13 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     public void setFilterPrefix(String filterPrefix) {
         this.filterPrefix = filterPrefix;
+    }
+
+    public String getVariantId() {
+        return variantId;
+    }
+
+    public void setVariantId(String variantId) {
+        this.variantId = variantId;
     }
 }

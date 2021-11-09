@@ -12,6 +12,7 @@ import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregations;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 
 public class AggregationsDeserializer extends StdDeserializer<Aggregations> {
 
@@ -35,23 +36,48 @@ public class AggregationsDeserializer extends StdDeserializer<Aggregations> {
     public Aggregations deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         Aggregations aggregations = new Aggregations();
         JsonNode jsonNode = p.getCodec().readTree(p);
-        Iterator<String> it = jsonNode.fieldNames();
-        while(it.hasNext()) {
-            String key = it.next();
-            if(key.endsWith("_filter_wrapper")) {
-                String wrappedKey = key.replaceAll("_filter_wrapper", "");
-                ObjectMapper mapper = new ObjectMapper();
-                Aggregation aggregation = mapper.convertValue(jsonNode.get(key).get(wrappedKey), Aggregation.class);
-                aggregations.put(wrappedKey, aggregation);
+        Iterator<Map.Entry<String, JsonNode>> aggs = jsonNode.fields();
+        JsonNode qscFiltered = jsonNode.get("qsc_filtered");
+        if(qscFiltered != null) {
+            aggs = qscFiltered.fields();
+        }
 
+        while(aggs.hasNext()) {
+            Map.Entry<String, JsonNode> nextAgg = aggs.next();
+            updateResultsCount(aggregations, nextAgg);
 
-            } else {
-                ObjectMapper mapper = new ObjectMapper();
-                Aggregation aggregation = mapper.convertValue(jsonNode.get(key), Aggregation.class);
-                aggregations.put(key, aggregation);
-
+            if(!"doc_count".equals(nextAgg.getKey()) && !"meta".equals(nextAgg.getKey())) {
+                deserializeAggregation(aggregations, nextAgg.getKey(), nextAgg.getValue());
             }
         }
+
         return aggregations;
+    }
+
+    private void updateResultsCount(Aggregations aggregations, Map.Entry<String, JsonNode> nextAgg) {
+        Long docCount = null;
+        if("doc_count".equals(nextAgg.getKey())) {
+            docCount = nextAgg.getValue().asLong();
+        } else if(nextAgg.getValue().get("doc_count") != null) {
+            docCount = nextAgg.getValue().get("doc_count").asLong();
+        }
+
+        if(docCount != null && (aggregations.getDoc_count() == null || aggregations.getDoc_count() > docCount)) {
+            // lowest doc count represents the total results count
+            aggregations.setDoc_count(docCount);
+        }
+    }
+
+    private void deserializeAggregation(Aggregations aggregations, String key, JsonNode jsonNode) {
+        if(key.endsWith("_filter_wrapper")) {
+            String wrappedKey = key.replaceAll("_filter_wrapper", "");
+            ObjectMapper mapper = new ObjectMapper();
+            Aggregation aggregation = mapper.convertValue(jsonNode.get(wrappedKey), Aggregation.class);
+            aggregations.put(wrappedKey, aggregation);
+        } else {
+            ObjectMapper mapper = new ObjectMapper();
+            Aggregation aggregation = mapper.convertValue(jsonNode, Aggregation.class);
+            aggregations.put(key, aggregation);
+        }
     }
 }

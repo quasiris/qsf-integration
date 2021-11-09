@@ -9,7 +9,7 @@ import java.util.Map;
 
 @JsonDeserialize(using = AggregationsDeserializer.class)
 public class Aggregations {
-
+    private Long doc_count;
     private Map<String, Aggregation> aggregations;
 
     public void put(String key, Aggregation aggregation) {
@@ -17,6 +17,14 @@ public class Aggregations {
             this.aggregations = new HashMap<>();
         }
         this.aggregations.put(key,aggregation);
+    }
+
+    public Long getDoc_count() {
+        return doc_count;
+    }
+
+    public void setDoc_count(Long doc_count) {
+        this.doc_count = doc_count;
     }
 
     /**
