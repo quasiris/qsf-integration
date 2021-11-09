@@ -58,7 +58,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     protected void updateTotalDocuments(ElasticResult elasticResult, SearchResult searchResult) {
-        if(elasticResult.getAggregations().getDoc_count() != null && StringUtils.isNotEmpty(getVariantId())) {
+        if(elasticResult.getAggregations() != null && elasticResult.getAggregations().getDoc_count() != null && StringUtils.isNotEmpty(getVariantId())) {
             // TODO totalVariants = total;
             searchResult.setTotal(elasticResult.getAggregations().getDoc_count());
         }

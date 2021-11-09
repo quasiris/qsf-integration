@@ -12,29 +12,34 @@
     }
   },
   "aggs": {
-    "accountId_filter_wrapper": {
-      "filter": {
-        "bool": {
-          "must": [
-            {
-              "term": {
-                "accountId": "1234"
+    "qsc_filtered": {
+      "filter":{"bool":{}},
+      "aggs": {
+        "accountId_filter_wrapper": {
+          "filter": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "accountId": "1234"
+                  }
+                }
+              ]
+            }
+          },
+          "aggs": {
+            "accountId": {
+              "terms": {
+                "field": "accountId"
               }
             }
-          ]
-        }
-      },
-      "aggs": {
-        "accountId": {
+          }
+        },
+        "stock": {
           "terms": {
-            "field": "accountId"
+            "field": "stock"
           }
         }
-      }
-    },
-    "stock": {
-      "terms": {
-        "field": "stock"
       }
     }
   }
