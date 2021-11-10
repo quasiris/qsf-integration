@@ -65,7 +65,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     protected void mapFacets(ElasticResult elasticResult, SearchResult searchResult) {
-        if(elasticResult.getAggregations() == null) {
+        if(elasticResult.getAggregations() == null || elasticResult.getAggregations().getAggregations() == null) {
             return;
         }
 
