@@ -12,6 +12,10 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Deprecated
 
+## [3.11]
+### Added
+- implement variants feature
+
 ## [3.10]
 ### Added
 - add result and parameters to the search query
