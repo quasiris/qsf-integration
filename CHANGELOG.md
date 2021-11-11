@@ -3,8 +3,8 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
-- add result and parameters to the search query
-- increase test coverage
+- add a result dto to the search query to make the result configurable in the request
+- don't compute facets in case facets are disabled
 
 ### Changed
 
