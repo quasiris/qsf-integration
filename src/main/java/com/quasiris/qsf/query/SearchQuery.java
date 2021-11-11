@@ -1,5 +1,7 @@
 package com.quasiris.qsf.query;
 
+import com.quasiris.qsf.dto.query.ResultDTO;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +40,8 @@ public class SearchQuery {
     private Map<String, Object> parameters;
 
     private Set<String> ctrl;
+
+    private ResultDTO result;
 
     public SearchQuery() {}
 
@@ -344,6 +348,24 @@ public class SearchQuery {
             return false;
         }
         return this.ctrl.contains(value);
+    }
+
+    /**
+     * Getter for property 'result'.
+     *
+     * @return Value for property 'result'.
+     */
+    public ResultDTO getResult() {
+        return result;
+    }
+
+    /**
+     * Setter for property 'result'.
+     *
+     * @param result Value to set for property 'result'.
+     */
+    public void setResult(ResultDTO result) {
+        this.result = result;
     }
 
     @Override

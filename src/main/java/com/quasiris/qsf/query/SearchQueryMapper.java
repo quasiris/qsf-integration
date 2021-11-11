@@ -27,6 +27,8 @@ public class SearchQueryMapper {
         List<SearchFilter> searchFilters = map(searchQueryDTO.getSearchFilters());
         searchQuery.setSearchFilterList(searchFilters);
 
+        searchQuery.setResult(searchQueryDTO.getResult());
+
         return searchQuery;
     }
 
