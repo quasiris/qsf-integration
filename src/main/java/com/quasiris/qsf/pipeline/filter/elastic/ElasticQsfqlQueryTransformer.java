@@ -71,6 +71,10 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     @Override
     public void transformAggregations() throws JsonBuilderException {
+        if(isFacetDisabled()) {
+            return;
+        }
+
         Map<String, Facet> aggregationsMap = aggregations.stream().
                 collect(Collectors.toMap(Facet::getName, Function.identity()));
         if(getSearchQuery().getFacetList() != null) {

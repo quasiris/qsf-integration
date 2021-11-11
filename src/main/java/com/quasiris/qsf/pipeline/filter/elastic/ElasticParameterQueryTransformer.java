@@ -93,7 +93,16 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         }
     }
 
+    public boolean isFacetDisabled() {
+        return searchQuery.getResult() != null &&
+                searchQuery.getResult().getFacet() != null &&
+                Boolean.FALSE.equals(searchQuery.getResult().getFacet().getEnabled());
+    }
+
     public void transformAggregations() throws JsonBuilderException {
+        if(isFacetDisabled()) {
+            return;
+        }
 
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object();
