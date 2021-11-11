@@ -74,11 +74,18 @@ public class QsfqlParser {
     }
 
     void parseCtrl(SearchQuery query) {
-        String ctrl = getParameter("ctrl");
-        if(Strings.isNullOrEmpty(ctrl)) {
+        Set<String> ctrl = parseCtrlFromString(getParameter("ctrl"));
+        if(ctrl == null || ctrl.size() == 0) {
             return;
         }
-        query.setCtrl(Splitter.splitToSet(getParameter("ctrl")));
+        query.setCtrl(ctrl);
+    }
+
+    public static Set<String> parseCtrlFromString(String ctrl) {
+        if(ctrl == null) {
+            return null;
+        }
+        return Splitter.splitToSet(ctrl);
     }
 
     void parseMeta(SearchQuery query) {

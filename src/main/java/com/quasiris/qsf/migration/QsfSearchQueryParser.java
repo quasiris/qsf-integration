@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
 
 public class QsfSearchQueryParser {
     private static Logger LOG = LoggerFactory.getLogger(QsfSearchQueryParser.class);
@@ -30,6 +31,13 @@ public class QsfSearchQueryParser {
             SearchQueryDTO searchQueryDTO = objectMapper.readValue(httpServletRequest.getInputStream(), SearchQueryDTO.class);
             SearchQueryMapper mapper = new SearchQueryMapper();
             SearchQuery searchQuery = mapper.map(searchQueryDTO);
+            if("true".equals(httpServletRequest.getParameter("debug"))) {
+                searchQuery.setDebug(true);
+            }
+            Set<String> ctrl = QsfqlParser.parseCtrlFromString(httpServletRequest.getParameter("ctrl"));
+            if(ctrl != null && ctrl.size() > 0) {
+                searchQuery.setCtrl(ctrl);
+            }
             return searchQuery;
         } catch (Exception e) {
             throw new RuntimeException("Could not read convert search query, because: " + e.getMessage(), e);
