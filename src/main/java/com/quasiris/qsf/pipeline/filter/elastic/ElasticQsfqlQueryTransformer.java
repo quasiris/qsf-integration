@@ -71,7 +71,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     @Override
     public void transformAggregations() throws JsonBuilderException {
-        if(isFacetDisabled()) {
+        if(checkFacetDisabled()) {
             return;
         }
 
