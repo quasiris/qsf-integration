@@ -59,11 +59,21 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
 
 
         // paging
-        Paging paging = PagingBuilder.buildPaging(searchResult.getTotal(), searchQuery.getPage(), searchQuery.getRows());
-        searchResult.setPaging(paging);
-
+        if(checkPagingEnabled(searchQuery)) {
+            Paging paging = PagingBuilder.buildPaging(searchResult.getTotal(), searchQuery.getPage(), searchQuery.getRows());
+            searchResult.setPaging(paging);
+        }
 
         return pipelineContainer;
+    }
+
+    public boolean checkPagingEnabled(SearchQuery searchQuery) {
+        if(searchQuery.getResult() != null &&
+                searchQuery.getResult().getPaging() != null &&
+                searchQuery.getResult().getPaging().getEnabled() != null) {
+            return searchQuery.getResult().getPaging().getEnabled();
+        }
+        return true;
     }
 
     public String getResultId() {
