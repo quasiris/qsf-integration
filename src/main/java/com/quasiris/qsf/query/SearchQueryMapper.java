@@ -33,7 +33,7 @@ public class SearchQueryMapper {
     }
 
 
-    protected static Sort map(SortDTO sortDTO) {
+    public static Sort map(SortDTO sortDTO) {
         if(sortDTO == null) {
             return null;
         }
@@ -46,7 +46,7 @@ public class SearchQueryMapper {
         return sort;
     }
 
-    protected static List<SearchFilter> map(List<SearchFilterDTO> searchFilters) {
+    public static List<SearchFilter> map(List<SearchFilterDTO> searchFilters) {
         List<SearchFilter> mappedFilters = new ArrayList<>();
         if(searchFilters == null) {
             return mappedFilters;
@@ -57,7 +57,7 @@ public class SearchQueryMapper {
         return mappedFilters;
     }
 
-    protected static SearchFilter map(SearchFilterDTO searchFilterDTO) {
+    public static SearchFilter map(SearchFilterDTO searchFilterDTO) {
         SearchFilter searchFilter = new SearchFilter();
         searchFilter.setId(searchFilterDTO.getId());
         searchFilter.setName(searchFilterDTO.getName());
@@ -90,7 +90,7 @@ public class SearchQueryMapper {
         return searchFilter;
     }
 
-    protected static void mapTermFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
+    public static void mapTermFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
         if(!searchFilterDTO.getFilterType().isTerm()) {
             return;
         }
@@ -101,7 +101,7 @@ public class SearchQueryMapper {
         searchFilter.setValues(mapValues(searchFilterDTO.getValues()));
     }
 
-    protected static void mapRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
+    public static void mapRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
         if(!searchFilterDTO.getFilterDataType().isNumber()) {
             return;
         }
@@ -113,7 +113,7 @@ public class SearchQueryMapper {
         searchFilter.setFilterDataType(FilterDataType.NUMBER);
     }
 
-    protected static void mapDateRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
+    public static void mapDateRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
         if(searchFilterDTO.getFilterType().isRange() && searchFilterDTO.getFilterDataType().isDate()) {
             RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
             SimpleDateParser parserMin = new SimpleDateParser(searchFilterDTO.getMinValue().toString());
@@ -127,7 +127,7 @@ public class SearchQueryMapper {
         }
     }
 
-    protected static void mapRelativeDateRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
+    public static void mapRelativeDateRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
         if(searchFilterDTO.getFilterType().isRelativeRange() && searchFilterDTO.getFilterDataType().isDate()) {
             RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
             HumanDateParser parser = new HumanDateParser(searchFilterDTO.getValues().get(0).toString());
@@ -141,7 +141,7 @@ public class SearchQueryMapper {
     }
 
 
-    protected static List<String> mapValues(List<Object> values) {
+    public static List<String> mapValues(List<Object> values) {
         List<String> mappedValues = new ArrayList<>();
         for(Object value : values) {
             mappedValues.add(String.valueOf(value));
