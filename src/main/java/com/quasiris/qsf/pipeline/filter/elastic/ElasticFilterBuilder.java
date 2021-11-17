@@ -1,9 +1,8 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
-import com.quasiris.qsf.query.Facet;
-import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
+import com.quasiris.qsf.query.Facet;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -137,27 +136,19 @@ public class ElasticFilterBuilder {
         return this;
     }
 
-    public ElasticFilterBuilder addSlider(Slider slider) {
-        getElasticParameterQueryTransformer().addSlider(slider);
-        getElasticQsfqlQueryTransformer().addSlider(slider);
-        getMappingTransformer().addSliderMapping(slider.getId(), slider.getId());
-        return this;
-    }
-
-    public ElasticFilterBuilder mapSliderName(String from, String to) {
-        getMappingTransformer().addSliderNameMapping(from, to);
-        return this;
-    }
-
     public ElasticFilterBuilder addAggregation(Facet facet) {
         getElasticParameterQueryTransformer().addAggregation(facet);
         getElasticQsfqlQueryTransformer().addAggregation(facet);
+
+
         return this;
     }
 
     public ElasticFilterBuilder addAggregation(String name, String field) {
+
         getElasticParameterQueryTransformer().addAggregation(name, field);
         getElasticQsfqlQueryTransformer().addAggregation(name, field);
+        mapAggregationType(name, "terms");
         return this;
     }
 
@@ -173,6 +164,10 @@ public class ElasticFilterBuilder {
     }
     public ElasticFilterBuilder mapAggregationName(String from, String to) {
         getMappingTransformer().addFacetNameMapping(from, to);
+        return this;
+    }
+    public ElasticFilterBuilder mapAggregationType(String id, String type) {
+        getMappingTransformer().addFacetTypeMapping(id, type);
         return this;
     }
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.Facet;
-import com.quasiris.qsf.query.Slider;
 
 public class AggregationMapper {
 
@@ -89,17 +88,17 @@ public class AggregationMapper {
         }
     }
 
-    public static JsonNode createSlider(Slider slider) {
+    public static JsonNode createSlider(Facet slider) {
         return createSlider(slider, null);
     }
 
-    public static JsonNode createSlider(Slider slider, JsonNode filters) {
+    public static JsonNode createSlider(Facet slider, JsonNode filters) {
 
         try {
             JsonBuilder jsonBuilder = new JsonBuilder();
             jsonBuilder.
                     object(slider.getName()).
-                    object(slider.getType()).
+                    object("stats").
                     object("field", slider.getId());
 
             if(filters != null) {

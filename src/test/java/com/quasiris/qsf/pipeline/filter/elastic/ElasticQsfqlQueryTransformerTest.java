@@ -1,19 +1,21 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.commons.util.IOUtils;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchFilterBuilder;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Sort;
-import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
 import com.quasiris.qsf.test.converter.NullValueConverter;
-import com.quasiris.qsf.commons.util.DateUtil;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -21,11 +23,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,6 +35,59 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Created by mki on 04.02.18.
  */
 public class ElasticQsfqlQueryTransformerTest {
+
+    @DisplayName("Transform slider")
+    @Test
+    public void transformSlider() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+
+        Facet facet = new Facet();
+        facet.setType("slider");
+        facet.setName("price");
+        facet.setId("price");
+
+        transformer.setAggregations(Arrays.asList(facet));
+        ObjectNode elasticQuery = transform(transformer,  "q=*");
+        assertQuery(elasticQuery, "slider.json");
+
+    }
+
+    @DisplayName("Transform slider multiselect with no filter")
+    @Test
+    public void transformSliderMultiSelectNoFilter() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+
+        Facet facet = new Facet();
+        facet.setType("slider");
+        facet.setName("price");
+        facet.setId("price");
+
+        transformer.setAggregations(Arrays.asList(facet));
+        transformer.setMultiSelectFilter(true);
+        ObjectNode elasticQuery = transform(transformer,  "q=*");
+        assertQuery(elasticQuery, "slider-multiselect-no-filter.json");
+
+    }
+
+    @DisplayName("Transform slider multiselect with filter")
+    @Test
+    public void transformSliderMultiSelectWithFilter() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+
+        Facet facet = new Facet();
+        facet.setType("slider");
+        facet.setName("price");
+        facet.setId("price");
+
+        transformer.setAggregations(Arrays.asList(facet));
+        transformer.setMultiSelectFilter(true);
+        ObjectNode elasticQuery = transform(transformer,  "q=*", "f.color=red");
+        assertQuery(elasticQuery, "slider-multiselect-with-filter.json");
+
+    }
 
     @DisplayName("Transform sort mapping")
     @ParameterizedTest(name = "{index} => profile=''{0}'' filterPath=''{1}'' filterVariable=''{2}''")
@@ -718,8 +772,15 @@ public class ElasticQsfqlQueryTransformerTest {
     private void assertQuery(ObjectNode elasticQuery, String file) throws IOException, JSONException {
         String expected = IOUtils.getString("classpath://com/quasiris/qsf/pipeline/filter/elastic/query/" + file);
 
-        JSONAssert.assertEquals(
-                expected, elasticQuery.toString(), JSONCompareMode.STRICT);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String query = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(elasticQuery);
+
+        JsonNode expectedJson = objectMapper.readValue(expected, JsonNode.class);
+        expected = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(expectedJson);
+        assertEquals(expected, query);
+
+        //JSONAssert.assertEquals(
+                //expected, elasticQuery.toString(), JSONCompareMode.STRICT);
     }
 
 }

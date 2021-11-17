@@ -7,6 +7,8 @@ import com.quasiris.qsf.dto.response.Document;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
+import java.util.ArrayList;
+
 /**
  * Created by mki on 12.11.17.
  */
@@ -26,6 +28,7 @@ public class Solr2SearchResultTransformer extends Solr2SearchResultMappingTransf
         searchResult.setFacetCount(queryResponse.getFacetFields().size());
         for(FacetField facetField : queryResponse.getFacetFields()) {
             Facet facet = new Facet();
+            facet.setValues(new ArrayList<>());
             facet.setId(facetField.getName());
             facet.setName(facetField.getName());
             facet.setFilterName(facetField.getName());

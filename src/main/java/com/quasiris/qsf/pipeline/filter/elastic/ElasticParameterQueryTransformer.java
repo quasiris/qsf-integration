@@ -11,7 +11,6 @@ import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.web.RequestParser;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.util.PrintUtil;
 
 import java.beans.Transient;
@@ -37,7 +36,6 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     protected Map<String, Object> profileParameter = new HashMap<>();
 
     protected List<Facet> aggregations = new ArrayList<>();
-    protected List<Slider> sliders = new ArrayList<>();
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 
@@ -108,15 +106,15 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         jsonBuilder.object();
         boolean hasAggs = false;
         for (Facet aggregation : aggregations) {
-            JsonNode agg = AggregationMapper.createAgg(aggregation, false);
-            jsonBuilder.json(agg);
-            hasAggs = true;
-        }
-
-        for (Slider slider : sliders) {
-            JsonNode agg = AggregationMapper.createSlider(slider);
-            jsonBuilder.json(agg);
-            hasAggs = true;
+            if("slider".equals(aggregation.getType())) {
+                JsonNode agg = AggregationMapper.createSlider(aggregation);
+                jsonBuilder.json(agg);
+                hasAggs = true;
+            } else {
+                JsonNode agg = AggregationMapper.createAgg(aggregation, false);
+                jsonBuilder.json(agg);
+                hasAggs = true;
+            }
         }
 
         if (hasAggs) {
@@ -233,18 +231,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     public void addAggregation(Facet facet) {
         aggregations.add(facet);
-    }
 
-    public void addSlider(Slider slider) {
-        sliders.add(slider);
-    }
-
-    public List<Slider> getSliders() {
-        return sliders;
-    }
-
-    public void setSliders(List<Slider> sliders) {
-        this.sliders = sliders;
     }
 
     public void addAggregation(String name, String field, int size, String sortOrder, String sortBy, String type) {

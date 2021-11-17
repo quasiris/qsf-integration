@@ -12,11 +12,13 @@ import com.quasiris.qsf.query.Control;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.query.Slider;
 import com.quasiris.qsf.query.Sort;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -115,17 +117,17 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         jsonBuilder.object();
         boolean hasAggs = false;
         for (Facet aggregation : aggregations) {
-            ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
-            JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters);
-            jsonBuilder.json(agg);
-            hasAggs = true;
-        }
-
-        for (Slider slider : sliders) {
-            ObjectNode filters = getFilterAsJson(filterMapper, slider.getId(), null, FilterOperator.OR);
-            JsonNode agg = AggregationMapper.createSlider(slider, filters);
-            jsonBuilder.json(agg);
-            hasAggs = true;
+            if("slider".equals(aggregation.getType())) {
+                ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), null, FilterOperator.OR);
+                JsonNode agg = AggregationMapper.createSlider(aggregation, filters);
+                jsonBuilder.json(agg);
+                hasAggs = true;
+            } else {
+                ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
+                JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters);
+                jsonBuilder.json(agg);
+                hasAggs = true;
+            }
         }
 
         JsonBuilder aggFilterBuilder = new JsonBuilder().object("bool");

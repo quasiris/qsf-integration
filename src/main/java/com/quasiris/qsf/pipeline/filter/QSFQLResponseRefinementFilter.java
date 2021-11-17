@@ -31,19 +31,12 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
         SearchResult searchResult = pipelineContainer.getSearchResult(resultId);
         SearchQuery searchQuery = pipelineContainer.getSearchQuery();
 
-
         // filter, facets, sliders
         for(SearchFilter searchFilter : searchQuery.getSearchFilterList()) {
             String filterId = searchFilter.getId();
-            Slider slider = searchResult.getSliderById(filterId);
-            if(slider != null && searchFilter.getRangeValue(Double.class).getMinValue() instanceof Double) {
-                slider.setMinValueOrDefault((Double) searchFilter.getRangeValue(Double.class).getMinValue());
-                slider.setMaxValueOrDefault((Double) searchFilter.getRangeValue(Double.class).getMaxValue());
-                slider.setSelected(Boolean.TRUE);
-            }
-
             Facet facet = searchResult.getFacetById(filterId);
             if(facet != null) {
+                // TODO refine sliders
                 facet.setSelected(Boolean.TRUE);
                 if(searchFilter.getValues() != null) {
                     for (String filterValue : searchFilter.getValues()) {

@@ -58,6 +58,7 @@ public class Solr2SearchResultMappingTransformer implements SearchResultTransfor
         searchResult.setFacetCount(queryResponse.getFacetFields().size());
         for(FacetField facetField : queryResponse.getFacetFields()) {
             Facet facet = new Facet();
+            facet.setValues(new ArrayList<>());
 
             String id = facetMapping.get(facetField.getName());
             facet.setId(id);
