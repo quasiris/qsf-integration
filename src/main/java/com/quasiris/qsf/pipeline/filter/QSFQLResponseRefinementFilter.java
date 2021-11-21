@@ -45,6 +45,10 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
                             facetValue.setSelected(Boolean.TRUE);
                         }
                     }
+                } else if (searchFilter.getMinValue() != null && searchFilter.getRangeValue(Double.class).getMinValue() instanceof Double) {
+                    facet.setMinValue((Double) searchFilter.getRangeValue(Double.class).getMinValue());
+                    facet.setMaxValue((Double) searchFilter.getRangeValue(Double.class).getMaxValue());
+
                 }
 
             }
