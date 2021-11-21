@@ -60,7 +60,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             transformQuery();
             transformSort();
             transformFilters();
-            transformFilters();
             transformPaging();
             replaceParameters();
             collapseResults();
