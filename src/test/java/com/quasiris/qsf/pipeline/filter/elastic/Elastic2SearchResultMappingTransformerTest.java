@@ -64,6 +64,61 @@ class Elastic2SearchResultMappingTransformerTest {
 
     }
 
+    @Test
+    void updateTotalDocumentsWhenUseVariantIdAndHasAggregationDocCount() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFieldMapping("id", "id");
+        transformer.addFieldMapping("title", "title");
+        transformer.addFieldMapping("description", "description");
+        transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
+        transformer.setVariantId("variantId");
+        ElasticResult elasticResult = readElasticResultFromFile("filtered-agg-doc_count.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+
+        assertEquals(12, searchResult.getTotal());
+    }
+
+    @Test
+    void updateTotalDocumentsWhenUseVariantIdAndNotHasAggregationDocCount() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFieldMapping("id", "id");
+        transformer.addFieldMapping("title", "title");
+        transformer.addFieldMapping("description", "description");
+        transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
+        transformer.setVariantId("variantId");
+        ElasticResult elasticResult = readElasticResultFromFile("filtered-agg.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+
+        assertEquals(25, searchResult.getTotal());
+    }
+
+    @Test
+    void updateTotalDocumentsWhenNotUseVariantIdAndHasAggregationDocCount() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFieldMapping("id", "id");
+        transformer.addFieldMapping("title", "title");
+        transformer.addFieldMapping("description", "description");
+        transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
+        ElasticResult elasticResult = readElasticResultFromFile("filtered-agg-doc_count.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+
+        assertEquals(25, searchResult.getTotal());
+    }
+
+    @Test
+    void updateTotalDocumentsWhenUseVariantIdAndHasAggregationDocCountHigherThanTotal() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFieldMapping("id", "id");
+        transformer.addFieldMapping("title", "title");
+        transformer.addFieldMapping("description", "description");
+        transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
+        transformer.setVariantId("variantId");
+        ElasticResult elasticResult = readElasticResultFromFile("filtered-agg-doc_count-higher.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+
+        assertEquals(25, searchResult.getTotal());
+    }
+
     public ElasticResult readElasticResultFromFile(String fileName) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String file = "src/test/resources/com/quasiris/qsf/pipeline/filter/elastic/bean/" + fileName;

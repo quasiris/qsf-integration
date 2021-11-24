@@ -507,6 +507,37 @@ public class ElasticQsfqlQueryTransformerTest {
         assertQuery(elasticQuery, "facet-with-filter.json");
     }
 
+    @DisplayName("Transform facet with filter and variantId")
+    @Test
+    public void transformFacetWithFilterAndVariantId() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+        transformer.setVariantId("variantId");
+
+        Facet accountId = new Facet();
+        accountId.setId("accountId");
+        accountId.setName("accountId");
+        SearchFilter searchFilter = SearchFilterBuilder.create().withId("accountId").value("1234").build();
+
+        accountId.getFacetFilters().add(searchFilter);
+
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQ("*");
+        searchQuery.setFacetList(new ArrayList<>());
+        searchQuery.getFacetList().add(accountId);
+
+
+        Facet stock = new Facet();
+        stock.setId("stock");
+        stock.setName("stock");
+        searchQuery.getFacetList().add(stock);
+
+
+        ObjectNode elasticQuery = transform(transformer,  searchQuery);
+        assertQuery(elasticQuery, "facet-with-filter-and-variants.json");
+    }
+
     @DisplayName("Transform facet with multi select filters with or operator")
     @Test
     public void transformFacetFilterMultiselectOperatorOr() throws Exception {

@@ -1,0 +1,637 @@
+{
+  "took": 3,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 25,
+      "relation": "eq"
+    },
+    "max_score": 1.0,
+    "hits": [
+      {
+        "_index": "prod.lugina.waldlaeufer_2021-02-15-06.27.12",
+        "_type": "_doc",
+        "_id": "ab18011d-b6d1-468a-98af-52e1d770eb58",
+        "_score": 1.0,
+        "_source": {
+          "attr_farbe": "Schwarz",
+          "image": "https://shop-waldlaeufer.de/wp-content/uploads/sites/2/2021/01/waldlaeufer-204001-186-001-2.jpg",
+          "priceUnit": "EUR",
+          "gender": [
+            "Gunna",
+            "Damen"
+          ],
+          "keywords": "schuhe",
+          "description": "Damen-Sandale Gunna in Schwarz | Mit Doppelklettverschluss & dekorativem Knopf | Schick & einfach verstellbar | Jetzt mehr erfahren!",
+          "availability": "http://schema.org/InStock",
+          "title": "Waldläufer Damen-Sandale Gunna in Schwarz mit modischem Knopf",
+          "url": "https://shop-waldlaeufer.de/shop/damen/gunna-8/",
+          "attr_form": "Sandale/Pantolette",
+          "price": "89.90",
+          "attr_futter": "Leder",
+          "attr_decksohle": "Leder",
+          "name": "Gunna",
+          "attributes": [
+            "Leder",
+            "Sandale/Pantolette",
+            "Leder",
+            "Schwarz"
+          ],
+          "sku": "204001-186-001",
+          "processingtime": "2021-02-15T06:27:25+0000",
+          "fields": [
+            "image",
+            "priceUnit",
+            "gender",
+            "keywords",
+            "decksohle",
+            "description",
+            "futter",
+            "availability",
+            "title",
+            "url",
+            "farbe",
+            "form",
+            "lowPrice",
+            "price",
+            "name",
+            "sku"
+          ]
+        }
+      },
+      {
+        "_index": "prod.lugina.waldlaeufer_2021-02-15-06.27.12",
+        "_type": "_doc",
+        "_id": "e6b1ab1b-ed4a-430f-a111-03fa8a2cd369",
+        "_score": 1.0,
+        "_source": {
+          "attr_farbe": "Schwarz",
+          "image": "https://shop-waldlaeufer.de/wp-content/uploads/sites/2/2021/01/waldlaeufer-204501-604-001-2.jpg",
+          "priceUnit": "EUR",
+          "gender": [
+            "Gunna",
+            "Damen"
+          ],
+          "keywords": "schuhe",
+          "description": "Damen-Pantolette Gunna mit Klettverschluss in schwarzem Lackleder | Ein echter Waldläufer – leicht & bequem zu tragen | Jetzt mehr erfahren!",
+          "availability": "http://schema.org/InStock",
+          "title": "Waldläufer Damen- Pantolette Gunna in schwarzem Lackleder",
+          "url": "https://shop-waldlaeufer.de/shop/damen/gunna-15/",
+          "attr_form": "Sandale/Pantolette",
+          "price": "84.90",
+          "attr_futter": "Leder",
+          "attr_decksohle": "Leder",
+          "name": "Gunna",
+          "attributes": [
+            "Leder",
+            "Sandale/Pantolette",
+            "Leder",
+            "Schwarz"
+          ],
+          "sku": "204501-604-001",
+          "processingtime": "2021-02-15T06:27:28+0000",
+          "fields": [
+            "image",
+            "priceUnit",
+            "gender",
+            "keywords",
+            "decksohle",
+            "description",
+            "futter",
+            "availability",
+            "title",
+            "url",
+            "farbe",
+            "form",
+            "lowPrice",
+            "price",
+            "name",
+            "sku"
+          ]
+        }
+      },
+      {
+        "_index": "prod.lugina.waldlaeufer_2021-02-15-06.27.12",
+        "_type": "_doc",
+        "_id": "0e311510-7834-494d-b4a3-30bcfea12b9e",
+        "_score": 1.0,
+        "_source": {
+          "attr_farbe": "Schwarz",
+          "image": "https://shop-waldlaeufer.de/wp-content/uploads/sites/2/2021/01/waldlaeufer-210004-191-001-2.jpg",
+          "priceUnit": "EUR",
+          "gender": [
+            "Garda",
+            "Damen"
+          ],
+          "keywords": "schuhe",
+          "description": "Damen-Sandale Garda in Schwarz | Elegant-bequemer Sommerschuh mit modischem Akzent | Ein echter Waldläufer | Jetzt mehr erfahren!",
+          "availability": "http://schema.org/InStock",
+          "title": "Waldläufer Sandale Garda in Schwarz mit optischen Highlights",
+          "url": "https://shop-waldlaeufer.de/shop/damen/garda-14/",
+          "attr_form": "Sandale/Pantolette",
+          "lowPrice": "89.90",
+          "attr_futter": "Leder",
+          "price": "89.90",
+          "attr_decksohle": "Leder",
+          "name": "Garda",
+          "attributes": [
+            "Leder",
+            "Sandale/Pantolette",
+            "Leder",
+            "Schwarz"
+          ],
+          "sku": "210004-191-001",
+          "processingtime": "2021-02-15T06:27:31+0000",
+          "fields": [
+            "image",
+            "priceUnit",
+            "gender",
+            "keywords",
+            "decksohle",
+            "description",
+            "futter",
+            "availability",
+            "title",
+            "url",
+            "farbe",
+            "form",
+            "lowPrice",
+            "price",
+            "name",
+            "sku"
+          ]
+        }
+      },
+      {
+        "_index": "prod.lugina.waldlaeufer_2021-02-15-06.27.12",
+        "_type": "_doc",
+        "_id": "633ae3e2-99c0-4a90-8fd4-a20e04c93e07",
+        "_score": 1.0,
+        "_source": {
+          "attr_farbe": "Schwarz",
+          "image": "https://shop-waldlaeufer.de/wp-content/uploads/sites/2/2021/01/waldlaeufer-348501-162-001-2.jpg",
+          "priceUnit": "EUR",
+          "gender": [
+            "Hanin",
+            "Damen"
+          ],
+          "keywords": "schuhe",
+          "description": "Waldläufer Damen-Mokassin in elegantem Schwarz mit dekorativen Schmucksteinen | Chic & bequem | Einfaches An- & Ausziehen I Jetzt mehr erfahren!",
+          "availability": "http://schema.org/InStock",
+          "title": "Waldläufer Mokassin Hanin in Schwarz mit dekorativen Schmucksteinen",
+          "url": "https://shop-waldlaeufer.de/shop/damen/hanin-6/",
+          "attr_form": "Mokassin",
+          "price": "99.90",
+          "attr_futter": "Leder",
+          "attr_decksohle": "Leder",
+          "name": "Hanin",
+          "attributes": [
+            "Leder",
+            "Mokassin",
+            "Leder",
+            "Schwarz"
+          ],
+          "sku": "348501-162-001",
+          "processingtime": "2021-02-15T06:27:52+0000",
+          "fields": [
+            "image",
+            "priceUnit",
+            "gender",
+            "keywords",
+            "decksohle",
+            "description",
+            "futter",
+            "availability",
+            "title",
+            "url",
+            "farbe",
+            "form",
+            "lowPrice",
+            "price",
+            "name",
+            "sku"
+          ]
+        }
+      },
+      {
+        "_index": "prod.lugina.waldlaeufer_2021-02-15-06.27.12",
+        "_type": "_doc",
+        "_id": "ec9ffaf8-b2b7-472f-b7a5-eeeda02494a3",
+        "_score": 1.0,
+        "_source": {
+          "attr_farbe": "Schwarz",
+          "image": "https://shop-waldlaeufer.de/wp-content/uploads/sites/2/2021/01/waldlaeufer-358501-121-001-2.jpg",
+          "priceUnit": "EUR",
+          "gender": [
+            "Hilaria",
+            "Damen"
+          ],
+          "keywords": "schuhe",
+          "description": "Damen Komfort-Pumps Hilaria in Schwarz mit runder Spitze | Modisch & bequem | Tragekomfort auf höchstem Niveau I Jetzt mehr erfahren!",
+          "availability": "http://schema.org/InStock",
+          "title": "Klassischer Damen-Pumps Hilaria von Waldläufer in Schwarz",
+          "url": "https://shop-waldlaeufer.de/shop/damen/hilaria-5/",
+          "attr_form": "Halbschuh",
+          "price": "99.90",
+          "attr_futter": "Leder",
+          "attr_decksohle": "Leder",
+          "name": "Hilaria",
+          "attributes": [
+            "Leder",
+            "Halbschuh",
+            "Leder",
+            "Schwarz"
+          ],
+          "sku": "358501-121-001",
+          "processingtime": "2021-02-15T06:28:11+0000",
+          "fields": [
+            "image",
+            "priceUnit",
+            "gender",
+            "keywords",
+            "decksohle",
+            "description",
+            "futter",
+            "availability",
+            "title",
+            "url",
+            "farbe",
+            "form",
+            "lowPrice",
+            "price",
+            "name",
+            "sku"
+          ]
+        }
+      },
+      {
+        "_index": "prod.lugina.waldlaeufer_2021-02-15-06.27.12",
+        "_type": "_doc",
+        "_id": "0671da32-2b71-475c-bbf2-f22fc78a0d99",
+        "_score": 1.0,
+        "_source": {
+          "attr_farbe": "Schwarz",
+          "image": "https://shop-waldlaeufer.de/wp-content/uploads/sites/2/2021/01/waldlaeufer-329051-191-001-2.jpg",
+          "priceUnit": "EUR",
+          "gender": [
+            "Hesima",
+            "Damen"
+          ],
+          "keywords": "schuhe",
+          "description": "Hesima Damen- Halbschuh in klassischem Schwarz | Waldläufer Ballerina mit allem Tragekomfort | Chic & federleicht | Jetzt anschauen!",
+          "availability": "http://schema.org/InStock",
+          "title": "Hesima Ballerina von Waldläufer in klassischem Schwarz",
+          "url": "https://shop-waldlaeufer.de/shop/damen/hesima-2/",
+          "attr_form": "Halbschuh",
+          "lowPrice": "99.90",
+          "attr_futter": "Leder",
+          "price": "99.90",
+          "attr_decksohle": "Leder",
+          "name": "Hesima",
+          "attributes": [
+            "Leder",
+            "Halbschuh",
+            "Leder",
+            "Schwarz"
+          ],
+          "sku": "329051-191-001",
+          "processingtime": "2021-02-15T06:28:48+0000",
+          "fields": [
+            "image",
+            "priceUnit",
+            "gender",
+            "keywords",
+            "decksohle",
+            "description",
+            "futter",
+            "availability",
+            "title",
+            "url",
+            "farbe",
+            "form",
+            "lowPrice",
+            "price",
+            "name",
+            "sku"
+          ]
+        }
+      },
+      {
+        "_index": "prod.lugina.waldlaeufer_2021-02-15-06.27.12",
+        "_type": "_doc",
+        "_id": "c87b403d-1804-429f-a8b2-f147dbe10a22",
+        "_score": 1.0,
+        "_source": {
+          "attr_farbe": "Schwarz",
+          "image": "https://shop-waldlaeufer.de/wp-content/uploads/sites/2/2021/01/waldlaeufer-342002-191-001-2.jpg",
+          "priceUnit": "EUR",
+          "gender": [
+            "Heliett",
+            "Damen"
+          ],
+          "keywords": "schuhe",
+          "description": "Waldläufer Damen-Sandale Helliet in Schwarz mit Riemchen | Bequemweite H | Luftig-leichter Sommerschuh | Jetzt anschauen!",
+          "availability": "http://schema.org/InStock",
+          "title": "Waldläufer Komfort-Sandale Helliet in Schwarz mit Riemchen",
+          "url": "https://shop-waldlaeufer.de/shop/damen/heliett-24/",
+          "attr_form": "Sandale",
+          "price": "89.90",
+          "attr_futter": "Leder",
+          "attr_decksohle": "Leder",
+          "name": "Heliett",
+          "attributes": [
+            "Leder",
+            "Sandale",
+            "Leder",
+            "Schwarz"
+          ],
+          "sku": "342002-191-001",
+          "processingtime": "2021-02-15T06:28:53+0000",
+          "fields": [
+            "image",
+            "priceUnit",
+            "gender",
+            "keywords",
+            "decksohle",
+            "description",
+            "futter",
+            "availability",
+            "title",
+            "url",
+            "farbe",
+            "form",
+            "lowPrice",
+            "price",
+            "name",
+            "sku"
+          ]
+        }
+      },
+      {
+        "_index": "prod.lugina.waldlaeufer_2021-02-15-06.27.12",
+        "_type": "_doc",
+        "_id": "22f16bf0-cd40-491b-aef0-cfc30e4dad4e",
+        "_score": 1.0,
+        "_source": {
+          "attr_farbe": "Schwarz",
+          "image": "https://shop-waldlaeufer.de/wp-content/uploads/sites/2/2021/01/waldlaeufer-431000-604-001-2.jpg",
+          "priceUnit": "EUR",
+          "gender": [
+            "Harriet",
+            "Damen"
+          ],
+          "keywords": "schuhe",
+          "description": "Der schicke Mokassin Harriet ist ein echter Hingucker und darüber hinaus auch sehr bequem. Kaufen Sie den Harriet Mokassin bequem online bei Waldläufer.",
+          "availability": "http://schema.org/InStock",
+          "title": "Modischer Damen Mokassin Harriet von Waldläufer",
+          "url": "https://shop-waldlaeufer.de/shop/damen/harriet/",
+          "attr_form": "Mokassin",
+          "lowPrice": "99.90",
+          "attr_futter": "Leder",
+          "price": "99.90",
+          "attr_decksohle": "Leder",
+          "name": "Harriet",
+          "attributes": [
+            "Leder",
+            "Mokassin",
+            "Leder",
+            "Schwarz"
+          ],
+          "sku": "431000-604-001",
+          "processingtime": "2021-02-15T06:29:02+0000",
+          "fields": [
+            "image",
+            "priceUnit",
+            "gender",
+            "keywords",
+            "decksohle",
+            "description",
+            "futter",
+            "availability",
+            "title",
+            "url",
+            "farbe",
+            "form",
+            "lowPrice",
+            "price",
+            "name",
+            "sku"
+          ]
+        }
+      },
+      {
+        "_index": "prod.lugina.waldlaeufer_2021-02-15-06.27.12",
+        "_type": "_doc",
+        "_id": "cfcf1475-a906-4696-81dc-dcc512d74379",
+        "_score": 1.0,
+        "_source": {
+          "attr_farbe": "Schwarz",
+          "image": "https://shop-waldlaeufer.de/wp-content/uploads/sites/2/2021/01/waldlaeufer-408505-204-001-2.jpg",
+          "priceUnit": "EUR",
+          "gender": [
+            "Heria",
+            "Damen"
+          ],
+          "keywords": "schuhe",
+          "description": "Klassische Damen-Pantolette Heria in Schwarz mit dezentem Lacklederakzent | Chic & bequem! I Leicht, weich und flexibel I Jetzt mehr erfahren!",
+          "availability": "http://schema.org/InStock",
+          "title": "Heria Damen-Pantolette in Schwarz mit verstellbaren Klettriegeln",
+          "url": "https://shop-waldlaeufer.de/shop/damen/heria-8/",
+          "attr_form": "Sandale/Pantolette",
+          "price": "94.90",
+          "attr_futter": "Leder",
+          "attr_decksohle": "Leder",
+          "name": "Heria",
+          "attributes": [
+            "Leder",
+            "Sandale/Pantolette",
+            "Leder",
+            "Schwarz"
+          ],
+          "sku": "408505-204-001",
+          "processingtime": "2021-02-15T06:29:12+0000",
+          "fields": [
+            "image",
+            "priceUnit",
+            "gender",
+            "keywords",
+            "decksohle",
+            "description",
+            "futter",
+            "availability",
+            "title",
+            "url",
+            "farbe",
+            "form",
+            "lowPrice",
+            "price",
+            "name",
+            "sku"
+          ]
+        }
+      },
+      {
+        "_index": "prod.lugina.waldlaeufer_2021-02-15-06.27.12",
+        "_type": "_doc",
+        "_id": "c420cef2-cb99-46d1-8635-94dc2a7dc7c0",
+        "_score": 1.0,
+        "_source": {
+          "attr_farbe": "Schwarz",
+          "image": "https://shop-waldlaeufer.de/wp-content/uploads/sites/2/2021/01/waldlaeufer-415007-691-742-2.jpg",
+          "priceUnit": "EUR",
+          "gender": [
+            "Hayo",
+            "Outdoor"
+          ],
+          "keywords": "schuhe",
+          "description": "Waldläufer Outdoor-Schnürschuh Hayo in Kurzschaftversion | Farbkombi Schwarz Brasil | Robust & bequem | Jetzt mehr erfahren!",
+          "availability": "http://schema.org/InStock",
+          "title": "Hayo Schnürschuh aus der Outdoor-Kollektion in Schwarz Brasil",
+          "url": "https://shop-waldlaeufer.de/shop/outdoor/hayo-5/",
+          "attr_form": "Halbschuh",
+          "price": "120.00",
+          "attr_futter": "Leder",
+          "attr_decksohle": "Leder",
+          "name": "Hayo",
+          "attributes": [
+            "Leder",
+            "Halbschuh",
+            "Leder",
+            "Schwarz"
+          ],
+          "sku": "415007-691-742",
+          "processingtime": "2021-02-15T06:29:13+0000",
+          "fields": [
+            "image",
+            "priceUnit",
+            "gender",
+            "keywords",
+            "decksohle",
+            "description",
+            "futter",
+            "availability",
+            "title",
+            "url",
+            "farbe",
+            "form",
+            "lowPrice",
+            "price",
+            "name",
+            "sku"
+          ]
+        }
+      }
+    ]
+  },
+  "aggregations": {
+    "qsc_filtered": {
+      "meta": {},
+      "doc_count": 112,
+      "futter_filter_wrapper": {
+        "doc_count": 70,
+        "futter": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "Leder",
+              "doc_count": 25
+            },
+            {
+              "key": "Leder/Textil",
+              "doc_count": 16
+            },
+            {
+              "key": "Textil",
+              "doc_count": 7
+            },
+            {
+              "key": "Membrane/Tex",
+              "doc_count": 1
+            }
+          ]
+        }
+      },
+      "form_filter_wrapper": {
+        "doc_count": 25,
+        "form": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "Sandale/Pantolette",
+              "doc_count": 12
+            },
+            {
+              "key": "Halbschuh",
+              "doc_count": 8
+            },
+            {
+              "key": "Mokassin",
+              "doc_count": 4
+            },
+            {
+              "key": "Sandale",
+              "doc_count": 1
+            }
+          ]
+        }
+      },
+      "farbe_filter_wrapper": {
+        "doc_count": 61,
+        "farbe": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "Schwarz",
+              "doc_count": 25
+            },
+            {
+              "key": "Blau",
+              "doc_count": 10
+            },
+            {
+              "key": "Rot",
+              "doc_count": 7
+            },
+            {
+              "key": "Braun",
+              "doc_count": 4
+            },
+            {
+              "key": "Grau",
+              "doc_count": 4
+            },
+            {
+              "key": "Silber",
+              "doc_count": 3
+            },
+            {
+              "key": "Weiß",
+              "doc_count": 3
+            },
+            {
+              "key": "Beige",
+              "doc_count": 2
+            },
+            {
+              "key": "Gold",
+              "doc_count": 1
+            },
+            {
+              "key": "Rosa",
+              "doc_count": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+}
