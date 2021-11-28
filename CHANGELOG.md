@@ -6,6 +6,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add a result dto to the search query to make the result configurable in the request
 - don't compute facets in case facets are disabled
 - compute document positions
+- ensure that the page is always > 0 for a search query dto
 
 ### Changed
 - fix NPE in case of no query

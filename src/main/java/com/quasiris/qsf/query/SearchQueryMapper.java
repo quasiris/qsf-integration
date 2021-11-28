@@ -17,11 +17,17 @@ public class SearchQueryMapper {
         searchQuery.setQ(searchQueryDTO.getQ());
         searchQuery.setTracking(searchQueryDTO.getTracking());
         searchQuery.setRequestOrigin(searchQueryDTO.getRequestOrigin());
-        searchQuery.setPage(searchQueryDTO.getPage());
         searchQuery.setRows(searchQueryDTO.getRows());
 
         Sort sort = map(searchQueryDTO.getSort());
         searchQuery.setSort(sort);
+
+
+        Integer page = 1;
+        if(searchQueryDTO.getPage() != null && searchQueryDTO.getPage() > 0) {
+            page = searchQueryDTO.getPage();
+        }
+        searchQuery.setPage(page);
 
 
         List<SearchFilter> searchFilters = map(searchQueryDTO.getSearchFilters());
@@ -31,7 +37,6 @@ public class SearchQueryMapper {
 
         return searchQuery;
     }
-
 
     public static Sort map(SortDTO sortDTO) {
         if(sortDTO == null) {
