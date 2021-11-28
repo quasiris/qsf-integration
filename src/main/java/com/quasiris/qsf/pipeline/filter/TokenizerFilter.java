@@ -14,13 +14,17 @@ public class TokenizerFilter extends AbstractFilter {
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) {
         String query = pipelineContainer.getSearchQuery().getQ();
-        String[] tokens = query.split(" ");
-        List<Token> queryTokens = new ArrayList<>();
-        for(String tokenString: tokens) {
-            Token token = new Token(tokenString);
-            queryTokens.add(token);
+        if(query == null) {
+            pipelineContainer.getSearchQuery().setQueryToken(new ArrayList<>());
+        } else {
+            String[] tokens = query.split(" ");
+            List<Token> queryTokens = new ArrayList<>();
+            for (String tokenString : tokens) {
+                Token token = new Token(tokenString);
+                queryTokens.add(token);
+            }
+            pipelineContainer.getSearchQuery().setQueryToken(queryTokens);
         }
-        pipelineContainer.getSearchQuery().setQueryToken(queryTokens);
         return pipelineContainer;
     }
 }

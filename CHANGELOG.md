@@ -8,6 +8,7 @@ All notable changes qsf-integration project will be documented in this file.
 - compute document positions
 
 ### Changed
+- fix NPE in case of no query
 
 ### Breaking Changes
 
