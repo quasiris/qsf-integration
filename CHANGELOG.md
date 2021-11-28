@@ -5,6 +5,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Added
 - add a result dto to the search query to make the result configurable in the request
 - don't compute facets in case facets are disabled
+- compute document positions
 
 ### Changed
 

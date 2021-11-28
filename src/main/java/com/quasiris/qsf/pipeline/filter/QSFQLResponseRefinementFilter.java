@@ -61,7 +61,33 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
             searchResult.setPaging(paging);
         }
 
+        // position on documents
+        computePositions(searchQuery, searchResult);
+
         return pipelineContainer;
+    }
+
+    public void computePositions(SearchQuery searchQuery, SearchResult searchResult) {
+        long count = 1;
+        long currentPage = 1;
+        if(searchQuery.getPage() != null) {
+            currentPage = searchQuery.getPage();
+        }
+
+        if(currentPage < 1) {
+            currentPage = 1;
+        }
+
+        long rows = 10;
+        if(searchQuery.getRows() != null) {
+            rows = searchQuery.getRows();
+        }
+
+        long offset = (currentPage -1) * rows;
+        for(Document document : searchResult.getDocuments()) {
+            document.setPosition(offset + count);
+            count++;
+        }
     }
 
     public boolean checkPagingEnabled(SearchQuery searchQuery) {
