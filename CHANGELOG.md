@@ -7,6 +7,7 @@ All notable changes qsf-integration project will be documented in this file.
 - don't compute facets in case facets are disabled
 - compute document positions
 - ensure that the page is always > 0 for a search query dto
+- map the parameters of the search query dto
 
 ### Changed
 - fix NPE in case of no query

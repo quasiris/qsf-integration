@@ -8,6 +8,7 @@ import com.quasiris.qsf.dto.query.SortDTO;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class SearchQueryMapper {
@@ -28,6 +29,14 @@ public class SearchQueryMapper {
             page = searchQueryDTO.getPage();
         }
         searchQuery.setPage(page);
+
+        if(searchQuery.getParameters() == null) {
+            searchQuery.setParameters(new HashMap<>());
+        }
+        if(searchQueryDTO.getParameters() != null) {
+            searchQuery.getParameters().putAll(searchQueryDTO.getParameters());
+        }
+
 
 
         List<SearchFilter> searchFilters = map(searchQueryDTO.getSearchFilters());
