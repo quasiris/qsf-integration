@@ -25,9 +25,9 @@ class Elastic2SearchResultMappingTransformerTest {
         List<Map<String, Object>> snippets = (List<Map<String, Object>>) searchResult.getDocuments().get(0).getFieldValueAsObject("snippets");
         Map<String, Object> firstSnippet = snippets.get(0);
         assertEquals(3, firstSnippet.size());
-        assertEquals("Features", firstSnippet.get("title"));
-        assertEquals(0.0, firstSnippet.get("_score"));
-        assertEquals(0, firstSnippet.get("_offset"));
+        assertEquals("Technical Specs", firstSnippet.get("title"));
+        assertEquals(15.996389, firstSnippet.get("_score"));
+        assertEquals(1, firstSnippet.get("_offset"));
 
     }
     @Test
