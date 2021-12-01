@@ -3,6 +3,15 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+
+### Changed
+
+### Breaking Changes
+
+### Deprecated
+
+## [4.0]
+### Added
 - add a result dto to the search query to make the result configurable in the request
 - don't compute facets in case facets are disabled
 - compute document positions
@@ -12,9 +21,6 @@ All notable changes qsf-integration project will be documented in this file.
 ### Changed
 - fix NPE in case of no query
 
-### Breaking Changes
-
-### Deprecated
 
 ## [3.11]
 ### Added
