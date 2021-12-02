@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Set;
 
 public class QsfSearchQueryParser {
@@ -27,21 +28,32 @@ public class QsfSearchQueryParser {
 
     protected SearchQuery handlePOSTRequest(HttpServletRequest httpServletRequest) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            SearchQueryDTO searchQueryDTO = objectMapper.readValue(httpServletRequest.getInputStream(), SearchQueryDTO.class);
-            SearchQueryMapper mapper = new SearchQueryMapper();
-            SearchQuery searchQuery = mapper.map(searchQueryDTO);
-            if("true".equals(httpServletRequest.getParameter("debug"))) {
-                searchQuery.setDebug(true);
-            }
-            Set<String> ctrl = QsfqlParser.parseCtrlFromString(httpServletRequest.getParameter("ctrl"));
-            if(ctrl != null && ctrl.size() > 0) {
-                searchQuery.setCtrl(ctrl);
-            }
+            SearchQueryDTO searchQueryDTO = readPost(httpServletRequest);
+             SearchQuery searchQuery = parseSearchQueryDTO(searchQueryDTO, httpServletRequest);
             return searchQuery;
         } catch (Exception e) {
             throw new RuntimeException("Could not read convert search query, because: " + e.getMessage(), e);
         }
+    }
+
+    public SearchQueryDTO readPost(HttpServletRequest httpServletRequest) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SearchQueryDTO searchQueryDTO = objectMapper.readValue(httpServletRequest.
+                getInputStream(), SearchQueryDTO.class);
+        return searchQueryDTO;
+    }
+
+    public SearchQuery parseSearchQueryDTO(SearchQueryDTO searchQueryDTO, HttpServletRequest httpServletRequest) {
+        SearchQueryMapper mapper = new SearchQueryMapper();
+        SearchQuery searchQuery = mapper.map(searchQueryDTO);
+        if("true".equals(httpServletRequest.getParameter("debug"))) {
+            searchQuery.setDebug(true);
+        }
+        Set<String> ctrl = QsfqlParser.parseCtrlFromString(httpServletRequest.getParameter("ctrl"));
+        if(ctrl != null && ctrl.size() > 0) {
+            searchQuery.setCtrl(ctrl);
+        }
+        return searchQuery;
     }
 
     protected SearchQuery handleGETRequest(HttpServletRequest httpServletRequest) {
