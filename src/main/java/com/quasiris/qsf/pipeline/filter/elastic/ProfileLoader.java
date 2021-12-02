@@ -58,10 +58,14 @@ public class ProfileLoader {
     }
 
     public static Map<String, Object> encodeParameters(Map<String, Object> rawValues) {
-        Map<String, Object> escapedValues = rawValues.entrySet().stream().collect(HashMap::new,
+        Map<String, Object> escapedValues = rawValues.entrySet().stream().
+                filter(f -> f.getValue() != null).
+                collect(HashMap::new,
                 (m,e)->m.put(e.getKey() + ".escaped", escapeValue(e.getValue())), HashMap::putAll);
 
-        Map<String, String> encodedValues = rawValues.entrySet().stream().collect(HashMap::new,
+        Map<String, String> encodedValues = rawValues.entrySet().stream().
+                filter(f -> f.getValue() != null).
+                collect(HashMap::new,
                 (m,e)->m.put(e.getKey() + ".encoded", JsonUtil.encode(e.getValue().toString())), HashMap::putAll);
 
         Map<String, Object> replaceMap = new HashMap<>(escapedValues);
