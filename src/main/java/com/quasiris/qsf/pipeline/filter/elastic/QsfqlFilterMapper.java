@@ -12,6 +12,8 @@ import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.commons.util.DateUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,24 +50,7 @@ public class QsfqlFilterMapper {
         JsonBuilder filters = JsonBuilder.create().array();
         for (SearchFilter searchFilter : searchFilterList) {
             filters.stash();
-            ArrayNode filter = null;
-            switch (searchFilter.getFilterType()) {
-                case TERM:
-                case MATCH:
-                case MATCH_PHRASE:
-                    filter = transformTermsFilter(searchFilter);
-                    break;
-                case RANGE:
-                    filter = transformRangeFilter(searchFilter);
-                    break;
-                case SLIDER:
-                    filter = transformRangeFilter(searchFilter);
-                    break;
-                default:
-                    throw new IllegalArgumentException("The filter type " + searchFilter.getFilterType().getCode() + " is not implemented.");
-            }
-
-
+            ArrayNode filter = computeFilter(searchFilter);
             if(filter != null) {
                 filters.addJson(filter);
             }
@@ -74,9 +59,40 @@ public class QsfqlFilterMapper {
         return (ArrayNode) filters.get();
     }
 
-    public ArrayNode transformTermsFilter(SearchFilter searchFilter) throws JsonBuilderException {
-
+    public ArrayNode computeFilter(SearchFilter searchFilter) throws JsonBuilderException {
         String elasticField = mapFilterField(searchFilter.getName());
+        return computeFilter(searchFilter, elasticField);
+    }
+
+    /**
+     * Create elastic json for filter
+     * @param searchFilter qsc
+     * @param elasticField for mapping
+     * @return json or null if filter type unknown
+     * @throws JsonBuilderException
+     */
+    public static @Nullable ArrayNode computeFilter(@Nonnull SearchFilter searchFilter, @Nullable String elasticField) throws JsonBuilderException {
+        ArrayNode filter = null;
+        switch (searchFilter.getFilterType()) {
+            case TERM:
+            case MATCH:
+            case MATCH_PHRASE:
+                filter = transformTermsFilter(searchFilter, elasticField);
+                break;
+            case RANGE:
+                filter = transformRangeFilter(searchFilter, elasticField);
+                break;
+            case SLIDER:
+                filter = transformRangeFilter(searchFilter, elasticField);
+                break;
+            default:
+                throw new IllegalArgumentException("The filter type " + searchFilter.getFilterType().getCode() + " is not implemented.");
+        }
+
+        return filter;
+    }
+
+    protected static ArrayNode transformTermsFilter(SearchFilter searchFilter, String elasticField) throws JsonBuilderException {
         if(elasticField == null) {
             elasticField = searchFilter.getId();
         }
@@ -118,9 +134,7 @@ public class QsfqlFilterMapper {
     }
 
 
-    public ArrayNode transformRangeFilter(SearchFilter searchFilter) throws JsonBuilderException {
-
-        String elasticField = mapFilterField(searchFilter.getName());
+    protected static ArrayNode transformRangeFilter(SearchFilter searchFilter, String elasticField) throws JsonBuilderException {
         if(elasticField == null) {
             elasticField = searchFilter.getId();
         }
