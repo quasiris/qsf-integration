@@ -191,12 +191,10 @@ public class QsfqlFilterTransformer {
 
 
     public void transformFiltersCurrentVersion() throws JsonBuilderException {
-        if(searchQuery.getSearchFilterList().size() == 0) {
-            return;
+        if(searchQuery.getSearchFilterList().size() > 0) {
+            ObjectNode filters = filterMapper.getFilterAsJson(searchQuery.getSearchFilterList());
+            elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("query/bool/filter").json("bool", filters).get();
         }
-        ObjectNode filters = filterMapper.getFilterAsJson(searchQuery.getSearchFilterList());
-
-        elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("query/bool/filter").json("bool", filters).get();
     }
 
 
