@@ -75,7 +75,7 @@ class Elastic2SearchResultMappingTransformerTest {
         ElasticResult elasticResult = readElasticResultFromFile("filtered-agg-doc_count.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 
-        assertEquals(12, searchResult.getTotal());
+        assertEquals(8, searchResult.getTotal());
     }
 
     @Test
@@ -89,7 +89,7 @@ class Elastic2SearchResultMappingTransformerTest {
         ElasticResult elasticResult = readElasticResultFromFile("filtered-agg.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 
-        assertEquals(25, searchResult.getTotal());
+        assertEquals(8, searchResult.getTotal());
     }
 
     @Test
@@ -116,7 +116,7 @@ class Elastic2SearchResultMappingTransformerTest {
         ElasticResult elasticResult = readElasticResultFromFile("filtered-agg-doc_count-higher.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 
-        assertEquals(25, searchResult.getTotal());
+        assertEquals(8, searchResult.getTotal());
     }
 
     public ElasticResult readElasticResultFromFile(String fileName) throws IOException {

@@ -1,0 +1,24 @@
+{
+  "attr_farbe_filter_wrapper" : {
+    "filter" : {
+      "bool" : {
+        "test" : "test"
+      }
+    },
+    "aggs" : {
+      "attr_farbe" : {
+        "terms" : {
+          "field" : "attr_farbe.keyword",
+          "size" : 5
+        },
+        "aggs" : {
+          "variant_count" : {
+            "cardinality" : {
+              "field" : "variantId.keyword"
+            }
+          }
+        }
+      }
+    }
+  }
+}

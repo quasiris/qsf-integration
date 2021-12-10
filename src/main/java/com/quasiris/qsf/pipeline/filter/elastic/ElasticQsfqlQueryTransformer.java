@@ -13,6 +13,7 @@ import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.Sort;
+import com.quasiris.qsf.util.QsfIntegrationConstants;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -123,18 +124,27 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 hasAggs = true;
             } else {
                 ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
-                JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters);
+                JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, variantId);
                 jsonBuilder.json(agg);
                 hasAggs = true;
             }
         }
+        if(StringUtils.isNotEmpty(getVariantId())) {
+            // add facet for total doc count
+            String fieldName;
+            Facet aggregation = new Facet();
+            aggregation.setId(getVariantId() +".keyword");
+            aggregation.setName(QsfIntegrationConstants.TOTAL_COUNT_AGGREGATION_NAME);
+            aggregation.setOperator(FilterOperator.OR);
+            aggregation.setFacetFilters(searchQuery.getSearchFilterList());
+            aggregation.setType("cardinality");
+            ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
+            JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, null);
+            jsonBuilder.json(agg);
+            hasAggs = true;
+        }
 
         JsonBuilder aggFilterBuilder = new JsonBuilder().object("bool");
-        if(StringUtils.isNotEmpty(getVariantId())) {
-            aggFilterBuilder.object("must_not")
-                .object("term")
-                    .object("docType.keyword", "variant");
-        }
         Map<String, Object> map = new HashMap<>();
         map.put("filter", aggFilterBuilder.get());
         if (hasAggs) {
@@ -248,8 +258,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 getFilterMapping(),
                 filterPath,
                 filterVariable,
-                multiSelectFilter,
-                getVariantId()
+                multiSelectFilter
         );
         filterTransformer.transformFilters();
     }

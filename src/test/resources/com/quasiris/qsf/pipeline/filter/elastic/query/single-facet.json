@@ -1,0 +1,8 @@
+{
+  "attr_farbe" : {
+    "terms" : {
+      "field" : "attr_farbe.keyword",
+      "size" : 5
+    }
+  }
+}

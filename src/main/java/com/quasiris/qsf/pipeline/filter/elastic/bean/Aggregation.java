@@ -14,6 +14,7 @@ public class Aggregation {
 
     private Integer sum_other_doc_count;
 
+    private Long value;
     List<Bucket> buckets;
 
     private Integer count;
@@ -36,6 +37,14 @@ public class Aggregation {
 
     public void setSum_other_doc_count(Integer sum_other_doc_count) {
         this.sum_other_doc_count = sum_other_doc_count;
+    }
+
+    public Long getValue() {
+        return value;
+    }
+
+    public void setValue(Long value) {
+        this.value = value;
     }
 
     public List<Bucket> getBuckets() {

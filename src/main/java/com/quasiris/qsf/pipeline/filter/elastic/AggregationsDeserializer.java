@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregations;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
+import com.quasiris.qsf.util.QsfIntegrationConstants;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -44,28 +46,12 @@ public class AggregationsDeserializer extends StdDeserializer<Aggregations> {
 
         while(aggs.hasNext()) {
             Map.Entry<String, JsonNode> nextAgg = aggs.next();
-            updateResultsCount(aggregations, nextAgg);
-
             if(!"doc_count".equals(nextAgg.getKey()) && !"meta".equals(nextAgg.getKey())) {
                 deserializeAggregation(aggregations, nextAgg.getKey(), nextAgg.getValue());
             }
         }
 
         return aggregations;
-    }
-
-    private void updateResultsCount(Aggregations aggregations, Map.Entry<String, JsonNode> nextAgg) {
-        Long docCount = null;
-        if("doc_count".equals(nextAgg.getKey())) {
-            docCount = nextAgg.getValue().asLong();
-        } else if(nextAgg.getValue().get("doc_count") != null) {
-            docCount = nextAgg.getValue().get("doc_count").asLong();
-        }
-
-        if(docCount != null && (aggregations.getDoc_count() == null || aggregations.getDoc_count() > docCount)) {
-            // lowest doc count represents the total results count
-            aggregations.setDoc_count(docCount);
-        }
     }
 
     private void deserializeAggregation(Aggregations aggregations, String key, JsonNode jsonNode) {
@@ -78,6 +64,27 @@ public class AggregationsDeserializer extends StdDeserializer<Aggregations> {
         }
 
         Aggregation aggregation = mapper.convertValue(targetNode, Aggregation.class);
-        aggregations.put(targetKey, aggregation);
+        parseVariantCounts(aggregation, targetNode);
+        if(aggregation.getValue() != null && QsfIntegrationConstants.TOTAL_COUNT_AGGREGATION_NAME.equals(targetKey)) {
+            // dont add internal variant aggregation to response
+            aggregations.setDoc_count(aggregation.getValue());
+        } else {
+            aggregations.put(targetKey, aggregation);
+        }
+    }
+
+    // Parse variant count from aggregation if exist
+    private void parseVariantCounts(Aggregation aggregation, JsonNode jsonNode) {
+        if(aggregation.getBuckets() != null) {
+            for(int i = 0; i < aggregation.getBuckets().size(); i++) {
+                Bucket bucket = aggregation.getBuckets().get(i);
+                JsonNode jsonBucket = jsonNode.get("buckets").get(i);
+                JsonNode jsonVariantCount = jsonBucket.get(QsfIntegrationConstants.VARIANT_COUNT_SUB_AGGREGATION_NAME);
+                if(jsonVariantCount != null && jsonVariantCount.get("value") != null) {
+                    long variantCount = jsonVariantCount.get("value").asLong();
+                    bucket.setDoc_count(variantCount);
+                }
+            }
+        }
     }
 }

@@ -12,13 +12,7 @@
   "aggs" : {
     "qsc_filtered" : {
       "filter" : {
-        "bool" : {
-          "must_not" : {
-            "term" : {
-              "docType.keyword" : "variant"
-            }
-          }
-        }
+        "bool" : { }
       },
       "aggs" : {
         "accountId_filter_wrapper" : {
@@ -35,6 +29,13 @@
             "accountId" : {
               "terms" : {
                 "field" : "accountId"
+              },
+              "aggs" : {
+                "variant_count" : {
+                  "cardinality" : {
+                    "field" : "variantId.keyword"
+                  }
+                }
               }
             }
           }
@@ -42,18 +43,21 @@
         "stock" : {
           "terms" : {
             "field" : "stock"
+          },
+          "aggs" : {
+            "variant_count" : {
+              "cardinality" : {
+                "field" : "variantId.keyword"
+              }
+            }
+          }
+        },
+        "_total_count" : {
+          "cardinality" : {
+            "field" : "variantId.keyword"
           }
         }
       }
-    }
-  },
-  "post_filter" : {
-    "bool" : {
-      "must_not" : [ {
-        "term" : {
-          "docType" : "summary"
-        }
-      } ]
     }
   },
   "collapse" : {

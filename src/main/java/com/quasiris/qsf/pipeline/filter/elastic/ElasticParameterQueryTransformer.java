@@ -41,6 +41,8 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     protected Set<String> sourceFields;
 
+    protected String variantId;
+
     @Override
     public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
         this.pipelineContainer = pipelineContainer;
@@ -111,7 +113,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
                 jsonBuilder.json(agg);
                 hasAggs = true;
             } else {
-                JsonNode agg = AggregationMapper.createAgg(aggregation, false);
+                JsonNode agg = AggregationMapper.createAgg(aggregation, false, null, variantId);
                 jsonBuilder.json(agg);
                 hasAggs = true;
             }
@@ -278,5 +280,13 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     @Transient
     public void setSearchQuery(SearchQuery searchQuery) {
         this.searchQuery = searchQuery;
+    }
+
+    public String getVariantId() {
+        return variantId;
+    }
+
+    public void setVariantId(String variantId) {
+        this.variantId = variantId;
     }
 }

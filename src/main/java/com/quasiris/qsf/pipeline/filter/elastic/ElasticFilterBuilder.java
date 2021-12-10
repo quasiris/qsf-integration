@@ -96,6 +96,7 @@ public class ElasticFilterBuilder {
     private ElasticParameterQueryTransformer getElasticParameterQueryTransformer() {
         if(elasticParameterQueryTransformer == null) {
             elasticParameterQueryTransformer = new ElasticParameterQueryTransformer();
+            elasticParameterQueryTransformer.setVariantId(getElasticQsfqlQueryTransformer().getVariantId());
         }
         return elasticParameterQueryTransformer;
     }

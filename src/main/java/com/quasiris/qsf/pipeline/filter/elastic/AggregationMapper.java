@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.util.QsfIntegrationConstants;
+import org.apache.commons.lang3.StringUtils;
 
 public class AggregationMapper {
-
+    @Deprecated // TODO remove this
     public static JsonNode createAgg(Facet facet, boolean isSubFacet) {
-        return createAgg(facet, isSubFacet, null);
+        return createAgg(facet, isSubFacet, null, null);
     }
 
     public static String mapType(String type) {
@@ -19,7 +21,7 @@ public class AggregationMapper {
         return type;
     }
 
-    public static JsonNode createAgg(Facet facet, boolean isSubFacet, JsonNode filters) {
+    public static JsonNode createAgg(Facet facet, boolean isSubFacet, JsonNode filters, String variantId) {
 
         try {
 
@@ -48,6 +50,7 @@ public class AggregationMapper {
                         object("time_zone", "Europe/Berlin").
                         object("format", "yyyy").
                         object("min_doc_count", 0);
+            } else if ("cardinality".equals(facet.getType())) {
             } else {
                 jsonBuilder.
                         object("size", facet.getSize());
@@ -65,7 +68,7 @@ public class AggregationMapper {
 
             if(facet.getChildren() != null) {
                 jsonBuilder.root().path(name);
-                JsonNode subAggs = createAgg(facet.getChildren(), true);
+                JsonNode subAggs = createAgg(facet.getChildren(), true, null, variantId);
                 jsonBuilder.json("aggs", subAggs);
             }
 
@@ -79,6 +82,23 @@ public class AggregationMapper {
                         json("aggs", jsonBuilder.get());
 
                 jsonBuilder = aggFilterWrapper;
+            }
+
+            if(StringUtils.isNotEmpty(variantId)) {
+                String facetPath = name;
+                if(filters != null) {
+                    facetPath = name+"_filter_wrapper/aggs/"+name;
+                }
+                JsonBuilder jsonBuilderVariant = new JsonBuilder();
+                jsonBuilderVariant
+                        .object(QsfIntegrationConstants.VARIANT_COUNT_SUB_AGGREGATION_NAME)
+                        .object("cardinality")
+                        .object("field", variantId+".keyword");
+
+                jsonBuilder = JsonBuilder.create()
+                        .newJson(jsonBuilder.replace().get())
+                        .pathsForceCreate(facetPath)
+                        .json("aggs", jsonBuilderVariant.get());
             }
 
             return jsonBuilder.get();
