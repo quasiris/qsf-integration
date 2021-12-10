@@ -69,15 +69,15 @@ public class AggregationsDeserializer extends StdDeserializer<Aggregations> {
     }
 
     private void deserializeAggregation(Aggregations aggregations, String key, JsonNode jsonNode) {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode targetNode = jsonNode;
+        String targetKey = key;
         if(key.endsWith("_filter_wrapper")) {
-            String wrappedKey = key.replaceAll("_filter_wrapper", "");
-            ObjectMapper mapper = new ObjectMapper();
-            Aggregation aggregation = mapper.convertValue(jsonNode.get(wrappedKey), Aggregation.class);
-            aggregations.put(wrappedKey, aggregation);
-        } else {
-            ObjectMapper mapper = new ObjectMapper();
-            Aggregation aggregation = mapper.convertValue(jsonNode, Aggregation.class);
-            aggregations.put(key, aggregation);
+            targetKey = key.replaceAll("_filter_wrapper", "");
+            targetNode = jsonNode.get(targetKey);
         }
+
+        Aggregation aggregation = mapper.convertValue(targetNode, Aggregation.class);
+        aggregations.put(targetKey, aggregation);
     }
 }
