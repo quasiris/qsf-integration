@@ -10,6 +10,7 @@ import com.quasiris.qsf.dto.response.FacetValue;
 import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by mki on 07.11.17.
  */
+@Disabled
 public class SolrPipelineTest extends AbstractPipelineTest {
 
 

@@ -4,8 +4,10 @@ import com.quasiris.qsf.pipeline.filter.solr.MockSolrClient;
 import com.quasiris.qsf.pipeline.filter.solr.SolrClientFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class SolrHealthCheckerTest {
 
     private String baseUrl = "http://localhost:8983/solr/gettingstarted";
