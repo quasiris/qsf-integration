@@ -1,15 +1,16 @@
 package com.quasiris.qsf.pipeline.filter.solr;
 
 import com.google.common.base.Optional;
+import com.quasiris.qsf.commons.util.JsonUtil;
+import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
-import com.quasiris.qsf.dto.response.SearchResult;
-import com.quasiris.qsf.commons.util.JsonUtil;
 import com.quasiris.qsf.util.PrintUtil;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.noggit.JSONUtil;
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ public class SolrFilter extends AbstractFilter {
     private SearchResultTransformerIF searchResultTransformer = new Solr2SearchResultTransformer();
     private QueryTransformerIF queryTransformer;
 
+    private String userName;
+    private String password;
 
     @Override
     public void init() {
@@ -54,7 +57,12 @@ public class SolrFilter extends AbstractFilter {
             solrClient = new HttpSolrClient.Builder(solrBaseUrl).build();
             SolrClientFactory.setSolrClient(solrClient, solrBaseUrl);
         }
-        QueryResponse solrResponse = solrClient.query(solrQuery);
+
+        QueryRequest req = new QueryRequest(solrQuery);
+        if(userName != null && password != null) {
+            req.setBasicAuthCredentials(userName, password);
+        }
+        QueryResponse solrResponse = req.process(solrClient);
 
         if(pipelineContainer.isDebugEnabled()) {
             pipelineContainer.debug(getId() + ".result", DebugType.STRING, queryResponse2Json(solrResponse));
@@ -146,5 +154,21 @@ public class SolrFilter extends AbstractFilter {
         return printer;
     }
 
+    /**
+     * Setter for property 'userName'.
+     *
+     * @param userName Value to set for property 'userName'.
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
+    /**
+     * Setter for property 'password'.
+     *
+     * @param password Value to set for property 'password'.
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

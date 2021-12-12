@@ -24,6 +24,16 @@ public class SolrFilterBuilder {
     }
 
 
+    public SolrFilterBuilder userName(String userName) {
+        solrFilter.setUserName(userName);
+        return this;
+    }
+
+    public SolrFilterBuilder password(String password) {
+        solrFilter.setPassword(password);
+        return this;
+    }
+
     public SolrFilterBuilder baseUrl(String baseUrl) {
         solrFilter.setSolrBaseUrl(baseUrl);
         return this;
