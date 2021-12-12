@@ -2,11 +2,13 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.category.dto.CategoryDTO;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.*;
 import com.quasiris.qsf.dto.response.*;
 import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 import com.quasiris.qsf.commons.util.UrlUtil;
+import com.quasiris.qsf.tree.Node;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -153,15 +155,46 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     protected Facet mapAggregationToNavigation(String id, Aggregation aggregation, FacetMapping mapping) {
         Facet facet = new Facet();
 
+        Node<CategoryDTO> root = new Node<>();
         for(Bucket bucket : aggregation.getBuckets()) {
-            String[] categories = bucket.getKey().split(Pattern.quote("|_|"));
-            for (String category : categories) {
-                String[] splitted = category.split(Pattern.quote("|-|"));
-                String navId = splitted[0];
-                String name = splitted[1];
-                System.out.println(splitted);
+            String[] categories = bucket.getKey().split(Pattern.quote("|___|"));
+            Node<CategoryDTO> current = root;
+            for (String categoryString : categories) {
+                String[] splitted = categoryString.split(Pattern.quote("|-|"));
+                CategoryDTO category = new CategoryDTO();
+                category.setId(splitted[0]);
+                category.setPosition(Integer.valueOf(splitted[1]));
+                category.setName(splitted[2]);
+                category.setCount(bucket.getDoc_count());
+                current = current.addChildIfNotExists(category);
             }
         }
+
+        facet = traverse(root);
+        return facet;
+
+    }
+
+
+    public Facet traverse(Node<CategoryDTO> node){
+        Collections.sort(node.getChildren(), new Comparator<Node<CategoryDTO>>() {
+            @Override
+            public int compare(Node<CategoryDTO> left, Node<CategoryDTO> right) {
+                return left.getData().getPosition().compareTo(right.getData().getPosition());
+            }
+        });
+        Facet facet = new Facet();
+        facet.setValues(new ArrayList<>());
+        for (Node<CategoryDTO> child : node.getChildren()) {
+            FacetValue facetValue = new FacetValue();
+            facetValue.setCount(child.getData().getCount());
+            facetValue.setValue(child.getData().getName());
+            facetValue.setFilter(child.getData().getId());
+            Facet subFacet = traverse(child);
+            facetValue.setChildren(subFacet);
+            facet.getValues().add(facetValue);
+        }
+
         return facet;
 
     }

@@ -2,7 +2,9 @@ package com.quasiris.qsf.tree;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class Node<T> {
@@ -31,6 +33,18 @@ public class Node<T> {
     public void addChild(T data) {
         Node<T> newChild = new Node<>(data);
         this.addChild(newChild);
+    }
+
+    public Node<T> addChildIfNotExists(T data) {
+        Node<T> newChild = new Node<>(data);
+
+        for(Node<T> child : children) {
+            if(child.equals(newChild)) {
+                return child;
+            }
+        }
+        this.addChild(newChild);
+        return newChild;
     }
 
     public void addChildren(List<Node<T>> children) {
@@ -64,6 +78,19 @@ public class Node<T> {
                 child.traverse(child);
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node<?> node = (Node<?>) o;
+        return data.equals(node.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(data);
     }
 
     @Override
