@@ -3,13 +3,17 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- support variants in elastic queries
 
 ### Changed
+- restructure the search query parser to make it more modular
 
 ### Breaking Changes
 
 ### Deprecated
 
+### Fixed
+- fixed NPE for profile loader in case of null parameters
 ## [4.0]
 ### Added
 - add a result dto to the search query to make the result configurable in the request
