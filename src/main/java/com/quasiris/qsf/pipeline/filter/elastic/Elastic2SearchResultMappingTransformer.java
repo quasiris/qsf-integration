@@ -282,7 +282,6 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     public void transformInnerHits(Document document,Map fields, LinkedHashMap<String, InnerHitResult> innerHits) {
-        boolean innerHitsHasAnyScore = false;
         for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
             String fieldName = entry.getKey();
             List<Map<String, Object>> values = (List) fields.get(fieldName);
@@ -304,28 +303,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                     Integer offset = innerHit.get_nested().getOffset();
                     Double score = innerHit.get_score();
                     values.get(offset).put("_score", score);
-                    if(score != null && score > 0) {
-                        innerHitsHasAnyScore = true;
-                    }
                 }
-            }
-        }
-
-        // post process inner hits
-        boolean filterZeroScoreInnerHits = true;
-        int maxInnerHits = 4;
-        for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
-            String fieldName = entry.getKey();
-            List<Map<String, Object>> values = (List) fields.get(fieldName);
-            if(values != null) {
-                // remove all 0 scores
-                if(innerHitsHasAnyScore && filterZeroScoreInnerHits) {
-                    values.removeIf(next -> (Double) next.get("_score") <= 0);
-                }
-
-                // limit
-                values = values.stream().limit(maxInnerHits).collect(Collectors.toList());
-                fields.put(fieldName, values);
             }
         }
     }
