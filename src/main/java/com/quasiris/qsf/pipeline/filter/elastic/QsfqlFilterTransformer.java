@@ -1,13 +1,13 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
-import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,117 +89,46 @@ public class QsfqlFilterTransformer {
 
 
     public void transformFilters() throws JsonBuilderException {
-        // filter for variants here
+        JsonBuilder resultJsonBuilder = JsonBuilder.create().newJson(elasticQuery);
+
+        // post filters
+        List<SearchFilter> postFilters = new ArrayList<>();
         if(multiSelectFilter) {
-            List<SearchFilter> postFilters = new ArrayList<>();
             transformFiltersMultiselect(postFilters);
-            appendPostFilter(postFilters);
-            return;
         }
-
-        if(filterVariable != null) {
-            transformFiltersWithVariable();
-            return;
-        }
-
-
-        if(elasticVersion < 2) {
-            transformFiltersVersionOlder2();
-            return;
-        }
-        transformFiltersCurrentVersion();
-    }
-
-    public void transformFiltersWithVariable() throws JsonBuilderException {
-        JsonBuilder filterBuilder = JsonBuilder.create();
-
-
-        ArrayNode filters = filterMapper.computeFilterForOperator(FilterOperator.AND, searchQuery.getSearchFilterList());
-        ArrayNode orFilters = filterMapper.createFiltersOr(searchQuery.getSearchFilterList());
-        filters.addAll(orFilters);
-        if(filters != null && filters.size() > 0) {
-            filterBuilder.
-                    root().
-                    pathsForceCreate("filter/bool").
-                    array("must").
-                    addJson(filters);
-        }
-
-        ArrayNode notFilters = filterMapper.computeFilterForOperator(FilterOperator.NOT, searchQuery.getSearchFilterList());
-        if(notFilters != null && notFilters.size() > 0) {
-            filterBuilder.
-                    root().
-                    pathsForceCreate("filter/bool").
-                    array("must_not").
-                    addJson(notFilters);
-        }
-
-        JsonBuilder.create().
-                newJson(elasticQuery).
-                valueMap(filterVariable, filterBuilder.root().get()).
-                replace().
-                get();
-    }
-
-    public void transformFiltersVersionOlder2() throws JsonBuilderException {
-
-        if(searchQuery.getSearchFilterList().size() == 0) {
-            return;
-        }
-        JsonBuilder jsonBuilder = new JsonBuilder();
-        jsonBuilder.
-                object("bool").
-                array("must");
-
-        for (SearchFilter searchFilter : searchQuery.getSearchFilterList()) {
-
-            String elasticField = filterMapper.mapFilterField(searchFilter.getName());
-            if(elasticField == null) {
-                elasticField = searchFilter.getId();
-            }
-            if(elasticField == null) {
-                throw new IllegalArgumentException("There is no field name defined.");
-            }
-
-            for(String value : searchFilter.getValues()) {
-                jsonBuilder.stash();
-                jsonBuilder.object();
-                jsonBuilder.object(searchFilter.getFilterType().getCode());
-                jsonBuilder.object(elasticField, value);
-                jsonBuilder.unstash();
-            }
-
-        }
-
-        ObjectNode query = (ObjectNode) getElasticQuery().get("query").get("filtered");
-        if(query == null) {
-            throw new JsonBuilderException("There is no filtered query defined in the profile ");
-        }
-        query.set("filter", jsonBuilder.get());
-
-    }
-
-
-
-    public void transformFiltersCurrentVersion() throws JsonBuilderException {
-        if(searchQuery.getSearchFilterList().size() > 0) {
-            ObjectNode filters = filterMapper.getFilterAsJson(searchQuery.getSearchFilterList());
-            elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("query/bool/filter").json("bool", filters).get();
-        }
-    }
-
-
-
-    public void transformFiltersMultiselect(List<SearchFilter> postFilters) {
-        if(searchQuery.getSearchFilterList().size() > 0) {
-            postFilters.addAll(searchQuery.getSearchFilterList());
-        }
-    }
-
-    public void appendPostFilter(List<SearchFilter> postFilters) throws JsonBuilderException {
         if(postFilters.size() > 0) {
             ObjectNode postFilterNodes = filterMapper.getFilterAsJson(postFilters);
-            elasticQuery = (ObjectNode) JsonBuilder.create().newJson(elasticQuery).pathsForceCreate("post_filter").object("bool", postFilterNodes).get();
+            resultJsonBuilder = JsonBuilder.create().newJson(resultJsonBuilder.replace().get()).pathsForceCreate("post_filter").object("bool", postFilterNodes);
+        }
+
+        // filters
+        if(searchQuery.getSearchFilterList() != null) {
+            // compute filters
+            ObjectNode filters = compileFilters(searchQuery.getSearchFilterList());
+
+            // apply filters to query
+            if (StringUtils.isNotBlank(filterVariable)) {
+                // put filters into filtersVariable placeholder
+                ObjectNode filterObj = filters != null ? filters : (ObjectNode) JsonBuilder.create().object().get();
+                resultJsonBuilder.valueMap(filterVariable, JsonBuilder.create().object("filter").json("bool", filterObj).get());
+            } else if(searchQuery.getSearchFilterList().size() > 0) {
+                // append filters to defined path
+                JsonNode filterNode = JsonBuilder.create().newJson(resultJsonBuilder.replace().get()).pathsForceCreate("query/bool/filter").json("bool", filters).get();
+                resultJsonBuilder.json(filterNode);
+            }
+        }
+
+        elasticQuery = (ObjectNode) resultJsonBuilder.replace().get();
+    }
+
+    public ObjectNode compileFilters(List<SearchFilter> searchFilters) throws JsonBuilderException {
+        return filterMapper.getFilterAsJson(searchQuery.getSearchFilterList());
+    }
+
+    protected void transformFiltersMultiselect(List<SearchFilter> postFilters) {
+        if(searchQuery.getSearchFilterList().size() > 0) {
+            postFilters.addAll(searchQuery.getSearchFilterList());
+            searchQuery.setSearchFilterList(new ArrayList<>()); // clear filters
         }
     }
 

@@ -717,17 +717,6 @@ public class ElasticQsfqlQueryTransformerTest {
         assertEquals("0", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("min_doc_count").asText());
     }
 
-    @Test
-    public void transformFilterVersion1() throws Exception {
-        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
-        transformer.setElasticVersion(1);
-        transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location-v1.json");
-        transformer.addFilterMapping("brand", "brandElasticField");
-        transformer.addFilterMapping("color", "colorElasticField");
-        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
-        assertEquals("red", elasticQuery.get("query").get("filtered").get("filter").get("bool").get("must").get(0).get("term").get("colorElasticField").asText());
-    }
-
     @DisplayName("Transform paging")
     @ParameterizedTest(name = "{index} => profile=''{0}'' filterPath=''{1}'' filterVariable=''{2}''")
     @CsvSource({

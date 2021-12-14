@@ -7,10 +7,12 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Changed
 - restructure the search query parser to make it more modular
+- refactor build filter
 
 ### Breaking Changes
 
 ### Deprecated
+- remove support for elastic <=2.x
 
 ### Fixed
 - fixed NPE for profile loader in case of null parameters

@@ -266,7 +266,7 @@ public class QsfqlFilterMapper {
 
     }
 
-    public ObjectNode getFilterAsJson(List<SearchFilter> searchFilters) throws JsonBuilderException {
+    public @Nullable ObjectNode getFilterAsJson(@Nonnull List<SearchFilter> searchFilters) throws JsonBuilderException {
         if(searchFilters.size() == 0) {
             return null;
         }

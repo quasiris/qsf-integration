@@ -26,22 +26,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class QsfqlElasticFilterTest extends AbstractPipelineTest {
 
         @Test
-        public void debug() throws Exception {
-            try {
-                    testQsfqlElasticFilterVersion1();
-            } catch (PipelineContainerException e) {
-                    System.out.println(e.getMessage());
-            } catch (PipelineContainerDebugException debug) {
-                    System.out.println(debug.getDebugStack());
-            }
-        }
-
-        @Test
-        public void testQsfqlElasticFilterVersion1() throws Exception {
-                testQsfqlElasticFilter(1, "location-v1.json", "http://localhost:9214/osm");
-        }
-
-        @Test
         public void testQsfqlElasticFilterVersion6() throws Exception {
                 testQsfqlElasticFilter(6, "location.json", "http://localhost:9262/osm");
         }

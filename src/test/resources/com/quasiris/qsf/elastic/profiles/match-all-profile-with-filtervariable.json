@@ -1,0 +1,19 @@
+{
+  "from": 0,
+  "size": 10,
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_all": {}
+        },
+        {
+          "bool": {
+            "$myFilter": {}
+          }
+        }
+      ]
+    }
+  }
+}
