@@ -122,7 +122,7 @@ public class QsfqlFilterTransformer {
     }
 
     public ObjectNode compileFilters(List<SearchFilter> searchFilters) throws JsonBuilderException {
-        return filterMapper.getFilterAsJson(searchQuery.getSearchFilterList());
+        return filterMapper.getFilterAsJson(searchFilters);
     }
 
     protected void transformFiltersMultiselect(List<SearchFilter> postFilters) {
