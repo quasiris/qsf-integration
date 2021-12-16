@@ -1,9 +1,7 @@
 {
   "attr_farbe_filter_wrapper" : {
     "filter" : {
-      "bool" : {
-        "test" : "test"
-      }
+      "test" : "test"
     },
     "aggs" : {
       "attr_farbe" : {

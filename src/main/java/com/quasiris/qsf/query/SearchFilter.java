@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by mki on 11.11.16.
  */
-public class SearchFilter {
+public class SearchFilter extends BaseSearchFilter {
 
     private FilterType filterType;
 
@@ -247,5 +247,10 @@ public class SearchFilter {
                 ", filterOperator=" + filterOperator +
                 ", filterDataType=" + filterDataType +
                 "}\n";
+    }
+
+    @Override
+    public String getFilterClass() {
+        return "filter";
     }
 }

@@ -3,6 +3,8 @@ package com.quasiris.qsf.pipeline.filter.tracking;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
+import com.quasiris.qsf.query.BaseSearchFilter;
+import com.quasiris.qsf.query.BoolSearchFilter;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
@@ -77,6 +79,30 @@ public class TrackingFilter extends AbstractFilter {
         return pipelineContainer;
     }
 
+    private void addTrackingValues(Document tracking, List<BaseSearchFilter> searchFilters) {
+        if(searchFilters != null) {
+            for (BaseSearchFilter baseSearchFilter : searchFilters) {
+                if (baseSearchFilter instanceof SearchFilter) {
+                    SearchFilter searchFilter = (SearchFilter) baseSearchFilter;
+                    tracking.addValue("filterId", searchFilter.getId());
+
+                    if (searchFilter.getValues() != null) {
+                        for (String value : searchFilter.getValues()) {
+                            tracking.addValue("filterValue", searchFilter.getId() + "=" + value);
+                        }
+                    }
+
+                    if (searchFilter.getMinValue() != null || searchFilter.getMaxValue() != null) {
+                        tracking.addValue("filterValue", searchFilter.getId() + "=" + searchFilter.getMinValue() + "," + searchFilter.getMaxValue());
+                    }
+                } else if (baseSearchFilter instanceof BoolSearchFilter) {
+                    BoolSearchFilter searchFilter = (BoolSearchFilter) baseSearchFilter;
+                    addTrackingValues(tracking, searchFilter.getFilters());
+                }
+            }
+        }
+    }
+
     protected Document getTracking(PipelineContainer pipelineContainer) {
 
         Document tracking = new Document();
@@ -115,19 +141,7 @@ public class TrackingFilter extends AbstractFilter {
         tracking.setValue("page", searchQuery.getPage());
         tracking.setValue("rows", searchQuery.getRows());
 
-        for(SearchFilter searchFilter : searchQuery.getSearchFilterList()) {
-            tracking.addValue("filterId" ,searchFilter.getId());
-
-            if(searchFilter.getValues() != null) {
-                for(String value : searchFilter.getValues()) {
-                    tracking.addValue("filterValue" , searchFilter.getId() + "=" + value);
-                }
-            }
-
-            if(searchFilter.getMinValue() != null || searchFilter.getMaxValue() != null) {
-                tracking.addValue("filterValue" , searchFilter.getId() + "=" + searchFilter.getMinValue() + "," + searchFilter.getMaxValue());
-            }
-        }
+        addTrackingValues(tracking, searchQuery.getSearchFilterList());
 
         if(searchQuery.getSort() != null) {
             tracking.setValue("sort", searchQuery.getSort().getSort());

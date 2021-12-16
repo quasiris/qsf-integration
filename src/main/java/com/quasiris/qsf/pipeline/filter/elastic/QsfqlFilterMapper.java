@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
+import com.quasiris.qsf.query.BaseSearchFilter;
+import com.quasiris.qsf.query.BoolSearchFilter;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
@@ -14,6 +16,7 @@ import com.quasiris.qsf.commons.util.DateUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -275,6 +278,66 @@ public class QsfqlFilterMapper {
         transformFiltersOr(filterBool, searchFilters);
         transformFilters(filterBool, "must_not", FilterOperator.NOT, searchFilters);
         return filterBool;
+    }
+
+    public <T extends BaseSearchFilter> ObjectNode buildFiltersJson(@Nonnull List<T> searchFilters) throws JsonBuilderException {
+        return buildFiltersJson(searchFilters, null);
+    }
+
+    public <T extends BaseSearchFilter> ObjectNode buildFiltersJson(@Nonnull List<T> searchFilters, FilterOperator operator) throws JsonBuilderException {
+        JsonBuilder builder = JsonBuilder.create();
+        builder.object("bool");
+        if (operator == FilterOperator.AND || operator == null) {
+            builder.array("must");
+        } else if (operator == FilterOperator.OR) {
+            builder.array("should");
+        } else if (operator == FilterOperator.NOT) {
+            builder.array("must_not");
+        }
+
+        int filtersCreated = 0;
+        boolean hasBoolFilter = false;
+        if(searchFilters != null && searchFilters.size() > 0) {
+            List<SearchFilter> regularSearchFilters = new ArrayList<>();
+            for (BaseSearchFilter searchFilter : searchFilters) {
+                if (searchFilter instanceof BoolSearchFilter) {
+                    FilterOperator filterOperator = ((BoolSearchFilter) searchFilter).getOperator();
+                    BoolSearchFilter filter = (BoolSearchFilter) searchFilter;
+                    if(filter.getFilters() != null && filter.getFilters().size() > 0) {
+                        hasBoolFilter = true;
+                        ObjectNode boolNode = buildFiltersJson(filter.getFilters(), filterOperator);
+                        builder.addJson(boolNode);
+                        filtersCreated++;
+                    }
+                } else if (searchFilter instanceof SearchFilter) {
+                    SearchFilter filter = (SearchFilter) searchFilter;
+                    regularSearchFilters.add(filter);
+                    filtersCreated++;
+                }
+            }
+            if(regularSearchFilters.size() > 0) {
+                // add classic filters
+                ObjectNode filters = getFilterAsJson(regularSearchFilters);
+                if(filters != null) {
+                    if(!hasBoolFilter && operator == null) {
+                        builder = JsonBuilder.create(); // remove one stage of wrapped bool
+                    }
+
+                    if(builder.getCurrent() instanceof ArrayNode) {
+                        builder.addJson(JsonBuilder.create().object("bool", filters).get());
+                    } else {
+                        builder.object("bool", filters);
+                    }
+                }
+            }
+        }
+
+        if(filtersCreated == 0) {
+            // add empty bool, to prevent nullptr
+            builder = JsonBuilder.create().object("bool");
+        }
+
+        return (ObjectNode) builder.get();
     }
 
     public void transformFilters(ObjectNode filterBool, String elasticOperator, FilterOperator filterOperator, List<SearchFilter> searchFilters) throws JsonBuilderException {

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
-import com.quasiris.qsf.query.SearchFilter;
+import com.quasiris.qsf.query.BaseSearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
 import org.apache.commons.lang3.StringUtils;
 
@@ -92,13 +92,13 @@ public class QsfqlFilterTransformer {
         JsonBuilder resultJsonBuilder = JsonBuilder.create().newJson(elasticQuery);
 
         // post filters
-        List<SearchFilter> postFilters = new ArrayList<>();
+        List<BaseSearchFilter> postFilters = new ArrayList<>();
         if(multiSelectFilter) {
             transformFiltersMultiselect(postFilters);
         }
         if(postFilters.size() > 0) {
-            ObjectNode postFilterNodes = filterMapper.getFilterAsJson(postFilters);
-            resultJsonBuilder = JsonBuilder.create().newJson(resultJsonBuilder.replace().get()).pathsForceCreate("post_filter").object("bool", postFilterNodes);
+            ObjectNode postFilterNodes = compileFilters(postFilters);
+            resultJsonBuilder = JsonBuilder.create().newJson(resultJsonBuilder.replace().get()).pathsForceCreate("post_filter").json(postFilterNodes);
         }
 
         // filters
@@ -110,10 +110,10 @@ public class QsfqlFilterTransformer {
             if (StringUtils.isNotBlank(filterVariable)) {
                 // put filters into filtersVariable placeholder
                 ObjectNode filterObj = filters != null ? filters : (ObjectNode) JsonBuilder.create().object().get();
-                resultJsonBuilder.valueMap(filterVariable, JsonBuilder.create().object("filter").json("bool", filterObj).get());
+                resultJsonBuilder.valueMap(filterVariable, JsonBuilder.create().object("filter", filterObj).get());
             } else if(searchQuery.getSearchFilterList().size() > 0) {
                 // append filters to defined path
-                JsonNode filterNode = JsonBuilder.create().newJson(resultJsonBuilder.replace().get()).pathsForceCreate("query/bool/filter").json("bool", filters).get();
+                JsonNode filterNode = JsonBuilder.create().newJson(resultJsonBuilder.replace().get()).pathsForceCreate("query/bool/filter").json(filters).get();
                 resultJsonBuilder.json(filterNode);
             }
         }
@@ -121,11 +121,11 @@ public class QsfqlFilterTransformer {
         elasticQuery = (ObjectNode) resultJsonBuilder.replace().get();
     }
 
-    public ObjectNode compileFilters(List<SearchFilter> searchFilters) throws JsonBuilderException {
-        return filterMapper.getFilterAsJson(searchFilters);
+    public ObjectNode compileFilters(List<BaseSearchFilter> searchFilters) throws JsonBuilderException {
+        return filterMapper.buildFiltersJson(searchFilters);
     }
 
-    protected void transformFiltersMultiselect(List<SearchFilter> postFilters) {
+    protected void transformFiltersMultiselect(List<BaseSearchFilter> postFilters) {
         if(searchQuery.getSearchFilterList().size() > 0) {
             postFilters.addAll(searchQuery.getSearchFilterList());
             searchQuery.setSearchFilterList(new ArrayList<>()); // clear filters

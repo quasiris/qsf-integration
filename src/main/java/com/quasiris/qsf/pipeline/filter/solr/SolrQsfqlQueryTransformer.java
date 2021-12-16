@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.solr;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.query.BaseSearchFilter;
 import com.quasiris.qsf.query.RangeFilterValue;
 import com.quasiris.qsf.query.SearchFilter;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -59,8 +60,9 @@ public class SolrQsfqlQueryTransformer extends SolrParameterQueryTransformer imp
     }
 
     public void transformFilters() {
-        for (SearchFilter searchFilter : getSearchQuery().getSearchFilterList()) {
-
+        for (BaseSearchFilter baseSearchFilter : getSearchQuery().getSearchFilterList()) {
+            // Solr support only classic filters
+            SearchFilter searchFilter = (SearchFilter) baseSearchFilter;
 
             switch (searchFilter.getFilterType()) {
                 case TERM:

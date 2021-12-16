@@ -77,7 +77,7 @@ public class AggregationMapper {
                         object(name + "_filter_wrapper").
                         stash().
                         object("filter").
-                        json("bool", filters).
+                        json(filters).
                         unstash().
                         json("aggs", jsonBuilder.get());
 
@@ -126,7 +126,7 @@ public class AggregationMapper {
                         object(slider.getName() + "_filter_wrapper").
                         stash().
                         object("filter").
-                        json("bool", filters).
+                        json(filters).
                         unstash().
                         json("aggs", jsonBuilder.get());
 

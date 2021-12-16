@@ -1,5 +1,6 @@
 package com.quasiris.qsf.migration;
 
+import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.test.service.TestSuiteExecuter;
 import org.junit.jupiter.api.Assertions;
@@ -50,8 +51,8 @@ class QsfSearchQueryParserTest {
         Assertions.assertEquals(1, actual.getPage());
         Assertions.assertEquals(0, actual.getRows());
         Assertions.assertFalse(actual.isDebug());
-        Assertions.assertEquals("humandate", actual.getSearchFilterList().get(0).getId());
-        Assertions.assertEquals("tree", actual.getSearchFilterList().get(1).getId());
+        Assertions.assertEquals("humandate", ((SearchFilter)actual.getSearchFilterList().get(0)).getId());
+        Assertions.assertEquals("tree", ((SearchFilter)actual.getSearchFilterList().get(1)).getId());
 
     }
 

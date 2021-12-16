@@ -41,13 +41,13 @@ public class SearchQueryDTOMapper {
         return sortDTO;
     }
 
-    protected static List<SearchFilterDTO> map(List<SearchFilter> searchFilters) {
+    protected static List<SearchFilterDTO> map(List<BaseSearchFilter> searchFilters) {
         List<SearchFilterDTO> mappedFilters = new ArrayList<>();
         if(searchFilters == null) {
             return mappedFilters;
         }
-        for(SearchFilter searchFilter : searchFilters) {
-            mappedFilters.add(map(searchFilter));
+        for(BaseSearchFilter searchFilter : searchFilters) {
+            mappedFilters.add(map((SearchFilter) searchFilter)); // TODO map here
         }
         return mappedFilters;
     }

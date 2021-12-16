@@ -8,6 +8,8 @@ import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.query.BaseSearchFilter;
+import com.quasiris.qsf.query.BoolSearchFilter;
 import com.quasiris.qsf.query.Control;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterOperator;
@@ -155,21 +157,36 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         elasticQuery.set("aggs", jsonBuilder.get());
     }
 
-    private ObjectNode getFilterAsJson(QsfqlFilterMapper filterMapper, String id, List<SearchFilter> facetFilter, FilterOperator operator ) throws JsonBuilderException{
-        List<SearchFilter> excludeFilters = new ArrayList<>();
+    private ObjectNode getFilterAsJson(QsfqlFilterMapper filterMapper, String id, List<BaseSearchFilter> facetFilter, FilterOperator operator ) throws JsonBuilderException{
+        List<BaseSearchFilter> excludeFilters = new ArrayList<>();
         if(operator.equals(FilterOperator.AND)) {
             excludeFilters.addAll(searchQuery.getSearchFilterList());
         } else {
             excludeFilters = searchQuery.getSearchFilterList().stream().
-                    filter(f -> !filterMapper.mapFilterField(f.getId()).equals(id)).
+                    filter(f -> filterByType(filterMapper, id, f)).
                     collect(Collectors.toList());
         }
         if(facetFilter != null) {
             excludeFilters.addAll(facetFilter);
         }
 
-        ObjectNode filters  = filterMapper.getFilterAsJson(excludeFilters);
+        ObjectNode filters = null;
+        if(excludeFilters.size() > 0) {
+            filters = filterMapper.buildFiltersJson(excludeFilters);
+        }
         return filters;
+    }
+
+    private boolean filterByType(QsfqlFilterMapper filterMapper, String id, BaseSearchFilter f) {
+        boolean shouldFilter = true;
+
+        if(f instanceof SearchFilter) {
+            shouldFilter = !filterMapper.mapFilterField(((SearchFilter)f).getId()).equals(id);
+        } else if(f instanceof BoolSearchFilter) {
+            // TODO implement this
+        }
+
+        return shouldFilter;
     }
 
     public void transformQuery() {

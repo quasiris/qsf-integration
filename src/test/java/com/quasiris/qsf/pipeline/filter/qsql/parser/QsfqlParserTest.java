@@ -104,7 +104,7 @@ public class QsfqlParserTest {
     @Test
     public void testFilter() throws Exception {
         SearchQuery query = createQuery("f.foo=bar");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals(searchFilter.getName(), "foo");
         assertEquals(searchFilter.getValues().get(0), "bar");
         assertEquals(searchFilter.getFilterType(), FilterType.TERM);
@@ -116,7 +116,7 @@ public class QsfqlParserTest {
     @Test
     public void testOrFilter() throws Exception {
         SearchQuery query = createQuery("f.foo.or=alice", "f.foo.or=bob");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals(searchFilter.getName(), "foo");
         assertEquals(searchFilter.getValues().get(0), "alice");
         assertEquals(searchFilter.getValues().get(1), "bob");
@@ -128,7 +128,7 @@ public class QsfqlParserTest {
     @Test
     public void testAndFilter() throws Exception {
         SearchQuery query = createQuery("f.foo.and=alice", "f.foo.and=bob");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals(searchFilter.getName(), "foo");
         assertEquals(searchFilter.getValues().get(0), "alice");
         assertEquals(searchFilter.getValues().get(1), "bob");
@@ -140,7 +140,7 @@ public class QsfqlParserTest {
     @Test
     public void testFilterWithMultipleValues() throws Exception {
         SearchQuery query = createQuery("f.foo=bar", "f.foo=alice");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
         assertEquals("bar", searchFilter.getValues().get(0));
         assertEquals("alice", searchFilter.getValues().get(1));
@@ -152,7 +152,7 @@ public class QsfqlParserTest {
     @Test
     public void testRangeFilterForDoubleValues() throws Exception {
         SearchQuery query = createQuery("f.foo.range=0.1,5.2");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
         assertEquals(Double.valueOf(0.1), searchFilter.getRangeValue(Double.class).getMinValue());
         assertEquals(Double.valueOf(5.2), searchFilter.getRangeValue(Double.class).getMaxValue());
@@ -165,7 +165,7 @@ public class QsfqlParserTest {
     @Test
     public void testRangeFilterForDateValues() throws Exception {
         SearchQuery query = createQuery("f.timestamp.daterange=2021-01-02T23:00:00Z,2021-02-05T20:59:38Z");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("timestamp", searchFilter.getName());
         assertNotNull(searchFilter.getRangeValue(Date.class).getMinValue());
         assertNotNull(searchFilter.getRangeValue(Date.class).getMaxValue());
@@ -180,7 +180,7 @@ public class QsfqlParserTest {
         Instant reference = Instant.parse("2021-08-26T10:58:09.000Z");
         QsfInstant.setNow(reference);
         SearchQuery query = createQuery("f.timestamp.daterange=NOW,*");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("timestamp", searchFilter.getName());
         assertEquals(Date.from(reference), searchFilter.getRangeValue(Date.class).getMinValue());
         assertTrue(searchFilter.getRangeValue(Date.class).getMaxValue().equals(DateUtil.max()));
@@ -193,7 +193,7 @@ public class QsfqlParserTest {
     @Test
     public void testRangeFilterForLongValues() throws Exception {
         SearchQuery query = createQuery("f.foo.range=3,5");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
         assertEquals(Double.valueOf(3.0), searchFilter.getRangeValue(Double.class).getMinValue());
         assertEquals(Double.valueOf(5.0), searchFilter.getRangeValue(Double.class).getMaxValue());
@@ -206,7 +206,7 @@ public class QsfqlParserTest {
     @Test
     public void testRangeFilterLowerUpperBoundExcluded() throws Exception {
         SearchQuery query = createQuery("f.foo.range={3,5}");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
         assertEquals(Double.valueOf(3.0), searchFilter.getRangeValue(Double.class).getMinValue());
         assertEquals(Double.valueOf(5.0), searchFilter.getRangeValue(Double.class).getMaxValue());
@@ -219,7 +219,7 @@ public class QsfqlParserTest {
     @Test
     public void testRangeFilterLowerUpperBoundIncluded() throws Exception {
         SearchQuery query = createQuery("f.foo.range=[3,5]");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
         assertEquals(Double.valueOf(3.0), searchFilter.getRangeValue(Double.class).getMinValue());
         assertEquals(Double.valueOf(5.0), searchFilter.getRangeValue(Double.class).getMaxValue());
@@ -232,7 +232,7 @@ public class QsfqlParserTest {
     @Test
     public void testSliderFilterForLongValues() throws Exception {
         SearchQuery query = createQuery("f.foo.slider=3,5");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
         assertEquals(Double.valueOf(3.0), searchFilter.getRangeValue(Double.class).getMinValue());
         assertEquals(Double.valueOf(5.0), searchFilter.getRangeValue(Double.class).getMaxValue());
@@ -243,7 +243,7 @@ public class QsfqlParserTest {
     @Test
     public void testRangeFilterForMinMaxValues() throws Exception {
         SearchQuery query = createQuery("f.foo.range=min,max");
-        SearchFilter searchFilter = query.getSearchFilterList().get(0);
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("foo", searchFilter.getName());
         assertEquals(Double.valueOf(Double.MIN_VALUE), searchFilter.getRangeValue(Double.class).getMinValue());
         assertEquals(Double.valueOf(Double.MAX_VALUE), searchFilter.getRangeValue(Double.class).getMaxValue());
@@ -276,8 +276,8 @@ public class QsfqlParserTest {
         assertEquals(facet.getName(), "accountId");
         assertEquals(facet.getId(), "accountId");
         //assertEquals(facet.getFacetFilters().get(0).getName(), "accountId");
-        assertEquals(facet.getFacetFilters().get(0).getId(), "accountId");
-        assertEquals(facet.getFacetFilters().get(0).getValues().get(0), "1234");
+        assertEquals(((SearchFilter)facet.getFacetFilters().get(0)).getId(), "accountId");
+        assertEquals(((SearchFilter)facet.getFacetFilters().get(0)).getValues().get(0), "1234");
     }
 
 

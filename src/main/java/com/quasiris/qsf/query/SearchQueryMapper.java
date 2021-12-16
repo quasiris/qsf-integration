@@ -39,7 +39,7 @@ public class SearchQueryMapper {
 
 
 
-        List<SearchFilter> searchFilters = map(searchQueryDTO.getSearchFilters());
+        List<BaseSearchFilter> searchFilters = map(searchQueryDTO.getSearchFilters());
         searchQuery.setSearchFilterList(searchFilters);
 
         searchQuery.setResult(searchQueryDTO.getResult());
@@ -60,13 +60,13 @@ public class SearchQueryMapper {
         return sort;
     }
 
-    public static List<SearchFilter> map(List<SearchFilterDTO> searchFilters) {
-        List<SearchFilter> mappedFilters = new ArrayList<>();
+    public static List<BaseSearchFilter> map(List<SearchFilterDTO> searchFilters) {
+        List<BaseSearchFilter> mappedFilters = new ArrayList<>();
         if(searchFilters == null) {
             return mappedFilters;
         }
         for(SearchFilterDTO searchFilter : searchFilters) {
-            mappedFilters.add(map(searchFilter));
+            mappedFilters.add(map(searchFilter)); // TODO map here
         }
         return mappedFilters;
     }

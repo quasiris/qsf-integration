@@ -24,7 +24,7 @@ public class Facet {
 
     private FilterOperator operator = FilterOperator.AND;
 
-    private List<SearchFilter> facetFilters = new ArrayList<>();
+    private List<BaseSearchFilter> facetFilters = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -222,7 +222,7 @@ public class Facet {
      *
      * @return Value for property 'facetFilters'.
      */
-    public List<SearchFilter> getFacetFilters() {
+    public List<BaseSearchFilter> getFacetFilters() {
         return facetFilters;
     }
 
@@ -231,7 +231,7 @@ public class Facet {
      *
      * @param facetFilters Value to set for property 'facetFilters'.
      */
-    public void setFacetFilters(List<SearchFilter> facetFilters) {
+    public void setFacetFilters(List<BaseSearchFilter> facetFilters) {
         this.facetFilters = facetFilters;
     }
 }

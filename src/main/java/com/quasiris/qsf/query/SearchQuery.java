@@ -24,7 +24,7 @@ public class SearchQuery {
 
     private String requestId;
 
-    private List<SearchFilter> searchFilterList = new ArrayList<>();
+    private List<BaseSearchFilter> searchFilterList = new ArrayList<>();
     private List<Facet> facetList;
 
     private Sort sort;
@@ -114,11 +114,11 @@ public class SearchQuery {
         this.rows = rows;
     }
 
-    public List<SearchFilter> getSearchFilterList() {
+    public List<BaseSearchFilter> getSearchFilterList() {
         return searchFilterList;
     }
 
-    public void setSearchFilterList(List<SearchFilter> searchFilterList) {
+    public void setSearchFilterList(List<BaseSearchFilter> searchFilterList) {
         this.searchFilterList = searchFilterList;
     }
 
@@ -177,7 +177,7 @@ public class SearchQuery {
         addFilter(searchFilter);
     }
 
-    public void addFilter(SearchFilter searchFilter) {
+    public void addFilter(BaseSearchFilter searchFilter) {
         if(this.searchFilterList == null) {
             this.searchFilterList = new ArrayList<>();
         }
