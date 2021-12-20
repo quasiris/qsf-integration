@@ -1,0 +1,190 @@
+{
+  "took": 2,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 2,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "qsc_filtered": {
+      "meta": {},
+      "doc_count": 4,
+      "attr_groesse_uk_txt_filter_wrapper": {
+        "doc_count": 2,
+        "attr_groesse_uk_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "2,5",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "3",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            }
+          ]
+        }
+      },
+      "attr_weite_txt_filter_wrapper": {
+        "doc_count": 2,
+        "attr_weite_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "A",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "H",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            }
+          ]
+        }
+      },
+      "attr_material_txt_filter_wrapper": {
+        "doc_count": 2,
+        "attr_material_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "Leder",
+              "doc_count": 2,
+              "variant_count": {
+                "value": 1
+              }
+            }
+          ]
+        }
+      },
+      "attr_zutaten_txt_filter_wrapper": {
+        "doc_count": 2,
+        "attr_zutaten_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "Fisch",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "Milch",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            }
+          ]
+        }
+      },
+      "attr_herstellerfarbnummer_txt_filter_wrapper": {
+        "doc_count": 2,
+        "attr_herstellerfarbnummer_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "alt-rosa",
+              "doc_count": 2,
+              "variant_count": {
+                "value": 1
+              }
+            }
+          ]
+        }
+      },
+      "_total_count_filter_wrapper": {
+        "doc_count": 2,
+        "_total_count": {
+          "value": 1
+        }
+      },
+      "attr_groesse_txt_filter_wrapper": {
+        "doc_count": 2,
+        "attr_groesse_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "L",
+              "doc_count": 2,
+              "variant_count": {
+                "value": 1
+              }
+            }
+          ]
+        }
+      },
+      "attr_farbe_txt": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          {
+            "key": "Blau",
+            "doc_count": 2,
+            "variant_count": {
+              "value": 1
+            }
+          },
+          {
+            "key": "Rot",
+            "doc_count": 1,
+            "variant_count": {
+              "value": 1
+            }
+          }
+        ]
+      },
+      "attr_zielgruppe_txt_filter_wrapper": {
+        "doc_count": 2,
+        "attr_zielgruppe_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "Frau",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "Mann",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

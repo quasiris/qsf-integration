@@ -1,6 +1,7 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.quasiris.qsf.dto.response.Facet;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.SearchResult;
@@ -31,6 +32,24 @@ class Elastic2SearchResultMappingTransformerTest {
         assertEquals(0, firstSnippet.get("_offset"));
 
     }
+
+    @Test
+    void transformVariantsTotalCount() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        ElasticResult elasticResult = readElasticResultFromFile("aggregation-variant-count.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+
+        Facet material = searchResult.getFacetById("attr_material_txt");
+        assertEquals("Leder", material.getValues().get(0).getValue());
+        assertEquals(1, material.getValues().get(0).getCount());
+        Facet farbe = searchResult.getFacetById("attr_farbe_txt");
+        assertEquals("Blau", farbe.getValues().get(0).getValue());
+        assertEquals(1, farbe.getValues().get(0).getCount());
+        assertEquals("Rot", farbe.getValues().get(1).getValue());
+        assertEquals(1, farbe.getValues().get(1).getCount());
+
+    }
+
     @Test
     void transformInnerhitsCollapse() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
