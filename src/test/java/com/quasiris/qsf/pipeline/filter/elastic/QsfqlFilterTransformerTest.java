@@ -56,12 +56,16 @@ public class QsfqlFilterTransformerTest {
                 "      \"filter\" : {\n" +
                 "        \"bool\" : {\n" +
                 "          \"must\" : [ {\n" +
-                "            \"term\" : {\n" +
-                "              \"tag\" : \"wago\"\n" +
-                "            }\n" +
-                "          }, {\n" +
-                "            \"term\" : {\n" +
-                "              \"tag\" : \"kaiser\"\n" +
+                "            \"bool\" : {\n" +
+                "              \"must\" : [ {\n" +
+                "                \"term\" : {\n" +
+                "                  \"tag\" : \"wago\"\n" +
+                "                }\n" +
+                "              }, {\n" +
+                "                \"term\" : {\n" +
+                "                  \"tag\" : \"kaiser\"\n" +
+                "                }\n" +
+                "              } ]\n" +
                 "            }\n" +
                 "          }, {\n" +
                 "            \"range\" : {\n" +
@@ -108,12 +112,16 @@ public class QsfqlFilterTransformerTest {
                 "          \"filter\" : {\n" +
                 "            \"bool\" : {\n" +
                 "              \"must\" : [ {\n" +
-                "                \"term\" : {\n" +
-                "                  \"tag\" : \"wago\"\n" +
-                "                }\n" +
-                "              }, {\n" +
-                "                \"term\" : {\n" +
-                "                  \"tag\" : \"kaiser\"\n" +
+                "                \"bool\" : {\n" +
+                "                  \"must\" : [ {\n" +
+                "                    \"term\" : {\n" +
+                "                      \"tag\" : \"wago\"\n" +
+                "                    }\n" +
+                "                  }, {\n" +
+                "                    \"term\" : {\n" +
+                "                      \"tag\" : \"kaiser\"\n" +
+                "                    }\n" +
+                "                  } ]\n" +
                 "                }\n" +
                 "              }, {\n" +
                 "                \"range\" : {\n" +
@@ -163,12 +171,16 @@ public class QsfqlFilterTransformerTest {
                 "  \"post_filter\" : {\n" +
                 "    \"bool\" : {\n" +
                 "      \"must\" : [ {\n" +
-                "        \"term\" : {\n" +
-                "          \"tag\" : \"wago\"\n" +
-                "        }\n" +
-                "      }, {\n" +
-                "        \"term\" : {\n" +
-                "          \"tag\" : \"kaiser\"\n" +
+                "        \"bool\" : {\n" +
+                "          \"must\" : [ {\n" +
+                "            \"term\" : {\n" +
+                "              \"tag\" : \"wago\"\n" +
+                "            }\n" +
+                "          }, {\n" +
+                "            \"term\" : {\n" +
+                "              \"tag\" : \"kaiser\"\n" +
+                "            }\n" +
+                "          } ]\n" +
                 "        }\n" +
                 "      }, {\n" +
                 "        \"range\" : {\n" +
@@ -220,12 +232,16 @@ public class QsfqlFilterTransformerTest {
                 "  \"post_filter\" : {\n" +
                 "    \"bool\" : {\n" +
                 "      \"must\" : [ {\n" +
-                "        \"term\" : {\n" +
-                "          \"tag\" : \"wago\"\n" +
-                "        }\n" +
-                "      }, {\n" +
-                "        \"term\" : {\n" +
-                "          \"tag\" : \"kaiser\"\n" +
+                "        \"bool\" : {\n" +
+                "          \"must\" : [ {\n" +
+                "            \"term\" : {\n" +
+                "              \"tag\" : \"wago\"\n" +
+                "            }\n" +
+                "          }, {\n" +
+                "            \"term\" : {\n" +
+                "              \"tag\" : \"kaiser\"\n" +
+                "            }\n" +
+                "          } ]\n" +
                 "        }\n" +
                 "      }, {\n" +
                 "        \"range\" : {\n" +

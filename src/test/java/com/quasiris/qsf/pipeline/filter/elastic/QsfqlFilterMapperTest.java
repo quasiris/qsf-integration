@@ -72,12 +72,16 @@ class QsfqlFilterMapperTest {
         assertEquals("{\n" +
                 "  \"bool\" : {\n" +
                 "    \"must\" : [ {\n" +
-                "      \"term\" : {\n" +
-                "        \"tag\" : \"wago\"\n" +
-                "      }\n" +
-                "    }, {\n" +
-                "      \"term\" : {\n" +
-                "        \"tag\" : \"kaiser\"\n" +
+                "      \"bool\" : {\n" +
+                "        \"must\" : [ {\n" +
+                "          \"term\" : {\n" +
+                "            \"tag\" : \"wago\"\n" +
+                "          }\n" +
+                "        }, {\n" +
+                "          \"term\" : {\n" +
+                "            \"tag\" : \"kaiser\"\n" +
+                "          }\n" +
+                "        } ]\n" +
                 "      }\n" +
                 "    }, {\n" +
                 "      \"range\" : {\n" +
@@ -157,12 +161,16 @@ class QsfqlFilterMapperTest {
         assertEquals("{\n" +
                 "  \"bool\" : {\n" +
                 "    \"must\" : [ {\n" +
-                "      \"term\" : {\n" +
-                "        \"tag\" : \"wago\"\n" +
-                "      }\n" +
-                "    }, {\n" +
-                "      \"term\" : {\n" +
-                "        \"tag\" : \"kaiser\"\n" +
+                "      \"bool\" : {\n" +
+                "        \"must\" : [ {\n" +
+                "          \"term\" : {\n" +
+                "            \"tag\" : \"wago\"\n" +
+                "          }\n" +
+                "        }, {\n" +
+                "          \"term\" : {\n" +
+                "            \"tag\" : \"kaiser\"\n" +
+                "          }\n" +
+                "        } ]\n" +
                 "      }\n" +
                 "    }, {\n" +
                 "      \"range\" : {\n" +
@@ -208,14 +216,14 @@ class QsfqlFilterMapperTest {
                 "              \"term\" : {\n" +
                 "                \"tag\" : \"kaiser\"\n" +
                 "              }\n" +
-                "            }, {\n" +
-                "              \"range\" : {\n" +
-                "                \"price\" : {\n" +
-                "                  \"gte\" : 100.0,\n" +
-                "                  \"lte\" : 200.0\n" +
-                "                }\n" +
-                "              }\n" +
                 "            } ]\n" +
+                "          }\n" +
+                "        }, {\n" +
+                "          \"range\" : {\n" +
+                "            \"price\" : {\n" +
+                "              \"gte\" : 100.0,\n" +
+                "              \"lte\" : 200.0\n" +
+                "            }\n" +
                 "          }\n" +
                 "        } ]\n" +
                 "      }\n" +
@@ -229,14 +237,14 @@ class QsfqlFilterMapperTest {
                 "          \"term\" : {\n" +
                 "            \"tag\" : \"kaiser\"\n" +
                 "          }\n" +
-                "        }, {\n" +
-                "          \"range\" : {\n" +
-                "            \"price\" : {\n" +
-                "              \"gte\" : 100.0,\n" +
-                "              \"lte\" : 200.0\n" +
-                "            }\n" +
-                "          }\n" +
                 "        } ]\n" +
+                "      }\n" +
+                "    }, {\n" +
+                "      \"range\" : {\n" +
+                "        \"price\" : {\n" +
+                "          \"gte\" : 100.0,\n" +
+                "          \"lte\" : 200.0\n" +
+                "        }\n" +
                 "      }\n" +
                 "    } ]\n" +
                 "  }\n" +
@@ -288,14 +296,14 @@ class QsfqlFilterMapperTest {
                 "              \"term\" : {\n" +
                 "                \"tag\" : \"kaiser\"\n" +
                 "              }\n" +
-                "            }, {\n" +
-                "              \"range\" : {\n" +
-                "                \"price\" : {\n" +
-                "                  \"gte\" : 100.0,\n" +
-                "                  \"lte\" : 200.0\n" +
-                "                }\n" +
-                "              }\n" +
                 "            } ]\n" +
+                "          }\n" +
+                "        }, {\n" +
+                "          \"range\" : {\n" +
+                "            \"price\" : {\n" +
+                "              \"gte\" : 100.0,\n" +
+                "              \"lte\" : 200.0\n" +
+                "            }\n" +
                 "          }\n" +
                 "        } ]\n" +
                 "      }\n" +
@@ -304,15 +312,11 @@ class QsfqlFilterMapperTest {
                 "        \"should\" : [ {\n" +
                 "          \"bool\" : {\n" +
                 "            \"must_not\" : [ {\n" +
-                "              \"bool\" : {\n" +
-                "                \"must\" : [ {\n" +
-                "                  \"range\" : {\n" +
-                "                    \"price\" : {\n" +
-                "                      \"gte\" : 100.0,\n" +
-                "                      \"lte\" : 200.0\n" +
-                "                    }\n" +
-                "                  }\n" +
-                "                } ]\n" +
+                "              \"range\" : {\n" +
+                "                \"price\" : {\n" +
+                "                  \"gte\" : 100.0,\n" +
+                "                  \"lte\" : 200.0\n" +
+                "                }\n" +
                 "              }\n" +
                 "            } ]\n" +
                 "          }\n" +
@@ -340,14 +344,14 @@ class QsfqlFilterMapperTest {
                 "          \"term\" : {\n" +
                 "            \"tag\" : \"kaiser\"\n" +
                 "          }\n" +
-                "        }, {\n" +
-                "          \"range\" : {\n" +
-                "            \"price\" : {\n" +
-                "              \"gte\" : 100.0,\n" +
-                "              \"lte\" : 200.0\n" +
-                "            }\n" +
-                "          }\n" +
                 "        } ]\n" +
+                "      }\n" +
+                "    }, {\n" +
+                "      \"range\" : {\n" +
+                "        \"price\" : {\n" +
+                "          \"gte\" : 100.0,\n" +
+                "          \"lte\" : 200.0\n" +
+                "        }\n" +
                 "      }\n" +
                 "    } ]\n" +
                 "  }\n" +

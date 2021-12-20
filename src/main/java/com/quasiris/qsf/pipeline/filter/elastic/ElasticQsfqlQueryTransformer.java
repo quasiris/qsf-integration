@@ -16,10 +16,12 @@ import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.Sort;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -162,9 +164,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         if(operator.equals(FilterOperator.AND)) {
             excludeFilters.addAll(searchQuery.getSearchFilterList());
         } else {
-            excludeFilters = searchQuery.getSearchFilterList().stream().
-                    filter(f -> filterByType(filterMapper, id, f)).
-                    collect(Collectors.toList());
+            excludeFilters = deepCopy(searchQuery.getSearchFilterList());
+            excludeOwnFilter(excludeFilters, filterMapper, id);
         }
         if(facetFilter != null) {
             excludeFilters.addAll(facetFilter);
@@ -177,16 +178,33 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         return filters;
     }
 
-    private boolean filterByType(QsfqlFilterMapper filterMapper, String id, BaseSearchFilter f) {
-        boolean shouldFilter = true;
-
-        if(f instanceof SearchFilter) {
-            shouldFilter = !filterMapper.mapFilterField(((SearchFilter)f).getId()).equals(id);
-        } else if(f instanceof BoolSearchFilter) {
-            // TODO implement this
+    private List<BaseSearchFilter> deepCopy(List<BaseSearchFilter> filters) {
+        List<BaseSearchFilter> copy = new ArrayList<>();
+        for (BaseSearchFilter filter : filters) {
+            BaseSearchFilter clone = SerializationUtils.clone(filter);
+            copy.add(clone);
         }
+        return copy;
+    }
 
-        return shouldFilter;
+    /**
+     * Add all filters except own
+     * @param filtersCopy copy of search filters
+     * @return filters that will be applied to facet
+     */
+    private void excludeOwnFilter(List<BaseSearchFilter> filtersCopy, QsfqlFilterMapper filterMapper, String id) {
+        Iterator<BaseSearchFilter> it = filtersCopy.iterator();
+        while (it.hasNext()) {
+            BaseSearchFilter filter = it.next();
+            if(filter instanceof SearchFilter) {
+                // remove if self
+                if(filterMapper.mapFilterField(((SearchFilter)filter).getId()).equals(id)) {
+                    it.remove();
+                }
+            } else if(filter instanceof BoolSearchFilter) {
+                excludeOwnFilter(((BoolSearchFilter) filter).getFilters(), filterMapper, id);
+            }
+        }
     }
 
     public void transformQuery() {

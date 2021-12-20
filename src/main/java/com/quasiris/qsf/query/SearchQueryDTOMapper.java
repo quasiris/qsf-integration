@@ -1,5 +1,7 @@
 package com.quasiris.qsf.query;
 
+import com.quasiris.qsf.dto.query.BaseSearchFilterDTO;
+import com.quasiris.qsf.dto.query.BoolSearchFilterDTO;
 import com.quasiris.qsf.dto.query.SearchFilterDTO;
 import com.quasiris.qsf.dto.query.SearchQueryDTO;
 import com.quasiris.qsf.dto.query.SortDTO;
@@ -21,7 +23,7 @@ public class SearchQueryDTOMapper {
         searchQueryDTO.setSort(sort);
 
 
-        List<SearchFilterDTO> searchFiltersDTO = map(searchQuery.getSearchFilterList());
+        List<BaseSearchFilterDTO> searchFiltersDTO = map(searchQuery.getSearchFilterList());
         searchQueryDTO.setSearchFilters(searchFiltersDTO);
 
         return searchQueryDTO;
@@ -41,13 +43,23 @@ public class SearchQueryDTOMapper {
         return sortDTO;
     }
 
-    protected static List<SearchFilterDTO> map(List<BaseSearchFilter> searchFilters) {
-        List<SearchFilterDTO> mappedFilters = new ArrayList<>();
-        if(searchFilters == null) {
+    protected static List<BaseSearchFilterDTO> map(List<BaseSearchFilter> baseSearchFilters) {
+        List<BaseSearchFilterDTO> mappedFilters = new ArrayList<>();
+        if(baseSearchFilters == null) {
             return mappedFilters;
         }
-        for(BaseSearchFilter searchFilter : searchFilters) {
-            mappedFilters.add(map((SearchFilter) searchFilter)); // TODO map here
+        for(BaseSearchFilter baseSearchFilter : baseSearchFilters) {
+            if(baseSearchFilter instanceof SearchFilter) {
+                SearchFilter searchFilter = (SearchFilter) baseSearchFilter;
+                mappedFilters.add(map(searchFilter));
+            } else if(baseSearchFilter instanceof BoolSearchFilter) {
+                BoolSearchFilter boolSearchFilter = (BoolSearchFilter) baseSearchFilter;
+                BoolSearchFilterDTO boolSearchFilterDTO = new BoolSearchFilterDTO();
+                boolSearchFilterDTO.setOperator(com.quasiris.qsf.dto.query.FilterOperator.valueOf(boolSearchFilter.getOperator().toString()));
+                List<BaseSearchFilterDTO> filters = map(boolSearchFilter.getFilters());
+                boolSearchFilterDTO.setFilters(filters);
+                mappedFilters.add(boolSearchFilterDTO);
+            }
         }
         return mappedFilters;
     }

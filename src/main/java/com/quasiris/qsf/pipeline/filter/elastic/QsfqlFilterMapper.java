@@ -1,7 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,20 +30,8 @@ public class QsfqlFilterMapper {
 
     private Map<String, String> filterMapping = new HashMap<>();
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-
     public QsfqlFilterMapper() {
     }
-
-    public ArrayNode computeFilterForOperator(FilterOperator filterOperator, List<SearchFilter> searchFilters) throws JsonBuilderException {
-        List<SearchFilter> searchFilterList = searchFilters.stream().
-                filter(sf -> sf.getFilterOperator().equals(filterOperator)).
-                collect(Collectors.toList());
-        ArrayNode filters = computeFilter(searchFilterList);
-        return filters;
-
-    }
-
 
     // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
     // TODO implement range queries for date
@@ -247,37 +233,36 @@ public class QsfqlFilterMapper {
         return filterBuilder.root().get();
     }
 
-    public ArrayNode createFiltersOr(List<SearchFilter> searchFilters)  throws JsonBuilderException {
-        List<SearchFilter> searchFilterList = searchFilters.stream().
-                filter(sf -> sf.getFilterOperator().equals(FilterOperator.OR)).
-                collect(Collectors.toList());
-
-        JsonBuilder shouldList = JsonBuilder.create().array();
-        for(SearchFilter searchFilter : searchFilterList) {
-            JsonBuilder shouldBuilder = JsonBuilder.create().
-                    object("bool").
-                    array("should");
-            ArrayNode filters = computeFilter(Arrays.asList(searchFilter));
-            if (filters.size() == 0) {
-                continue;
-            }
-            shouldBuilder.addJson(filters);
-            shouldList.addJson(shouldBuilder.root().get());
-        }
-        return (ArrayNode) shouldList.root().get();
-
-
-    }
-
-    public @Nullable ObjectNode getFilterAsJson(@Nonnull List<SearchFilter> searchFilters) throws JsonBuilderException {
+    public @Nullable ArrayNode getFilterAsJson(@Nonnull List<SearchFilter> searchFilters) throws JsonBuilderException {
         if(searchFilters.size() == 0) {
             return null;
         }
-        ObjectNode filterBool = (ObjectNode) JsonBuilder.create().object().get();
-        transformFilters(filterBool, "must", FilterOperator.AND, searchFilters);
-        transformFiltersOr(filterBool, searchFilters);
-        transformFilters(filterBool, "must_not", FilterOperator.NOT, searchFilters);
-        return filterBool;
+        JsonBuilder jsonBuilder = JsonBuilder.create().array();
+        for(SearchFilter searchFilter : searchFilters) {
+            ArrayNode filters = computeFilter(Arrays.asList(searchFilter));
+            if (filters.size() == 0) {
+                // don't add empty filters
+                continue;
+            } else if (filters.size() == 1 && searchFilter.getFilterOperator() != FilterOperator.NOT) {
+                // don't wrap with bool
+                jsonBuilder.addJson(filters);
+            } else if (filters.size() >= 1) {
+                // wrap with bool here
+                JsonBuilder operatorBuilder = JsonBuilder.create().
+                        object("bool");
+                if (searchFilter.getFilterOperator() == FilterOperator.AND || searchFilter.getFilterOperator() == null) {
+                    operatorBuilder.array("must");
+                } else if (searchFilter.getFilterOperator() == FilterOperator.OR) {
+                    operatorBuilder.array("should");
+                } else if (searchFilter.getFilterOperator() == FilterOperator.NOT) {
+                    operatorBuilder.array("must_not");
+                }
+                operatorBuilder.addJson(filters);
+                jsonBuilder.addJson(operatorBuilder.root().get());
+            }
+        }
+
+        return (ArrayNode) jsonBuilder.get();
     }
 
     public <T extends BaseSearchFilter> ObjectNode buildFiltersJson(@Nonnull List<T> searchFilters) throws JsonBuilderException {
@@ -317,16 +302,12 @@ public class QsfqlFilterMapper {
             }
             if(regularSearchFilters.size() > 0) {
                 // add classic filters
-                ObjectNode filters = getFilterAsJson(regularSearchFilters);
+                ArrayNode filters = getFilterAsJson(regularSearchFilters);
                 if(filters != null) {
-                    if(!hasBoolFilter && operator == null) {
-                        builder = JsonBuilder.create(); // remove one stage of wrapped bool
-                    }
-
                     if(builder.getCurrent() instanceof ArrayNode) {
-                        builder.addJson(JsonBuilder.create().object("bool", filters).get());
+                        builder.addJson(filters);
                     } else {
-                        builder.object("bool", filters);
+                        builder.json(filters);
                     }
                 }
             }
@@ -338,41 +319,6 @@ public class QsfqlFilterMapper {
         }
 
         return (ObjectNode) builder.get();
-    }
-
-    public void transformFilters(ObjectNode filterBool, String elasticOperator, FilterOperator filterOperator, List<SearchFilter> searchFilters) throws JsonBuilderException {
-
-        ArrayNode filters = computeFilterForOperator(filterOperator, searchFilters);
-        if(filters == null || filters.size() == 0) {
-            return;
-        }
-        ArrayNode filter = (ArrayNode) filterBool.get(elasticOperator);
-
-        if(filter != null && filter.isArray()) {
-            for (Iterator<JsonNode> it = filter.iterator(); it.hasNext();) {
-                filters.add(it.next());
-            }
-        }
-        filterBool.set(elasticOperator, filters);
-    }
-
-
-
-    public void transformFiltersOr(ObjectNode filterBool, List<SearchFilter> searchFilters) throws JsonBuilderException {
-
-        ArrayNode orFilters = createFiltersOr(searchFilters);
-
-        if(orFilters == null || orFilters.size() == 0) {
-            return;
-        }
-
-        ArrayNode must = (ArrayNode) filterBool.get("must");
-        if (must == null) {
-            filterBool.set("must", objectMapper.createArrayNode());
-            must = (ArrayNode) filterBool.get("must");
-        }
-
-        must.addAll(orFilters);
     }
 
     /**

@@ -2,6 +2,8 @@ package com.quasiris.qsf.query;
 
 import com.quasiris.qsf.commons.text.date.HumanDateParser;
 import com.quasiris.qsf.commons.text.date.SimpleDateParser;
+import com.quasiris.qsf.dto.query.BaseSearchFilterDTO;
+import com.quasiris.qsf.dto.query.BoolSearchFilterDTO;
 import com.quasiris.qsf.dto.query.SearchFilterDTO;
 import com.quasiris.qsf.dto.query.SearchQueryDTO;
 import com.quasiris.qsf.dto.query.SortDTO;
@@ -60,13 +62,23 @@ public class SearchQueryMapper {
         return sort;
     }
 
-    public static List<BaseSearchFilter> map(List<SearchFilterDTO> searchFilters) {
+    public static List<BaseSearchFilter> map(List<BaseSearchFilterDTO> baseSearchFilters) {
         List<BaseSearchFilter> mappedFilters = new ArrayList<>();
-        if(searchFilters == null) {
+        if(baseSearchFilters == null) {
             return mappedFilters;
         }
-        for(SearchFilterDTO searchFilter : searchFilters) {
-            mappedFilters.add(map(searchFilter)); // TODO map here
+        for(BaseSearchFilterDTO baseSearchFilterDTO : baseSearchFilters) {
+            if(baseSearchFilterDTO instanceof SearchFilterDTO) {
+                SearchFilterDTO searchFilterDTO = (SearchFilterDTO) baseSearchFilterDTO;
+                mappedFilters.add(map(searchFilterDTO));
+            } else if(baseSearchFilterDTO instanceof BoolSearchFilterDTO) {
+                BoolSearchFilterDTO boolSearchFilterDTO = (BoolSearchFilterDTO) baseSearchFilterDTO;
+                BoolSearchFilter boolSearchFilter = new BoolSearchFilter();
+                boolSearchFilter.setOperator(FilterOperator.valueOf(boolSearchFilterDTO.getOperator().toString()));
+                List<BaseSearchFilter> filters = map(boolSearchFilterDTO.getFilters());
+                boolSearchFilter.setFilters(filters);
+                mappedFilters.add(boolSearchFilter);
+            }
         }
         return mappedFilters;
     }
