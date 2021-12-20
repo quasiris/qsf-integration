@@ -17,24 +17,23 @@ public class PagingBuilder {
             rows = 10;
         }
 
+        Paging paging = null;
+        if (rows > 0) {
+            paging = new Paging();
+            int pageCount = BigDecimal.valueOf(total).
+                    divide(BigDecimal.valueOf(rows), BigDecimal.ROUND_UP).
+                    intValue();
 
+            paging.setCurrentPage(currentPage);
+            paging.setPageCount(pageCount);
+            paging.setFirstPage(createPage(1, currentPage));
+            paging.setLastPage(createPage(pageCount, currentPage));
 
-        int pageCount = BigDecimal.valueOf(total).
-                divide(BigDecimal.valueOf(rows), BigDecimal.ROUND_UP).
-                intValue();
+            paging.setNextPage(createPage(Math.min(pageCount, (currentPage + 1)), currentPage));
+            paging.setPreviousPage(createPage(Math.max(1, (currentPage - 1)), currentPage));
 
-        Paging paging = new Paging();
-        paging.setCurrentPage(currentPage);
-        paging.setPageCount(pageCount);
-        paging.setFirstPage(createPage(1, currentPage));
-        paging.setLastPage(createPage(pageCount, currentPage));
-
-
-        paging.setNextPage(createPage(Math.min(pageCount, (currentPage+1)), currentPage));
-        paging.setPreviousPage(createPage(Math.max(1, (currentPage-1)), currentPage));
-
-        paging.setRows(rows);
-
+            paging.setRows(rows);
+        }
         return paging;
     }
 
