@@ -8,9 +8,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregations;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
-import com.quasiris.qsf.util.QsfIntegrationConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class AggregationsDeserializer extends StdDeserializer<Aggregations> {
+public class AggregationsDeserializer extends StdDeserializer<Aggregation> {
 
     public AggregationsDeserializer() {
         super(Object.class);
@@ -39,23 +36,9 @@ public class AggregationsDeserializer extends StdDeserializer<Aggregations> {
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public Aggregations deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        Aggregations aggregations = new Aggregations();
+    public Aggregation deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonNode jsonNode = p.getCodec().readTree(p);
-        Iterator<Map.Entry<String, JsonNode>> aggs = jsonNode.fields();
-
-        List<Aggregation> aggregationList = new ArrayList<>();
-        while(aggs.hasNext()) {
-            Map.Entry<String, JsonNode> nextAgg = aggs.next();
-            if(!"doc_count".equals(nextAgg.getKey()) && !"meta".equals(nextAgg.getKey())) {
-                Aggregation aggregation = deserializeAggregation(nextAgg.getKey(), nextAgg.getValue());
-                aggregationList.add(aggregation);
-            }
-        }
-        if(aggregationList.size() > 0) {
-            aggregations.setAggregations(aggregationList);
-        }
-        return aggregations;
+        return deserializeAggregation("aggregations", jsonNode);
     }
 
     private Aggregation deserializeAggregation(String key, JsonNode jsonNode) {

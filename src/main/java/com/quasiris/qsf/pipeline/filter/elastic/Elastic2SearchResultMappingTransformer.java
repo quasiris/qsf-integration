@@ -84,16 +84,12 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     protected void updateTotalDocuments(ElasticResult elasticResult, SearchResult searchResult) {
-        if(elasticResult.getAggregations() != null && elasticResult.getAggregations().getAggregations() != null && StringUtils.isNotEmpty(getVariantId())) {
-
-            for(Aggregation aggregation : elasticResult.getAggregations().getAggregations()) {
-                Long totalCount = getTotalCountAggregation(aggregation);
-                if(totalCount != null) {
-                    // TODO totalVariants = total;
-                    searchResult.setTotal(totalCount);
-                }
+        if(elasticResult.getAggregations() != null && StringUtils.isNotEmpty(getVariantId())) {
+            Long totalCount = getTotalCountAggregation(elasticResult.getAggregations());
+            if(totalCount != null) {
+                // TODO totalVariants = total;
+                searchResult.setTotal(totalCount);
             }
-
         }
     }
 
@@ -116,14 +112,12 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     protected void mapFacets(ElasticResult elasticResult, SearchResult searchResult) {
-        if(elasticResult.getAggregations() == null || elasticResult.getAggregations().getAggregations() == null) {
+        if(elasticResult.getAggregations() == null) {
             return;
         }
 
         Map<String, Aggregation> aggregationMap = new HashMap<>();
-        for(Aggregation aggregation : elasticResult.getAggregations().getAggregations()) {
-            traverseAggsWithBuckets(aggregationMap, aggregation);
-        }
+        traverseAggsWithBuckets(aggregationMap, elasticResult.getAggregations());
 
         // for backward compatibility
         // if no mapping is defined for a aggregation a default facet mapping is configured

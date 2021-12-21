@@ -1,6 +1,8 @@
 package com.quasiris.qsf.pipeline.filter.elastic.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.quasiris.qsf.pipeline.filter.elastic.AggregationsDeserializer;
 
 /**
  * Created by mki on 19.11.17.
@@ -12,7 +14,8 @@ public class ElasticResult {
 
     private Hits hits;
 
-    private Aggregations aggregations;
+    @JsonDeserialize(using = AggregationsDeserializer.class)
+    private Aggregation aggregations;
 
     public long getTook() {
         return took;
@@ -35,7 +38,7 @@ public class ElasticResult {
      *
      * @return Value for property 'aggregations'.
      */
-    public Aggregations getAggregations() {
+    public Aggregation getAggregations() {
         return aggregations;
     }
 
@@ -44,7 +47,7 @@ public class ElasticResult {
      *
      * @param aggregations Value to set for property 'aggregations'.
      */
-    public void setAggregations(Aggregations aggregations) {
+    public void setAggregations(Aggregation aggregations) {
         this.aggregations = aggregations;
     }
 
