@@ -11,9 +11,12 @@ import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AggregationsDeserializer extends StdDeserializer<Aggregation> {
 
@@ -33,7 +36,9 @@ public class AggregationsDeserializer extends StdDeserializer<Aggregation> {
         super(src);
     }
 
-    ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
+
+    private static final Set<String> JSON_KEY_AGG_EXCLUDES = new HashSet<>(Arrays.asList("meta"));
 
     @Override
     public Aggregation deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
@@ -54,7 +59,7 @@ public class AggregationsDeserializer extends StdDeserializer<Aggregation> {
         List<Aggregation> aggregationList = new ArrayList<>();
         while(aggs.hasNext()) {
             Map.Entry<String, JsonNode> nextAgg = aggs.next();
-            if(!"doc_count".equals(nextAgg.getKey()) && !"meta".equals(nextAgg.getKey())) {
+            if(nextAgg.getValue() != null && nextAgg.getValue().isObject() && !JSON_KEY_AGG_EXCLUDES.contains(nextAgg.getKey())) {
                 Aggregation aggregationInner = deserializeAggregation(nextAgg.getKey(), nextAgg.getValue());
                 aggregationList.add(aggregationInner);
             }
