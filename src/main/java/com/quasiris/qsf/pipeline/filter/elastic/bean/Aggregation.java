@@ -10,6 +10,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Aggregation {
 
+    private String key;
     private Integer doc_count_error_upper_bound;
 
     private Integer sum_other_doc_count;
@@ -22,6 +23,63 @@ public class Aggregation {
     private Double max;
     private Double avg;
     private Double sum;
+
+    private Long doc_count;
+    private List<Aggregation> aggregations;
+
+    /**
+     * Getter for property 'doc_count'.
+     *
+     * @return Value for property 'doc_count'.
+     */
+    public Long getDoc_count() {
+        return doc_count;
+    }
+
+    /**
+     * Setter for property 'doc_count'.
+     *
+     * @param doc_count Value to set for property 'doc_count'.
+     */
+    public void setDoc_count(Long doc_count) {
+        this.doc_count = doc_count;
+    }
+
+    /**
+     * Getter for property 'aggregations'.
+     *
+     * @return Value for property 'aggregations'.
+     */
+    public List<Aggregation> getAggregations() {
+        return aggregations;
+    }
+
+    /**
+     * Setter for property 'aggregations'.
+     *
+     * @param aggregations Value to set for property 'aggregations'.
+     */
+    public void setAggregations(List<Aggregation> aggregations) {
+        this.aggregations = aggregations;
+    }
+
+    /**
+     * Getter for property 'key'.
+     *
+     * @return Value for property 'key'.
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * Setter for property 'key'.
+     *
+     * @param key Value to set for property 'key'.
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public Integer getDoc_count_error_upper_bound() {
         return doc_count_error_upper_bound;

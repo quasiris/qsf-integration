@@ -13,7 +13,9 @@ import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class AggregationsDeserializer extends StdDeserializer<Aggregations> {
@@ -34,41 +36,51 @@ public class AggregationsDeserializer extends StdDeserializer<Aggregations> {
         super(src);
     }
 
+    ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public Aggregations deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         Aggregations aggregations = new Aggregations();
         JsonNode jsonNode = p.getCodec().readTree(p);
         Iterator<Map.Entry<String, JsonNode>> aggs = jsonNode.fields();
-        JsonNode qscFiltered = jsonNode.get("qsc_filtered");
-        if(qscFiltered != null) {
-            aggs = qscFiltered.fields();
-        }
 
+        List<Aggregation> aggregationList = new ArrayList<>();
         while(aggs.hasNext()) {
             Map.Entry<String, JsonNode> nextAgg = aggs.next();
             if(!"doc_count".equals(nextAgg.getKey()) && !"meta".equals(nextAgg.getKey())) {
-                deserializeAggregation(aggregations, nextAgg.getKey(), nextAgg.getValue());
+                Aggregation aggregation = deserializeAggregation(nextAgg.getKey(), nextAgg.getValue());
+                aggregationList.add(aggregation);
             }
         }
-
+        if(aggregationList.size() > 0) {
+            aggregations.setAggregations(aggregationList);
+        }
         return aggregations;
     }
 
-    private void deserializeAggregation(Aggregations aggregations, String key, JsonNode jsonNode) {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode targetNode = jsonNode;
-        String targetKey = key;
-        if(key.endsWith("_filter_wrapper")) {
-            targetKey = key.replaceAll("_filter_wrapper", "");
-            targetNode = jsonNode.get(targetKey);
+    private Aggregation deserializeAggregation(String key, JsonNode jsonNode) {
+        if(jsonNode.get("buckets") != null || jsonNode.get("value") != null) {
+            Aggregation aggregation = mapper.convertValue(jsonNode, Aggregation.class);
+            aggregation.setKey(key);
+            return aggregation;
         }
 
-        Aggregation aggregation = mapper.convertValue(targetNode, Aggregation.class);
-        if(aggregation.getValue() != null && QsfIntegrationConstants.TOTAL_COUNT_AGGREGATION_NAME.equals(targetKey)) {
-            // dont add internal variant aggregation to response
-            aggregations.setDoc_count(aggregation.getValue());
-        } else {
-            aggregations.put(targetKey, aggregation);
+        Aggregation aggregation = new Aggregation();
+        aggregation.setKey(key);
+        Iterator<Map.Entry<String, JsonNode>> aggs = jsonNode.fields();
+        List<Aggregation> aggregationList = new ArrayList<>();
+        while(aggs.hasNext()) {
+            Map.Entry<String, JsonNode> nextAgg = aggs.next();
+            if(!"doc_count".equals(nextAgg.getKey()) && !"meta".equals(nextAgg.getKey())) {
+                Aggregation aggregationInner = deserializeAggregation(nextAgg.getKey(), nextAgg.getValue());
+                aggregationList.add(aggregationInner);
+            }
         }
+        if(aggregationList.size() > 0) {
+            aggregation.setAggregations(aggregationList);
+        }
+        return aggregation;
+
+
     }
 }

@@ -17,6 +17,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class Elastic2SearchResultMappingTransformerTest {
 
     @Test
+    void transformNestedAggregations() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        ElasticResult elasticResult = readElasticResultFromFile("nested-aggregations.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+
+        Facet supplierName = searchResult.getFacetById("supplierName");
+        assertEquals("Technics", supplierName.getValues().get(0).getValue());
+        assertEquals(183, supplierName.getValues().get(0).getCount());
+        assertEquals("Panasonic", supplierName.getValues().get(1).getValue());
+        assertEquals(2, supplierName.getValues().get(1).getCount());
+        assertEquals("Sony", supplierName.getValues().get(2).getValue());
+        assertEquals(1, supplierName.getValues().get(2).getCount());
+
+    }
+
+    @Test
     void transformInnerhitsAppendScores() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         ElasticResult elasticResult = readElasticResultFromFile("innerhits-append-scores.json");

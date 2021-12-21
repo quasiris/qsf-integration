@@ -3,18 +3,31 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.category.dto.CategoryDTO;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.*;
-import com.quasiris.qsf.dto.response.*;
+import com.quasiris.qsf.commons.util.UrlUtil;
+import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.dto.response.Facet;
+import com.quasiris.qsf.dto.response.FacetValue;
+import com.quasiris.qsf.dto.response.SearchResult;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.InnerHitResult;
 import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
-import com.quasiris.qsf.commons.util.UrlUtil;
 import com.quasiris.qsf.tree.Node;
+import com.quasiris.qsf.util.QsfIntegrationConstants;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by mki on 04.11.17.
@@ -56,10 +69,49 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     }
 
+    Long getTotalCountAggregation(Aggregation aggregation) {
+        Long totalCount = null;
+        if(aggregation.getKey().equals(QsfIntegrationConstants.TOTAL_COUNT_AGGREGATION_NAME)) {
+            return aggregation.getValue();
+        }
+
+        if(aggregation.getAggregations() != null) {
+            for(Aggregation inner : aggregation.getAggregations()) {
+                totalCount = getTotalCountAggregation(inner);
+            }
+        }
+        return totalCount;
+    }
+
     protected void updateTotalDocuments(ElasticResult elasticResult, SearchResult searchResult) {
-        if(elasticResult.getAggregations() != null && elasticResult.getAggregations().getDoc_count() != null && StringUtils.isNotEmpty(getVariantId())) {
-            // TODO totalVariants = total;
-            searchResult.setTotal(elasticResult.getAggregations().getDoc_count());
+        if(elasticResult.getAggregations() != null && elasticResult.getAggregations().getAggregations() != null && StringUtils.isNotEmpty(getVariantId())) {
+
+            for(Aggregation aggregation : elasticResult.getAggregations().getAggregations()) {
+                Long totalCount = getTotalCountAggregation(aggregation);
+                if(totalCount != null) {
+                    // TODO totalVariants = total;
+                    searchResult.setTotal(totalCount);
+                }
+            }
+
+        }
+    }
+
+    void traverseAggsWithBuckets(Map<String, Aggregation> aggregationMap, Aggregation aggregation) {
+
+        if(aggregation.getBuckets() != null && aggregation.getAggregations() != null) {
+            // LOG error
+            return;
+        }
+
+        if(aggregation.getBuckets() != null) {
+            aggregationMap.put(aggregation.getKey(), aggregation);
+        }
+
+        if(aggregation.getAggregations() != null) {
+            for(Aggregation inner : aggregation.getAggregations()) {
+                traverseAggsWithBuckets(aggregationMap, inner);
+            }
         }
     }
 
@@ -68,9 +120,14 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             return;
         }
 
+        Map<String, Aggregation> aggregationMap = new HashMap<>();
+        for(Aggregation aggregation : elasticResult.getAggregations().getAggregations()) {
+            traverseAggsWithBuckets(aggregationMap, aggregation);
+        }
+
         // for backward compatibility
         // if no mapping is defined for a aggregation a default facet mapping is configured
-        for(Map.Entry<String, Aggregation> aggregation : elasticResult.getAggregations().getAggregations().entrySet()) {
+        for(Map.Entry<String, Aggregation> aggregation : aggregationMap.entrySet()) {
             if(!facetMapping.containsKey(aggregation.getKey())) {
                 FacetMapping mapping = new FacetMapping();
                 mapping.setId(aggregation.getKey());
@@ -81,7 +138,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
         for(Map.Entry<String, FacetMapping> mapping : facetMapping.entrySet()) {
             FacetMapping facetMapping = mapping.getValue();
-            Aggregation aggregation = elasticResult.getAggregations().getAggregations().get(mapping.getKey());
+            Aggregation aggregation = aggregationMap.get(mapping.getKey());
             if(aggregation == null) {
                 continue;
             }

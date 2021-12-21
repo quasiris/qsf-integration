@@ -6,6 +6,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Changed
 - move the logic to map the variant count to the result mapping transformer
+- improve parsing nested aggregations
 
 ### Breaking Changes
 

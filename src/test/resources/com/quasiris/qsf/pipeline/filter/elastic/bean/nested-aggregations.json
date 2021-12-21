@@ -1,0 +1,48 @@
+{
+  "took": 194,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 548,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits" : []
+  },
+  "aggregations": {
+    "qsc_filtered": {
+      "meta": {},
+      "doc_count": 1257006,
+      "orderDate_filter_wrapper": {
+        "doc_count": 41,
+        "resellers": {
+          "doc_count": 186,
+          "supplierName": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "Technics",
+                "doc_count": 183
+              },
+              {
+                "key": "Panasonic",
+                "doc_count": 2
+              },
+              {
+                "key": "Sony",
+                "doc_count": 1
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
