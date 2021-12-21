@@ -8,11 +8,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Bucket {
 
-   private String key;
-   private Long doc_count;
+    private String key;
+    private Long doc_count;
 
-    Aggregation subFacet;
 
+    private Aggregation subFacet;
+
+    private VariantCount variant_count;
 
     public String getKey() {
         return key;
@@ -36,6 +38,24 @@ public class Bucket {
 
     public void setSubFacet(Aggregation subFacet) {
         this.subFacet = subFacet;
+    }
+
+    /**
+     * Getter for property 'variant_count'.
+     *
+     * @return Value for property 'variant_count'.
+     */
+    public VariantCount getVariant_count() {
+        return variant_count;
+    }
+
+    /**
+     * Setter for property 'variant_count'.
+     *
+     * @param variant_count Value to set for property 'variant_count'.
+     */
+    public void setVariant_count(VariantCount variant_count) {
+        this.variant_count = variant_count;
     }
 
     @Override

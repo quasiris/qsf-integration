@@ -64,27 +64,11 @@ public class AggregationsDeserializer extends StdDeserializer<Aggregations> {
         }
 
         Aggregation aggregation = mapper.convertValue(targetNode, Aggregation.class);
-        parseVariantCounts(aggregation, targetNode);
         if(aggregation.getValue() != null && QsfIntegrationConstants.TOTAL_COUNT_AGGREGATION_NAME.equals(targetKey)) {
             // dont add internal variant aggregation to response
             aggregations.setDoc_count(aggregation.getValue());
         } else {
             aggregations.put(targetKey, aggregation);
-        }
-    }
-
-    // Parse variant count from aggregation if exist
-    private void parseVariantCounts(Aggregation aggregation, JsonNode jsonNode) {
-        if(aggregation.getBuckets() != null) {
-            for(int i = 0; i < aggregation.getBuckets().size(); i++) {
-                Bucket bucket = aggregation.getBuckets().get(i);
-                JsonNode jsonBucket = jsonNode.get("buckets").get(i);
-                JsonNode jsonVariantCount = jsonBucket.get(QsfIntegrationConstants.VARIANT_COUNT_SUB_AGGREGATION_NAME);
-                if(jsonVariantCount != null && jsonVariantCount.get("value") != null) {
-                    long variantCount = jsonVariantCount.get("value").asLong();
-                    bucket.setDoc_count(variantCount);
-                }
-            }
         }
     }
 }

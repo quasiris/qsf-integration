@@ -126,7 +126,12 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         for(Bucket bucket : aggregation.getBuckets()) {
             String key = facetKeyMapper.map(bucket.getKey());
 
-            FacetValue facetValue = new FacetValue(key, bucket.getDoc_count());
+            Long count = bucket.getDoc_count();
+            if(bucket.getVariant_count() != null && bucket.getVariant_count().getValue() != null) {
+                count = bucket.getVariant_count().getValue();
+            }
+
+            FacetValue facetValue = new FacetValue(key, count);
             facetReseultCount = facetReseultCount + facetValue.getCount();
 
             String filterValueEncoded = UrlUtil.encode(bucket.getKey());

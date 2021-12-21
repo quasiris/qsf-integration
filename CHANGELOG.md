@@ -3,6 +3,19 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+
+### Changed
+- move the logic to map the variant count to the result mapping transformer
+
+### Breaking Changes
+
+### Deprecated
+
+### Fixed
+
+
+## [5.0]
+### Added
 - support variants in elastic queries
 
 ### Changed
