@@ -45,6 +45,7 @@ public class SearchQuery {
 
     public SearchQuery() {}
 
+    @Deprecated // use SearchQueryFactory.deepCopy method
     public SearchQuery(SearchQuery searchQuery) {
         this.originalQuery = searchQuery.getOriginalQuery();
         this.queryChanged = searchQuery.isQueryChanged();

@@ -7,6 +7,7 @@ import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.BaseSearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.SearchQueryFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class QsfqlFilterTransformer {
     public QsfqlFilterTransformer(ObjectMapper objectMapper, ObjectNode elasticQuery, SearchQuery searchQuery) {
         this.objectMapper = objectMapper;
         this.elasticQuery = elasticQuery;
-        this.searchQuery = searchQuery;
+        this.searchQuery = SearchQueryFactory.deepCopy(searchQuery);
         this.filterMapper = new QsfqlFilterMapper();
     }
 
@@ -58,7 +59,7 @@ public class QsfqlFilterTransformer {
         this.elasticVersion = elasticVersion;
         this.objectMapper = objectMapper;
         this.elasticQuery = elasticQuery;
-        this.searchQuery = searchQuery;
+        this.searchQuery = SearchQueryFactory.deepCopy(searchQuery);
         this.filterRules = filterRules;
         this.filterMapping = filterMapping;
         this.filterPath = filterPath;

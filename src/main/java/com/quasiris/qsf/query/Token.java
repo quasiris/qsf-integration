@@ -1,8 +1,9 @@
 package com.quasiris.qsf.query;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Token {
+public class Token implements Serializable {
 
     private String posTag;
 

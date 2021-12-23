@@ -1,9 +1,10 @@
 package com.quasiris.qsf.query;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Facet {
+public class Facet implements Serializable {
 
     private String id;
     private String name;

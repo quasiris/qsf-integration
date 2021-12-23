@@ -9,11 +9,8 @@ import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
-import com.quasiris.qsf.query.BaseSearchFilter;
 import com.quasiris.qsf.query.Facet;
-import com.quasiris.qsf.query.FilterDataType;
 import com.quasiris.qsf.query.FilterOperator;
-import com.quasiris.qsf.query.FilterType;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchFilterBuilder;
 import com.quasiris.qsf.query.SearchQuery;
@@ -109,26 +106,6 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setMultiSelectFilter(true);
         ObjectNode elasticQuery = transform(transformer,  "q=*", "f.color=red", "f.price.range=49,170");
         assertQuery(elasticQuery, "slider-multiselect-with-range-filter.json");
-    }
-
-    @DisplayName("Test deepcopy filters")
-    @Test
-    public void testDeepCopy() {
-        // given
-        List<BaseSearchFilter> filters = new ArrayList<>();
-        SearchFilter rangeFilter = new SearchFilter();
-        rangeFilter.setId("price");
-        rangeFilter.setName("price");
-        rangeFilter.setFilterType(FilterType.RANGE);
-        rangeFilter.setFilterDataType(FilterDataType.NUMBER);
-        rangeFilter.setRangeValue("1", "100");
-        filters.add(rangeFilter);
-
-        // when
-        List<BaseSearchFilter> baseSearchFilters = ElasticQsfqlQueryTransformer.deepCopy(filters);
-
-        // then
-        assertEquals(1, baseSearchFilters.size());
     }
 
     @DisplayName("Transform sort mapping")

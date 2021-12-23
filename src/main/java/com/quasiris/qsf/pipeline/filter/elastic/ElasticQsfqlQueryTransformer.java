@@ -16,7 +16,7 @@ import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.Sort;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
-import org.apache.commons.lang3.SerializationUtils;
+import com.quasiris.qsf.util.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -164,7 +164,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         if(operator.equals(FilterOperator.AND)) {
             excludeFilters.addAll(searchQuery.getSearchFilterList());
         } else {
-            excludeFilters = deepCopy(searchQuery.getSearchFilterList());
+            excludeFilters = SerializationUtils.deepCopyList(searchQuery.getSearchFilterList());
             excludeOwnFilter(excludeFilters, filterMapper, id);
         }
         if(facetFilter != null) {
@@ -176,15 +176,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             filters = filterMapper.buildFiltersJson(excludeFilters);
         }
         return filters;
-    }
-
-    protected static List<BaseSearchFilter> deepCopy(List<BaseSearchFilter> filters) {
-        List<BaseSearchFilter> copy = new ArrayList<>();
-        for (BaseSearchFilter filter : filters) {
-            BaseSearchFilter clone = SerializationUtils.clone(filter);
-            copy.add(clone);
-        }
-        return copy;
     }
 
     /**
