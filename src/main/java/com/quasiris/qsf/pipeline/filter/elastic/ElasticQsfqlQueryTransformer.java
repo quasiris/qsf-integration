@@ -178,7 +178,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         return filters;
     }
 
-    private List<BaseSearchFilter> deepCopy(List<BaseSearchFilter> filters) {
+    protected static List<BaseSearchFilter> deepCopy(List<BaseSearchFilter> filters) {
         List<BaseSearchFilter> copy = new ArrayList<>();
         for (BaseSearchFilter filter : filters) {
             BaseSearchFilter clone = SerializationUtils.clone(filter);

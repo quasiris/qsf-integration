@@ -9,8 +9,11 @@ import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
+import com.quasiris.qsf.query.BaseSearchFilter;
 import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.query.FilterDataType;
 import com.quasiris.qsf.query.FilterOperator;
+import com.quasiris.qsf.query.FilterType;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchFilterBuilder;
 import com.quasiris.qsf.query.SearchQuery;
@@ -27,6 +30,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -87,6 +91,44 @@ public class ElasticQsfqlQueryTransformerTest {
         ObjectNode elasticQuery = transform(transformer,  "q=*", "f.color=red");
         assertQuery(elasticQuery, "slider-multiselect-with-filter.json");
 
+    }
+
+    @DisplayName("Transform slider multiselect with range filter")
+    @Test
+    public void transformSliderMultiSelectWithRangeFilter() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+
+        Facet facet = new Facet();
+        facet.setType("range");
+        facet.setName("price");
+        facet.setId("price");
+        facet.setOperator(FilterOperator.OR);
+
+        transformer.setAggregations(Arrays.asList(facet));
+        transformer.setMultiSelectFilter(true);
+        ObjectNode elasticQuery = transform(transformer,  "q=*", "f.color=red", "f.price.range=49,170");
+        assertQuery(elasticQuery, "slider-multiselect-with-range-filter.json");
+    }
+
+    @DisplayName("Test deepcopy filters")
+    @Test
+    public void testDeepCopy() {
+        // given
+        List<BaseSearchFilter> filters = new ArrayList<>();
+        SearchFilter rangeFilter = new SearchFilter();
+        rangeFilter.setId("price");
+        rangeFilter.setName("price");
+        rangeFilter.setFilterType(FilterType.RANGE);
+        rangeFilter.setFilterDataType(FilterDataType.NUMBER);
+        rangeFilter.setRangeValue("1", "100");
+        filters.add(rangeFilter);
+
+        // when
+        List<BaseSearchFilter> baseSearchFilters = ElasticQsfqlQueryTransformer.deepCopy(filters);
+
+        // then
+        assertEquals(1, baseSearchFilters.size());
     }
 
     @DisplayName("Transform sort mapping")
