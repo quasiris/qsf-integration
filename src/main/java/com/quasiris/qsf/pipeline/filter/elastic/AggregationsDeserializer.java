@@ -47,7 +47,7 @@ public class AggregationsDeserializer extends StdDeserializer<Aggregation> {
     }
 
     private Aggregation deserializeAggregation(String key, JsonNode jsonNode) {
-        if(jsonNode.get("buckets") != null || jsonNode.get("value") != null) {
+        if(jsonNode.get("buckets") != null || jsonNode.get("value") != null || jsonNode.get("sum") != null) {
             Aggregation aggregation = mapper.convertValue(jsonNode, Aggregation.class);
             aggregation.setKey(key);
             return aggregation;

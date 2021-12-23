@@ -1,0 +1,284 @@
+{
+  "took": 5,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 526,
+      "relation": "eq"
+    },
+    "max_score": 1.0,
+    "hits" : []
+  },
+  "aggregations": {
+    "qsc_filtered": {
+      "meta": {},
+      "doc_count": 526,
+      "attr_farbe": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 7,
+        "buckets": [
+          {
+            "key": "Schwarz",
+            "doc_count": 139
+          },
+          {
+            "key": "Blau",
+            "doc_count": 117
+          },
+          {
+            "key": "Grau",
+            "doc_count": 67
+          },
+          {
+            "key": "Braun",
+            "doc_count": 54
+          },
+          {
+            "key": "Weiß",
+            "doc_count": 41
+          },
+          {
+            "key": "Beige",
+            "doc_count": 27
+          },
+          {
+            "key": "Rot",
+            "doc_count": 24
+          },
+          {
+            "key": "Grün",
+            "doc_count": 12
+          },
+          {
+            "key": "Silber",
+            "doc_count": 12
+          },
+          {
+            "key": "Rosa",
+            "doc_count": 9
+          }
+        ]
+      },
+      "attr_funktion": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          {
+            "key": "Freizeit",
+            "doc_count": 349
+          },
+          {
+            "key": "Orthotritt",
+            "doc_count": 74
+          },
+          {
+            "key": "Outdoor",
+            "doc_count": 49
+          },
+          {
+            "key": "MyDeer",
+            "doc_count": 40
+          },
+          {
+            "key": "Dynamic",
+            "doc_count": 20
+          }
+        ]
+      },
+      "attr_weite": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          {
+            "key": "H",
+            "doc_count": 413
+          },
+          {
+            "key": "K",
+            "doc_count": 75
+          },
+          {
+            "key": "M",
+            "doc_count": 21
+          },
+          {
+            "key": "G",
+            "doc_count": 17
+          }
+        ]
+      },
+      "attr_schuhtyp": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          {
+            "key": "Schnürer",
+            "doc_count": 283
+          },
+          {
+            "key": "Halbschuh",
+            "doc_count": 221
+          },
+          {
+            "key": "Klett",
+            "doc_count": 164
+          },
+          {
+            "key": "Reißverschluss",
+            "doc_count": 111
+          },
+          {
+            "key": "Sandale/Pantolette",
+            "doc_count": 84
+          },
+          {
+            "key": "Sneaker",
+            "doc_count": 81
+          },
+          {
+            "key": "Stiefel",
+            "doc_count": 65
+          },
+          {
+            "key": "Slipper",
+            "doc_count": 42
+          },
+          {
+            "key": "Mokassin",
+            "doc_count": 26
+          },
+          {
+            "key": "Sandale",
+            "doc_count": 16
+          }
+        ]
+      },
+      "price": {
+        "count": 526,
+        "min": 15.0,
+        "max": 170.0,
+        "avg": 106.35437335170268,
+        "sum": 55942.400382995605
+      },
+      "attr_futter": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          {
+            "key": "Leder/Textil",
+            "doc_count": 115
+          },
+          {
+            "key": "Leder",
+            "doc_count": 81
+          },
+          {
+            "key": "Textil",
+            "doc_count": 36
+          },
+          {
+            "key": "Membrane/Tex",
+            "doc_count": 5
+          },
+          {
+            "key": "Leder, Leder/Textil",
+            "doc_count": 1
+          }
+        ]
+      },
+      "attr_decksohle": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          {
+            "key": "Leder",
+            "doc_count": 194
+          },
+          {
+            "key": "Textil",
+            "doc_count": 26
+          },
+          {
+            "key": "Microfaser",
+            "doc_count": 13
+          }
+        ]
+      },
+      "attr_geschlecht": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          {
+            "key": "Damen",
+            "doc_count": 420
+          },
+          {
+            "key": "Herren",
+            "doc_count": 104
+          },
+          {
+            "key": "Orthotritt Damen",
+            "doc_count": 71
+          },
+          {
+            "key": "Dynamic Herren",
+            "doc_count": 2
+          }
+        ]
+      },
+      "category": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": []
+      },
+      "attr_form": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          {
+            "key": "Halbschuh",
+            "doc_count": 220
+          },
+          {
+            "key": "Sandale/Pantolette",
+            "doc_count": 84
+          },
+          {
+            "key": "Sneaker",
+            "doc_count": 80
+          },
+          {
+            "key": "Stiefel",
+            "doc_count": 65
+          },
+          {
+            "key": "Mokassin",
+            "doc_count": 26
+          },
+          {
+            "key": "Sandale",
+            "doc_count": 16
+          },
+          {
+            "key": "Boot/Stiefelette",
+            "doc_count": 10
+          },
+          {
+            "key": "Handnaht",
+            "doc_count": 6
+          },
+          {
+            "key": "Halbschuh, Sneaker",
+            "doc_count": 1
+          }
+        ]
+      }
+    }
+  }
+}

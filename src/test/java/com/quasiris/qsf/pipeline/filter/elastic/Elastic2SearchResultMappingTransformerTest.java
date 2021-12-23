@@ -15,6 +15,19 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Elastic2SearchResultMappingTransformerTest {
+    @Test
+    void transformStats() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFacetTypeMapping("price", "slider");
+        ElasticResult elasticResult = readElasticResultFromFile("stats.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+
+        Facet price = searchResult.getFacetById("price");
+        assertEquals("slider", price.getType());
+        assertEquals(526, price.getCount());
+        assertEquals(15.0, price.getMinRange());
+        assertEquals(170.0, price.getMaxRange());
+    }
 
     @Test
     void transformNestedAggregations() throws Exception {

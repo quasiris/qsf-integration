@@ -95,12 +95,12 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     void traverseAggsWithBuckets(Map<String, Aggregation> aggregationMap, Aggregation aggregation) {
 
-        if(aggregation.getBuckets() != null && aggregation.getAggregations() != null) {
+        if(aggregation.getBuckets() != null && aggregation.getAggregations() != null && aggregation.getSum() != null) {
             // LOG error
             return;
         }
 
-        if(aggregation.getBuckets() != null) {
+        if(aggregation.getBuckets() != null || aggregation.getSum() != null) {
             aggregationMap.put(aggregation.getKey(), aggregation);
         }
 
