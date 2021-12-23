@@ -1,9 +1,11 @@
 package com.quasiris.qsf.query;
 
+import java.io.Serializable;
+
 /**
  * Created by mki on 11.11.16.
  */
-public class RangeFilterValue<T> {
+public class RangeFilterValue<T> implements Serializable {
 
 
     public RangeFilterValue() {
