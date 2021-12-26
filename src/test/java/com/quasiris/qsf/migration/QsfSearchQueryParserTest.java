@@ -4,9 +4,8 @@ import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.test.service.TestSuiteExecuter;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Matchers;
+import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 
 import javax.servlet.ServletInputStream;
@@ -17,7 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -52,13 +52,12 @@ class QsfSearchQueryParserTest {
         Assertions.assertEquals(1, actual.getPage());
         Assertions.assertEquals(0, actual.getRows());
         Assertions.assertFalse(actual.isDebug());
-        Assertions.assertEquals("humandate", ((SearchFilter)actual.getSearchFilterList().get(0)).getId());
-        Assertions.assertEquals("tree", ((SearchFilter)actual.getSearchFilterList().get(1)).getId());
+        Assertions.assertEquals("humandate", ((SearchFilter) actual.getSearchFilterList().get(0)).getId());
+        Assertions.assertEquals("tree", ((SearchFilter) actual.getSearchFilterList().get(1)).getId());
 
     }
 
     @Test
-    @Disabled // TODO Jan - fix it
     void parseSearchQueryPostRequestSuccess() throws IOException {
         String fileName = "/com/quasiris/qsf/migration/qsf-search-query-parser-test-post-success.json";
         try (InputStream is = TestSuiteExecuter.class.getResourceAsStream(fileName)) {
@@ -80,7 +79,7 @@ class QsfSearchQueryParserTest {
 
     public static ServletInputStream mockServletInputStream(InputStream is) throws IOException {
         ServletInputStream mockServletInputStream = mock(ServletInputStream.class);
-        when(mockServletInputStream.read(Matchers.any(), anyInt(), anyInt())).thenAnswer((Answer<Integer>) invocationOnMock -> {
+        Mockito.when(mockServletInputStream.read(any(byte[].class), anyInt(), anyInt())).thenAnswer((Answer<Integer>) invocationOnMock -> {
             Object[] args = invocationOnMock.getArguments();
             byte[] output = (byte[]) args[0];
             int offset = (int) args[1];
