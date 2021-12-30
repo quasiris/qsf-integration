@@ -8,7 +8,7 @@ import com.quasiris.qsf.commons.util.IOUtils;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
-import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
+import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTestUtil;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
@@ -27,7 +27,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -804,7 +803,7 @@ public class ElasticQsfqlQueryTransformerTest {
     }
 
     private ObjectNode transform(ElasticQsfqlQueryTransformer transformer, String... parameters) throws Exception {
-        SearchQuery searchQuery = QsfqlParserTest.createQuery(parameters);
+        SearchQuery searchQuery = QsfqlParserTestUtil.createQuery(parameters);
         return transform(transformer, searchQuery);
     }
 

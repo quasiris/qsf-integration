@@ -1,12 +1,14 @@
 package com.quasiris.qsf.pipeline.filter.tracking;
 
-import com.quasiris.qsf.pipeline.PipelineContainer;
-import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
 import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTestUtil;
+import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.test.AbstractPipelineTest;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Created by tbl on 6.02.21.
@@ -23,7 +25,7 @@ public class TrackingFilterTest extends AbstractPipelineTest {
         }
         @Test
         public void testRangeQuery() throws Exception {
-            SearchQuery searchQuery = QsfqlParserTest.createQuery("f.price.range=3,5");
+            SearchQuery searchQuery = QsfqlParserTestUtil.createQuery("f.price.range=3,5");
             PipelineContainer pipelineContainer = new PipelineContainer();
             pipelineContainer.setSearchQuery(searchQuery);
 

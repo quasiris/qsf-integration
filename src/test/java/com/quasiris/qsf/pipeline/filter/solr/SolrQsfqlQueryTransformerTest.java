@@ -1,8 +1,8 @@
 package com.quasiris.qsf.pipeline.filter.solr;
 
 import com.quasiris.qsf.pipeline.PipelineContainer;
+import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTestUtil;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTest;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.junit.jupiter.api.Test;
 
@@ -137,7 +137,7 @@ public class SolrQsfqlQueryTransformerTest {
     }
 
     private SolrQuery transform(SolrQsfqlQueryTransformer transformer, String... parameters) throws Exception {
-        SearchQuery searchQuery = QsfqlParserTest.createQuery(parameters);
+        SearchQuery searchQuery = QsfqlParserTestUtil.createQuery(parameters);
         PipelineContainer pipelineContainer = new PipelineContainer(null, null);
         pipelineContainer.setSearchQuery(searchQuery);
 

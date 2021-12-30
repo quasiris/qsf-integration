@@ -1,9 +1,7 @@
 package com.quasiris.qsf.pipeline.filter.qsql.parser;
 
 import com.quasiris.qsf.commons.util.DateUtil;
-import com.quasiris.qsf.commons.util.EncodingUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
-import com.quasiris.qsf.pipeline.filter.web.QSFHttpServletRequest;
 import com.quasiris.qsf.query.Control;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterDataType;
@@ -18,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.Date;
 
+import static com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTestUtil.createQuery;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -278,29 +277,6 @@ public class QsfqlParserTest {
         //assertEquals(facet.getFacetFilters().get(0).getName(), "accountId");
         assertEquals(((SearchFilter)facet.getFacetFilters().get(0)).getId(), "accountId");
         assertEquals(((SearchFilter)facet.getFacetFilters().get(0)).getValues().get(0), "1234");
-    }
-
-
-    public static SearchQuery createQuery(String... parameters) throws Exception {
-        StringBuilder urlBuilder = new StringBuilder();
-        for(String param: parameters) {
-            String[] paramSplitted = param.split("=");
-            addUrlParameter(urlBuilder, paramSplitted[0],paramSplitted[1]);
-        }
-        QSFHttpServletRequest request = new QSFHttpServletRequest(urlBuilder.toString());
-        QsfqlParser qsfqlParser = new QsfqlParser(request);
-        SearchQuery query = qsfqlParser.getQuery();
-        return query;
-    }
-
-    public static void addUrlParameter(StringBuilder url, String name, String value) {
-        if(url.length() == 0) {
-            url.append("?");
-        } else {
-            url.append("&");
-        }
-        String encodedValue = EncodingUtil.encode(value);
-        url.append(name).append("=").append(encodedValue);
     }
 
 }
