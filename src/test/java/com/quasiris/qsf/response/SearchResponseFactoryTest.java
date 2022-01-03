@@ -2,7 +2,6 @@ package com.quasiris.qsf.response;
 
 import com.quasiris.qsf.TestHelper;
 import com.quasiris.qsf.dto.response.SearchResponse;
-import com.quasiris.qsf.pipeline.PipelineContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

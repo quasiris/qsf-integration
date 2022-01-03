@@ -1,13 +1,13 @@
 package com.quasiris.qsf.pipeline;
 
-import com.quasiris.qsf.mock.Mockfactory;
-import com.quasiris.qsf.pipeline.filter.solr.SolrClientFactory;
-import com.quasiris.qsf.pipeline.filter.solr.SolrFilterBuilder;
-import com.quasiris.qsf.pipeline.filter.solr.SolrParameterQueryTransformer;
 import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.Facet;
 import com.quasiris.qsf.dto.response.FacetValue;
 import com.quasiris.qsf.dto.response.SearchResult;
+import com.quasiris.qsf.mock.Mockfactory;
+import com.quasiris.qsf.pipeline.filter.solr.SolrClientFactory;
+import com.quasiris.qsf.pipeline.filter.solr.SolrFilterBuilder;
+import com.quasiris.qsf.pipeline.filter.solr.SolrParameterQueryTransformer;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;

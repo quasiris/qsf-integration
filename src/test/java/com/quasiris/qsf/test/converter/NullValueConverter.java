@@ -3,10 +3,6 @@ package com.quasiris.qsf.test.converter;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Convert the string 'null' to a null object
  */

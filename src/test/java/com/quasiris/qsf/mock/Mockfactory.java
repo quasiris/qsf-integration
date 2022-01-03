@@ -1,8 +1,8 @@
 package com.quasiris.qsf.mock;
 
+import com.quasiris.qsf.commons.util.IOUtils;
 import com.quasiris.qsf.pipeline.filter.solr.MockSolrClient;
 import com.quasiris.qsf.pipeline.filter.web.QSFHttpServletRequest;
-import com.quasiris.qsf.commons.util.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;

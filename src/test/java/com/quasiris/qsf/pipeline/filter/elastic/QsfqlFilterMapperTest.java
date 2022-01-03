@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.quasiris.qsf.pipeline.filter.elastic.QsfqlFilterTransformerTest.mockSearchQuery;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class QsfqlFilterMapperTest {
 

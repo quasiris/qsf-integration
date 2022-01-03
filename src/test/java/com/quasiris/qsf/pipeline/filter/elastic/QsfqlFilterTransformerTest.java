@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class QsfqlFilterTransformerTest {
     private Integer elasticVersion = 7;
     private ObjectMapper objectMapper = new ObjectMapper();

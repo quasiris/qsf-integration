@@ -14,6 +14,7 @@ import com.quasiris.qsf.query.Control;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.SearchFilter;
+import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Sort;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
 import com.quasiris.qsf.util.SerializationUtils;
@@ -290,23 +291,22 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
     public void transformPaging() {
-        Integer page = getSearchQuery().getPage();
+        transformPaging(getElasticQuery(), searchQuery, defaultPage, defaultRows);
+    }
+
+    public static void transformPaging(ObjectNode elasticQuery, SearchQuery searchQuery, Integer defaultPage, Integer defaultRows) {
+        Integer page = searchQuery.getPage();
         if (page == null) {
             page = defaultPage;
         }
-        Integer rows = getSearchQuery().getRows();
+        Integer rows = searchQuery.getRows();
         if (rows == null) {
             rows = defaultRows;
         }
-        if(this.rows != null) {
-            rows = this.rows;
-        }
-
-
         int start = (page - 1) * rows;
 
-        getElasticQuery().put("from", start);
-        getElasticQuery().put("size", rows);
+        elasticQuery.put("from", start);
+        elasticQuery.put("size", rows);
     }
 
     public void collapseResults() {

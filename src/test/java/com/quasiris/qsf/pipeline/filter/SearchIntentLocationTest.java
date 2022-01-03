@@ -1,5 +1,7 @@
 package com.quasiris.qsf.pipeline.filter;
 
+import com.quasiris.qsf.dto.response.Document;
+import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.mock.Mockfactory;
 import com.quasiris.qsf.pipeline.Pipeline;
 import com.quasiris.qsf.pipeline.PipelineBuilder;
@@ -9,8 +11,6 @@ import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilterBuilder;
 import com.quasiris.qsf.pipeline.filter.elastic.MockElasticClient;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
-import com.quasiris.qsf.dto.response.Document;
-import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.junit.jupiter.api.Test;
 
