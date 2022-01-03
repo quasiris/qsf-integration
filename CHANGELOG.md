@@ -3,6 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- support stats aggregations for elastic
 
 ### Changed
 - move the logic to map the variant count to the result mapping transformer
