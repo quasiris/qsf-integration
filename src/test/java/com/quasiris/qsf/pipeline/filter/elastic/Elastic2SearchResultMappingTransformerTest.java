@@ -16,6 +16,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Elastic2SearchResultMappingTransformerTest {
     @Test
+    void testVariantCountHotfix() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFieldMapping("id", "id");
+        transformer.addFieldMapping("title", "title");
+        transformer.addFieldMapping("description", "description");
+        transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
+        transformer.setVariantId("variantId");
+        ElasticResult elasticResult = readElasticResultFromFile("variant-count.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+
+        assertEquals(1, searchResult.getTotal());
+    }
+
+    @Test
     void transformStats() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         transformer.addFacetTypeMapping("price", "slider");

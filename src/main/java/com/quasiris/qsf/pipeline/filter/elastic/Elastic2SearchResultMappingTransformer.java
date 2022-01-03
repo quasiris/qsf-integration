@@ -78,6 +78,9 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         if(aggregation.getAggregations() != null) {
             for(Aggregation inner : aggregation.getAggregations()) {
                 totalCount = getTotalCountAggregation(inner);
+                if(totalCount != null) {
+                    return totalCount;
+                }
             }
         }
         return totalCount;

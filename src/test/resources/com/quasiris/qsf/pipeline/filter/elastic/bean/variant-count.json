@@ -1,0 +1,361 @@
+{
+  "took": 11,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 8,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_shard": "[prod.lugina.products-v5_de-de_2021-12-23-12.11.11][0]",
+        "_node": "z4oZIPt-QsCZzpyeqt0uqA",
+        "_index": "prod.lugina.products-v5_de-de_2021-12-23-12.11.11",
+        "_type": "_doc",
+        "_id": "01e4cf75504d465abbdc2662b25c4eb1",
+        "_score": 69.09049,
+        "_source": {
+          "ean": "4063648982066",
+          "productnumber": "323004-423-991-9",
+          "variantId": "78c405881e3e4115be5ebf8c305fb899",
+          "id": "01e4cf75504d465abbdc2662b25c4eb1",
+          "title": "Haslo schwarz carbon",
+          "stock": 17
+        },
+        "fields": {
+          "variantId.keyword": [
+            "78c405881e3e4115be5ebf8c305fb899"
+          ]
+        },
+        "matched_queries": [
+          "edismax"
+        ],
+        "_explanation": {
+          "value": 69.09049,
+          "description": "min of:",
+          "details": [
+            {
+              "value": 69.09049,
+              "description": "script score function, computed with script:\"Script{type=inline, lang='painless', idOrCode='_score', options={}, params={}}\"",
+              "details": [
+                {
+                  "value": 69.09049,
+                  "description": "_score: ",
+                  "details": [
+                    {
+                      "value": 69.09049,
+                      "description": "max of:",
+                      "details": [
+                        {
+                          "value": 68.85715,
+                          "description": "max of:",
+                          "details": [
+                            {
+                              "value": 68.85715,
+                              "description": "weight(title.stem:haslo in 1435) [PerFieldSimilarity], result of:",
+                              "details": [
+                                {
+                                  "value": 68.85715,
+                                  "description": "score(freq=1.0), computed as boost * idf * tf from:",
+                                  "details": [
+                                    {
+                                      "value": 44.0,
+                                      "description": "boost",
+                                      "details": []
+                                    },
+                                    {
+                                      "value": 3.4694238,
+                                      "description": "idf, computed as log(1 + (N - n + 0.5) / (n + 0.5)) from:",
+                                      "details": [
+                                        {
+                                          "value": 101,
+                                          "description": "n, number of documents containing term",
+                                          "details": []
+                                        },
+                                        {
+                                          "value": 3259,
+                                          "description": "N, total number of documents with field",
+                                          "details": []
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "value": 0.45106488,
+                                      "description": "tf, computed as freq / (freq + k1 * (1 - b + b * dl / avgdl)) from:",
+                                      "details": [
+                                        {
+                                          "value": 1.0,
+                                          "description": "freq, occurrences of term within document",
+                                          "details": []
+                                        },
+                                        {
+                                          "value": 1.2,
+                                          "description": "k1, term saturation parameter",
+                                          "details": []
+                                        },
+                                        {
+                                          "value": 0.75,
+                                          "description": "b, length normalization parameter",
+                                          "details": []
+                                        },
+                                        {
+                                          "value": 3.0,
+                                          "description": "dl, length of field",
+                                          "details": []
+                                        },
+                                        {
+                                          "value": 2.9444616,
+                                          "description": "avgdl, average length of field",
+                                          "details": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "value": 69.09049,
+                          "description": "max of:",
+                          "details": [
+                            {
+                              "value": 69.09049,
+                              "description": "weight(title:haslo in 1435) [PerFieldSimilarity], result of:",
+                              "details": [
+                                {
+                                  "value": 69.09049,
+                                  "description": "score(freq=1.0), computed as boost * idf * tf from:",
+                                  "details": [
+                                    {
+                                      "value": 44.0,
+                                      "description": "boost",
+                                      "details": []
+                                    },
+                                    {
+                                      "value": 3.4694238,
+                                      "description": "idf, computed as log(1 + (N - n + 0.5) / (n + 0.5)) from:",
+                                      "details": [
+                                        {
+                                          "value": 101,
+                                          "description": "n, number of documents containing term",
+                                          "details": []
+                                        },
+                                        {
+                                          "value": 3259,
+                                          "description": "N, total number of documents with field",
+                                          "details": []
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "value": 0.45259345,
+                                      "description": "tf, computed as freq / (freq + k1 * (1 - b + b * dl / avgdl)) from:",
+                                      "details": [
+                                        {
+                                          "value": 1.0,
+                                          "description": "freq, occurrences of term within document",
+                                          "details": []
+                                        },
+                                        {
+                                          "value": 1.2,
+                                          "description": "k1, term saturation parameter",
+                                          "details": []
+                                        },
+                                        {
+                                          "value": 0.75,
+                                          "description": "b, length normalization parameter",
+                                          "details": []
+                                        },
+                                        {
+                                          "value": 3.0,
+                                          "description": "dl, length of field",
+                                          "details": []
+                                        },
+                                        {
+                                          "value": 2.968702,
+                                          "description": "avgdl, average length of field",
+                                          "details": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "value": 3.4028235E38,
+              "description": "maxBoost",
+              "details": []
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "aggregations": {
+    "qsc_filtered": {
+      "meta": {},
+      "doc_count": 99,
+      "attr_groesse_uk_txt_filter_wrapper": {
+        "doc_count": 8,
+        "attr_groesse_uk_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": []
+        }
+      },
+      "attr_farbe_txt_filter_wrapper": {
+        "doc_count": 8,
+        "attr_farbe_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "Schwarz",
+              "doc_count": 8,
+              "variant_count": {
+                "value": 1
+              }
+            }
+          ]
+        }
+      },
+      "attr_weite_txt_filter_wrapper": {
+        "doc_count": 8,
+        "attr_weite_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "H",
+              "doc_count": 8,
+              "variant_count": {
+                "value": 1
+              }
+            }
+          ]
+        }
+      },
+      "attr_material_txt_filter_wrapper": {
+        "doc_count": 8,
+        "attr_material_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": []
+        }
+      },
+      "attr_zutaten_txt_filter_wrapper": {
+        "doc_count": 8,
+        "attr_zutaten_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": []
+        }
+      },
+      "attr_herstellerfarbnummer_txt_filter_wrapper": {
+        "doc_count": 8,
+        "attr_herstellerfarbnummer_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": []
+        }
+      },
+      "_total_count_filter_wrapper": {
+        "doc_count": 8,
+        "_total_count": {
+          "value": 1
+        }
+      },
+      "attr_groesse_txt_filter_wrapper": {
+        "doc_count": 8,
+        "attr_groesse_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": [
+            {
+              "key": "10",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "10.5",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "7",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "7,5",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "8",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "8,5",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "9",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            },
+            {
+              "key": "9,5",
+              "doc_count": 1,
+              "variant_count": {
+                "value": 1
+              }
+            }
+          ]
+        }
+      },
+      "attr_zielgruppe_txt_filter_wrapper": {
+        "doc_count": 8,
+        "attr_zielgruppe_txt": {
+          "doc_count_error_upper_bound": 0,
+          "sum_other_doc_count": 0,
+          "buckets": []
+        }
+      }
+    }
+  }
+}
