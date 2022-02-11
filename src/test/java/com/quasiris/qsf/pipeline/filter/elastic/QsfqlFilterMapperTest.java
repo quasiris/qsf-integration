@@ -61,7 +61,7 @@ class QsfqlFilterMapperTest {
     }
 
     @Test
-    void buildFiltersJsonWithSearchFiltersAndEmptyBoolFilter() throws JsonBuilderException {
+    void buildFiltersJsonWithSearchFiltersAndEmptyBoolFilter() throws JsonBuilderException, IOException {
         // given
         SearchQuery searchQuery = mockSearchQuery();
         searchQuery.getSearchFilterList().add(new BoolSearchFilter());
@@ -70,36 +70,12 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
+        JsonAssert.assertJson(node, testBasePackage + "search-filter-with-empty-bool-filter.json");
 
-        // then
-        assertEquals("{\n" +
-                "  \"bool\" : {\n" +
-                "    \"must\" : [ {\n" +
-                "      \"bool\" : {\n" +
-                "        \"must\" : [ {\n" +
-                "          \"term\" : {\n" +
-                "            \"tag\" : \"wago\"\n" +
-                "          }\n" +
-                "        }, {\n" +
-                "          \"term\" : {\n" +
-                "            \"tag\" : \"kaiser\"\n" +
-                "          }\n" +
-                "        } ]\n" +
-                "      }\n" +
-                "    }, {\n" +
-                "      \"range\" : {\n" +
-                "        \"price\" : {\n" +
-                "          \"gte\" : 100.0,\n" +
-                "          \"lte\" : 200.0\n" +
-                "        }\n" +
-                "      }\n" +
-                "    } ]\n" +
-                "  }\n" +
-                "}", node.toPrettyString());
     }
 
     @Test
-    void buildFiltersJsonWithEmptyBoolFilter() throws JsonBuilderException {
+    void buildFiltersJsonWithEmptyBoolFilter() throws JsonBuilderException, IOException {
         // given
         SearchQuery searchQuery = mockSearchQuery();
         searchQuery.setSearchFilterList(new ArrayList<>());
@@ -110,14 +86,11 @@ class QsfqlFilterMapperTest {
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
 
-        // then
-        assertEquals("{\n" +
-                "  \"bool\" : { }\n" +
-                "}", node.toPrettyString());
+        JsonAssert.assertJson(node, testBasePackage + "empty-bool-filter.json");
     }
 
     @Test
-    void buildFiltersJsonNullFilters() throws JsonBuilderException {
+    void buildFiltersJsonNullFilters() throws JsonBuilderException, IOException {
         // given
         SearchQuery searchQuery = mockSearchQuery();
         searchQuery.setSearchFilterList(null);
@@ -126,15 +99,11 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
-
-        // then
-        assertEquals("{\n" +
-                "  \"bool\" : { }\n" +
-                "}", node.toPrettyString());
+        JsonAssert.assertJson(node, testBasePackage + "empty-bool-filter.json");
     }
 
     @Test
-    void buildFiltersJsonEmptyFilters() throws JsonBuilderException {
+    void buildFiltersJsonEmptyFilters() throws JsonBuilderException, IOException {
         // given
         SearchQuery searchQuery = mockSearchQuery();
         searchQuery.setSearchFilterList(new ArrayList<>());
@@ -143,15 +112,11 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
-
-        // then
-        assertEquals("{\n" +
-                "  \"bool\" : { }\n" +
-                "}", node.toPrettyString());
+        JsonAssert.assertJson(node, testBasePackage + "empty-bool-filter.json");
     }
 
     @Test
-    void buildFiltersJsonSearchFilters() throws JsonBuilderException {
+    void buildFiltersJsonSearchFilters() throws JsonBuilderException, IOException {
         // given
         SearchQuery searchQuery = mockSearchQuery();
 
@@ -159,36 +124,11 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
-
-        // then
-        assertEquals("{\n" +
-                "  \"bool\" : {\n" +
-                "    \"must\" : [ {\n" +
-                "      \"bool\" : {\n" +
-                "        \"must\" : [ {\n" +
-                "          \"term\" : {\n" +
-                "            \"tag\" : \"wago\"\n" +
-                "          }\n" +
-                "        }, {\n" +
-                "          \"term\" : {\n" +
-                "            \"tag\" : \"kaiser\"\n" +
-                "          }\n" +
-                "        } ]\n" +
-                "      }\n" +
-                "    }, {\n" +
-                "      \"range\" : {\n" +
-                "        \"price\" : {\n" +
-                "          \"gte\" : 100.0,\n" +
-                "          \"lte\" : 200.0\n" +
-                "        }\n" +
-                "      }\n" +
-                "    } ]\n" +
-                "  }\n" +
-                "}", node.toPrettyString());
+        JsonAssert.assertJson(node, testBasePackage + "search-filter.json");
     }
 
     @Test
-    void buildFiltersJsonSearchFiltersAndBoolFilters() throws JsonBuilderException {
+    void buildFiltersJsonSearchFiltersAndBoolFilters() throws JsonBuilderException, IOException {
         // given
         SearchQuery searchQuery = mockSearchQuery();
 
@@ -203,59 +143,12 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
+        JsonAssert.assertJson(node, testBasePackage + "search-filter-and-bool-filters.json");
 
-        // then
-        assertEquals("{\n" +
-                "  \"bool\" : {\n" +
-                "    \"must\" : [ {\n" +
-                "      \"bool\" : {\n" +
-                "        \"must_not\" : [ {\n" +
-                "          \"bool\" : {\n" +
-                "            \"must\" : [ {\n" +
-                "              \"term\" : {\n" +
-                "                \"tag\" : \"wago\"\n" +
-                "              }\n" +
-                "            }, {\n" +
-                "              \"term\" : {\n" +
-                "                \"tag\" : \"kaiser\"\n" +
-                "              }\n" +
-                "            } ]\n" +
-                "          }\n" +
-                "        }, {\n" +
-                "          \"range\" : {\n" +
-                "            \"price\" : {\n" +
-                "              \"gte\" : 100.0,\n" +
-                "              \"lte\" : 200.0\n" +
-                "            }\n" +
-                "          }\n" +
-                "        } ]\n" +
-                "      }\n" +
-                "    }, {\n" +
-                "      \"bool\" : {\n" +
-                "        \"must\" : [ {\n" +
-                "          \"term\" : {\n" +
-                "            \"tag\" : \"wago\"\n" +
-                "          }\n" +
-                "        }, {\n" +
-                "          \"term\" : {\n" +
-                "            \"tag\" : \"kaiser\"\n" +
-                "          }\n" +
-                "        } ]\n" +
-                "      }\n" +
-                "    }, {\n" +
-                "      \"range\" : {\n" +
-                "        \"price\" : {\n" +
-                "          \"gte\" : 100.0,\n" +
-                "          \"lte\" : 200.0\n" +
-                "        }\n" +
-                "      }\n" +
-                "    } ]\n" +
-                "  }\n" +
-                "}", node.toPrettyString());
     }
 
     @Test
-    void buildFiltersJsonBoolFiltersComplex() throws JsonBuilderException {
+    void buildFiltersJsonBoolFiltersComplex() throws JsonBuilderException, IOException {
         // given
         SearchQuery searchQuery = mockSearchQuery();
 
@@ -283,81 +176,8 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
+        JsonAssert.assertJson(node, testBasePackage + "bool-filter-complex.json");
 
-        // then
-        assertEquals("{\n" +
-                "  \"bool\" : {\n" +
-                "    \"must\" : [ {\n" +
-                "      \"bool\" : {\n" +
-                "        \"must_not\" : [ {\n" +
-                "          \"bool\" : {\n" +
-                "            \"must\" : [ {\n" +
-                "              \"term\" : {\n" +
-                "                \"tag\" : \"wago\"\n" +
-                "              }\n" +
-                "            }, {\n" +
-                "              \"term\" : {\n" +
-                "                \"tag\" : \"kaiser\"\n" +
-                "              }\n" +
-                "            } ]\n" +
-                "          }\n" +
-                "        }, {\n" +
-                "          \"range\" : {\n" +
-                "            \"price\" : {\n" +
-                "              \"gte\" : 100.0,\n" +
-                "              \"lte\" : 200.0\n" +
-                "            }\n" +
-                "          }\n" +
-                "        } ]\n" +
-                "      }\n" +
-                "    }, {\n" +
-                "      \"bool\" : {\n" +
-                "        \"should\" : [ {\n" +
-                "          \"bool\" : {\n" +
-                "            \"must_not\" : [ {\n" +
-                "              \"range\" : {\n" +
-                "                \"price\" : {\n" +
-                "                  \"gte\" : 100.0,\n" +
-                "                  \"lte\" : 200.0\n" +
-                "                }\n" +
-                "              }\n" +
-                "            } ]\n" +
-                "          }\n" +
-                "        }, {\n" +
-                "          \"bool\" : {\n" +
-                "            \"must\" : [ {\n" +
-                "              \"term\" : {\n" +
-                "                \"tag\" : \"wago\"\n" +
-                "              }\n" +
-                "            }, {\n" +
-                "              \"term\" : {\n" +
-                "                \"tag\" : \"kaiser\"\n" +
-                "              }\n" +
-                "            } ]\n" +
-                "          }\n" +
-                "        } ]\n" +
-                "      }\n" +
-                "    }, {\n" +
-                "      \"bool\" : {\n" +
-                "        \"must\" : [ {\n" +
-                "          \"term\" : {\n" +
-                "            \"tag\" : \"wago\"\n" +
-                "          }\n" +
-                "        }, {\n" +
-                "          \"term\" : {\n" +
-                "            \"tag\" : \"kaiser\"\n" +
-                "          }\n" +
-                "        } ]\n" +
-                "      }\n" +
-                "    }, {\n" +
-                "      \"range\" : {\n" +
-                "        \"price\" : {\n" +
-                "          \"gte\" : 100.0,\n" +
-                "          \"lte\" : 200.0\n" +
-                "        }\n" +
-                "      }\n" +
-                "    } ]\n" +
-                "  }\n" +
-                "}", node.toPrettyString());
+
     }
 }

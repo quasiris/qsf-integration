@@ -1,0 +1,60 @@
+{
+  "bool": {
+    "must": [
+      {
+        "bool": {
+          "must_not": [
+            {
+              "bool": {
+                "must": [
+                  {
+                    "term": {
+                      "tag": "wago"
+                    }
+                  },
+                  {
+                    "term": {
+                      "tag": "kaiser"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "range": {
+                "price": {
+                  "gte": 100.0,
+                  "lte": 200.0
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "bool": {
+          "must": [
+            {
+              "term": {
+                "tag": "wago"
+              }
+            },
+            {
+              "term": {
+                "tag": "kaiser"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "range": {
+          "price": {
+            "gte": 100.0,
+            "lte": 200.0
+          }
+        }
+      }
+    ]
+  }
+}
