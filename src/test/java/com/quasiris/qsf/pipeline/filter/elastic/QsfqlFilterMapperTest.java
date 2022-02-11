@@ -9,8 +9,10 @@ import com.quasiris.qsf.query.FilterOperator;
 import com.quasiris.qsf.query.FilterType;
 import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.test.json.JsonAssert;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class QsfqlFilterMapperTest {
 
+    private final String testBasePackage = "classpath://com/quasiris/qsf/test/elastic/query/expected/";
+
     @Test
-    void createFilters() throws JsonBuilderException {
+    void createFilters() throws JsonBuilderException, IOException {
         // given
         List<SearchFilter> filters = new ArrayList<>();
         SearchFilter searchFilter1 = new SearchFilter();
@@ -52,9 +56,8 @@ class QsfqlFilterMapperTest {
 
         // when
         JsonNode filtersOr = QsfqlFilterMapper.createFilters(filters);
+        JsonAssert.assertJson(filtersOr, testBasePackage + "create-filters-elastic-query.json");
 
-        // then
-        assertEquals("{\"bool\":{\"must\":[{\"range\":{\"price\":{\"gte\":100.0,\"lte\":200.0}}}],\"must_not\":{\"bool\":{\"should\":[{\"term\":{\"tags\":\"new\"}}]}},\"should\":[{\"term\":{\"brand\":\"samsung\"}},{\"term\":{\"tags\":\"sale\"}}]}}", filtersOr.toString());
     }
 
     @Test

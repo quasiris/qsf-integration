@@ -3,6 +3,19 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- implement a json assert for testing
+
+### Changed
+
+### Breaking Changes
+
+### Deprecated
+
+### Fixed
+- fix filter building for elastic query transformer
+
+## [5.1]
+### Added
 - support stats aggregations for elastic
 
 ### Changed

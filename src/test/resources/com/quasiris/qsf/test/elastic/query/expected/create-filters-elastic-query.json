@@ -1,0 +1,28 @@
+{
+  "bool" : {
+    "must" : [ {
+      "term" : {
+        "brand" : "samsung"
+      }
+    }, {
+      "term" : {
+        "tags" : "sale"
+      }
+    }, {
+      "range" : {
+        "price" : {
+          "gte" : 100.0,
+          "lte" : 200.0
+        }
+      }
+    }, {
+      "bool" : {
+        "must_not" : [ {
+          "term" : {
+            "tags" : "new"
+          }
+        } ]
+      }
+    } ]
+  }
+}

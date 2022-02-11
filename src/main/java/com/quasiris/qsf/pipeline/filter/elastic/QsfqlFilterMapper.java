@@ -161,76 +161,8 @@ public class QsfqlFilterMapper {
     }
 
     public static JsonNode createFilters(List<SearchFilter> searchFilters) throws JsonBuilderException {
-        QsfqlFilterMapper qsfqlFilterMapper = new QsfqlFilterMapper();
-
-        List<SearchFilter> andFilters = searchFilters.stream().
-                filter(sf -> sf.getFilterOperator().equals(FilterOperator.AND)).
-                collect(Collectors.toList());
-        List<SearchFilter> orFilters = searchFilters.stream().
-                filter(sf -> sf.getFilterOperator().equals(FilterOperator.OR)).
-                collect(Collectors.toList());
-        List<SearchFilter> orNotFilters = searchFilters.stream().
-                filter(sf -> sf.getFilterOperator().equals(FilterOperator.NOT)).
-                collect(Collectors.toList());
-
-        JsonBuilder andBuilder = JsonBuilder.create();
-        for(SearchFilter searchFilter : andFilters) {
-            ArrayNode filters = qsfqlFilterMapper.computeFilter(Arrays.asList(searchFilter));
-            if (filters.size() == 0) {
-                continue;
-            }
-            andBuilder.addJson(filters);
-        }
-
-        JsonBuilder orBuilder = JsonBuilder.create();
-        for(SearchFilter searchFilter : orFilters) {
-            ArrayNode filters = qsfqlFilterMapper.computeFilter(Arrays.asList(searchFilter));
-            if (filters.size() == 0) {
-                continue;
-            }
-            orBuilder.addJson(filters);
-        }
-
-        JsonBuilder orNotBuilder = JsonBuilder.create();
-        for(SearchFilter searchFilter : orNotFilters) {
-            ArrayNode filters = qsfqlFilterMapper.computeFilter(Arrays.asList(searchFilter));
-            if (filters.size() == 0) {
-                continue;
-            }
-            orNotBuilder.addJson(filters);
-        }
-
-        JsonBuilder filterBuilder = JsonBuilder
-                .create()
-                .object("bool");
-        JsonNode andJsonNode = andBuilder.get();
-        if(andJsonNode != null) {
-            filterBuilder
-                    .stash()
-                        .array("must")
-                            .addJson(andBuilder.get())
-                    .unstash();
-        }
-        JsonNode orNotJsonNode = orNotBuilder.get();
-        if(orNotJsonNode != null) {
-            filterBuilder
-                    .stash()
-                        .object("must_not")
-                            .object("bool")
-                                .array("should")
-                                    .addJson(orNotBuilder.get())
-                    .unstash();
-        }
-        JsonNode orJsonNode = orBuilder.get();
-        if(orJsonNode != null) {
-            filterBuilder
-                    .stash()
-                        .array("should")
-                            .addJson(orBuilder.get())
-                    .unstash();
-        }
-
-        return filterBuilder.root().get();
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper();
+        return mapper.buildFiltersJson(searchFilters);
     }
 
     public @Nullable ArrayNode getFilterAsJson(@Nonnull List<SearchFilter> searchFilters) throws JsonBuilderException {
