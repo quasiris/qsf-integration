@@ -1,8 +1,16 @@
 {
   "bool" : {
     "must" : [ {
-      "term" : {
-        "brand" : "samsung"
+      "bool" : {
+        "should" : [ {
+          "term" : {
+            "brand" : "samsung"
+          }
+        }, {
+          "term" : {
+            "brand" : "apple"
+          }
+        } ]
       }
     }, {
       "term" : {

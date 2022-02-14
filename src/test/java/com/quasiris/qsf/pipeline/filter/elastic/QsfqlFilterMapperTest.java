@@ -32,7 +32,7 @@ class QsfqlFilterMapperTest {
         searchFilter1.setFilterOperator(FilterOperator.OR);
         searchFilter1.setFilterType(FilterType.TERM);
         searchFilter1.setName("brand");
-        searchFilter1.setValues(Arrays.asList("samsung"));
+        searchFilter1.setValues(Arrays.asList("samsung", "apple"));
         filters.add(searchFilter1);
         SearchFilter searchFilter2 = new SearchFilter();
         searchFilter2.setFilterOperator(FilterOperator.OR);
