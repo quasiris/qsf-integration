@@ -4,6 +4,7 @@ All notable changes qsf-integration project will be documented in this file.
 ## [UNRELEASED]
 ### Added
 - implement a json assert for testing
+- implement field mapping with support for wildcards
 
 ### Changed
 

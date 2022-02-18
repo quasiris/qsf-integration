@@ -325,14 +325,20 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     public void mapPrefixFields(Map.Entry<String, List<String>> mapping, Map fields, Document document) {
-        String key = mapping.getKey();
-        String prefix = key.substring(0, key.length() - 1);
+        String from = mapping.getKey();
+        String prefix = from.substring(0, from.length() - 1);
         for(Object elasticKeyObject : fields.keySet()) {
             String elasticKey = (String) elasticKeyObject;
             if(elasticKey.startsWith(prefix)) {
                 for(String mappedKeyPrefix: mapping.getValue()) {
-                    String mappedKey = elasticKey.replaceFirst(prefix, mappedKeyPrefix);
-                    mapValue(document, mappedKey, fields.get(elasticKey));
+                    if(mappedKeyPrefix.endsWith("*")) {
+                        mappedKeyPrefix = mappedKeyPrefix.substring(0, mappedKeyPrefix.length() - 1);
+                        String mappedKey = elasticKey.replaceFirst(prefix, mappedKeyPrefix);
+                        mapValue(document, mappedKey, fields.get(elasticKey));
+                    } else {
+                        mapValue(document, mappedKeyPrefix, fields.get(elasticKey));
+                    }
+
                 }
             }
 

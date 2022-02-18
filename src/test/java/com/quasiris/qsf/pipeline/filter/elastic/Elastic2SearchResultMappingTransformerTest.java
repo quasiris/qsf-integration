@@ -15,6 +15,28 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Elastic2SearchResultMappingTransformerTest {
+
+    @Test
+    void testFieldMappingWithWildcardInFromAndTo() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFieldMapping("attr_farbe*", "farbe*");
+        ElasticResult elasticResult = readElasticResultFromFile("attribute-field-mapping.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+        Document document = searchResult.getDocuments().get(0);
+        assertEquals(1, document.getDocument().size());
+        assertEquals("schwarz", document.getFieldValue("farbe_txt"));
+    }
+
+    @Test
+    void testFieldMappingWithWildcardInFrom() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFieldMapping("attr_farbe*", "farbe");
+        ElasticResult elasticResult = readElasticResultFromFile("attribute-field-mapping.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+        Document document = searchResult.getDocuments().get(0);
+        assertEquals(1, document.getDocument().size());
+        assertEquals("schwarz", document.getFieldValue("farbe"));
+    }
     @Test
     void testVariantCountHotfix() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();

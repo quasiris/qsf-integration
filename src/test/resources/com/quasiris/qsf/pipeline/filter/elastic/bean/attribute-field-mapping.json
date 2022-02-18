@@ -1,0 +1,116 @@
+{
+  "took": 3,
+  "timed_out": false,
+  "_shards": {
+    "total": 16,
+    "successful": 16,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": 1.0,
+    "hits": [
+      {
+        "_index": "prod.lugina.products-v2_de-de_2021-11-12-14.16.25",
+        "_type": "_doc",
+        "_id": "0548bd5899024cf3bda0d51b8e226091",
+        "_score": 1.0,
+        "_source": {
+          "attr_schuhtyp_txt": "Halbschuh",
+          "shippingFree": "false",
+          "attr_sohle_txt": "Gummi-Sohle",
+          "title": "Henry schwarz",
+          "attr_verschluss_txt": "Schnürung",
+          "attr_groesse_txt": "10",
+          "qscSourceFields": [
+            "id",
+            "title",
+            "stock",
+            "active",
+            "shippingFree",
+            "productnumber",
+            "price",
+            "image",
+            "visibility",
+            "tags",
+            "reviewAvg",
+            "reviewCount",
+            "attributes",
+            "variantId",
+            "ean"
+          ],
+          "attributeNames": [
+            "Farbe",
+            "Futter",
+            "Größe",
+            "Weite",
+            "Schuhtyp",
+            "Verschluss",
+            "Sohle",
+            "Membrane",
+            "Obermaterial Spezifikation"
+          ],
+          "ean": "4050816986353",
+          "reviewCount": 0,
+          "price": 110,
+          "attr_futter_txt": "Leder/Textil",
+          "qscProcessId": "aee2a5bd-02ad-4638-8dd0-7e4528aef029",
+          "attributeDataTypes": [
+            "string",
+            "string",
+            "string",
+            "string",
+            "string",
+            "string",
+            "string",
+            "string",
+            "string"
+          ],
+          "variantId": "2cb7bf9100c247a5aa294897b92ff77b",
+          "id": "0548bd5899024cf3bda0d51b8e226091",
+          "stock": 25,
+          "attr_membrane_txt": "keine",
+          "processingtime": "2021-11-12T14:17:08+0100",
+          "image": "",
+          "attributeFields": [
+            "attr_farbe_txt",
+            "attr_futter_txt",
+            "attr_groesse_txt",
+            "attr_weite_txt",
+            "attr_schuhtyp_txt",
+            "attr_verschluss_txt",
+            "attr_sohle_txt",
+            "attr_membrane_txt",
+            "attr_obermaterial_spezifikation_txt"
+          ],
+          "visibility": 31,
+          "docType": "variant",
+          "attributeValues": [
+            "schwarz",
+            "Leder/Textil",
+            "10",
+            "H",
+            "Halbschuh",
+            "Schnürung",
+            "Gummi-Sohle",
+            "keine",
+            "Nappaleder"
+          ],
+          "active": "true",
+          "attr_weite_txt": "H",
+          "attr_farbe_txt": "schwarz",
+          "tags": [
+            "Schuhe"
+          ],
+          "attr_obermaterial_spezifikation_txt": "Nappaleder",
+          "productnumber": "319004-149-001-10",
+          "reviewAvg": 0
+        }
+      }
+    ]
+  }
+}
