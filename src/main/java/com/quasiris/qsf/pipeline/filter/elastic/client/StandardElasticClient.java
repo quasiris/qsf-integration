@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Analyze;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ public class StandardElasticClient implements  ElasticClientIF {
     public StandardElasticClient() {
         objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.registerModule(new JavaTimeModule());
 
     }
 
@@ -55,5 +57,9 @@ public class StandardElasticClient implements  ElasticClientIF {
     public void index(String elasticBaseUrl, Object request) throws IOException {
         String requestAsString = objectMapper.writeValueAsString(request);
         index(elasticBaseUrl, requestAsString);
+    }
+
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 }
