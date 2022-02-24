@@ -8,6 +8,7 @@ import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.Facet;
 import com.quasiris.qsf.dto.response.FacetValue;
 import com.quasiris.qsf.dto.response.SearchResult;
+import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
@@ -47,6 +48,10 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     }
 
+    @Override
+    public void init(PipelineContainer pipelineContainer) {
+
+    }
 
     @Override
     public SearchResult transform(ElasticResult elasticResult) {
