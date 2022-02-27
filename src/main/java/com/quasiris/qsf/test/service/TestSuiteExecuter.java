@@ -28,7 +28,7 @@ public class TestSuiteExecuter {
 
     private TestSuite testSuite;
 
-    List<AssertionResult> assertionResults = new ArrayList<>();
+    private List<TestCaseResult> testCaseResults = new ArrayList<>();
 
     public TestSuiteExecuter(String tenant, String code) {
         this.tenant = tenant;
@@ -55,8 +55,9 @@ public class TestSuiteExecuter {
                 continue;
             }
             TestExecuter testExecuter = null;
+            TestCase testCase = null;
             try {
-                TestCase testCase = getTestCase(testCaseId.getId());
+                testCase = getTestCase(testCaseId.getId());
                 testCase.setEnv(testSuite.getDefaultEnv());
 
                 Environment environment = testSuite.getEnv().get(testSuite.getDefaultEnv());
@@ -69,7 +70,7 @@ public class TestSuiteExecuter {
 
                     testExecuter = new TestExecuter(testCase);
                     TestCaseResult testCaseResult = testExecuter.execute();
-                    assertionResults.addAll(testCaseResult.getAssertionResults());
+                    testCaseResults.add(testCaseResult);
                 } else {
                     for (Map<String, Object> variations : testCase.getQuery().getVariations()) {
                         TestCase alternativeTestCase = getTestCase(testCaseId.getId());
@@ -84,16 +85,23 @@ public class TestSuiteExecuter {
                         alternativeTestCase.setName(name);
                         testExecuter = new TestExecuter(alternativeTestCase);
                         TestCaseResult alternativeTestCaseResult = testExecuter.execute();
-                        assertionResults.addAll(alternativeTestCaseResult.getAssertionResults());
-
+                        testCaseResults.add(alternativeTestCaseResult);
                     }
                 }
             } catch (Exception e) {
-                assertionResults.add(AssertionResultBuilder.create().
+                TestCaseResult testCaseResult = new TestCaseResult();
+                testCaseResult.setTestCase(testCase);
+                testCaseResult.setTestCaseId(testCaseId.getId());
+                if(testCaseResult.getAssertionResults() == null) {
+                    testCaseResult.setAssertionResults(new ArrayList<>());
+                }
+                testCaseResult.getAssertionResults().add(
+                        AssertionResultBuilder.create().
                         name(testCaseId.getId()).
                         message(e.getMessage()).
                         failed().
                         build());
+                testCaseResults.add(testCaseResult);
             }
         }
     }
@@ -152,12 +160,7 @@ public class TestSuiteExecuter {
         }
     }
 
-    /**
-     * Getter for property 'assertionResults'.
-     *
-     * @return Value for property 'assertionResults'.
-     */
-    public List<AssertionResult> getAssertionResults() {
-        return assertionResults;
+    public List<TestCaseResult> getTestCaseResults() {
+        return testCaseResults;
     }
 }

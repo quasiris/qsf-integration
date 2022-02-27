@@ -43,7 +43,7 @@ class TestSuiteExecuterTest {
             when(testCaseResult.getAssertionResults()).thenReturn(Collections.singletonList(assertResult));
             TestSuiteExecuter testSuiteExecuter = new TestSuiteExecuter("mytenant", "success");
             testSuiteExecuter.execute();
-            List<AssertionResult> assertionResults = testSuiteExecuter.getAssertionResults();
+            List<AssertionResult> assertionResults = testSuiteExecuter.getTestCaseResults().get(0).getAssertionResults();
             Assertions.assertEquals(1, assertionResults.size());
             Assertions.assertSame(assertResult, assertionResults.get(0));
         }
@@ -58,7 +58,7 @@ class TestSuiteExecuterTest {
             when(testCaseResult.getAssertionResults()).thenReturn(Collections.singletonList(assertResult));
             TestSuiteExecuter testSuiteExecuter = new TestSuiteExecuter("mytenant", "variations");
             testSuiteExecuter.execute();
-            List<AssertionResult> assertionResults = testSuiteExecuter.getAssertionResults();
+            List<AssertionResult> assertionResults = testSuiteExecuter.getTestCaseResults().get(0).getAssertionResults();
             Assertions.assertEquals(1, assertionResults.size());
             Assertions.assertSame(assertResult, assertionResults.get(0));
         }
@@ -74,7 +74,7 @@ class TestSuiteExecuterTest {
             when(testCaseResult.getAssertionResults()).thenReturn(Collections.singletonList(assertResult));
             TestSuiteExecuter testSuiteExecuter = new TestSuiteExecuter("mytenant", "variations");
             testSuiteExecuter.execute();
-            List<AssertionResult> assertionResults = testSuiteExecuter.getAssertionResults();
+            List<AssertionResult> assertionResults = testSuiteExecuter.getTestCaseResults().get(0).getAssertionResults();
             Assertions.assertEquals(1, assertionResults.size());
             AssertionResult actual = assertionResults.get(0);
             Assertions.assertEquals(Status.FAILED, actual.getStatus());

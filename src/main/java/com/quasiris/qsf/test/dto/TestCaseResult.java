@@ -6,6 +6,8 @@ public class TestCaseResult {
 
     private String testCaseId;
 
+    private TestCase testCase;
+
     private String status;
 
     private String message;
@@ -82,5 +84,13 @@ public class TestCaseResult {
      */
     public void setAssertionResults(List<AssertionResult> assertionResults) {
         this.assertionResults = assertionResults;
+    }
+
+    public TestCase getTestCase() {
+        return testCase;
+    }
+
+    public void setTestCase(TestCase testCase) {
+        this.testCase = testCase;
     }
 }

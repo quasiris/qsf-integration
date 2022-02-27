@@ -66,6 +66,7 @@ public class TestExecuter {
                 testCaseResult.setAssertionResults(new ArrayList<>());
             }
             testCaseResult.setTestCaseId(testCase.getId());
+            testCaseResult.setTestCase(testCase);
 
             processSearchResponse(testCase);
             processSingleSearchResponse(testCase);
@@ -80,11 +81,24 @@ public class TestExecuter {
                         build());
             }
 
+
+            computeTestCaseResultStatus();
+
             return testCaseResult;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    void computeTestCaseResultStatus() {
+        for(AssertionResult assertionResult : testCaseResult.getAssertionResults()) {
+            if(!"SUCCESS".equals(assertionResult)) {
+                testCaseResult.setStatus("FAILED");
+                return;
+            }
+        }
+        testCaseResult.setStatus("SUCCESS");
     }
     void addAssertionResults(AssertionResult assertionResult) {
         testCaseResult.getAssertionResults().add(assertionResult);
