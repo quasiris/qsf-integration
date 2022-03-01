@@ -108,6 +108,8 @@ public class OperatorParser {
                 } else {
                     return false;
                 }
+            case EXISISTS:
+                return true;
             default:
                 throw new IllegalArgumentException("The operator " + operator.getCode() + " is not implemented.");
 
