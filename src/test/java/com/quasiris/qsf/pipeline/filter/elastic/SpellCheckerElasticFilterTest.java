@@ -6,6 +6,7 @@ import com.quasiris.qsf.pipeline.PipelineBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.TokenizerFilter;
+import com.quasiris.qsf.pipeline.filter.elastic.spellcheck.SpellCheckElasticClient;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.test.AbstractPipelineTest;
@@ -31,9 +32,14 @@ public class SpellCheckerElasticFilterTest extends AbstractPipelineTest {
         MockMultiElasticClient mockMultiElasticClient = new MockMultiElasticClient();
         //mockMultiElasticClient.setRecord(true);
 
-        SpellCheckElasticFilter spellCheckElasticFilter = new SpellCheckElasticFilter(baseUrl);
+        SpellCheckElasticFilter spellCheckElasticFilter = new SpellCheckElasticFilter();
+        spellCheckElasticFilter.setBaseUrl(baseUrl);
         spellCheckElasticFilter.setId("spellchecker");
-        spellCheckElasticFilter.setElasticClient(mockMultiElasticClient);
+
+        SpellCheckElasticClient spellCheckElasticClient = new SpellCheckElasticClient(baseUrl, 4, 1);
+        spellCheckElasticClient.setElasticClient(mockMultiElasticClient);
+
+        spellCheckElasticFilter.setSpellCheckElasticClient(spellCheckElasticClient);
         spellCheckElasticFilter.setSentenceScoringEnabled(false);
 
 

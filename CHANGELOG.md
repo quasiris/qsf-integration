@@ -7,6 +7,7 @@ All notable changes qsf-integration project will be documented in this file.
 - implement field mapping with support for wildcards
 
 ### Changed
+- improve the spellchecking filter for parallel execution
 
 ### Breaking Changes
 

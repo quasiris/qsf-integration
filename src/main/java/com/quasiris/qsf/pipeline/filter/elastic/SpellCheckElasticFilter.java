@@ -1,29 +1,21 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.dto.response.DidYouMeanResult;
 import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
-import com.quasiris.qsf.pipeline.exception.PipelineConfigException;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.MultiElasticResult;
-import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
-import com.quasiris.qsf.pipeline.filter.elastic.client.MultiElasticClientIF;
 import com.quasiris.qsf.pipeline.filter.elastic.client.QSFHttpClient;
+import com.quasiris.qsf.pipeline.filter.elastic.spellcheck.SpellCheckContext;
+import com.quasiris.qsf.pipeline.filter.elastic.spellcheck.SpellCheckElasticClient;
+import com.quasiris.qsf.pipeline.filter.elastic.spellcheck.SpellcheckUtils;
+import com.quasiris.qsf.pipeline.filter.elastic.spellcheck.SpellcheckVariants;
 import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.query.Token;
-import com.quasiris.qsf.commons.util.JsonUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.Transient;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +33,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     private String baseUrl;
 
-    private MultiElasticClientIF elasticClient;
+    private SpellCheckElasticClient spellCheckElasticClient;
 
     private boolean sentenceScoringEnabled = true;
 
@@ -50,23 +42,17 @@ public class SpellCheckElasticFilter extends AbstractFilter {
     public SpellCheckElasticFilter() {
     }
 
-    public SpellCheckElasticFilter(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
     @Override
     public void init() {
-        super.init();
-        if(elasticClient == null) {
-            elasticClient = ElasticClientFactory.getMulitElasticClient();
+        if(spellCheckElasticClient == null) {
+            spellCheckElasticClient = new SpellCheckElasticClient(baseUrl, minTokenLenght, minTokenWeight);
         }
+        super.init();
+
     }
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
-        if(StringUtils.isEmpty(baseUrl)) {
-            throw new PipelineConfigException(pipelineContainer, "Required parameter baseUrl MUST NOT be empty!");
-        }
         process(pipelineContainer);
         return pipelineContainer;
     }
@@ -78,43 +64,15 @@ public class SpellCheckElasticFilter extends AbstractFilter {
             return;
         }
 
-        List<String> elasticQueries = new ArrayList<>();
-        List<SpellCheckToken> spellCheckTokens = new ArrayList<>();
-        for(Token token: pipelineContainer.getSearchQuery().getQueryToken()) {
-            SpellCheckToken spellCheckToken = new SpellCheckToken(token);
-            spellCheckTokens.add(spellCheckToken);
-
-            if(token.getValue().length() < minTokenLenght) {
-                continue;
-            }
-
-            String elasticRequest  = "{\"query\": {\"bool\": { \"must\": [ {\"fuzzy\": {\"variants.spell\": {\"value\": \""+JsonUtil.encode(token.getValue().toLowerCase())+"\",\"fuzziness\": \"AUTO\"}}},{\"range\": {\"weight\": {\"gte\": "+getMinTokenWeight()+"}}}]}}}";
-            elasticQueries.add(elasticRequest);
-            spellCheckToken.setElasticResultPojnter(elasticQueries.size()-1);
-        }
-
-        if(elasticQueries.isEmpty()) {
-            return;
-        }
-
-        MultiElasticResult multiElasticResult = elasticClient.request(baseUrl + "/_msearch", elasticQueries);
-
-        for (SpellCheckToken spellCheckToken : spellCheckTokens) {
-            if(spellCheckToken.getElasticResultPojnter() != null) {
-                computeScoresFromElastic(spellCheckToken, multiElasticResult.getResponses().get(spellCheckToken.getElasticResultPojnter()));
-            }
-        }
+        List<SpellCheckToken> spellCheckTokens = spellCheckElasticClient.spellspeck(pipelineContainer.getSearchQuery());
 
         if(pipelineContainer.isDebugEnabled()) {
             pipelineContainer.debug("spellCheckTokens", DebugType.JSON, spellCheckTokens);
         }
 
-        List<Score> correctedQueryVariants = new ArrayList<>();
-        correctedQueryVariants.add(new Score("", 0.0));
-        for (SpellCheckToken spellCheckToken : spellCheckTokens) {
-            correctedQueryVariants = computeVariants(spellCheckToken, correctedQueryVariants);
-        }
-        correctedQueryVariants.sort(Comparator.comparing(Score::getScore).reversed());
+        SpellcheckVariants spellcheckVariants = new SpellcheckVariants();
+        List<Score> correctedQueryVariants = spellcheckVariants.computeVariants(spellCheckTokens);
+
 
         if(sentenceScoringEnabled && correctedQueryVariants.size() > 1) {
             // do some bert magic
@@ -135,15 +93,20 @@ public class SpellCheckElasticFilter extends AbstractFilter {
             correctedQueryVariants.sort(Comparator.comparing(Score::getScore).reversed());
         }
 
-
-
         Score corrected = correctedQueryVariants.stream().findFirst().orElse(null);
         SearchQuery searchQuery = pipelineContainer.getSearchQuery();
-        if(!fuzzyEquals(corrected.getText(), searchQuery.getQ())) {
+        if(!SpellcheckUtils.fuzzyEquals(corrected.getText(), searchQuery.getQ())) {
             searchQuery.setOriginalQuery(searchQuery.getQ());
             searchQuery.setQ(corrected.getText());
             searchQuery.setQueryChanged(true);
             searchQuery.addQueryChangedReason("spellcheck");
+
+            DidYouMeanResult didYouMeanResult = new DidYouMeanResult();
+            didYouMeanResult.setName("spellCorrection");
+            didYouMeanResult.setType("corrected");
+            didYouMeanResult.setCorrected(corrected.getText());
+            didYouMeanResult.setOriginal(searchQuery.getOriginalQuery());
+            SpellCheckContext.get(pipelineContainer).setDidYouMeanResult(didYouMeanResult);
             if(restartPipelineId != null) {
                 throw new PipelineRestartException(restartPipelineId);
             }
@@ -151,93 +114,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
     }
 
 
-    List<Score> computeVariants(SpellCheckToken spellCheckToken, List<Score> spellcheckVariants) {
-        List<Score> extendedCorrectedQueryVariants = new ArrayList<>();
-        List<Score> correctedVariants = spellCheckToken.getCorrectedVariants();
 
-        if(correctedVariants == null) {
-            correctedVariants = new ArrayList<>();
-            correctedVariants.add(new Score(spellCheckToken.getToken().getValue(), 0.0));
-
-        }
-        for(Score score : correctedVariants) {
-            for(Score spellcheckVariant : spellcheckVariants) {
-                extendedCorrectedQueryVariants.add(
-                        new Score(
-                                spellcheckVariant.getText() + " " + score.getText(),
-                                spellcheckVariant.getScore() + score.getScore()));
-            }
-        }
-
-        return extendedCorrectedQueryVariants;
-
-
-
-    }
-
-    void computeScoresFromElastic(SpellCheckToken token, ElasticResult elasticResult) {
-        List<Score> scores = new ArrayList<>();
-        if(elasticResult.getHits() == null || elasticResult.getHits().getHits().isEmpty() ) {
-            token.setUnknownToken(true);
-            return;
-        }
-
-
-
-        for(Hit hit: elasticResult.getHits().getHits()) {
-            String text = getAsText(hit.get_source(), "text");
-            if(fuzzyEquals(token.getToken().getValue(), text)) {
-                token.setCorrectToken(true);
-                return;
-            }
-            Double score = hit.get_score();
-            String weightString = getAsText(hit.get_source(), "weight");
-            Double weight = Double.valueOf(weightString);
-            if(weight > 10) {
-                score = score + 100;
-            }
-
-            scores.add(new Score(text, score));
-        }
-
-        token.setCorrectedVariants(scores);
-        token.setUnknownToken(false);
-        token.setCorrectToken(false);
-    }
-
-
-    private boolean fuzzyEquals(String left, String right) {
-        if(left == null && right == null) {
-            return true;
-        }
-        if(left == null || right == null) {
-            return false;
-        }
-        left = normalize(left);
-        right = normalize(right);
-        return left.equals(right);
-    }
-
-    private String normalize(String value) {
-        if(value == null) {
-            return null;
-        }
-        value = value.toLowerCase();
-        value = value.trim();
-        return value;
-    }
-
-    private String getAsText(ObjectNode objectNode, String name) {
-        JsonNode node = objectNode.get(name);
-        if(node == null) {
-            return null;
-        }
-        if(node.isArray()) {
-            return node.get(0).asText();
-        }
-        return node.asText();
-
-    }
 
     public String getBaseUrl() {
         return baseUrl;
@@ -245,26 +122,6 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
-    }
-
-    /**
-     * Getter for property 'elasticClient'.
-     *
-     * @return Value for property 'elasticClient'.
-     */
-    @Transient
-    public MultiElasticClientIF getElasticClient() {
-        return elasticClient;
-    }
-
-    /**
-     * Setter for property 'elasticClient'.
-     *
-     * @param elasticClient Value to set for property 'elasticClient'.
-     */
-    @Transient
-    public void setElasticClient(MultiElasticClientIF elasticClient) {
-        this.elasticClient = elasticClient;
     }
 
     /**
@@ -325,5 +182,9 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     public String getRestartPipelineId() {
         return restartPipelineId;
+    }
+
+    public void setSpellCheckElasticClient(SpellCheckElasticClient spellCheckElasticClient) {
+        this.spellCheckElasticClient = spellCheckElasticClient;
     }
 }

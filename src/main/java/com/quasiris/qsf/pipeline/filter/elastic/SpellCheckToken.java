@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.quasiris.qsf.pipeline.filter.elastic.spellcheck.SpellCheckTokenType;
 import com.quasiris.qsf.query.Token;
 
 import java.util.List;
@@ -16,45 +17,14 @@ public class SpellCheckToken {
 
     private List<Score> correctedVariants;
 
-    private boolean unknownToken = false;
+    private SpellCheckTokenType type;
 
-    private boolean correctToken = true;
-
-
-    /**
-     * Getter for property 'correctToken'.
-     *
-     * @return Value for property 'correctToken'.
-     */
-    public boolean isCorrectToken() {
-        return correctToken;
+    public SpellCheckTokenType getType() {
+        return type;
     }
 
-    /**
-     * Setter for property 'correctToken'.
-     *
-     * @param correctToken Value to set for property 'correctToken'.
-     */
-    public void setCorrectToken(boolean correctToken) {
-        this.correctToken = correctToken;
-    }
-
-    /**
-     * Getter for property 'unknownToken'.
-     *
-     * @return Value for property 'unknownToken'.
-     */
-    public boolean isUnknownToken() {
-        return unknownToken;
-    }
-
-    /**
-     * Setter for property 'unknownToken'.
-     *
-     * @param unknownToken Value to set for property 'unknownToken'.
-     */
-    public void setUnknownToken(boolean unknownToken) {
-        this.unknownToken = unknownToken;
+    public void setType(SpellCheckTokenType type) {
+        this.type = type;
     }
 
     /**

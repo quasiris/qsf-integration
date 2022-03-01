@@ -24,24 +24,22 @@ public class ParallelFilter extends AbstractFilter {
 
     private String sourcePipelineId;
 
+    private int executorSize = 20;
+
     private static HashMap<String, ExecutorService> executorServices = new HashMap<>();
     private String executorName = "DefaultParallelExecutor";
 
     public ParallelFilter(String sourcePipelineId) {
         this.sourcePipelineId = sourcePipelineId;
-        if (executorServices.get(executorName) == null) {
-            ExecutorService executorService = Executors.newFixedThreadPool(20);
-            executorServices.put(executorName, executorService);
-        }
     }
 
     public ParallelFilter(String sourcePipelineId, String executorName, int executorSize) {
         this.sourcePipelineId = sourcePipelineId;
         this.executorName = executorName;
-        if (executorServices.get(this.executorName) == null) {
-            ExecutorService executorService = Executors.newFixedThreadPool(executorSize);
-            executorServices.put(this.executorName, executorService);
-        }
+        this.executorSize = executorSize;
+    }
+
+    public ParallelFilter() {
     }
 
     public void addPipeline(Pipeline pipeline) {
@@ -50,6 +48,11 @@ public class ParallelFilter extends AbstractFilter {
 
     @Override
     public void init() {
+
+        if (executorServices.get(this.executorName) == null) {
+            ExecutorService executorService = Executors.newFixedThreadPool(executorSize);
+            executorServices.put(this.executorName, executorService);
+        }
     }
 
     @Override
@@ -109,5 +112,13 @@ public class ParallelFilter extends AbstractFilter {
      */
     public List<Pipeline> getPipelines() {
         return pipelines;
+    }
+
+    public void setPipelines(List<Pipeline> pipelines) {
+        this.pipelines = pipelines;
+    }
+
+    public void setSourcePipelineId(String sourcePipelineId) {
+        this.sourcePipelineId = sourcePipelineId;
     }
 }
