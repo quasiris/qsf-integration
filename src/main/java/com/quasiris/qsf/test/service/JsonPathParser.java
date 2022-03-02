@@ -2,25 +2,34 @@ package com.quasiris.qsf.test.service;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import net.minidev.json.JSONArray;
 
 public class JsonPathParser {
 
 
     public static String getValue(String path, Object object) {
         try {
-            String value = JsonPath.parse(object).read(path, String.class);
-            return value;
+            Object value = JsonPath.parse(object).read(path, Object.class);
+            return getStringValue(value);
         } catch (Exception e) {
             return null;
         }
     }
     public static String getValueFromContext(String path, DocumentContext documentContext) {
         try {
-            String value = documentContext.read(path, String.class);
-            return value;
+            Object value = documentContext.read(path, Object.class);
+            return getStringValue(value);
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static String getStringValue(Object value) {
+        if(value instanceof JSONArray) {
+            JSONArray array = (JSONArray) value;
+            return array.get(0).toString();
+        }
+        return value.toString();
     }
 
     public static DocumentContext getDocumentContext(String value) {

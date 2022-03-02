@@ -11,6 +11,20 @@ import java.io.IOException;
 class JsonPathParserTest {
 
     @Test
+    void getValueFromSuggestListNull() throws IOException {
+        Object value = TestHelper.getResourceAsObject("/com/quasiris/qsf/test/JsonPathParser/suggest.json");
+        String actual = JsonPathParser.getValue("$.[?(@.suggest == '4044918925648000')].suggest", value);
+        Assertions.assertNull( actual);
+    }
+
+    @Test
+    void getValueFromSuggestList() throws IOException {
+        Object value = TestHelper.getResourceAsObject("/com/quasiris/qsf/test/JsonPathParser/suggest.json");
+        String actual = JsonPathParser.getValue("$.[?(@.suggest == '4044918925648')].suggest", value);
+        Assertions.assertEquals("4044918925648", actual);
+    }
+
+    @Test
     void getValueName() throws IOException {
         Object value = TestHelper.getResourceAsObject("/com/quasiris/qsf/test/JsonPathParser/example.json");
         String actual = JsonPathParser.getValue("$.name", value);
