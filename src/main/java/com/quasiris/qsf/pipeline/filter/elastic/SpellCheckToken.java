@@ -17,14 +17,14 @@ public class SpellCheckToken {
 
     private List<Score> correctedVariants;
 
-    private SpellCheckTokenType type;
+    private List<SpellCheckTokenType> types;
 
-    public SpellCheckTokenType getType() {
-        return type;
+    public List<SpellCheckTokenType> getTypes() {
+        return types;
     }
 
-    public void setType(SpellCheckTokenType type) {
-        this.type = type;
+    public void setTypes(List<SpellCheckTokenType> types) {
+        this.types = types;
     }
 
     /**

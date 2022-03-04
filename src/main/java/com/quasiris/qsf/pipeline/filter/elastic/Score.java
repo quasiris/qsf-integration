@@ -1,13 +1,29 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.quasiris.qsf.pipeline.filter.elastic.spellcheck.SpellCheckTokenType;
+
+import java.util.List;
+
 public class Score {
+
+
+    public Score() {
+    }
 
     private String text;
 
     private Double score = 0.0;
 
-    public Score() {
+    private List<SpellCheckTokenType> types;
+
+    public List<SpellCheckTokenType> getTypes() {
+        return types;
     }
+
+    public void setTypes(List<SpellCheckTokenType> types) {
+        this.types = types;
+    }
+
 
     public Score(String text, Double score) {
         this.text = text.trim();

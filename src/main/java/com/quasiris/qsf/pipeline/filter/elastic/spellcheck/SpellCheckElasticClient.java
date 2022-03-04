@@ -16,6 +16,7 @@ import com.quasiris.qsf.query.Token;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,6 +49,7 @@ public class SpellCheckElasticClient {
             spellCheckTokens.add(spellCheckToken);
 
             if(token.getValue().length() < minTokenLenght) {
+                spellCheckToken.setTypes(Arrays.asList(SpellCheckTokenType.IGNORED));
                 continue;
             }
 
@@ -73,7 +75,7 @@ public class SpellCheckElasticClient {
     void computeScoresFromElastic(SpellCheckToken token, ElasticResult elasticResult) {
         List<Score> scores = new ArrayList<>();
         if(elasticResult.getHits() == null || elasticResult.getHits().getHits().isEmpty() ) {
-            token.setType(SpellCheckTokenType.UNKNOWN);
+            token.setTypes(Arrays.asList(SpellCheckTokenType.UNKNOWN));
             return;
         }
 
@@ -81,8 +83,13 @@ public class SpellCheckElasticClient {
 
         for(Hit hit: elasticResult.getHits().getHits()) {
             String text = getAsText(hit.get_source(), "text");
+            List<String> types = getAsList(hit.get_source(), "type");
+            if(token.getTypes() == null) {
+                token.setTypes(SpellCheckTokenType.creates(types));
+            }
+
             if(SpellcheckUtils.fuzzyEquals(token.getToken().getValue(), text)) {
-                token.setType(SpellCheckTokenType.CORRECT);
+                token.setTypes(Arrays.asList(SpellCheckTokenType.EQUALS));
                 return;
             }
             Double score = hit.get_score();
@@ -91,12 +98,12 @@ public class SpellCheckElasticClient {
             if(weight > 10) {
                 score = score + 100;
             }
-
-            scores.add(new Score(text, score));
+            Score s = new Score(text, score);
+            s.setTypes(SpellCheckTokenType.creates(types));
+            scores.add(s);
         }
 
         token.setCorrectedVariants(scores);
-        token.setType(SpellCheckTokenType.CORRECTED);
     }
 
     private String getAsText(ObjectNode objectNode, String name) {
@@ -108,6 +115,25 @@ public class SpellCheckElasticClient {
             return node.get(0).asText();
         }
         return node.asText();
+
+    }
+
+    private List<String> getAsList(ObjectNode objectNode, String name) {
+        List<String> ret = new ArrayList<>();
+        JsonNode node = objectNode.get(name);
+        if(node == null) {
+            return ret;
+        }
+        if(node.isArray()) {
+            for (int i = 0; i < node.size(); i++) {
+                ret.add(node.get(i).asText());
+            }
+
+
+        } else {
+            ret.add(node.asText());
+        }
+        return ret;
 
     }
 
