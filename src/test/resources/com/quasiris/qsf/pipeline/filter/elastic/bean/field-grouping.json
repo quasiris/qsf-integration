@@ -1,0 +1,191 @@
+{
+    "took": 6,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 72,
+            "relation": "eq"
+        },
+        "max_score": null,
+        "hits": [
+            {
+                "_index": "product-index",
+                "_type": "_doc",
+                "_id": "237462:236444",
+                "_score": null,
+                "_source": {
+                    "title": "Quasiris Phone XXL"
+                },
+                "fields": {
+                    "quasirisId.keyword": [
+                        "237462"
+                    ]
+                },
+                "sort": [
+                    1647429372000
+                ],
+                "inner_hits": {
+                    "most_recent": {
+                        "hits": {
+                            "total": {
+                                "value": 4,
+                                "relation": "eq"
+                            },
+                            "max_score": 1,
+                            "hits": [
+                                {
+                                    "_index": "product-index",
+                                    "_type": "_doc",
+                                    "_id": "237462:237458",
+                                    "_score": 1,
+                                    "_source": {
+                                        "title": "Quasiris Phone XXL",
+                                        "titleVariant": "Quasiris Phone XXL in grün mit 256GB",
+                                        "variantObject": {
+                                            "farbe": "grün",
+                                            "speicher": "256GB"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_index": "product-index",
+                                    "_type": "_doc",
+                                    "_id": "237462:237370",
+                                    "_score": 1,
+                                    "_source": {
+                                        "title": "Quasiris Phone XXL",
+                                        "titleVariant": "Quasiris Phone XXL in blau mit 256GB",
+                                        "variantObject": {
+                                            "farbe": "blau",
+                                            "speicher": "256GB"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_index": "product-index",
+                                    "_type": "_doc",
+                                    "_id": "237462:237460",
+                                    "_score": 1,
+                                    "_source": {
+                                        "title": "Quasiris Phone XXL",
+                                        "titleVariant": "Quasiris Phone XXL in grau mit 256GB",
+                                        "variantObject": {
+                                            "farbe": "grau",
+                                            "speicher": "256GB"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_index": "product-index",
+                                    "_type": "_doc",
+                                    "_id": "237462:236444",
+                                    "_score": 1,
+                                    "_source": {
+                                        "title": "Quasiris Phone XXL",
+                                        "titleVariant": "Quasiris Phone XXL in gelb mit 256GB",
+                                        "variantObject": {
+                                            "farbe": "gelb",
+                                            "speicher": "256GB"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                "_index": "product-index",
+                "_type": "_doc",
+                "_id": "236442:236444",
+                "_score": null,
+                "_source": {
+                    "title": "Quasiris SuperPhone"
+                },
+                "fields": {
+                    "quasirisId.keyword": [
+                        "236442"
+                    ]
+                },
+                "sort": [
+                    1647429372000
+                ],
+                "inner_hits": {
+                    "most_recent": {
+                        "hits": {
+                            "total": {
+                                "value": 4,
+                                "relation": "eq"
+                            },
+                            "max_score": 1,
+                            "hits": [
+                                {
+                                    "_index": "product-index",
+                                    "_type": "_doc",
+                                    "_id": "236442:237370",
+                                    "_score": 1,
+                                    "_source": {
+                                        "title": "Quasiris SuperPhone",
+                                        "titleVariant": "Quasiris SuperPhone in grün mit 256GB",
+                                        "variantObject": {
+                                            "farbe": "grün",
+                                            "speicher": "256GB"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_index": "product-index",
+                                    "_type": "_doc",
+                                    "_id": "236442:237458",
+                                    "_score": 1,
+                                    "_source": {
+                                        "title": "Quasiris SuperPhone",
+                                        "titleVariant": "Quasiris SuperPhone in metallic mit 256GB",
+                                        "variantObject": {
+                                            "farbe": "metallic",
+                                            "speicher": "256GB"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_index": "product-index",
+                                    "_type": "_doc",
+                                    "_id": "236442:237460",
+                                    "_score": 1,
+                                    "_source": {
+                                        "title": "Quasiris SuperPhone",
+                                        "titleVariant": "Quasiris SuperPhone in kiesgrau mit 256GB",
+                                        "variantObject": {
+                                            "farbe": "kiesgrau",
+                                            "speicher": "256GB"
+                                        }
+                                    }
+                                },
+                                {
+                                    "_index": "product-index",
+                                    "_type": "_doc",
+                                    "_id": "236442:236444",
+                                    "_score": 1,
+                                    "_source": {
+                                        "title": "Quasiris SuperPhone",
+                                        "titleVariant": "Quasiris SuperPhone in blau mit 256GB",
+                                        "variantObject": {
+                                            "farbe": "blau",
+                                            "speicher": "256GB"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

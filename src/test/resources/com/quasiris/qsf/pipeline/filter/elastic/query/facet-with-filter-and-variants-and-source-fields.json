@@ -1,0 +1,71 @@
+{
+  "from" : 0,
+  "size" : 10,
+  "track_total_hits" : true,
+  "query" : {
+    "bool" : {
+      "must" : [ {
+        "match_all" : { }
+      } ]
+    }
+  },
+  "aggs" : {
+    "qsc_filtered" : {
+      "filter" : {
+        "bool" : { }
+      },
+      "aggs" : {
+        "accountId_filter_wrapper" : {
+          "filter" : {
+            "bool" : {
+              "must" : [ {
+                "term" : {
+                  "accountId" : "1234"
+                }
+              } ]
+            }
+          },
+          "aggs" : {
+            "accountId" : {
+              "terms" : {
+                "field" : "accountId"
+              },
+              "aggs" : {
+                "variant_count" : {
+                  "cardinality" : {
+                    "field" : "variantId.keyword"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "stock" : {
+          "terms" : {
+            "field" : "stock"
+          },
+          "aggs" : {
+            "variant_count" : {
+              "cardinality" : {
+                "field" : "variantId.keyword"
+              }
+            }
+          }
+        },
+        "_total_count" : {
+          "cardinality" : {
+            "field" : "variantId.keyword"
+          }
+        }
+      }
+    }
+  },
+  "collapse" : {
+    "field" : "variantId.keyword",
+    "inner_hits": {
+      "name": "most_recent",
+      "size": 100,
+      "_source" : [ "variantObject" ]
+    }
+  }
+}

@@ -17,6 +17,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class Elastic2SearchResultMappingTransformerTest {
 
     @Test
+    void testFieldGrouping() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addInnerhitsGroupMapping("variantObject", "variantObject");
+        ElasticResult elasticResult = readElasticResultFromFile("field-grouping.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+        Document document = searchResult.getDocuments().get(0);
+        List<Object> variantObjects = (List<Object>) document.getDocument().get("variantObject");
+        assertEquals(4, variantObjects.size());
+        Map<String, Object> variantObject = (Map<String, Object>) variantObjects.get(0);
+        assertEquals("grün", variantObject.get("farbe"));
+        assertEquals("Quasiris Phone XXL", document.getFieldValue("title"));
+    }
+
+    @Test
     void testFieldMappingWithWildcardInFromAndTo() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         transformer.addFieldMapping("attr_farbe*", "farbe*");

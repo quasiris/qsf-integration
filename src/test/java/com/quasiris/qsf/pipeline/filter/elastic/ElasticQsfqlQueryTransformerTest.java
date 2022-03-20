@@ -16,6 +16,7 @@ import com.quasiris.qsf.query.SearchFilterBuilder;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.Sort;
 import com.quasiris.qsf.test.converter.NullValueConverter;
+import com.quasiris.qsf.test.json.JsonAssert;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +28,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -555,6 +557,37 @@ public class ElasticQsfqlQueryTransformerTest {
         ObjectNode elasticQuery = transform(transformer,  searchQuery);
         assertQuery(elasticQuery, "facet-with-filter-and-variants.json");
     }
+    @DisplayName("Transform facet with filter and variantId and source fields")
+    @Test
+    public void transformFacetWithFilterAndVariantIdAndSourceFields() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+        transformer.setVariantId("variantId");
+        transformer.setInnerHitsSourceFields(new HashSet<>(Arrays.asList("variantObject")));
+
+        Facet accountId = new Facet();
+        accountId.setId("accountId");
+        accountId.setName("accountId");
+        SearchFilter searchFilter = SearchFilterBuilder.create().withId("accountId").value("1234").build();
+
+        accountId.getFacetFilters().add(searchFilter);
+
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQ("*");
+        searchQuery.setFacetList(new ArrayList<>());
+        searchQuery.getFacetList().add(accountId);
+
+
+        Facet stock = new Facet();
+        stock.setId("stock");
+        stock.setName("stock");
+        searchQuery.getFacetList().add(stock);
+
+
+        ObjectNode elasticQuery = transform(transformer,  searchQuery);
+        assertQuery(elasticQuery, "facet-with-filter-and-variants-and-source-fields.json");
+    }
 
     @DisplayName("Transform facet with multi select filters with or operator")
     @Test
@@ -808,17 +841,7 @@ public class ElasticQsfqlQueryTransformerTest {
     }
 
     private void assertQuery(ObjectNode elasticQuery, String file) throws IOException, JSONException {
-        String expected = IOUtils.getString("classpath://com/quasiris/qsf/pipeline/filter/elastic/query/" + file);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String query = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(elasticQuery);
-
-        JsonNode expectedJson = objectMapper.readValue(expected, JsonNode.class);
-        expected = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(expectedJson);
-        assertEquals(expected, query);
-
-        //JSONAssert.assertEquals(
-                //expected, elasticQuery.toString(), JSONCompareMode.STRICT);
+        JsonAssert.assertJson(elasticQuery, "classpath://com/quasiris/qsf/pipeline/filter/elastic/query/" + file);
     }
 
 }

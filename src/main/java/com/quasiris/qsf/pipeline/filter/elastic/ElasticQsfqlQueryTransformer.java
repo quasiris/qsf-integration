@@ -20,11 +20,7 @@ import com.quasiris.qsf.util.QsfIntegrationConstants;
 import com.quasiris.qsf.util.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -49,6 +45,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     private boolean multiSelectFilter;
     private String variantId;
+    protected Set<String> innerHitsSourceFields;
 
 
     @Override
@@ -313,7 +310,17 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         if(StringUtils.isNotEmpty(getVariantId())) {
             try {
                 String elasticField = getVariantId()+".keyword";
-                JsonBuilder jsonBuilder = new JsonBuilder().object("field", elasticField);
+                JsonBuilder jsonBuilder = new JsonBuilder().
+                        object("field", elasticField);
+
+
+                if(innerHitsSourceFields != null) {
+                    jsonBuilder.object("inner_hits").
+                            object("name", "most_recent").
+                            object("size", 100).
+                            object("_source", innerHitsSourceFields);
+                }
+
                 elasticQuery.set("collapse", jsonBuilder.get());
             } catch (JsonBuilderException ignored) {
             }
@@ -505,5 +512,13 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public void setVariantId(String variantId) {
         this.variantId = variantId;
+    }
+
+    public Set<String> getInnerHitsSourceFields() {
+        return innerHitsSourceFields;
+    }
+
+    public void setInnerHitsSourceFields(Set<String> innerHitsSourceFields) {
+        this.innerHitsSourceFields = innerHitsSourceFields;
     }
 }

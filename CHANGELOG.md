@@ -6,7 +6,8 @@ All notable changes qsf-integration project will be documented in this file.
 - implement a json assert for testing
 - implement field mapping with support for wildcards
 - add support for jsonPath array result
-
+- implement field grouping for elastic collapsing
+- 
 ### Changed
 - improve the spellchecking filter for parallel execution
 

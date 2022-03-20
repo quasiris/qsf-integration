@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.category.dto.CategoryDTO;
@@ -42,6 +43,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     private String filterPrefix = "";
     private String variantId;
+
+    private Map<String, List<String>> groupInnerhitsMapping;
 
     public Elastic2SearchResultMappingTransformer() {
 
@@ -294,10 +297,6 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         try {
             Map fields = mapper.readValue(objectNode.toString(), Map.class);
 
-            if(innerHits != null) {
-                transformInnerHits(document, fields, innerHits);
-            }
-
             if(fieldMapping.size() == 0) {
                 document.getDocument().putAll(fields);
             } else {
@@ -310,6 +309,11 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                     }
                 }
             }
+
+            if(innerHits != null) {
+                transformInnerHits(document, fields, innerHits);
+            }
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -352,10 +356,27 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     public void transformInnerHits(Document document,Map fields, LinkedHashMap<String, InnerHitResult> innerHits) {
+        ObjectMapper objectMapper = new ObjectMapper();
         for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
             String fieldName = entry.getKey();
             List<Map<String, Object>> values = (List) fields.get(fieldName);
             List<String> mappedFieldNames = fieldMapping.get(fieldName);
+            if(groupInnerhitsMapping != null) {
+                for(Map.Entry<String, List<String>> groupInnerhitsMappingEntry : groupInnerhitsMapping.entrySet()) {
+                    String innerhitsFieldName = groupInnerhitsMappingEntry.getKey();
+                    List<Object> grouped = new ArrayList<>();
+                    for (Hit hit : entry.getValue().getHits().getHits()) {
+                        Map<String, Object> innerHitsFields = objectMapper.convertValue(hit.get_source(), new TypeReference<Map<String, Object>>() {});
+                        Object groupedObject = innerHitsFields.get(innerhitsFieldName);
+                        if (groupedObject != null) {
+                            grouped.add(groupedObject);
+                        }
+                    }
+                    for(String resultFieldName: groupInnerhitsMappingEntry.getValue()) {
+                        document.getDocument().put(resultFieldName, grouped);
+                    }
+                }
+            }
             if(values == null && mappedFieldNames != null) {
                 for(Hit hit : entry.getValue().getHits().getHits()) {
                     Document innerDocument = transformHit(hit);
@@ -401,6 +422,20 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     public void filterPrefix(String filterPrefix) {
         this.filterPrefix=filterPrefix;
     }
+
+    public void addInnerhitsGroupMapping(String from, String to) {
+        if(groupInnerhitsMapping == null) {
+            groupInnerhitsMapping = new HashMap<>();
+        }
+        List<String> mapping = groupInnerhitsMapping.get(from);
+        if(mapping == null) {
+            mapping = new ArrayList<>();
+        }
+        mapping.add(to);
+
+        groupInnerhitsMapping.put(from, mapping);
+    }
+
 
     public void addFieldMapping(String from, String to) {
         List<String> mapping = fieldMapping.get(from);
