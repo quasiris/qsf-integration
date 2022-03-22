@@ -89,6 +89,8 @@ public class ElasticHttpClient {
                     client.close();
                 } catch (IOException ex) {
                     LOG.error("Could not close async http client", ex);
+                } finally {
+                    httpPost.releaseConnection();
                 }
             }
 
@@ -99,6 +101,8 @@ public class ElasticHttpClient {
                     client.close();
                 } catch (IOException ex) {
                     LOG.error("Could not close async http client", ex);
+                } finally {
+                    httpPost.releaseConnection();
                 }
             }
 
@@ -108,6 +112,8 @@ public class ElasticHttpClient {
                     client.close();
                 } catch (IOException ex) {
                     LOG.error("Could not close async http client", ex);
+                } finally {
+                    httpPost.releaseConnection();
                 }
             }
         });
