@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class ElasticHttpClient {
@@ -106,7 +105,7 @@ public class ElasticHttpClient {
 
         try {
             future.get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (Exception e) {
             LOG.error("Error while get future: "+e.getMessage(), e);
         }
 
