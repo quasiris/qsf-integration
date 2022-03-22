@@ -2,6 +2,8 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+### Fixed
+- set static timeout for ElasticHttpClient.postAsync, to avoid oom
 
 ## [5.2]
 ### Added

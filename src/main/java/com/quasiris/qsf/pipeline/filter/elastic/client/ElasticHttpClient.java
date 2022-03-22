@@ -12,6 +12,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import java.io.IOException;
 public class ElasticHttpClient {
 
     private static Logger LOG = LoggerFactory.getLogger(ElasticHttpClient.class);
+    private static Integer ASYNC_TIMEOUT = 100;
 
 
     public static String post(String url, String postString) throws IOException {
@@ -64,7 +66,14 @@ public class ElasticHttpClient {
     }
 
     public static void postAsync(String url, String postString, String contentType) {
-        CloseableHttpAsyncClient client = HttpAsyncClients.createDefault();
+        IOReactorConfig httpConfig = IOReactorConfig.custom()
+                .setSelectInterval(ASYNC_TIMEOUT)
+                .setSoTimeout(ASYNC_TIMEOUT)
+                .setConnectTimeout(ASYNC_TIMEOUT)
+                .build();
+        CloseableHttpAsyncClient client = HttpAsyncClients.custom()
+            .setDefaultIOReactorConfig(httpConfig)
+            .build();
         client.start();
         HttpPost httpPost = new HttpPost(url);
 
