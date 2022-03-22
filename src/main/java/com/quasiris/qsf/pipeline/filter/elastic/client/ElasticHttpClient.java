@@ -1,23 +1,31 @@
 package com.quasiris.qsf.pipeline.filter.elastic.client;
 
-import org.apache.http.HttpResponse;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
+import org.apache.hc.core5.concurrent.FutureCallback;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.io.CloseMode;
+import org.apache.hc.core5.reactor.IOReactorConfig;
+import org.apache.hc.core5.util.Timeout;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClients;
-import org.apache.http.impl.nio.reactor.IOReactorConfig;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class ElasticHttpClient {
 
@@ -66,56 +74,42 @@ public class ElasticHttpClient {
     }
 
     public static void postAsync(String url, String postString, String contentType) {
-        IOReactorConfig httpConfig = IOReactorConfig.custom()
-                .setSelectInterval(ASYNC_TIMEOUT)
-                .setSoTimeout(ASYNC_TIMEOUT)
-                .setConnectTimeout(ASYNC_TIMEOUT)
+        IOReactorConfig reactorConfig = IOReactorConfig.custom()
+                .setSoTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT))
                 .build();
         CloseableHttpAsyncClient client = HttpAsyncClients.custom()
-            .setDefaultIOReactorConfig(httpConfig)
+            .setIOReactorConfig(reactorConfig)
             .build();
         client.start();
-        HttpPost httpPost = new HttpPost(url);
 
-        StringEntity entity = new StringEntity(postString, "UTF-8");
-        httpPost.setEntity(entity);
-        httpPost.setHeader("Content-Type",contentType);
+        final SimpleHttpRequest request = SimpleRequestBuilder.post(url)
+                .setBody(postString, ContentType.parse(contentType))
+                .setCharset(StandardCharsets.UTF_8)
+                .build();
 
+        Future<SimpleHttpResponse> future = client.execute(request, new FutureCallback<SimpleHttpResponse>() {
+            @Override
+            public void completed(SimpleHttpResponse simpleHttpResponse) {
+                LOG.debug("The async request finished successful with code: "+simpleHttpResponse.getCode());
+            }
 
-        client.execute(httpPost, new FutureCallback<HttpResponse>() {
-            public void failed(final Exception e) {
+            @Override
+            public void failed(Exception e) {
                 LOG.error("The async request failed because " + e.getMessage(), e);
-                try {
-                    client.close();
-                } catch (IOException ex) {
-                    LOG.error("Could not close async http client", ex);
-                } finally {
-                    httpPost.releaseConnection();
-                }
             }
 
-            public void completed(final HttpResponse httpResponse) {
-                LOG.debug("The async request finished successful with code: "
-                        + httpResponse.getStatusLine().getStatusCode());
-                try {
-                    client.close();
-                } catch (IOException ex) {
-                    LOG.error("Could not close async http client", ex);
-                } finally {
-                    httpPost.releaseConnection();
-                }
-            }
-
+            @Override
             public void cancelled() {
                 LOG.error("The async request was canceled.");
-                try {
-                    client.close();
-                } catch (IOException ex) {
-                    LOG.error("Could not close async http client", ex);
-                } finally {
-                    httpPost.releaseConnection();
-                }
             }
         });
+
+        try {
+            future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("Error while get future: "+e.getMessage(), e);
+        }
+
+        client.close(CloseMode.GRACEFUL);
     }
 }
