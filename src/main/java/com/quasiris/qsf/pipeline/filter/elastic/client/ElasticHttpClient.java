@@ -73,11 +73,17 @@ public class ElasticHttpClient {
     }
 
     public static void postAsync(String url, String postString, String contentType) {
+        org.apache.hc.client5.http.config.RequestConfig config = org.apache.hc.client5.http.config.RequestConfig.custom()
+                .setConnectTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT))
+                .setConnectionRequestTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT))
+                .setResponseTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT)).build();
         IOReactorConfig reactorConfig = IOReactorConfig.custom()
+                .setSelectInterval(Timeout.ofMilliseconds(ASYNC_TIMEOUT))
                 .setSoTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT))
                 .build();
         CloseableHttpAsyncClient client = HttpAsyncClients.custom()
             .setIOReactorConfig(reactorConfig)
+            .setDefaultRequestConfig(config)
             .build();
         client.start();
 
