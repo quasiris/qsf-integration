@@ -8,12 +8,12 @@ import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.SearchResult;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -64,7 +64,7 @@ public class JsonMonitoringFilter extends AbstractFilter {
 
             }
             CloseableHttpResponse response = httpclient.execute(httpGet);
-            httpCode = response.getStatusLine().getStatusCode();
+            httpCode = response.getCode();
             StringBuilder responseBuilder = new StringBuilder();
             responseBuilder.append(EntityUtils.toString(response.getEntity()));
             httpclient.close();

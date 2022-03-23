@@ -1,24 +1,26 @@
 package com.quasiris.qsf.pipeline.filter.elastic.client;
 
+import org.apache.hc.client5.http.HttpResponseException;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
+import org.apache.hc.client5.http.classic.methods.HttpDelete;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.reactor.IOReactorConfig;
 import org.apache.hc.core5.util.Timeout;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +47,7 @@ public class ElasticHttpClient {
     public static String post(String url, String postString, String contentType) throws IOException {
         HttpPost httpPost = new HttpPost(url);
 
-        StringEntity entity = new StringEntity(postString, "UTF-8");
+        StringEntity entity = new StringEntity(postString, StandardCharsets.UTF_8);
         httpPost.setEntity(entity);
         httpPost.setHeader("Content-Type",contentType);
 
@@ -57,13 +59,17 @@ public class ElasticHttpClient {
         CloseableHttpResponse response = httpclient.execute(request);
         StringBuilder responseBuilder = new StringBuilder();
 
-        responseBuilder.append(EntityUtils.toString(response.getEntity()));
+        try {
+            responseBuilder.append(EntityUtils.toString(response.getEntity()));
+        } catch (ParseException e) {
+            throw new IOException("Could not parse response body!", e);
+        }
         httpclient.close();
 
-        if (response.getStatusLine().getStatusCode() < 300) {
+        if (response.getCode() < 300) {
             return responseBuilder.toString();
         } else {
-            throw new HttpResponseException(response.getStatusLine().getStatusCode(), responseBuilder.toString());
+            throw new HttpResponseException(response.getCode(), responseBuilder.toString());
         }
     }
 
@@ -73,7 +79,7 @@ public class ElasticHttpClient {
     }
 
     public static void postAsync(String url, String postString, String contentType) {
-        org.apache.hc.client5.http.config.RequestConfig config = org.apache.hc.client5.http.config.RequestConfig.custom()
+        RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT))
                 .setConnectionRequestTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT))
                 .setResponseTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT)).build();

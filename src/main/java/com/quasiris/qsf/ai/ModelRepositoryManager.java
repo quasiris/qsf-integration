@@ -2,18 +2,17 @@ package com.quasiris.qsf.ai;
 
 import com.quasiris.qsf.commons.util.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.HttpResponseException;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,17 +154,22 @@ public class ModelRepositoryManager {
             HttpPost post = new HttpPost(url);
             File file = new File(fileName);
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+//            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
             builder.addBinaryBody("file", file, ContentType.DEFAULT_BINARY, fileName);
             HttpEntity entity = builder.build();
             post.setEntity(entity);
-            HttpResponse response = httpclient.execute(post);
+            CloseableHttpResponse response = httpclient.execute(post);
 
-            if(response.getStatusLine().getStatusCode() >= 300) {
-                String responseBody = EntityUtils.toString(response.getEntity());
+            if(response.getCode() >= 300) {
+                String responseBody = null;
+                try {
+                    responseBody = EntityUtils.toString(response.getEntity());
+                } catch (ParseException e) {
+                    responseBody = "COULD NOT BE PARSED!";
+                }
                 throw new RuntimeException("Could not upload file " + fileName +
                         " to url: " + url +
-                        " http code: " + response.getStatusLine().getStatusCode() +
+                        " http code: " + response.getCode() +
                         " message: " +  responseBody);
             }
             httpclient.close();
@@ -188,14 +192,14 @@ public class ModelRepositoryManager {
             HttpGet httpGet = new HttpGet(modelUrl);
 
             CloseableHttpResponse response = httpclient.execute(httpGet);
-            if (response.getStatusLine().getStatusCode() < 300) {
+            if (response.getCode() < 300) {
                 try (InputStream inputStream = response.getEntity().getContent()) {
                     Files.copy(inputStream, Paths.get(getZipFile()), StandardCopyOption.REPLACE_EXISTING);
                 }
                 httpclient.close();
             } else {
                 String responseBody = EntityUtils.toString(response.getEntity());
-                int statusCode = response.getStatusLine().getStatusCode();
+                int statusCode = response.getCode();
                 httpclient.close();
                 throw new HttpResponseException(statusCode, responseBody);
             }

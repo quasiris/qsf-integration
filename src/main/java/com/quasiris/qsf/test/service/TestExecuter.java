@@ -17,23 +17,21 @@ import com.quasiris.qsf.test.dto.JsonPath;
 import com.quasiris.qsf.test.dto.Status;
 import com.quasiris.qsf.test.dto.TestCase;
 import com.quasiris.qsf.test.dto.TestCaseResult;
-import com.quasiris.qsf.commons.util.DateUtil;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.HttpResponseException;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 public class TestExecuter {
 
@@ -132,7 +130,7 @@ public class TestExecuter {
                 testCaseResult.getAssertionResults().addAll(assertStringValue(
                         "httpStatusCode",
                         http.getStatusCode(),
-                        String.valueOf(httpResponse.getStatusLine().getStatusCode())));
+                        String.valueOf(httpResponse.getCode())));
 
             }
         }
@@ -508,18 +506,22 @@ public class TestExecuter {
         CloseableHttpResponse response = httpclient.execute(request);
         this.httpResponse = response;
         this.requestTime = System.currentTimeMillis() - start;
-        if (response.getStatusLine().getStatusCode() < 300) {
-            responseBodyString = EntityUtils.toString(response.getEntity());
-        } else {
-            StringBuilder responseBuilder = new StringBuilder();
-            responseBuilder.append(EntityUtils.toString(response.getEntity()));
-            httpclient.close();
-            responseBodyString = responseBuilder.toString();
+        try {
+            if (response.getCode() < 300) {
+                    responseBodyString = EntityUtils.toString(response.getEntity());
+            } else {
+                StringBuilder responseBuilder = new StringBuilder();
+                responseBuilder.append(EntityUtils.toString(response.getEntity()));
+                httpclient.close();
+                responseBodyString = responseBuilder.toString();
 
 
-            throw new HttpResponseException(response.getStatusLine().getStatusCode(),
-                    " url: " + request.getURI().toString() +
-                    " response: " + responseBuilder.toString());
+                throw new HttpResponseException(response.getCode(),
+                        " url: " + request.getRequestUri() +
+                        " response: " + responseBuilder);
+            }
+        } catch (ParseException e) {
+            throw new IOException(e);
         }
     }
 

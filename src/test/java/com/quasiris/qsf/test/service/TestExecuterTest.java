@@ -4,10 +4,10 @@ import com.quasiris.qsf.TestHelper;
 import com.quasiris.qsf.test.dto.Status;
 import com.quasiris.qsf.test.dto.TestCase;
 import com.quasiris.qsf.test.dto.TestCaseResult;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -33,7 +33,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(200);
+            when(response.getCode()).thenReturn(200);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             Assertions.assertDoesNotThrow(() -> testExecuter.execute());
@@ -55,7 +55,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(400);
+            when(response.getCode()).thenReturn(400);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             Assertions.assertThrows(RuntimeException.class, () -> testExecuter.execute());
@@ -77,7 +77,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(200);
+            when(response.getCode()).thenReturn(200);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             TestCaseResult actual = testExecuter.execute();
@@ -101,7 +101,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(200);
+            when(response.getCode()).thenReturn(200);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             TestCaseResult actual = testExecuter.execute();
@@ -126,7 +126,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(200);
+            when(response.getCode()).thenReturn(200);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             TestCaseResult actual = testExecuter.execute();
@@ -155,7 +155,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(200);
+            when(response.getCode()).thenReturn(200);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             TestCaseResult actual = testExecuter.execute();
@@ -184,7 +184,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(200);
+            when(response.getCode()).thenReturn(200);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             TestCaseResult actual = testExecuter.execute();
@@ -211,7 +211,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(200);
+            when(response.getCode()).thenReturn(200);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             TestCaseResult actual = testExecuter.execute();
@@ -237,7 +237,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(200);
+            when(response.getCode()).thenReturn(200);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             TestCaseResult actual = testExecuter.execute();
@@ -265,7 +265,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(200);
+            when(response.getCode()).thenReturn(200);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             TestCaseResult actual = testExecuter.execute();
@@ -291,7 +291,7 @@ class TestExecuterTest {
             httpClient.when(HttpClients::createDefault).thenReturn(httpClientMock);
             entityUtilsMockedStatic.when(() -> EntityUtils.toString(any())).thenReturn(responseString);
             when(httpClientMock.execute(any())).thenReturn(response);
-            when(response.getStatusLine().getStatusCode()).thenReturn(201);
+            when(response.getCode()).thenReturn(201);
 
             TestExecuter testExecuter = new TestExecuter(testCase);
             TestCaseResult actual = testExecuter.execute();

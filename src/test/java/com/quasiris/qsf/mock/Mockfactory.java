@@ -3,11 +3,11 @@ package com.quasiris.qsf.mock;
 import com.quasiris.qsf.commons.util.IOUtils;
 import com.quasiris.qsf.pipeline.filter.solr.MockSolrClient;
 import com.quasiris.qsf.pipeline.filter.web.QSFHttpServletRequest;
-import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.StatusLine;
 import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ public class Mockfactory {
         Mockito.when(statusLine.getStatusCode()).thenReturn(statusCode);
 
         Mockito.when(response.getEntity()).thenReturn(httpEntity);
-        Mockito.when(response.getStatusLine()).thenReturn(statusLine);
+//        Mockito.when(response.getStatusLine()).thenReturn(statusLine);
 
         Mockito.when(httpClient.execute(Mockito.any())).thenReturn(response);
 
