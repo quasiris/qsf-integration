@@ -25,7 +25,7 @@ public class QSFHttpClient {
 
     private int timeout = 4000;
 
-    private String contentType = "application/json";
+    private String contentType = ContentType.APPLICATION_JSON.toString();
 
     private String charset = "UTF-8";
 

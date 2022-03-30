@@ -12,6 +12,7 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 
@@ -53,7 +54,7 @@ public class JsonMonitoringFilter extends AbstractFilter {
 
             HttpGet httpGet = new HttpGet(url);
 
-            httpGet.setHeader("Content-Type", "application/json");
+            httpGet.setHeader("Content-Type", ContentType.APPLICATION_JSON.toString());
 
             if(this.username != null && this.password != null) {
                 String auth = username + ":" + password;

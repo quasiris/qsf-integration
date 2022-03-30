@@ -35,7 +35,7 @@ public class ElasticHttpClient {
 
 
     public static String post(String url, String postString) throws IOException {
-        return post(url, postString, "application/json");
+        return post(url, postString, ContentType.APPLICATION_JSON.toString());
     }
 
 
@@ -75,7 +75,7 @@ public class ElasticHttpClient {
 
 
     public static void postAsync(String url, String postString) {
-        postAsync(url, postString, "application/json");
+        postAsync(url, postString, ContentType.APPLICATION_JSON.toString());
     }
 
     public static void postAsync(String url, String postString, String contentType) {
