@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import com.quasiris.qsf.commons.text.date.HumanDateParser;
 import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
+import com.quasiris.qsf.dto.query.ResultDTO;
+import com.quasiris.qsf.dto.query.SpellcheckDTO;
 import com.quasiris.qsf.query.Facet;
 import com.quasiris.qsf.query.FilterDataType;
 import com.quasiris.qsf.query.FilterOperator;
@@ -79,6 +81,19 @@ public class QsfqlParser {
             return;
         }
         query.setCtrl(ctrl);
+        if(ctrl.contains("spellcheckDisabled")) {
+            ResultDTO resultDTO = query.getResult();
+            if(resultDTO == null) {
+                resultDTO = new ResultDTO();
+                query.setResult(resultDTO);
+            }
+            SpellcheckDTO spellcheckDTO = resultDTO.getSpellcheck();
+            if(spellcheckDTO == null) {
+                spellcheckDTO = new SpellcheckDTO();
+                resultDTO.setSpellcheck(spellcheckDTO);
+            }
+            spellcheckDTO.setEnabled(Boolean.FALSE);
+        }
     }
 
     public static Set<String> parseCtrlFromString(String ctrl) {
