@@ -49,6 +49,9 @@ public class QsfSearchQueryParser {
         if("true".equals(httpServletRequest.getParameter("debug"))) {
             searchQuery.setDebug(true);
         }
+        if("true".equals(httpServletRequest.getParameter("explain"))) {
+            searchQuery.setExplain(true);
+        }
         Set<String> ctrl = QsfqlParser.parseCtrlFromString(httpServletRequest.getParameter("ctrl"));
         if(ctrl != null && ctrl.size() > 0) {
             searchQuery.setCtrl(ctrl);

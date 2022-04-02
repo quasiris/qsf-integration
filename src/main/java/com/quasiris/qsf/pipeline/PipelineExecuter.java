@@ -1,5 +1,7 @@
 package com.quasiris.qsf.pipeline;
 
+import com.quasiris.qsf.explain.Explain;
+import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.query.SearchQuery;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,10 +90,17 @@ public class PipelineExecuter {
 
     public PipelineContainer execute() throws PipelineContainerException, PipelineContainerDebugException {
         try {
+            if(pipelineContainer != null) {
+                ExplainContextHolder.getContext().setExplain(pipelineContainer.getSearchQuery().isExplain());
+            }
+            Explain explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
             ExecutorService executorService = executorServices.get(executorName);
-            FutureTask<PipelineContainer> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer()));
+            FutureTask<PipelineCallableResponse> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer()));
             executorService.execute(futureTask);
-            pipelineContainer = futureTask.get(pipeline.getTimeout(), TimeUnit.MILLISECONDS);
+            PipelineCallableResponse response = futureTask.get(pipeline.getTimeout(), TimeUnit.MILLISECONDS);
+            ExplainContextHolder.getContext().addChild(response.getExplain());
+            pipelineContainer = response.getPipelineContainer();
+            explain.setDuration(pipelineContainer.currentTime());
             if(pipelineContainer.isDebugEnabled()) {
                 throw new PipelineContainerDebugException(pipelineContainer);
             }
