@@ -8,7 +8,6 @@ final public class ExplainContextHolder {
         contextHolder.remove();
     }
     public static ExplainContext getContext() {
-        System.out.println("thread tbl: " + Thread.currentThread().getName());
         ExplainContext explainContext = contextHolder.get();
         if(explainContext == null) {
             contextHolder.set(new ExplainContext());
