@@ -5,6 +5,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Changed
 - update httpcomponents to 5.x
 - implement a query parameter to disable the spellcheck
+- implement explain feature
 
 ### Fixed
 - set static timeout for ElasticHttpClient.postAsync, to avoid oom
