@@ -4,7 +4,7 @@ final public class ExplainContextHolder {
     private static final ThreadLocal<ExplainContext> contextHolder = new ThreadLocal();
 
 
-    public void clearContext() {
+    public static void clearContext() {
         contextHolder.remove();
     }
     public static ExplainContext getContext() {

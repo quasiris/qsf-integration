@@ -22,6 +22,7 @@ public class PipelineCallable implements Callable<PipelineCallableResponse> {
     @Override
     public PipelineCallableResponse call() throws Exception {
         long start = System.currentTimeMillis();
+        ExplainContextHolder.clearContext();
         ExplainContextHolder.getContext().setExplain(pipelineContainer.getSearchQuery().isExplain());
         Explain explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
         PipelineExecuterService pipelineExecuterService = new PipelineExecuterService(pipeline);

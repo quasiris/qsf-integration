@@ -90,6 +90,7 @@ public class PipelineExecuter {
 
     public PipelineContainer execute() throws PipelineContainerException, PipelineContainerDebugException {
         try {
+            ExplainContextHolder.clearContext();
             if(pipelineContainer != null) {
                 ExplainContextHolder.getContext().setExplain(pipelineContainer.getSearchQuery().isExplain());
             }
