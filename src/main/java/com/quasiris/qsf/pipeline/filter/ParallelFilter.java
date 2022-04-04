@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter;
 
+import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.pipeline.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,7 @@ public class ParallelFilter extends AbstractFilter {
 
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
-        List<PipelineFutureTask<PipelineContainer>> futureTaskList = new ArrayList<>();
+        List<PipelineFutureTask<PipelineCallableResponse>> futureTaskList = new ArrayList<>();
 
         for(Pipeline pipeline: pipelines) {
             futureTaskList.add(new PipelineFutureTask<>(new PipelineCallable(pipeline, pipelineContainer), pipeline));
@@ -65,17 +66,19 @@ public class ParallelFilter extends AbstractFilter {
 
         ExecutorService executorService = executorServices.get(executorName);
 
-        for(PipelineFutureTask<PipelineContainer> futureTask :futureTaskList) {
+        for(PipelineFutureTask<PipelineCallableResponse> futureTask :futureTaskList) {
             executorService.execute(futureTask);
         }
 
 
         List<PipelineContainer> results = new ArrayList<>();
 
-            for(PipelineFutureTask<PipelineContainer> futureTask :futureTaskList) {
+            for(PipelineFutureTask<PipelineCallableResponse> futureTask :futureTaskList) {
                 try {
                     LOG.debug("getting result for pipeline " + futureTask.getPipeline().getId());
-                    PipelineContainer value = futureTask.getWithTimeout();
+                    PipelineCallableResponse response = futureTask.getWithTimeout();
+                    ExplainContextHolder.getContext().addChild(response.getExplain());
+                    PipelineContainer value = response.getPipelineContainer();
                     results.add(value);
                 } catch (TimeoutException e) {
                     Pipeline pipeline = futureTask.getPipeline();

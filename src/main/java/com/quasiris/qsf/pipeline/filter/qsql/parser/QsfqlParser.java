@@ -106,6 +106,7 @@ public class QsfqlParser {
     void parseMeta(SearchQuery query) {
         query.setRequestId(getParameter("requestId", UUID.randomUUID().toString()));
         query.setDebug(getParameterAsBoolean("debug", query.isDebug()));
+        query.setExplain(getParameterAsBoolean("explain", query.isExplain()));
         query.setTracking(getParameterAsBoolean("tracking", Boolean.TRUE));
     }
 

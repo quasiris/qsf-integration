@@ -1,16 +1,17 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.commons.util.UrlUtil;
+import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.exception.DebugType;
+import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
-import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.util.PrintUtil;
-import com.quasiris.qsf.commons.util.UrlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,12 +48,17 @@ public class ElasticFilter extends AbstractFilter {
         if(elasticQuery == null) {
             return pipelineContainer;
         }
+        ExplainContextHolder.getContext().explain(getId() + ".baseUrl", UrlUtil.removePassword(baseUrl));
+        ExplainContextHolder.getContext().explainJson(getId() + ".query", elasticQuery);
 
         pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, UrlUtil.removePassword(baseUrl));
         pipelineContainer.debug(getId() + ".query", DebugType.JSON, elasticQuery);
 
         ElasticResult elasticResult = elasticClient.request(baseUrl + "/_search", elasticQuery);
+
+        ExplainContextHolder.getContext().explainJson(getId() + ".result", elasticResult);
         pipelineContainer.debug(getId() + ".result", DebugType.OBJECT, elasticResult);
+
         searchResultTransformer.init(pipelineContainer);
         SearchResult searchResult = searchResultTransformer.transform(elasticResult);
         searchResult.setName(resultSetId);

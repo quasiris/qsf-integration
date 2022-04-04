@@ -1,6 +1,8 @@
 package com.quasiris.qsf.pipeline;
 
 import com.quasiris.qsf.exception.Debug;
+import com.quasiris.qsf.explain.Explain;
+import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.exception.PipelineStopException;
 import com.quasiris.qsf.pipeline.filter.Filter;
@@ -58,6 +60,8 @@ public class PipelineExecuterService {
 
     private PipelineContainer filter(PipelineContainer pipelineContainer) throws PipelineContainerException, PipelineRestartException {
         for(Filter filter : pipeline.getFilterList()) {
+            Explain currentExplain = ExplainContextHolder.getContext().getCurrent();
+            Explain filterExplain = ExplainContextHolder.getContext().filter(filter.getId());
             failOnError(pipelineContainer);
             try {
                 LOG.debug("The filter: " + filter.getId() + " started.");
@@ -76,12 +80,17 @@ public class PipelineExecuterService {
                 if(pipelineContainer.isDebugEnabled()) {
                     debugRuntime(pipelineContainer, filter);
                 }
+                ExplainContextHolder.getContext().setCurrent(currentExplain);
+                ExplainContextHolder.getContext().explain("stopPipeline", "pipeline.stop", "pipeline.stop");
+
                 return pipelineContainer;
             } catch(PipelineRestartException restart)  {
                 LOG.debug("The filter: " + filter.getId() + " initiated a restart of the pipeline.");
                 if(pipelineContainer.isDebugEnabled()) {
                     debugRuntime(pipelineContainer, filter);
                 }
+                ExplainContextHolder.getContext().setCurrent(currentExplain);
+                ExplainContextHolder.getContext().explain("restartPipeline", "restart." + restart.getStartPipelineId(), "restart pipeline " + restart.getStartPipelineId());
                 throw restart;
             } catch (Exception e) {
                 LOG.debug("The filter: " + filter.getId() + " failed with an error: " + e.getMessage());
@@ -89,7 +98,10 @@ public class PipelineExecuterService {
                     debugRuntime(pipelineContainer, filter);
                 }
                 filter.onError(pipelineContainer, e);
+                ExplainContextHolder.getContext().explain("exception", filter.getId() + ".error", e.getMessage());
             }
+            filterExplain.setDuration(filter.getCurrentTime());
+            ExplainContextHolder.getContext().setCurrent(currentExplain);
         }
         return pipelineContainer;
     }
