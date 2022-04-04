@@ -34,6 +34,7 @@ public class SearchQuery {
     private Integer rows;
 
     private boolean debug = false;
+    private boolean explain = false;
 
     private String requestOrigin;
 
@@ -73,6 +74,7 @@ public class SearchQuery {
         this.page = searchQuery.getPage();
         this.rows = searchQuery.getRows();
         this.debug = searchQuery.isDebug();
+        this.explain = searchQuery.isExplain();
         this.requestOrigin = searchQuery.getRequestOrigin();
 
         // TODO we need a deep copy?
@@ -369,6 +371,14 @@ public class SearchQuery {
         this.result = result;
     }
 
+    public boolean isExplain() {
+        return explain;
+    }
+
+    public void setExplain(boolean explain) {
+        this.explain = explain;
+    }
+
     @Override
     public String toString() {
         return "SearchQuery{" +
@@ -381,6 +391,7 @@ public class SearchQuery {
                 ", page=" + page +
                 ", rows=" + rows +
                 ", debug=" + debug +
+                ", explain=" + explain +
                 '}';
     }
 }
