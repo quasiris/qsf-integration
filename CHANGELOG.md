@@ -2,6 +2,8 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+
+## [5.3]
 ### Changed
 - update httpcomponents to 5.x
 - implement a query parameter to disable the spellcheck
