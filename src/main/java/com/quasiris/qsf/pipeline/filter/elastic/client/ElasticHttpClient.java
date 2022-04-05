@@ -31,7 +31,7 @@ import java.util.concurrent.Future;
 public class ElasticHttpClient {
 
     private static Logger LOG = LoggerFactory.getLogger(ElasticHttpClient.class);
-    private static Integer ASYNC_TIMEOUT = 100;
+    private static Integer ASYNC_TIMEOUT = 1000;
 
 
     public static String post(String url, String postString) throws IOException {
