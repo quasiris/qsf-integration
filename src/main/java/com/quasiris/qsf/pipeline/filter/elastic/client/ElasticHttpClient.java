@@ -18,6 +18,7 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http2.HttpVersionPolicy;
 import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.reactor.IOReactorConfig;
 import org.apache.hc.core5.util.Timeout;
@@ -88,6 +89,7 @@ public class ElasticHttpClient {
                 .setSoTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT))
                 .build();
         CloseableHttpAsyncClient client = HttpAsyncClients.custom()
+            .setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_1)
             .setIOReactorConfig(reactorConfig)
             .setDefaultRequestConfig(config)
             .build();
