@@ -88,7 +88,6 @@ public class QsfqlFilterMapper {
         if(elasticField == null) {
             throw new IllegalArgumentException("There is no field name defined.");
         }
-
         JsonBuilder jsonBuilder = JsonBuilder.create().array();
 
         for(String filterValue : searchFilter.getValues()) {

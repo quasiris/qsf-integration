@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -121,17 +120,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 hasAggs = true;
 
             } else if ("categorySelect".equals(aggregation.getType())) {
-                // wenn kein Filter gesetzt ist, spiele Facette 0 aus
-
-                int level = 0;
                 SearchFilter categorySelectFilter = SearchFilters.get(aggregation.getId(), searchQuery.getSearchFilterList());
-                if(categorySelectFilter != null) {
-                    String value = categorySelectFilter.getValues().stream().findFirst().orElse(null);
-                    String[] cats = value.split(Pattern.quote("|___|"));
-                    level = cats.length;
-                }
-
-
+                int level = CategorySelectBuilder.getLevelFromFilter(categorySelectFilter);
                 for (int i = 0; i <= level; i++) {
                     createCategorySelectFacet(aggregation, filterMapper, jsonBuilder, i);
                 }
@@ -175,7 +165,9 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     void createCategorySelectFacet(Facet aggregation, QsfqlFilterMapper filterMapper, JsonBuilder jsonBuilder, int level) throws JsonBuilderException {
         Facet categoryTree = new Facet();
         categoryTree.setName(aggregation.getName() + level);
-        categoryTree.setId(aggregation.getId() + level + ".keyword");
+
+        String filterId = filterMapper.mapFilterField(aggregation.getId() + level);
+        categoryTree.setId(filterId);
 
 
         List<BaseSearchFilter> searchQueryfilters = SerializationUtils.deepCopyList(searchQuery.getSearchFilterList());
@@ -187,9 +179,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 searchQueryfilters.add(categorySearchFilterForFacet);
             }
         }
-
-
-
 
         ObjectNode filters = filterMapper.buildFiltersJson(searchQueryfilters);
         JsonNode agg = AggregationMapper.createAgg(categoryTree, false, filters, variantId);
