@@ -1,20 +1,12 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.commons.util.DateUtil;
-import com.quasiris.qsf.commons.util.IOUtils;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTestUtil;
-import com.quasiris.qsf.query.Facet;
-import com.quasiris.qsf.query.FilterOperator;
-import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.query.SearchFilterBuilder;
-import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.query.Sort;
+import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.test.converter.NullValueConverter;
 import com.quasiris.qsf.test.json.JsonAssert;
 import org.json.JSONException;
@@ -56,8 +48,13 @@ public class ElasticQsfqlQueryTransformerTest {
         //SearchFilter gfmCategory0 = SearchFilterBuilder.create().withId("gfmCategory0").value("237030|-|2|-|Änderung").build();
 
         transformer.setAggregations(Arrays.asList(facet));
-        ObjectNode elasticQuery = transform(transformer,  "q=*", "f.gfmCategoryTree0=237030|-|2|-|Änderung");
-        assertQuery(elasticQuery, "slider.json");
+        ObjectNode elasticQuery = transform(transformer,
+                "q=*",
+                //"f.gfmCategoryTree0=237030|-|2|-|Änderung"
+                //"f.gfmCategoryTree1=237030|-|2|-|Änderung|___|237090|-|14|-|Rechnung"
+                "f.gfmCategoryTree2=237030|-|2|-|Änderung|___|237090|-|14|-|Rechnung|___|237124|-|1|-|RechnungOnline"
+        );
+        //assertQuery(elasticQuery, "slider.json");
 
     }
 
