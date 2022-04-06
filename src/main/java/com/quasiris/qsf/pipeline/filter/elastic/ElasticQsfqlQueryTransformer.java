@@ -124,6 +124,16 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 JsonNode agg = AggregationMapper.createSlider(aggregation, filters);
                 jsonBuilder.json(agg);
                 hasAggs = true;
+
+            } else if ("categorySelect".equals(aggregation.getType())) {
+                // wenn kein Filter gesetzt ist, spiele Facette 0 aus
+                ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
+                Facet categoryTree = new Facet();
+                categoryTree.setName(aggregation.getName() + "0");
+                categoryTree.setId(aggregation.getId() + "0.keyword");
+                JsonNode agg = AggregationMapper.createAgg(categoryTree, false, filters, variantId);
+                jsonBuilder.json(agg);
+                hasAggs = true;
             } else {
                 ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
                 JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, variantId);
@@ -187,7 +197,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             BaseSearchFilter filter = it.next();
             if(filter instanceof SearchFilter) {
                 // remove if self
-                if(filterMapper.mapFilterField(((SearchFilter)filter).getId()).equals(id)) {
+                // TODO we need a better solution for this workaround
+                if(filterMapper.mapFilterField(((SearchFilter)filter).getId()).startsWith(id)) {
                     it.remove();
                 }
             } else if(filter instanceof BoolSearchFilter) {

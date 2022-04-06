@@ -38,6 +38,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class ElasticQsfqlQueryTransformerTest {
 
+    @DisplayName("Transform categorySelect")
+    @Test
+    public void transformFacetCategorySElect() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+        transformer.addFilterRule("(.+)", "$1.keyword");
+
+        Facet facet = new Facet();
+        facet.setType("categorySelect");
+        facet.setName("gfmCategoryTree");
+        facet.setId("gfmCategoryTree");
+        facet.setOperator(FilterOperator.OR);
+
+
+        //SearchFilter gfmCategory0 = SearchFilterBuilder.create().withId("gfmCategory0").value("237030|-|2|-|Änderung").build();
+
+        transformer.setAggregations(Arrays.asList(facet));
+        ObjectNode elasticQuery = transform(transformer,  "q=*", "f.gfmCategoryTree0=237030|-|2|-|Änderung");
+        assertQuery(elasticQuery, "slider.json");
+
+    }
+
     @DisplayName("Transform slider")
     @Test
     public void transformSlider() throws Exception {
