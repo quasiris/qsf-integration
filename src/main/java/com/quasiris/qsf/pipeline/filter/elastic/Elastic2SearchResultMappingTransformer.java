@@ -158,7 +158,9 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         if ("slider".equals(mapping.getType())) {
             return mapAggregationToSlider(facetId, aggregation, mapping);
         } else if ("navigation".equals(mapping.getType())) {
-            mapAggregationToNavigation(facetId, aggregation, mapping);
+            return mapAggregationToNavigation(facetId, aggregation, mapping);
+        } else if ("categorySelect".equals(mapping.getType())) {
+            return mapAggregationToFacet(facetId, aggregation, filterType, filterValuePrefix);
         }
 
 

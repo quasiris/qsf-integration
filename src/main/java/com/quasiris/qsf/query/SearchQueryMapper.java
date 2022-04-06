@@ -87,6 +87,9 @@ public class SearchQueryMapper {
         SearchFilter searchFilter = new SearchFilter();
         searchFilter.setId(searchFilterDTO.getId());
         searchFilter.setName(searchFilterDTO.getName());
+        if(searchFilter.getName() == null) {
+            searchFilter.setName(searchFilter.getId());
+        }
         if(searchFilterDTO.getFilterType() == null) {
             searchFilterDTO.setFilterType(com.quasiris.qsf.dto.query.FilterType.TERM);
         }
@@ -120,7 +123,7 @@ public class SearchQueryMapper {
         if(!searchFilterDTO.getFilterType().isTerm()) {
             return;
         }
-        searchFilter.setFilterType(FilterType.MATCH);
+        searchFilter.setFilterType(FilterType.TERM);
         if(searchFilter.getFilterOperator() == null) {
             searchFilter.setFilterOperator(FilterOperator.OR);
         }
