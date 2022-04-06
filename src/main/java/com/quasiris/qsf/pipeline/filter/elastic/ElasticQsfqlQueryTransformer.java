@@ -8,15 +8,9 @@ import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
-import com.quasiris.qsf.query.BaseSearchFilter;
-import com.quasiris.qsf.query.BoolSearchFilter;
-import com.quasiris.qsf.query.Control;
-import com.quasiris.qsf.query.Facet;
-import com.quasiris.qsf.query.FilterOperator;
-import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.query.Sort;
+import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
+import com.quasiris.qsf.util.SearchFilters;
 import com.quasiris.qsf.util.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -124,6 +118,14 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 JsonNode agg = AggregationMapper.createSlider(aggregation, filters);
                 jsonBuilder.json(agg);
                 hasAggs = true;
+
+            } else if ("categorySelect".equals(aggregation.getType())) {
+                SearchFilter categorySelectFilter = SearchFilters.get(aggregation.getId(), searchQuery.getSearchFilterList());
+                int level = CategorySelectBuilder.getLevelFromFilter(categorySelectFilter);
+                for (int i = 0; i <= level; i++) {
+                    createCategorySelectFacet(aggregation, filterMapper, jsonBuilder, i);
+                }
+                hasAggs = true;
             } else {
                 ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
                 JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, variantId);
@@ -157,6 +159,32 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         elasticQuery.set("aggs", jsonBuilder.get());
     }
 
+
+
+
+    void createCategorySelectFacet(Facet aggregation, QsfqlFilterMapper filterMapper, JsonBuilder jsonBuilder, int level) throws JsonBuilderException {
+        Facet categoryTree = new Facet();
+        categoryTree.setName(aggregation.getName() + level);
+
+        String filterId = filterMapper.mapFilterField(aggregation.getId() + level);
+        categoryTree.setId(filterId);
+
+
+        List<BaseSearchFilter> searchQueryfilters = SerializationUtils.deepCopyList(searchQuery.getSearchFilterList());
+        SearchFilter categorySelectFilter = SearchFilters.get(aggregation.getId(), searchQuery.getSearchFilterList());
+        if(categorySelectFilter != null) {
+            searchQueryfilters = SearchFilters.remove(searchQueryfilters, categorySelectFilter.getId());
+            SearchFilter categorySearchFilterForFacet = CategorySelectBuilder.getFilterForLevel(aggregation.getId(), level-1, categorySelectFilter.getValues().get(0));
+            if(categorySearchFilterForFacet  != null) {
+                searchQueryfilters.add(categorySearchFilterForFacet);
+            }
+        }
+
+        ObjectNode filters = filterMapper.buildFiltersJson(searchQueryfilters);
+        JsonNode agg = AggregationMapper.createAgg(categoryTree, false, filters, variantId);
+        jsonBuilder.json(agg);
+    }
+
     private ObjectNode getFilterAsJson(QsfqlFilterMapper filterMapper, String id, List<BaseSearchFilter> facetFilter, FilterOperator operator ) throws JsonBuilderException{
         List<BaseSearchFilter> excludeFilters = new ArrayList<>();
         if(operator.equals(FilterOperator.AND)) {
@@ -181,19 +209,32 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
      * @param filtersCopy copy of search filters
      * @return filters that will be applied to facet
      */
-    private void excludeOwnFilter(List<BaseSearchFilter> filtersCopy, QsfqlFilterMapper filterMapper, String id) {
+    private void excludeOwnFilter(List<BaseSearchFilter> filtersCopy, QsfqlFilterMapper filterMapper, Set<String> excludeIds) {
         Iterator<BaseSearchFilter> it = filtersCopy.iterator();
         while (it.hasNext()) {
             BaseSearchFilter filter = it.next();
             if(filter instanceof SearchFilter) {
                 // remove if self
-                if(filterMapper.mapFilterField(((SearchFilter)filter).getId()).equals(id)) {
+                // TODO we need a better solution for this workaround
+
+                SearchFilter searchFilter = (SearchFilter) filter;
+                String filterId = filterMapper.mapFilterField(searchFilter.getId());
+                if(excludeIds.contains(filterId)) {
                     it.remove();
                 }
             } else if(filter instanceof BoolSearchFilter) {
-                excludeOwnFilter(((BoolSearchFilter) filter).getFilters(), filterMapper, id);
+                excludeOwnFilter(((BoolSearchFilter) filter).getFilters(), filterMapper, excludeIds);
             }
         }
+    }
+
+    /**
+     * Add all filters except own
+     * @param filtersCopy copy of search filters
+     * @return filters that will be applied to facet
+     */
+    private void excludeOwnFilter(List<BaseSearchFilter> filtersCopy, QsfqlFilterMapper filterMapper, String id) {
+        excludeOwnFilter(filtersCopy, filterMapper, Collections.singleton(id));
     }
 
     public void transformQuery() {
