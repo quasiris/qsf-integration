@@ -140,7 +140,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             aggregation.setId(getVariantId() +".keyword");
             aggregation.setName(QsfIntegrationConstants.TOTAL_COUNT_AGGREGATION_NAME);
             aggregation.setOperator(FilterOperator.OR);
-            aggregation.setFacetFilters(searchQuery.getSearchFilterList());
             aggregation.setType("cardinality");
             ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
             JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, null);
