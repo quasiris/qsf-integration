@@ -18,27 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class Elastic2SearchResultMappingTransformerTest {
 
     @Test
-    void testCategorySelect() throws Exception {
-        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
-        transformer.addFacetTypeMapping("gfmCategoryTree0", "categorySelect");
-        transformer.addFacetTypeMapping("gfmCategoryTree1", "categorySelect");
-        transformer.addFacetTypeMapping("gfmCategoryTree2", "categorySelect");
-        transformer.addFacetTypeMapping("gfmCategoryTree3", "categorySelect");
-
-        CategorySelectFacetKeyMapper categorySelectFacetKeyMapper = new CategorySelectFacetKeyMapper();
-        transformer.addFacetKeyMapper("gfmCategoryTree0", categorySelectFacetKeyMapper);
-        transformer.addFacetKeyMapper("gfmCategoryTree1", categorySelectFacetKeyMapper);
-        transformer.addFacetKeyMapper("gfmCategoryTree2", categorySelectFacetKeyMapper);
-        transformer.addFacetKeyMapper("gfmCategoryTree3", categorySelectFacetKeyMapper);
-
-
-        ElasticResult elasticResult = readElasticResultFromFile("category-select.json");
-        SearchResult searchResult = transformer.transform(elasticResult);
-        Document document = searchResult.getDocuments().get(0);
-        assertEquals("Quasiris Phone XXL", document.getFieldValue("title"));
-    }
-
-    @Test
     void testFieldGrouping() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         transformer.addInnerhitsGroupMapping("variantObject", "variantObject");
