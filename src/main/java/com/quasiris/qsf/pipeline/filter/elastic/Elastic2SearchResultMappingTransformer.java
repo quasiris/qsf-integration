@@ -160,7 +160,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         } else if ("navigation".equals(mapping.getType())) {
             return mapAggregationToNavigation(facetId, aggregation, mapping);
         } else if ("categorySelect".equals(mapping.getType())) {
-            return mapAggregationToFacet(facetId, aggregation, filterType, filterValuePrefix);
+            return mapAggregationToFacet(facetId + "Tree", aggregation, filterType, filterValuePrefix);
         }
 
 
