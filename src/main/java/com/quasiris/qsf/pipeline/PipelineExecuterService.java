@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline;
 import com.quasiris.qsf.exception.Debug;
 import com.quasiris.qsf.explain.Explain;
 import com.quasiris.qsf.explain.ExplainContextHolder;
+import com.quasiris.qsf.explain.ExplainFilter;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.exception.PipelineStopException;
 import com.quasiris.qsf.pipeline.filter.Filter;
@@ -61,7 +62,7 @@ public class PipelineExecuterService {
     private PipelineContainer filter(PipelineContainer pipelineContainer) throws PipelineContainerException, PipelineRestartException {
         for(Filter filter : pipeline.getFilterList()) {
             Explain currentExplain = ExplainContextHolder.getContext().getCurrent();
-            Explain filterExplain = ExplainContextHolder.getContext().filter(filter.getId());
+            Explain<ExplainFilter> filterExplain = ExplainContextHolder.getContext().filter(filter.getId());
             failOnError(pipelineContainer);
             try {
                 LOG.debug("The filter: " + filter.getId() + " started.");
@@ -100,7 +101,7 @@ public class PipelineExecuterService {
                 filter.onError(pipelineContainer, e);
                 ExplainContextHolder.getContext().explain("exception", filter.getId() + ".error", e.getMessage());
             }
-            filterExplain.setDuration(filter.getCurrentTime());
+            filterExplain.getExplainObject().setDuration(filter.getCurrentTime());
             ExplainContextHolder.getContext().setCurrent(currentExplain);
         }
         return pipelineContainer;

@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline;
 
 import com.quasiris.qsf.explain.Explain;
 import com.quasiris.qsf.explain.ExplainContextHolder;
+import com.quasiris.qsf.explain.ExplainPipeline;
 import com.quasiris.qsf.query.SearchQuery;
 
 import javax.servlet.http.HttpServletRequest;
@@ -94,14 +95,14 @@ public class PipelineExecuter {
             if(pipelineContainer != null) {
                 ExplainContextHolder.getContext().setExplain(pipelineContainer.getSearchQuery().isExplain());
             }
-            Explain explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
+            Explain<ExplainPipeline> explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
             ExecutorService executorService = executorServices.get(executorName);
             FutureTask<PipelineCallableResponse> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer()));
             executorService.execute(futureTask);
             PipelineCallableResponse response = futureTask.get(pipeline.getTimeout(), TimeUnit.MILLISECONDS);
             ExplainContextHolder.getContext().addChild(response.getExplain());
             pipelineContainer = response.getPipelineContainer();
-            explain.setDuration(pipelineContainer.currentTime());
+            explain.getExplainObject().setDuration(pipelineContainer.currentTime());
             if(pipelineContainer.isDebugEnabled()) {
                 throw new PipelineContainerDebugException(pipelineContainer);
             }

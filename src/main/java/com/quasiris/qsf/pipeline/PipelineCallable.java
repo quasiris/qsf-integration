@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline;
 
 import com.quasiris.qsf.explain.Explain;
 import com.quasiris.qsf.explain.ExplainContextHolder;
+import com.quasiris.qsf.explain.ExplainPipeline;
 
 import java.util.concurrent.Callable;
 
@@ -24,13 +25,13 @@ public class PipelineCallable implements Callable<PipelineCallableResponse> {
         long start = System.currentTimeMillis();
         ExplainContextHolder.clearContext();
         ExplainContextHolder.getContext().setExplain(pipelineContainer.getSearchQuery().isExplain());
-        Explain explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
+        Explain<ExplainPipeline> explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
         PipelineExecuterService pipelineExecuterService = new PipelineExecuterService(pipeline);
         PipelineContainer processedPipelineContainer = pipelineExecuterService.execute(pipelineContainer);
         PipelineCallableResponse response = new PipelineCallableResponse();
         response.setExplain(ExplainContextHolder.getContext().getRoot());
         response.setPipelineContainer(pipelineContainer);
-        explain.setDuration(System.currentTimeMillis() - start);
+        explain.getExplainObject().setDuration(System.currentTimeMillis() - start);
         return response;
     }
 }

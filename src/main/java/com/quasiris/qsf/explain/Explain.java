@@ -2,14 +2,13 @@ package com.quasiris.qsf.explain;
 
 import java.util.List;
 
-public class Explain {
+public class Explain<T> {
 
     private String id;
     private String name;
     private ExplainDataType dataType = ExplainDataType.JSON;
     private String type = "u";
-    private Object explainObject;
-    private Long duration;
+    private T explainObject;
     private String treadId;
 
     public Explain() {
@@ -50,20 +49,12 @@ public class Explain {
         this.type = type;
     }
 
-    public Object getExplainObject() {
+    public T getExplainObject() {
         return explainObject;
     }
 
-    public void setExplainObject(Object explainObject) {
+    public void setExplainObject(T explainObject) {
         this.explainObject = explainObject;
-    }
-
-    public Long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Long duration) {
-        this.duration = duration;
     }
 
     public List<Explain> getChildren() {

@@ -11,30 +11,33 @@ public class ExplainContext {
     private boolean explain = false;
 
 
-    public Explain pipeline(String id) {
+    public Explain<ExplainPipeline> pipeline(String id) {
+        Explain<ExplainPipeline> explainPipeline = new Explain();
+        explainPipeline.setExplainObject(new ExplainPipeline());
         if(!explain) {
-            return new Explain();
+            return explainPipeline;
         }
-        Explain explain = new Explain();
-        explain.setId(id);
-        explain.setName(id);
-        explain.setType("pipeline");
-        explain.setDataType(ExplainDataType.STRING);
-        this.root = explain;
-        return explain;
+
+        explainPipeline.setId(id);
+        explainPipeline.setName(id);
+        explainPipeline.setType("pipeline");
+        explainPipeline.setDataType(ExplainDataType.STRING);
+        this.root = explainPipeline;
+        return explainPipeline;
     }
-    public Explain filter(String id) {
+    public Explain<ExplainFilter> filter(String id) {
+        Explain<ExplainFilter> explainFilter = new Explain();
+        explainFilter.setExplainObject(new ExplainFilter());
         if(!explain) {
-            return new Explain();
+            return explainFilter;
         }
-        Explain explain = new Explain();
-        explain.setId(id);
-        explain.setName(id);
-        explain.setType("filter");
-        explain.setDataType(ExplainDataType.STRING);
-        addChild(explain);
-        this.current = explain;
-        return explain;
+        explainFilter.setId(id);
+        explainFilter.setName(id);
+        explainFilter.setType("filter");
+        explainFilter.setDataType(ExplainDataType.STRING);
+        addChild(explainFilter);
+        this.current = explainFilter;
+        return explainFilter;
     }
 
     public void explain(String id, String value) {
