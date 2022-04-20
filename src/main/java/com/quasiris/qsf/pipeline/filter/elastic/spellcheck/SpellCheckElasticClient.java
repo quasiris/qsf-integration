@@ -53,7 +53,7 @@ public class SpellCheckElasticClient {
                 continue;
             }
 
-            String elasticRequest  = "{\"query\": {\"bool\": { \"must\": [ {\"fuzzy\": {\"variants.spell\": {\"value\": \""+JsonUtil.encode(token.getValue().toLowerCase())+"\",\"fuzziness\": \"AUTO\"}}},{\"range\": {\"weight\": {\"gte\": "+getMinTokenWeight()+"}}}]}}}";
+            String elasticRequest  = "{\"query\": {\"bool\": { \"must\": [ {\"fuzzy\": {\"variants.spell\": {\"value\": \""+JsonUtil.encode(token.getValue().toLowerCase())+"\",\"fuzziness\": \"AUTO\"}}},{\"range\": {\"weight\": {\"gte\": "+getMinTokenWeight()+"}}}]}},\"sort\": [\"_score\", {\"weight\": \"desc\"}\t]}";
             elasticQueries.add(elasticRequest);
             spellCheckToken.setElasticResultPojnter(elasticQueries.size()-1);
         }
