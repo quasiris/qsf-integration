@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.quasiris.qsf.dto.response.DidYouMeanResult;
 import com.quasiris.qsf.exception.DebugType;
+import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
@@ -65,6 +66,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
         }
 
         List<SpellCheckToken> spellCheckTokens = spellCheckElasticClient.spellspeck(pipelineContainer.getSearchQuery());
+        ExplainContextHolder.getContext().explainJson(getId() + ".spellCheckTokens", spellCheckTokens);
 
         if(pipelineContainer.isDebugEnabled()) {
             pipelineContainer.debug("spellCheckTokens", DebugType.JSON, spellCheckTokens);

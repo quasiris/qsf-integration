@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic.spellcheck;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.commons.util.JsonUtil;
+import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.elastic.Score;
 import com.quasiris.qsf.pipeline.filter.elastic.SpellCheckToken;
@@ -61,8 +62,13 @@ public class SpellCheckElasticClient {
         if(elasticQueries.isEmpty()) {
             return spellCheckTokens;
         }
+        ExplainContextHolder.getContext().explainJson("spellcheckElasticRequest", elasticQueries);
 
-        MultiElasticResult multiElasticResult = elasticClient.request(baseUrl + "/_msearch", elasticQueries);
+        String requestUrl = baseUrl + "/_msearch";
+        ExplainContextHolder.getContext().explain("spellcheckElasticUrl", requestUrl);
+
+        MultiElasticResult multiElasticResult = elasticClient.request(requestUrl, elasticQueries);
+        ExplainContextHolder.getContext().explainJson("spellcheckElasticResult", multiElasticResult);
 
         for (SpellCheckToken spellCheckToken : spellCheckTokens) {
             if(spellCheckToken.getElasticResultPojnter() != null) {
