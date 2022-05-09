@@ -4,7 +4,10 @@ import com.quasiris.qsf.dto.response.DidYouMeanResult;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.elastic.SpellCheckToken;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SpellCheckContext {
 
@@ -15,7 +18,7 @@ public class SpellCheckContext {
 
     private DidYouMeanResult didYouMeanResult;
 
-    private String tags;
+    private Set<String> tags;
 
     public static SpellCheckContext get(PipelineContainer pipelineContainer) {
         SpellCheckContext spellCheckContext = pipelineContainer.getContext(SpellCheckContext.SPELLCHECK_CONTEXT, SpellCheckContext.class);
@@ -42,11 +45,17 @@ public class SpellCheckContext {
         this.didYouMeanResult = didYouMeanResult;
     }
 
-    public String getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 
-    public void setTags(String tags) {
+    public void setTags(Set<String> tags) {
         this.tags = tags;
+    }
+    public void addTag(String tag) {
+        if(this.tags == null) {
+            this.tags = new LinkedHashSet<>();
+        }
+        this.tags.add(tag);
     }
 }
