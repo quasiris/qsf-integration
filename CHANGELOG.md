@@ -3,6 +3,18 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 
+## [5.4]
+### Added
+- add tags to SpellCheckContext
+- add explain information for spellcheck
+- add sorting for spellcheck query
+- implement category select facetting
+
+### Changed
+- only set the searchFilters once
+- use tree field for facetting category select filter
+- FORCE_HTTP_1 for async requests due HTTPASYNC-164
+
 ## [5.3]
 ### Changed
 - update httpcomponents to 5.x
