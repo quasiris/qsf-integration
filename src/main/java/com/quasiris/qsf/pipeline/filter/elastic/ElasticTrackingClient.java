@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
 import com.quasiris.qsf.pipeline.filter.elastic.client.StandardElasticClient;
@@ -47,6 +48,10 @@ public class ElasticTrackingClient {
         DateFormat dateFormat = new SimpleDateFormat(rotationPatterns.get(rotation));
         String datePattern = dateFormat.format(new Date());
         String indexUrl = baseUrl + "_" + datePattern + "/_doc";
+
+        ExplainContextHolder.getContext().explain("trackingUrl", indexUrl);
+        ExplainContextHolder.getContext().explainJson("trackingDocument", tracking.getDocument());
+
         elasticClient.index(indexUrl, tracking.getDocument());
     }
 
