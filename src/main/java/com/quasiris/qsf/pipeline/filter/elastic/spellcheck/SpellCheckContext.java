@@ -15,6 +15,8 @@ public class SpellCheckContext {
 
     private DidYouMeanResult didYouMeanResult;
 
+    private String tags;
+
     public static SpellCheckContext get(PipelineContainer pipelineContainer) {
         SpellCheckContext spellCheckContext = pipelineContainer.getContext(SpellCheckContext.SPELLCHECK_CONTEXT, SpellCheckContext.class);
         if(spellCheckContext == null) {
@@ -38,5 +40,13 @@ public class SpellCheckContext {
 
     public void setDidYouMeanResult(DidYouMeanResult didYouMeanResult) {
         this.didYouMeanResult = didYouMeanResult;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 }
