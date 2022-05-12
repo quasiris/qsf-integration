@@ -6,16 +6,7 @@ import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
 import com.quasiris.qsf.dto.query.ResultDTO;
 import com.quasiris.qsf.dto.query.SpellcheckDTO;
-import com.quasiris.qsf.query.Facet;
-import com.quasiris.qsf.query.FilterDataType;
-import com.quasiris.qsf.query.FilterOperator;
-import com.quasiris.qsf.query.FilterType;
-import com.quasiris.qsf.query.RangeFilterValue;
-import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.query.SearchFilterBuilder;
-import com.quasiris.qsf.query.SearchQuery;
-import com.quasiris.qsf.query.Sort;
-import com.quasiris.qsf.query.UpperLowerBound;
+import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.text.Splitter;
 
 import javax.servlet.http.Cookie;
@@ -81,7 +72,7 @@ public class QsfqlParser {
             return;
         }
         query.setCtrl(ctrl);
-        if(ctrl.contains("spellcheckDisabled")) {
+        if(Control.isSpellcheckDisabled(query)) {
             ResultDTO resultDTO = query.getResult();
             if(resultDTO == null) {
                 resultDTO = new ResultDTO();
