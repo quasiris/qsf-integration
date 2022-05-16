@@ -114,7 +114,9 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         boolean hasAggs = false;
         for (Facet aggregation : aggregations) {
             if("slider".equals(aggregation.getType())) {
-                ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), null, FilterOperator.OR);
+                Set<String> excludedFacetIds = new HashSet<>();
+                excludedFacetIds.add(aggregation.getId());
+                ObjectNode filters = getFilterAsJson(filterMapper, null, FilterOperator.OR, excludedFacetIds);
                 JsonNode agg = AggregationMapper.createSlider(aggregation, filters);
                 jsonBuilder.json(agg);
                 hasAggs = true;
@@ -127,7 +129,19 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 }
                 hasAggs = true;
             } else {
-                ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
+                Set<String> excludedFacetIds = new HashSet<>();
+                if (aggregation.getExcludeTags() != null) {
+                    for (String excludedTag : aggregation.getExcludeTags()) {
+                        List<String> excludedIsForTag = aggregations.stream().
+                                filter(f -> f.getTags() != null).
+                                filter(f -> f.getTags().contains(excludedTag)).
+                                map(f -> f.getId()).collect(Collectors.toList());
+                        excludedFacetIds.addAll(excludedIsForTag);
+                    }
+                }
+                excludedFacetIds.add(aggregation.getId());
+
+                ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getFacetFilters(), aggregation.getOperator(), excludedFacetIds);
                 JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, variantId);
                 jsonBuilder.json(agg);
                 hasAggs = true;
@@ -141,7 +155,9 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             aggregation.setName(QsfIntegrationConstants.TOTAL_COUNT_AGGREGATION_NAME);
             aggregation.setOperator(FilterOperator.OR);
             aggregation.setType("cardinality");
-            ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getId(), aggregation.getFacetFilters(), aggregation.getOperator());
+            Set<String> excludeIds = new HashSet<>();
+            excludeIds.add(aggregation.getId());
+            ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getFacetFilters(), aggregation.getOperator(), excludeIds);
             JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, null);
             jsonBuilder.json(agg);
             hasAggs = true;
@@ -184,13 +200,15 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         jsonBuilder.json(agg);
     }
 
-    private ObjectNode getFilterAsJson(QsfqlFilterMapper filterMapper, String id, List<BaseSearchFilter> facetFilter, FilterOperator operator ) throws JsonBuilderException{
+    private ObjectNode getFilterAsJson(QsfqlFilterMapper filterMapper, List<BaseSearchFilter> facetFilter, FilterOperator operator, Set<String> excludeIds ) throws JsonBuilderException{
         List<BaseSearchFilter> excludeFilters = new ArrayList<>();
         if(operator.equals(FilterOperator.AND)) {
             excludeFilters.addAll(searchQuery.getSearchFilterList());
         } else {
             excludeFilters = SerializationUtils.deepCopyList(searchQuery.getSearchFilterList());
-            excludeOwnFilter(excludeFilters, filterMapper, id);
+            excludeOwnFilter(excludeFilters, filterMapper, excludeIds);
+
+            // TODO exclude tagged filters
         }
         if(facetFilter != null) {
             excludeFilters.addAll(facetFilter);

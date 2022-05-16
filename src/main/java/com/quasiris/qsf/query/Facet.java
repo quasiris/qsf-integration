@@ -27,6 +27,25 @@ public class Facet implements Serializable {
 
     private List<BaseSearchFilter> facetFilters = new ArrayList<>();
 
+    private List<String> excludeTags;
+    private List<String> tags;
+
+    public List<String> getExcludeTags() {
+        return excludeTags;
+    }
+
+    public void setExcludeTags(List<String> excludeTags) {
+        this.excludeTags = excludeTags;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
     public String getId() {
         return id;
     }
