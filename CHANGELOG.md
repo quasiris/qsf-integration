@@ -3,6 +3,11 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 
+## [5.5]
+### Added
+- implement explain for tracking filter
+- implement tagging and excluding of facets
+
 ## [5.4]
 ### Added
 - add tags to SpellCheckContext
