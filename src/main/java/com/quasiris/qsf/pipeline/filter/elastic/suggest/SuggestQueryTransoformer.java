@@ -46,6 +46,7 @@ public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
 
         try {
             transformFilters();
+            getElasticQuery().put("size", 0);
         } catch (JsonBuilderException e) {
             throw new PipelineContainerException(e.getMessage(), e);
         }

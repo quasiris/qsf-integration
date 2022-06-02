@@ -1,0 +1,22 @@
+{
+  "from": 0,
+  "size": 0,
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_all": {}
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "title": {
+      "terms": {
+        "field": "title",
+        "include": "test.*"
+      }
+    }
+  }
+}

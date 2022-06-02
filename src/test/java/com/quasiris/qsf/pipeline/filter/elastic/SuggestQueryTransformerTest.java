@@ -7,9 +7,12 @@ import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.elastic.suggest.SuggestQueryTransoformer;
 import com.quasiris.qsf.query.SearchFilterBuilder;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.test.json.JsonAssert;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -23,10 +26,7 @@ public class SuggestQueryTransformerTest {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQ("test");
         ObjectNode elasticQuery = transform(transformer,  searchQuery);
-
-        JsonBuilder jsonBuilder = JsonBuilder.create().newJson(elasticQuery);
-
-        JSONAssert.assertEquals("{ \"title\": {\"terms\": {\"field\": \"title\",\"include\": \"test.*\"}}}", jsonBuilder.path("aggs").writeCurrentAsString(), true);
+        assertQuery(elasticQuery, "first-word.json");
     }
 
     @Test
@@ -37,11 +37,7 @@ public class SuggestQueryTransformerTest {
         searchQuery.setQ("test fo");
         ObjectNode elasticQuery = transform(transformer,  searchQuery);
 
-        JsonBuilder jsonBuilder = JsonBuilder.create().newJson(elasticQuery);
-
-        JSONAssert.assertEquals("[{\"query_string\": {\"query\": \"test\"}}]", jsonBuilder.paths("query/bool/must").writeCurrentAsString(), true);
-        JSONAssert.assertEquals("{ \"title\": {\"terms\": {\"field\": \"title\",\"include\": \"fo.*\"}}}", jsonBuilder.root().path("aggs").writeCurrentAsString(), true);
-
+        assertQuery(elasticQuery, "second-word.json");
     }
 
     @Test
@@ -54,10 +50,7 @@ public class SuggestQueryTransformerTest {
         searchQuery.setQ("test");
         ObjectNode elasticQuery = transform(transformer,  searchQuery);
 
-        JsonBuilder jsonBuilder = JsonBuilder.create().newJson(elasticQuery);
-
-        JSONAssert.assertEquals("[{\"term\": {\"tenant\": \"quasiris\"}},{\"term\": {\"code\": \"suggest\"}}]", jsonBuilder.paths("query/bool/filter/bool/must").writeCurrentAsString(), true);
-        JSONAssert.assertEquals("{ \"title\": {\"terms\": {\"field\": \"title\",\"include\": \"test.*\"}}}", jsonBuilder.root().path("aggs").writeCurrentAsString(), true);
+        assertQuery(elasticQuery, "first-word-with-filter.json");
     }
 
 
@@ -73,12 +66,7 @@ public class SuggestQueryTransformerTest {
         searchQuery.setQ("test fo");
         ObjectNode elasticQuery = transform(transformer,  searchQuery);
 
-        JsonBuilder jsonBuilder = JsonBuilder.create().newJson(elasticQuery);
-
-        JSONAssert.assertEquals("[{\"term\": {\"tenant\": \"quasiris\"}},{\"term\": {\"code\": \"suggest\"}}]", jsonBuilder.paths("query/bool/filter/bool/must").writeCurrentAsString(), true);
-        JSONAssert.assertEquals("[{\"query_string\": {\"query\": \"test\"}}]", jsonBuilder.root().paths("query/bool/must").writeCurrentAsString(), true);
-        JSONAssert.assertEquals("{ \"title\": {\"terms\": {\"field\": \"title\",\"include\": \"fo.*\"}}}", jsonBuilder.root().path("aggs").writeCurrentAsString(), true);
-
+        assertQuery(elasticQuery, "second-word-with-filter.json");
     }
 
 
@@ -90,6 +78,11 @@ public class SuggestQueryTransformerTest {
 
         ObjectNode elasticQuery = transformer.getElasticQuery();
         return elasticQuery;
+    }
+
+
+    private void assertQuery(ObjectNode elasticQuery, String file) throws IOException, JSONException {
+        JsonAssert.assertJson(elasticQuery, "classpath://com/quasiris/qsf/pipeline/filter/elastic/suggest/" + file);
     }
 
 
