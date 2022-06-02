@@ -10,7 +10,9 @@ import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.dto.response.*;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by mki on 21.01.18.
@@ -37,6 +39,8 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
 
         // filter, facets, sliders
         refineFilters(searchResult, searchQuery.getSearchFilterList());
+
+        refineFacets(searchResult);
 
         // paging
         if(checkPagingEnabled(searchQuery)) {
@@ -77,6 +81,19 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
                 }
             }
         }
+    }
+
+    public void refineFacets(SearchResult searchResult) {
+        List<Facet> refinedFacets = removeFacetsWithoutValues(searchResult.getFacets());
+        searchResult.setFacets(refinedFacets);
+    }
+
+    private List<Facet> removeFacetsWithoutValues(List<Facet> facets) {
+        if(facets == null) {
+            return null;
+        }
+        return facets.stream().filter(f -> f.getValues() != null).filter(f -> f.getValues().size() > 0).collect(Collectors.toList());
+
     }
 
     public void computePositions(SearchQuery searchQuery, SearchResult searchResult) {
