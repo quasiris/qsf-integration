@@ -58,7 +58,7 @@ public class QsfqlFilterMapper {
      * @param searchFilter qsc
      * @param elasticField for mapping
      * @return json or null if filter type unknown
-     * @throws JsonBuilderException
+     * @throws JsonBuilderException on any json error
      */
     public static @Nullable ArrayNode computeFilter(@Nonnull SearchFilter searchFilter, @Nullable String elasticField) throws JsonBuilderException {
         ArrayNode filter = null;
