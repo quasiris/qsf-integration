@@ -1,16 +1,13 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.elastic.suggest.SuggestQueryTransoformer;
 import com.quasiris.qsf.query.SearchFilterBuilder;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.test.json.JsonAssert;
-import org.json.JSONException;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -81,8 +78,8 @@ public class SuggestQueryTransformerTest {
     }
 
 
-    private void assertQuery(ObjectNode elasticQuery, String file) throws IOException, JSONException {
-        JsonAssert.assertJson(elasticQuery, "classpath://com/quasiris/qsf/pipeline/filter/elastic/suggest/" + file);
+    private void assertQuery(ObjectNode elasticQuery, String file) throws IOException {
+        JsonAssert.assertJsonFile("classpath://com/quasiris/qsf/pipeline/filter/elastic/suggest/" + file, elasticQuery);
     }
 
 

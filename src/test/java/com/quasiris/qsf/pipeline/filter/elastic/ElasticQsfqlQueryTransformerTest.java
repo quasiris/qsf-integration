@@ -9,7 +9,6 @@ import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTestUtil;
 import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.test.converter.NullValueConverter;
 import com.quasiris.qsf.test.json.JsonAssert;
-import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -860,8 +859,8 @@ public class ElasticQsfqlQueryTransformerTest {
         return transform(transformer, searchQuery);
     }
 
-    private void assertQuery(ObjectNode elasticQuery, String file) throws IOException, JSONException {
-        JsonAssert.assertJson(elasticQuery, "classpath://com/quasiris/qsf/pipeline/filter/elastic/query/" + file);
+    private void assertQuery(ObjectNode elasticQuery, String file) throws IOException {
+        JsonAssert.assertJsonFile("classpath://com/quasiris/qsf/pipeline/filter/elastic/query/" + file, elasticQuery);
     }
 
 }

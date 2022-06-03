@@ -56,7 +56,7 @@ class QsfqlFilterMapperTest {
 
         // when
         JsonNode filtersOr = QsfqlFilterMapper.createFilters(filters);
-        JsonAssert.assertJson(filtersOr, testBasePackage + "create-filters-elastic-query.json");
+        JsonAssert.assertJsonFile(testBasePackage + "create-filters-elastic-query.json", filtersOr);
 
     }
 
@@ -70,7 +70,7 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
-        JsonAssert.assertJson(node, testBasePackage + "search-filter-with-empty-bool-filter.json");
+        JsonAssert.assertJsonFile(testBasePackage + "search-filter-with-empty-bool-filter.json", node);
 
     }
 
@@ -86,7 +86,7 @@ class QsfqlFilterMapperTest {
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
 
-        JsonAssert.assertJson(node, testBasePackage + "empty-bool-filter.json");
+        JsonAssert.assertJsonFile(testBasePackage + "empty-bool-filter.json", node);
     }
 
     @Test
@@ -99,7 +99,7 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
-        JsonAssert.assertJson(node, testBasePackage + "empty-bool-filter.json");
+        JsonAssert.assertJsonFile(testBasePackage + "empty-bool-filter.json", node);
     }
 
     @Test
@@ -112,7 +112,7 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
-        JsonAssert.assertJson(node, testBasePackage + "empty-bool-filter.json");
+        JsonAssert.assertJsonFile(testBasePackage + "empty-bool-filter.json", node);
     }
 
     @Test
@@ -124,7 +124,7 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
-        JsonAssert.assertJson(node, testBasePackage + "search-filter.json");
+        JsonAssert.assertJsonFile(testBasePackage + "search-filter.json", node);
     }
 
     @Test
@@ -143,7 +143,7 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
-        JsonAssert.assertJson(node, testBasePackage + "search-filter-and-bool-filters.json");
+        JsonAssert.assertJsonFile(testBasePackage + "search-filter-and-bool-filters.json", node);
 
     }
 
@@ -176,7 +176,7 @@ class QsfqlFilterMapperTest {
 
         // when
         ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
-        JsonAssert.assertJson(node, testBasePackage + "bool-filter-complex.json");
+        JsonAssert.assertJsonFile(testBasePackage + "bool-filter-complex.json", node);
 
 
     }

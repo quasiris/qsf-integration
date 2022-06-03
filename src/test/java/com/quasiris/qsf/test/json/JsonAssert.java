@@ -12,9 +12,12 @@ public class JsonAssert {
 
 
 
-    public static void assertJson(JsonNode json, String file) throws IOException {
-        String expected = IOUtils.getString(file);
+    public static void assertJsonFile(String expectedFile, JsonNode json) throws IOException {
+        String expected = IOUtils.getString(expectedFile);
+        assertJson(expected, json);
+    }
 
+    public static void assertJson(String expected, JsonNode json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String query = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
 

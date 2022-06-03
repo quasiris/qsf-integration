@@ -2,6 +2,8 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+### Removed
+- remove jsonassert dependency
 
 ## [5.5]
 ### Added

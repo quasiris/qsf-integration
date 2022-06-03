@@ -1,10 +1,9 @@
 package com.quasiris.qsf.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.quasiris.qsf.test.json.JsonAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +15,14 @@ public class JsonBuilderTest {
     public void testEmptyObject() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object();
-        JSONAssert.assertEquals("{}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{}", jsonBuilder.get());
     }
 
     @Test
     public void testEmptyArray() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.array();
-        JSONAssert.assertEquals("[]", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("[]", jsonBuilder.get());
     }
 
     @Test
@@ -31,7 +30,7 @@ public class JsonBuilderTest {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object();
         jsonBuilder.array("foo");
-        JSONAssert.assertEquals("{\"foo\" : []}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\" : []}", jsonBuilder.get());
     }
 
     @Test
@@ -39,7 +38,7 @@ public class JsonBuilderTest {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object();
         jsonBuilder.object("foo");
-        JSONAssert.assertEquals("{\"foo\" : {}}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\" : {}}", jsonBuilder.get());
     }
 
     @Test
@@ -47,7 +46,7 @@ public class JsonBuilderTest {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.array();
         jsonBuilder.object("foo");
-        JSONAssert.assertEquals("[{\"foo\" : {}}]", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("[{\"foo\" : {}}]", jsonBuilder.get());
     }
 
 
@@ -57,7 +56,7 @@ public class JsonBuilderTest {
         jsonBuilder.object();
         jsonBuilder.array("foo");
         jsonBuilder.object();
-        JSONAssert.assertEquals("{\"foo\":[{}]}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\":[{}]}", jsonBuilder.get());
     }
 
     @Test
@@ -105,7 +104,7 @@ public class JsonBuilderTest {
     public void testString() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.string("{\"foo\" : {}}");
-        JSONAssert.assertEquals("{\"foo\" : {}}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\" : {}}", jsonBuilder.get());
     }
 
 
@@ -122,7 +121,7 @@ public class JsonBuilderTest {
     public void testStringWithFieldname() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.string("test", "{\"foo\" : {}}");
-        JSONAssert.assertEquals("{\"test\":{\"foo\":{}}}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"test\":{\"foo\":{}}}", jsonBuilder.get());
     }
 
     @Test
@@ -137,7 +136,7 @@ public class JsonBuilderTest {
     public void testAddString() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.addString("{\"foo\" : {}}");
-        JSONAssert.assertEquals("[{\"foo\" : {}}]", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("[{\"foo\" : {}}]", jsonBuilder.get());
     }
 
 
@@ -155,7 +154,7 @@ public class JsonBuilderTest {
         JsonBuilder jsonBuilder = new JsonBuilder();
         TestPojo testPojo = new TestPojo("bar");
         jsonBuilder.pojo(testPojo);
-        JSONAssert.assertEquals("{\"foo\" : \"bar\"}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\" : \"bar\"}", jsonBuilder.get());
     }
 
     @Test
@@ -163,7 +162,7 @@ public class JsonBuilderTest {
         JsonBuilder jsonBuilder = new JsonBuilder();
         TestPojo testPojo = new TestPojo("bar");
         jsonBuilder.pojo("test", testPojo);
-        JSONAssert.assertEquals("{\"test\":{\"foo\":\"bar\"}}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"test\":{\"foo\":\"bar\"}}", jsonBuilder.get());
     }
 
 
@@ -174,7 +173,7 @@ public class JsonBuilderTest {
 
         TestPojo testPojo = new TestPojo("bar");
         jsonBuilder.addPojo(testPojo);
-        JSONAssert.assertEquals("[{\"foo\" : \"bar\"}]", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("[{\"foo\" : \"bar\"}]", jsonBuilder.get());
     }
 
     @Test
@@ -182,7 +181,7 @@ public class JsonBuilderTest {
         JsonBuilder jsonBuilder = new JsonBuilder();
         TestPojo testPojo = new TestPojo("bar");
         jsonBuilder.object().pojo(testPojo);
-        JSONAssert.assertEquals("{\"foo\" : \"bar\"}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\" : \"bar\"}", jsonBuilder.get());
     }
 
     @Test
@@ -195,7 +194,7 @@ public class JsonBuilderTest {
                 object("bar").
                 unstash().
                 object("test");
-        JSONAssert.assertEquals("{\"foo\": { \"bar\": {}, \"test\": {} }}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\": { \"bar\": {}, \"test\": {} }}", jsonBuilder.get());
     }
 
     @Test
@@ -208,7 +207,7 @@ public class JsonBuilderTest {
                 object("bar").
                 unstash("foo").
                 object("test");
-        JSONAssert.assertEquals("{\"foo\": { \"bar\": {}, \"test\": {} }}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\": { \"bar\": {}, \"test\": {} }}", jsonBuilder.get());
     }
 
     @Test
@@ -221,7 +220,7 @@ public class JsonBuilderTest {
                 root().
                 object("test");
 
-        JSONAssert.assertEquals("{\"foo\": { \"bar\": {}}, \"test\" : {}}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\": { \"bar\": {}}, \"test\" : {}}", jsonBuilder.get());
     }
 
     @Test
@@ -234,10 +233,7 @@ public class JsonBuilderTest {
                 root().
                 object("test").
                 getCurrent();
-
-        ObjectMapper mapper = new ObjectMapper();
-        String expected = mapper.writeValueAsString(jsonNode);
-        JSONAssert.assertEquals("{}", expected, true);
+        JsonAssert.assertJson("{}", jsonNode);
     }
 
     @Test
@@ -248,10 +244,7 @@ public class JsonBuilderTest {
                 object("foo").
                 object("bar").
                 get();
-
-        ObjectMapper mapper = new ObjectMapper();
-        String expected = mapper.writeValueAsString(jsonNode);
-        JSONAssert.assertEquals("{\"foo\":{\"bar\":{}}}", expected, true);
+        JsonAssert.assertJson("{\"foo\":{\"bar\":{}}}", jsonNode);
     }
 
     @Test
@@ -265,7 +258,7 @@ public class JsonBuilderTest {
 
         jsonBuilder.object("bar").json(jsonNode);
 
-        JSONAssert.assertEquals("{\"foo\":{},\"bar\":{\"foo\":{}}}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\":{},\"bar\":{\"foo\":{}}}", jsonBuilder.get());
     }
 
 
@@ -296,7 +289,7 @@ public class JsonBuilderTest {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.array("arr").addJson(jsonNode);
 
-        JSONAssert.assertEquals("{\"arr\":[{\"foo\":{}}]}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"arr\":[{\"foo\":{}}]}", jsonBuilder.get());
     }
 
     @Test
@@ -319,21 +312,21 @@ public class JsonBuilderTest {
     public void testValue() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object("foo", "bar");
-        JSONAssert.assertEquals("{\"foo\":\"bar\"}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"foo\":\"bar\"}", jsonBuilder.get());
     }
 
     @Test
     public void testValueWithNullKey() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object().object(null, "bar");
-        JSONAssert.assertEquals("{}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{}", jsonBuilder.get());
     }
 
     @Test
     public void testAddValue() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.array().addValue("foo");
-        JSONAssert.assertEquals("[\"foo\"]", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("[\"foo\"]", jsonBuilder.get());
     }
 
     @Test
@@ -343,7 +336,7 @@ public class JsonBuilderTest {
         jsonBuilder.root();
         jsonBuilder.path("n1").path("n2");
         jsonBuilder.object("n33");
-        JSONAssert.assertEquals("{\"n1\":{\"n2\":{\"n3\":{\"n4\":{}},\"n33\":{}}}}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"n1\":{\"n2\":{\"n3\":{\"n4\":{}},\"n33\":{}}}}", jsonBuilder.get());
     }
 
     @Test
@@ -372,7 +365,7 @@ public class JsonBuilderTest {
         jsonBuilder.root();
         jsonBuilder.pathsForceCreate("n1/n2/n3/n4");
         jsonBuilder.object("n33");
-        JSONAssert.assertEquals("{\"n1\":{\"n2\":{\"n3\":{\"n4\":{\"n33\":{}}}}}}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"n1\":{\"n2\":{\"n3\":{\"n4\":{\"n33\":{}}}}}}", jsonBuilder.get());
     }
 
 
@@ -383,7 +376,7 @@ public class JsonBuilderTest {
         jsonBuilder.root();
         jsonBuilder.paths("n1/n2");
         jsonBuilder.object("n33");
-        JSONAssert.assertEquals("{\"n1\":{\"n2\":{\"n3\":{\"n4\":{}},\"n33\":{}}}}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"n1\":{\"n2\":{\"n3\":{\"n4\":{}},\"n33\":{}}}}", jsonBuilder.get());
     }
 
 
@@ -407,7 +400,7 @@ public class JsonBuilderTest {
         jsonBuilder.object("$foo", "bar");
         jsonBuilder.replace(valueMap);
 
-        JSONAssert.assertEquals("{\"bar\": \"bar\"}", jsonBuilder.writeAsString(), true);
+        JsonAssert.assertJson("{\"bar\": \"bar\"}", jsonBuilder.get());
     }
 
 }

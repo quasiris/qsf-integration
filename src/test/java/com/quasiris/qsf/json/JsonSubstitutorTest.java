@@ -1,9 +1,9 @@
 package com.quasiris.qsf.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.quasiris.qsf.test.json.JsonAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public class JsonSubstitutorTest {
         JsonSubstitutor jsonSubstitutor = new JsonSubstitutor(valueMap);
         JsonNode json = jsonSubstitutor.replace(jsonBuilder.get());
 
-        JSONAssert.assertEquals("{\"bar\": \"bar\"}", json.toString(), true);
+        JsonAssert.assertJson("{\"bar\": \"bar\"}", json);
 
     }
 
@@ -45,7 +45,7 @@ public class JsonSubstitutorTest {
         JsonSubstitutor jsonSubstitutor = new JsonSubstitutor(valueMap);
         JsonNode json = jsonSubstitutor.replace(jsonBuilder.get());
 
-        JSONAssert.assertEquals("{\"foo\": \"foo\"}", json.toString(), true);
+        JsonAssert.assertJson("{\"foo\": \"foo\"}", json);
 
     }
 
@@ -73,10 +73,9 @@ public class JsonSubstitutorTest {
         JsonSubstitutor jsonSubstitutor = new JsonSubstitutor(valueMap);
         JsonNode json = jsonSubstitutor.replace(jsonBuilder.get());
 
-        JSONAssert.assertEquals(
+        JsonAssert.assertJson(
                 "{\"foo\": \"bar\", \"array\" : [\"eins\", \"zwei\", \"drei\", \"vier\", \"fünf\", \"sechs\", \"sieben\", 8]}",
-                json.toString(),
-                true);
+                json);
 
     }
 
@@ -92,10 +91,9 @@ public class JsonSubstitutorTest {
 
         jsonBuilder.replace(valueMap);
 
-        JSONAssert.assertEquals(
+        JsonAssert.assertJson(
                 "{ \"must\" : [ { \"foo\" : \"bar\", \"bool\" : { } } ] }",
-                jsonBuilder.writeAsString(),
-                true);
+                jsonBuilder.get());
     }
 
     @Test
@@ -113,10 +111,9 @@ public class JsonSubstitutorTest {
 
         jsonBuilder.replace(valueMap);
 
-        JSONAssert.assertEquals(
+        JsonAssert.assertJson(
                 "{\"alice\" : \"bob\", \"foo\" : \"bar\"}",
-                jsonBuilder.writeAsString(),
-                true);
+                jsonBuilder.get());
     }
 
     @Test
@@ -132,10 +129,9 @@ public class JsonSubstitutorTest {
 
         jsonBuilder.replace(valueMap);
 
-        JSONAssert.assertEquals(
+        JsonAssert.assertJson(
                 "{\"alice\" : \"bob\", \"eins\" : \"1\", \"zwei\" : \"2\", \"drei\" : \"3\"}",
-                jsonBuilder.writeAsString(),
-                true);
+                jsonBuilder.get());
     }
 
     @Test
@@ -151,10 +147,9 @@ public class JsonSubstitutorTest {
 
         jsonBuilder.replace(valueMap);
 
-        JSONAssert.assertEquals(
+        JsonAssert.assertJson(
                 "{\"alice\" : \"bob\"}",
-                jsonBuilder.writeAsString(),
-                true);
+                jsonBuilder.get());
     }
 
     @Test
@@ -167,10 +162,9 @@ public class JsonSubstitutorTest {
 
         jsonBuilder.replace(valueMap);
 
-        JSONAssert.assertEquals(
+        JsonAssert.assertJson(
                 "{\"alice\" : \"bob\"}",
-                jsonBuilder.writeAsString(),
-                true);
+                jsonBuilder.get());
     }
 
 
