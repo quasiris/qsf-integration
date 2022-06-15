@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.quasiris.qsf.commons.elasticsearch.client.ElasticSearchClient;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 import com.quasiris.qsf.query.Facet;
@@ -237,8 +238,14 @@ public class ElasticFilterBuilder {
         return this;
     }
 
+    @Deprecated
     public ElasticFilterBuilder client(ElasticClientIF elasticClient) {
         elasticFilter.setElasticClient(elasticClient);
+        return this;
+    }
+
+    public ElasticFilterBuilder client(ElasticSearchClient elasticClient) {
+        elasticFilter.setElasticSearchClient(elasticClient);
         return this;
     }
 

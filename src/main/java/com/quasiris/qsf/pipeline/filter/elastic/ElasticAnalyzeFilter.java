@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.quasiris.qsf.commons.elasticsearch.client.ElasticAnalyzeClient;
 import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
@@ -29,12 +30,13 @@ public class ElasticAnalyzeFilter extends AbstractFilter {
     private String field;
 
     private ElasticClientIF elasticClient;
+    private ElasticAnalyzeClient elasticAnalyzeClient;
 
     @Override
     public void init() {
         super.init();
-        if(elasticClient == null) {
-            elasticClient = ElasticClientFactory.getElasticClient();
+        if(elasticClient == null && elasticAnalyzeClient == null) {
+            elasticAnalyzeClient = ElasticClientFactory.getElasticAnalyzeClient();
         }
     }
 
@@ -50,7 +52,13 @@ public class ElasticAnalyzeFilter extends AbstractFilter {
         pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, baseUrl);
         pipelineContainer.debug(getId() + ".request", DebugType.JSON, request);
 
-        Analyze analyze = elasticClient.analyze(baseUrl + "/_analyze", request);
+        Analyze analyze = null;
+        if(elasticAnalyzeClient != null) {
+            analyze = elasticAnalyzeClient.analyze(baseUrl, request);
+        } else {
+            analyze = elasticClient.analyze(baseUrl + "/_analyze", request);
+        }
+
         pipelineContainer.debug(getId() + ".result", DebugType.OBJECT, analyze);
         SearchResult searchResult = new SearchResult();
 
@@ -96,8 +104,13 @@ public class ElasticAnalyzeFilter extends AbstractFilter {
         this.resultSetId = resultSetId;
     }
 
+    @Deprecated
     public void setElasticClient(ElasticClientIF elasticClient) {
         this.elasticClient = elasticClient;
+    }
+
+    public void setElasticAnalyzeClient(ElasticAnalyzeClient elasticAnalyzeClient) {
+        this.elasticAnalyzeClient = elasticAnalyzeClient;
     }
 
     /**

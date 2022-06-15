@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Deprecated
 public class QSFHttpClient {
 
     private static Logger LOG = LoggerFactory.getLogger(QSFHttpClient.class);

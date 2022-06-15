@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.quasiris.qsf.commons.http.AsyncHttpClient;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Analyze;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import org.slf4j.Logger;
@@ -14,8 +15,11 @@ import java.io.IOException;
 /**
  * Created by mki on 16.12.17.
  */
+@Deprecated
 public class StandardElasticClient implements  ElasticClientIF {
     private static Logger LOG = LoggerFactory.getLogger(StandardElasticClient.class);
+
+    private AsyncHttpClient asyncHttpClient;
 
     private ObjectMapper objectMapper;
 
@@ -23,7 +27,7 @@ public class StandardElasticClient implements  ElasticClientIF {
         objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.registerModule(new JavaTimeModule());
-
+        asyncHttpClient = new AsyncHttpClient();
     }
 
     @Override
@@ -50,7 +54,7 @@ public class StandardElasticClient implements  ElasticClientIF {
     @Override
     public void index(String elasticBaseUrl, String request) throws IOException {
         LOG.debug("elastic url: {} request: {}", elasticBaseUrl, request);
-        ElasticHttpClient.postAsync(elasticBaseUrl, request);
+        asyncHttpClient.postAsync(elasticBaseUrl, request);
     }
 
     @Override

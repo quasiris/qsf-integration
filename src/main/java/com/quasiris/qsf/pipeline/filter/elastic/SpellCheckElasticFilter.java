@@ -1,5 +1,7 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.quasiris.qsf.commons.http.DefaultHttpClient;
+import com.quasiris.qsf.commons.http.HttpClient;
 import com.quasiris.qsf.dto.response.DidYouMeanResult;
 import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.explain.ExplainContextHolder;
@@ -7,7 +9,6 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
-import com.quasiris.qsf.pipeline.filter.elastic.client.QSFHttpClient;
 import com.quasiris.qsf.pipeline.filter.elastic.spellcheck.SpellCheckContext;
 import com.quasiris.qsf.pipeline.filter.elastic.spellcheck.SpellCheckElasticClient;
 import com.quasiris.qsf.pipeline.filter.elastic.spellcheck.SpellcheckUtils;
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.quasiris.qsf.commons.util.GenericUtils.castTypeReference;
 
 /**
  * Created by tbl on 11.4.20.
@@ -40,7 +43,10 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     private String restartPipelineId;
 
+    private HttpClient httpClient;
+
     public SpellCheckElasticFilter() {
+        httpClient = new DefaultHttpClient();
     }
 
     @Override
@@ -48,8 +54,8 @@ public class SpellCheckElasticFilter extends AbstractFilter {
         if(spellCheckElasticClient == null) {
             spellCheckElasticClient = new SpellCheckElasticClient(baseUrl, minTokenLenght, minTokenWeight);
         }
+        httpClient = new DefaultHttpClient();
         super.init();
-
     }
 
     @Override
@@ -87,9 +93,8 @@ public class SpellCheckElasticFilter extends AbstractFilter {
             sentences.setSentences(s);
 
 
-            QSFHttpClient qsfHttpClient = new QSFHttpClient();
-            SentencesResponse sentencesResponse = qsfHttpClient.
-                    post("http://localhost:5000/v1/sentence-scoring", sentences, SentencesResponse.class);
+            SentencesResponse sentencesResponse = httpClient.
+                    post("http://localhost:5000/v1/sentence-scoring", sentences, castTypeReference(SentencesResponse.class));
 
             correctedQueryVariants = sentencesResponse.getSentences();
             correctedQueryVariants.sort(Comparator.comparing(Score::getScore).reversed());

@@ -29,7 +29,7 @@ public class SpellCheckerElasticFilterTest extends AbstractPipelineTest {
         String baseUrl = "http://localhost:9200/dias-spellchecker-dev";
 
 
-        MockMultiElasticClient mockMultiElasticClient = new MockMultiElasticClient();
+        MockElasticSearchClient mockElasticSearchClient = new MockElasticSearchClient();
         //mockMultiElasticClient.setRecord(true);
 
         SpellCheckElasticFilter spellCheckElasticFilter = new SpellCheckElasticFilter();
@@ -37,7 +37,7 @@ public class SpellCheckerElasticFilterTest extends AbstractPipelineTest {
         spellCheckElasticFilter.setId("spellchecker");
 
         SpellCheckElasticClient spellCheckElasticClient = new SpellCheckElasticClient(baseUrl, 4, 1);
-        spellCheckElasticClient.setElasticClient(mockMultiElasticClient);
+        spellCheckElasticClient.setElasticSearchClient(mockElasticSearchClient);
 
         spellCheckElasticFilter.setSpellCheckElasticClient(spellCheckElasticClient);
         spellCheckElasticFilter.setSentenceScoringEnabled(false);
@@ -66,9 +66,5 @@ public class SpellCheckerElasticFilterTest extends AbstractPipelineTest {
         assertThat("spellcheck", is(in(searchQuery.getQueryChangedReasons())));
 
         assertTrue(pipelineContainer.getSearchQuery().isQueryChanged());
-
     }
-
-
-
 }

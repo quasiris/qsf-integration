@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic.suggest;
 
+import com.quasiris.qsf.commons.elasticsearch.client.ElasticSearchClient;
 import com.quasiris.qsf.pipeline.filter.elastic.Elastic2SearchResultMappingTransformer;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilter;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
@@ -75,9 +76,14 @@ public class SuggestFilterBuilder {
     }
 
 
+    @Deprecated
     public SuggestFilterBuilder client(ElasticClientIF elasticClient) {
         elasticFilter.setElasticClient(elasticClient);
         return this;
     }
 
+    public SuggestFilterBuilder client(ElasticSearchClient elasticClient) {
+        elasticFilter.setElasticSearchClient(elasticClient);
+        return this;
+    }
 }

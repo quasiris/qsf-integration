@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.commons.elasticsearch.client.ElasticSearchClient;
 import com.quasiris.qsf.commons.text.TextUtils;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.AbstractFilter;
@@ -31,12 +32,13 @@ public class PosTaggerElasticFilter extends AbstractFilter {
     private String baseUrl = "http://localhost:9200/pos-tag";
 
     private MultiElasticClientIF elasticClient;
+    private ElasticSearchClient elasticSearchClient;
 
     @Override
     public void init() {
         super.init();
-        if(elasticClient == null) {
-            elasticClient = ElasticClientFactory.getMulitElasticClient();
+        if(elasticClient == null && elasticSearchClient == null) {
+            elasticSearchClient = ElasticClientFactory.getElasticSearchClient();
         }
     }
 
@@ -52,7 +54,13 @@ public class PosTaggerElasticFilter extends AbstractFilter {
 
         //System.out.println("b: " + pipelineContainer.currentTime());
 
-        MultiElasticResult multiElasticResult = elasticClient.request(baseUrl + "/_msearch", elasticQueries);
+        MultiElasticResult multiElasticResult = null;
+        if(elasticSearchClient != null) {
+            multiElasticResult = elasticSearchClient.multiSearch(baseUrl, elasticQueries);
+        } else {
+            multiElasticResult = elasticClient.request(baseUrl + "/_msearch", elasticQueries);
+        }
+
         //System.out.println("a: " + pipelineContainer.currentTime());
 
         if(multiElasticResult.getResponses().size() != pipelineContainer.getSearchQuery().getQueryToken().size()) {

@@ -1,9 +1,8 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.quasiris.qsf.commons.http.AsyncHttpClient;
 import com.quasiris.qsf.explain.ExplainContextHolder;
-import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
-import com.quasiris.qsf.pipeline.filter.elastic.client.StandardElasticClient;
 import com.quasiris.qsf.dto.response.Document;
 
 import java.io.IOException;
@@ -23,17 +22,24 @@ public class ElasticTrackingClient {
 
     private String baseUrl;
 
-    private ElasticClientIF elasticClient;
+    private AsyncHttpClient httpClient;
 
+    private Long timeoutMs = 1000L;
 
+    @Deprecated
     public ElasticTrackingClient(String baseUrl, ElasticClientIF elasticClient) {
         this.baseUrl = baseUrl;
-        this.elasticClient = elasticClient;
+        this.httpClient = new AsyncHttpClient();
+    }
+
+    public ElasticTrackingClient(String baseUrl, AsyncHttpClient httpClient) {
+        this.baseUrl = baseUrl;
+        this.httpClient = httpClient;
     }
 
     public ElasticTrackingClient(String baseUrl) {
         this.baseUrl = baseUrl;
-        this.elasticClient = ElasticClientFactory.getElasticClient();
+        this.httpClient = new AsyncHttpClient();
     }
 
     private static Map<ROTATION, String> rotationPatterns = new HashMap<>();
@@ -52,7 +58,7 @@ public class ElasticTrackingClient {
         ExplainContextHolder.getContext().explain("trackingUrl", indexUrl);
         ExplainContextHolder.getContext().explainJson("trackingDocument", tracking.getDocument());
 
-        elasticClient.index(indexUrl, tracking.getDocument());
+        httpClient.postAsync(indexUrl, tracking.getDocument());
     }
 
 

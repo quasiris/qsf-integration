@@ -1,6 +1,8 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.commons.elasticsearch.client.ElasticSearchClient;
+import com.quasiris.qsf.commons.util.JsonUtil;
 import com.quasiris.qsf.commons.util.UrlUtil;
 import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.exception.DebugType;
@@ -27,6 +29,7 @@ public class ElasticFilter extends AbstractFilter {
     private String resultSetId;
 
     private ElasticClientIF elasticClient;
+    private ElasticSearchClient elasticSearchClient;
 
     private QueryTransformerIF queryTransformer;
 
@@ -37,8 +40,8 @@ public class ElasticFilter extends AbstractFilter {
     @Override
     public void init() {
         super.init();
-        if(elasticClient == null) {
-            elasticClient = ElasticClientFactory.getElasticClient();
+        if(elasticClient == null && elasticSearchClient == null) {
+            elasticSearchClient = ElasticClientFactory.getElasticSearchClient();
         }
     }
 
@@ -54,7 +57,13 @@ public class ElasticFilter extends AbstractFilter {
         pipelineContainer.debug(getId() + ".baseUrl", DebugType.STRING, UrlUtil.removePassword(baseUrl));
         pipelineContainer.debug(getId() + ".query", DebugType.JSON, elasticQuery);
 
-        ElasticResult elasticResult = elasticClient.request(baseUrl + "/_search", elasticQuery);
+        ElasticResult elasticResult = null;
+        if(elasticSearchClient != null) {
+            String jsonQuery = JsonUtil.toJson(elasticQuery);
+            elasticResult = elasticSearchClient.search(baseUrl, jsonQuery);
+        } else {
+            elasticResult = elasticClient.request(baseUrl + "/_search", elasticQuery);
+        }
 
         ExplainContextHolder.getContext().explainJson(getId() + ".result", elasticResult);
         pipelineContainer.debug(getId() + ".result", DebugType.OBJECT, elasticResult);
@@ -91,8 +100,13 @@ public class ElasticFilter extends AbstractFilter {
         this.resultSetId = resultSetId;
     }
 
+    @Deprecated
     public void setElasticClient(ElasticClientIF elasticClient) {
         this.elasticClient = elasticClient;
+    }
+
+    public void setElasticSearchClient(ElasticSearchClient elasticClient) {
+        this.elasticSearchClient = elasticClient;
     }
 
     public QueryTransformerIF getQueryTransformer() {

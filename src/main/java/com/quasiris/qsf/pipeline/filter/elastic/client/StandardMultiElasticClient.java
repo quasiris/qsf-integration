@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Created by tbl on 22.12.18.
  */
+@Deprecated
 public class StandardMultiElasticClient implements MultiElasticClientIF {
     private static Logger LOG = LoggerFactory.getLogger(StandardMultiElasticClient.class);
 

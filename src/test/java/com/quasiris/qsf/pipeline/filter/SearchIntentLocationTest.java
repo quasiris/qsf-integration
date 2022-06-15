@@ -10,6 +10,7 @@ import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilterBuilder;
 import com.quasiris.qsf.pipeline.filter.elastic.MockElasticClient;
+import com.quasiris.qsf.pipeline.filter.elastic.MockElasticSearchClient;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class SearchIntentLocationTest extends AbstractPipelineTest {
 
     @Test
     public void testSearchIntentLocation() throws Exception {
-        MockElasticClient mockElasticClient = new MockElasticClient();
+        MockElasticSearchClient mockElasticClient = new MockElasticSearchClient();
         //mockElasticClient.setRecord(true);
 
         Pipeline pipeline = PipelineBuilder.create().

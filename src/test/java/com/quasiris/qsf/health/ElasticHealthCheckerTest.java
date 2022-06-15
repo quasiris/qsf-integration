@@ -1,6 +1,6 @@
 package com.quasiris.qsf.health;
 
-import com.quasiris.qsf.pipeline.filter.elastic.MockElasticClient;
+import com.quasiris.qsf.pipeline.filter.elastic.MockElasticSearchClient;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +11,7 @@ public class ElasticHealthCheckerTest {
 
     @BeforeEach
     public void before() {
-        ElasticClientFactory.setElasticClient(new MockElasticClient());
+        ElasticClientFactory.setElasticSearchClient(new MockElasticSearchClient());
     }
 
     @Test

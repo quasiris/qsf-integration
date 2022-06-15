@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Future;
 
+@Deprecated
 public class ElasticHttpClient {
 
     private static Logger LOG = LoggerFactory.getLogger(ElasticHttpClient.class);
@@ -75,10 +76,12 @@ public class ElasticHttpClient {
     }
 
 
+    @Deprecated
     public static void postAsync(String url, String postString) {
         postAsync(url, postString, ContentType.APPLICATION_JSON.toString());
     }
 
+    @Deprecated
     public static void postAsync(String url, String postString, String contentType) {
         RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT))

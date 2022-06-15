@@ -2,6 +2,8 @@ package com.quasiris.qsf.pipeline.filter.elastic.spellcheck;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.commons.elasticsearch.client.ElasticSearchClient;
+import com.quasiris.qsf.commons.exception.ResourceNotFoundException;
 import com.quasiris.qsf.commons.util.JsonUtil;
 import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
@@ -26,6 +28,7 @@ import java.util.List;
 public class SpellCheckElasticClient {
 
     private MultiElasticClientIF elasticClient;
+    private ElasticSearchClient elasticSearchClient;
 
     private String baseUrl;
 
@@ -36,10 +39,7 @@ public class SpellCheckElasticClient {
         this.baseUrl = baseUrl;
         this.minTokenLenght = minTokenLenght;
         this.minTokenWeight = minTokenWeight;
-
-        if(elasticClient == null) {
-            elasticClient = ElasticClientFactory.getMulitElasticClient();
-        }
+        this.elasticSearchClient = ElasticClientFactory.getElasticSearchClient();
     }
 
     public List<SpellCheckToken> spellspeck(SearchQuery searchQuery) throws IOException, PipelineContainerException {
@@ -67,7 +67,16 @@ public class SpellCheckElasticClient {
         String requestUrl = baseUrl + "/_msearch";
         ExplainContextHolder.getContext().explain("spellcheckElasticUrl", requestUrl);
 
-        MultiElasticResult multiElasticResult = elasticClient.request(requestUrl, elasticQueries);
+        MultiElasticResult multiElasticResult = null;
+        if(elasticSearchClient != null) {
+            try {
+                multiElasticResult = elasticSearchClient.multiSearch(baseUrl, elasticQueries);
+            } catch (ResourceNotFoundException e) {
+                throw new PipelineContainerException("Error during elastic request!", e);
+            }
+        } else {
+            multiElasticResult = elasticClient.request(requestUrl, elasticQueries);
+        }
         ExplainContextHolder.getContext().explainJson("spellcheckElasticResult", multiElasticResult);
 
         for (SpellCheckToken spellCheckToken : spellCheckTokens) {
@@ -159,7 +168,12 @@ public class SpellCheckElasticClient {
         this.minTokenWeight = minTokenWeight;
     }
 
+    @Deprecated
     public void setElasticClient(MultiElasticClientIF elasticClient) {
         this.elasticClient = elasticClient;
+    }
+
+    public void setElasticSearchClient(ElasticSearchClient elasticSearchClient) {
+        this.elasticSearchClient = elasticSearchClient;
     }
 }

@@ -1,17 +1,15 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
-import com.quasiris.qsf.pipeline.PipelineContainerException;
+import com.quasiris.qsf.commons.elasticsearch.client.ElasticSearchClient;
+import com.quasiris.qsf.commons.exception.ResourceNotFoundException;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.MultiElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.client.StandardMultiElasticClient;
 
-import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by mki on 25.11.17.
- */
-@Deprecated
-public class MockMultiElasticClient extends StandardMultiElasticClient {
+
+public class MockElasticSearchClient extends ElasticSearchClient {
 
     private String mockDir = "src/test/mock/elastic";
 
@@ -20,9 +18,22 @@ public class MockMultiElasticClient extends StandardMultiElasticClient {
     private boolean record = false;
     private boolean mock = true;
 
+    @Override
+    public ElasticResult search(String indexUrl, String jsonQuery) throws ResourceNotFoundException {
+        MockRequestFileHandler mockRequestFileHandler = new MockRequestFileHandler(mockDir, mockFile);
+        if(mock) {
+            return mockRequestFileHandler.getMockedElasticResult(jsonQuery, ElasticResult.class);
+        }
+
+        ElasticResult elasticResult = super.search(indexUrl, jsonQuery);
+        if(record) {
+            mockRequestFileHandler.recordQueryElasticResult(jsonQuery, elasticResult);
+        }
+        return elasticResult;
+    }
 
     @Override
-    public MultiElasticResult request(String elasticUrl, List<String> requests) throws IOException, PipelineContainerException {
+    public MultiElasticResult multiSearch(String elasticUrl, List<String> requests) throws ResourceNotFoundException {
         MockRequestFileHandler mockRequestFileHandler = new MockRequestFileHandler(mockDir, mockFile);
 
         String request = StandardMultiElasticClient.createRequest(requests);
@@ -30,14 +41,12 @@ public class MockMultiElasticClient extends StandardMultiElasticClient {
             return mockRequestFileHandler.getMockedElasticResult(request, MultiElasticResult.class);
         }
 
-        MultiElasticResult multiElasticResult = super.request(elasticUrl, requests);
+        MultiElasticResult multiElasticResult = super.multiSearch(elasticUrl, requests);
         if(record) {
             mockRequestFileHandler.recordQueryElasticResult(request, multiElasticResult);
         }
         return multiElasticResult;
     }
-
-
 
     public String getMockDir() {
         return mockDir;

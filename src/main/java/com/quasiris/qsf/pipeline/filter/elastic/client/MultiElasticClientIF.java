@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Created by tbl on 22.12.18.
  */
+@Deprecated
 public interface MultiElasticClientIF {
 
     MultiElasticResult request(String elasticBaseUrl, List<String> request) throws IOException, PipelineContainerException;

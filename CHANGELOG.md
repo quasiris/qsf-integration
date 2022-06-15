@@ -2,6 +2,10 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+### Changed
+- use new elastic clients
+- move elastic dto to qsf-dto
+
 ### Removed
 - remove jsonassert dependency
 

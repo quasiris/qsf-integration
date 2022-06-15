@@ -1,16 +1,10 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.quasiris.qsf.commons.elasticsearch.client.ElasticAnalyzeClient;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Analyze;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
-import com.quasiris.qsf.pipeline.filter.elastic.client.StandardElasticClient;
 
-import java.io.IOException;
 
-/**
- * Created by mki on 25.11.17.
- */
-@Deprecated
-public class MockElasticClient extends StandardElasticClient {
+public class MockElasticAnalyzeClient extends ElasticAnalyzeClient {
 
     private String mockDir = "src/test/mock/elastic";
 
@@ -20,7 +14,7 @@ public class MockElasticClient extends StandardElasticClient {
     private boolean mock = true;
 
     @Override
-    public Analyze analyze(String elasticBaseUrl, String request) throws IOException {
+    public Analyze analyze(String elasticBaseUrl, String request) {
         MockRequestFileHandler mockRequestFileHandler = new MockRequestFileHandler(mockDir, mockFile);
         if(mock) {
             return mockRequestFileHandler.getMockedElasticResult(request, Analyze.class);
@@ -32,22 +26,6 @@ public class MockElasticClient extends StandardElasticClient {
         }
         return analyze;
     }
-
-    @Override
-    public ElasticResult request(String elasticUrl, String request) throws IOException {
-        MockRequestFileHandler mockRequestFileHandler = new MockRequestFileHandler(mockDir, mockFile);
-        if(mock) {
-            return mockRequestFileHandler.getMockedElasticResult(request, ElasticResult.class);
-        }
-
-        ElasticResult elasticResult = super.request(elasticUrl, request);
-        if(record) {
-            mockRequestFileHandler.recordQueryElasticResult(request, elasticResult);
-        }
-        return elasticResult;
-    }
-
-
 
     public String getMockDir() {
         return mockDir;

@@ -30,7 +30,7 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
 
         public void testQsfqlElasticFilter(int version, String profile, String baseUrl) throws Exception {
 
-            MockElasticClient mockElasticClient = new MockElasticClient();
+            MockElasticSearchClient mockElasticClient = new MockElasticSearchClient();
             //mockElasticClient.setRecord(true);
 
 
@@ -94,7 +94,7 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
     @Test
     public void testSubFacets() throws Exception {
 
-        MockElasticClient mockElasticClient = new MockElasticClient();
+        MockElasticSearchClient mockElasticClient = new MockElasticSearchClient();
         //mockElasticClient.setRecord(true);
 
 

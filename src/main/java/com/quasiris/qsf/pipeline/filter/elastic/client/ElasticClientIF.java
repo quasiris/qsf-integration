@@ -9,6 +9,7 @@ import java.io.IOException;
 /**
  * Created by mki on 16.12.17.
  */
+@Deprecated
 public interface ElasticClientIF {
 
     Analyze analyze(String elasticBaseUrl, String request) throws IOException;

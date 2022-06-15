@@ -27,12 +27,12 @@ public class ElasticAnalyzeFilterTest extends AbstractPipelineTest {
         String baseUrl = "http://localhost:9200/qsf-index/";
 
 
-        MockElasticClient mockElasticClient = new MockElasticClient();
+        MockElasticAnalyzeClient mockElasticClient = new MockElasticAnalyzeClient();
         //mockElasticClient.setRecord(true);
 
         ElasticAnalyzeFilter elasticAnalyzeFilter = new ElasticAnalyzeFilter();
         elasticAnalyzeFilter.setBaseUrl(baseUrl);
-        elasticAnalyzeFilter.setElasticClient(mockElasticClient);
+        elasticAnalyzeFilter.setElasticAnalyzeClient(mockElasticClient);
         elasticAnalyzeFilter.setField("title");
         elasticAnalyzeFilter.setResultSetId("analyze");
 
