@@ -17,7 +17,7 @@ public class JsonAssert {
         assertJson(expected, json);
     }
 
-    public static void assertJson(String expected, JsonNode json) throws IOException {
+    public static void assertJson(String expected, Object json) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String query = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
 
