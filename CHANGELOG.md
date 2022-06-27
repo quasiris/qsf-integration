@@ -2,6 +2,9 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+### Fixed
+- fix http oom
+
 ## [5.6]
 ### Added
 - make it possible to stop a pipeline in a query transformer

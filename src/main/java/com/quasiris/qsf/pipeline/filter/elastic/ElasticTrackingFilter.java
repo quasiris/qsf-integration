@@ -77,4 +77,26 @@ public class ElasticTrackingFilter extends TrackingFilter {
     public void setRotation(String rotation) {
         this.rotation = rotation;
     }
+
+    @Override
+    public void end() {
+        super.end();
+        if(elasticTrackingClient != null) {
+            try {
+                elasticTrackingClient.close();
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    @Override
+    public PipelineContainer onError(PipelineContainer pipelineContainer, Exception e) {
+        if(elasticTrackingClient != null) {
+            try {
+                elasticTrackingClient.close();
+            } catch (Exception ignored) {
+            }
+        }
+        return super.onError(pipelineContainer, e);
+    }
 }

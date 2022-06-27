@@ -12,8 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ElasticTrackingClient {
-
+public class ElasticTrackingClient implements AutoCloseable {
     public enum ROTATION {
         DAILY, HOURLY, MONTHLY, YEARLY
     }
@@ -100,5 +99,12 @@ public class ElasticTrackingClient {
      */
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if(httpClient != null) {
+            httpClient.close();
+        }
     }
 }
