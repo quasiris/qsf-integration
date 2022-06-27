@@ -23,12 +23,12 @@ public class ElasticTrackingClient {
 
     private AsyncHttpClient httpClient;
 
-    private Long timeoutMs = 1000L;
+    private Long timeoutMs = 2000L;
 
     @Deprecated
     public ElasticTrackingClient(String baseUrl, ElasticClientIF elasticClient) {
         this.baseUrl = baseUrl;
-        this.httpClient = new AsyncHttpClient();
+        this.httpClient = new AsyncHttpClient(timeoutMs);
     }
 
     public ElasticTrackingClient(String baseUrl, AsyncHttpClient httpClient) {
@@ -38,7 +38,7 @@ public class ElasticTrackingClient {
 
     public ElasticTrackingClient(String baseUrl) {
         this.baseUrl = baseUrl;
-        this.httpClient = new AsyncHttpClient();
+        this.httpClient = new AsyncHttpClient(timeoutMs);
     }
 
     private static Map<ROTATION, String> rotationPatterns = new HashMap<>();
