@@ -92,40 +92,35 @@ public class ElasticHttpClient {
                 .setSoTimeout(Timeout.ofMilliseconds(ASYNC_TIMEOUT))
                 .build();
         CloseableHttpAsyncClient client = HttpAsyncClients.custom()
-            .setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_1)
-            .setIOReactorConfig(reactorConfig)
-            .setDefaultRequestConfig(config)
-            .build();
-        client.start();
-
-        final SimpleHttpRequest request = SimpleRequestBuilder.post(url)
-                .setBody(postString, ContentType.parse(contentType))
-                .setCharset(StandardCharsets.UTF_8)
+                .setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_1)
+                .setIOReactorConfig(reactorConfig)
+                .setDefaultRequestConfig(config)
                 .build();
-
-        Future<SimpleHttpResponse> future = client.execute(request, new FutureCallback<SimpleHttpResponse>() {
-            @Override
-            public void completed(SimpleHttpResponse simpleHttpResponse) {
-                LOG.debug("The async request finished successful with code: "+simpleHttpResponse.getCode());
-            }
-
-            @Override
-            public void failed(Exception e) {
-                LOG.error("The async request failed because " + e.getMessage(), e);
-            }
-
-            @Override
-            public void cancelled() {
-                LOG.error("The async request was canceled.");
-            }
-        });
-
         try {
-            future.get();
-        } catch (Exception e) {
-            LOG.error("Error while get future: "+e.getMessage(), e);
-        }
+            client.start();
+            final SimpleHttpRequest request = SimpleRequestBuilder.post(url)
+                    .setBody(postString, ContentType.parse(contentType))
+                    .setCharset(StandardCharsets.UTF_8)
+                    .build();
 
-        client.close(CloseMode.GRACEFUL);
+            Future<SimpleHttpResponse> future = client.execute(request, new FutureCallback<SimpleHttpResponse>() {
+                @Override
+                public void completed(SimpleHttpResponse simpleHttpResponse) {
+                    LOG.debug("The async request finished successful with code: " + simpleHttpResponse.getCode());
+                }
+
+                @Override
+                public void failed(Exception e) {
+                    LOG.error("The async request failed because " + e.getMessage(), e);
+                }
+
+                @Override
+                public void cancelled() {
+                    LOG.error("The async request was canceled.");
+                }
+            });
+        } finally {
+            client.close(CloseMode.GRACEFUL);
+        }
     }
 }

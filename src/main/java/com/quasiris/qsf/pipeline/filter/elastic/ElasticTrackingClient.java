@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ElasticTrackingClient implements AutoCloseable {
+public class ElasticTrackingClient {
     public enum ROTATION {
         DAILY, HOURLY, MONTHLY, YEARLY
     }
@@ -57,7 +57,7 @@ public class ElasticTrackingClient implements AutoCloseable {
         ExplainContextHolder.getContext().explain("trackingUrl", indexUrl);
         ExplainContextHolder.getContext().explainJson("trackingDocument", tracking.getDocument());
 
-        httpClient.postAsync(indexUrl, tracking.getDocument());
+        httpClient.postAsyncWithoutResponse(indexUrl, tracking.getDocument());
     }
 
 
@@ -99,12 +99,5 @@ public class ElasticTrackingClient implements AutoCloseable {
      */
     public void setBaseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
-    }
-
-    @Override
-    public void close() throws Exception {
-        if(httpClient != null) {
-            httpClient.close();
-        }
     }
 }

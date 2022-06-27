@@ -54,7 +54,7 @@ public class StandardElasticClient implements  ElasticClientIF {
     @Override
     public void index(String elasticBaseUrl, String request) throws IOException {
         LOG.debug("elastic url: {} request: {}", elasticBaseUrl, request);
-        asyncHttpClient.postAsync(elasticBaseUrl, request);
+        asyncHttpClient.postAsyncWithoutResponse(elasticBaseUrl, request);
     }
 
     @Override
