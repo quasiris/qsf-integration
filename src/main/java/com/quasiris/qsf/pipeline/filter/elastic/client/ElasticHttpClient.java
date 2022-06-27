@@ -107,6 +107,9 @@ public class ElasticHttpClient {
                 @Override
                 public void completed(SimpleHttpResponse simpleHttpResponse) {
                     LOG.debug("The async request finished successful with code: " + simpleHttpResponse.getCode());
+                    if(simpleHttpResponse.getCode() > 300) {
+                        LOG.warn("Status code is not 20x for url "+url+" body: "+simpleHttpResponse.getBody().getBodyText());
+                    }
                 }
 
                 @Override
