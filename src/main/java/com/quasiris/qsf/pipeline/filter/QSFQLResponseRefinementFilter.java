@@ -92,7 +92,15 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
         if(facets == null) {
             return null;
         }
-        return facets.stream().filter(f -> f.getValues() != null).filter(f -> f.getValues().size() > 0).collect(Collectors.toList());
+        List<Facet> refinedFacets = new ArrayList<>();
+        for(Facet facet : facets) {
+            if("slider".equals(facet.getType())) {
+                refinedFacets.add(facet);
+            } else if(facet.getValues() != null && facet.getValues().size() > 0) {
+                refinedFacets.add(facet);
+            }
+        }
+        return refinedFacets;
 
     }
 
