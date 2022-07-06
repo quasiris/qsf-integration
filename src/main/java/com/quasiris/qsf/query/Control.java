@@ -7,7 +7,7 @@ public class Control {
 
     public static final String NO_CAHCE = "noCache";
 
-    public static final String SPELLCHECK_DISABLED = "noCache";
+    public static final String SPELLCHECK_DISABLED = "spellcheckDisabled";
 
     public static boolean isLoadMoreFacets(SearchQuery searchQuery) {
         return searchQuery.isCtrl(LOAD_MORE_FACETS);
