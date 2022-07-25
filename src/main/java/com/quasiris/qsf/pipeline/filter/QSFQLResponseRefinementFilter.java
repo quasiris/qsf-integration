@@ -95,10 +95,12 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
         }
         for(Facet facet : facets) {
             if("slider".equals(facet.getType())) {
-                if(facet.getMinValue() < facet.getMinRange()) {
+                if(facet.getMinValue() != null && facet.getMinRange() != null &&
+                        facet.getMinValue() < facet.getMinRange()) {
                     facet.setMinRange(facet.getMinValue());
                 }
-                if(facet.getMaxValue() > facet.getMaxRange()) {
+                if(facet.getMaxValue() != null && facet.getMaxRange() != null &&
+                        facet.getMaxValue() > facet.getMaxRange()) {
                     facet.setMaxRange(facet.getMaxValue());
                 }
             }
