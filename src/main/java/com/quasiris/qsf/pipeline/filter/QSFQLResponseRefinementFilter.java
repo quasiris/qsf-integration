@@ -84,8 +84,25 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
     }
 
     public void refineFacets(SearchResult searchResult) {
+        adjustMinRangeMaxRangeForSliders(searchResult.getFacets());
         List<Facet> refinedFacets = removeFacetsWithoutValues(searchResult.getFacets());
         searchResult.setFacets(refinedFacets);
+    }
+
+    private void adjustMinRangeMaxRangeForSliders(List<Facet> facets) {
+        if(facets == null) {
+            return;
+        }
+        for(Facet facet : facets) {
+            if("slider".equals(facet.getType())) {
+                if(facet.getMinValue() < facet.getMinRange()) {
+                    facet.setMinRange(facet.getMinValue());
+                }
+                if(facet.getMaxValue() > facet.getMaxRange()) {
+                    facet.setMaxRange(facet.getMaxValue());
+                }
+            }
+        }
     }
 
     private List<Facet> removeFacetsWithoutValues(List<Facet> facets) {
