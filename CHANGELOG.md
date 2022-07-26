@@ -5,6 +5,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Fixed
 - fix http oom
 - adjust min range max range for slider in case min < min range or max > max range
+- parse requestOrigin in qsfql parser
 
 ## [5.6]
 ### Added

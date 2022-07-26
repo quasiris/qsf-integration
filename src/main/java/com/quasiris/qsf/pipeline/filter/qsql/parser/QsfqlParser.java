@@ -99,6 +99,7 @@ public class QsfqlParser {
         query.setDebug(getParameterAsBoolean("debug", query.isDebug()));
         query.setExplain(getParameterAsBoolean("explain", query.isExplain()));
         query.setTracking(getParameterAsBoolean("tracking", Boolean.TRUE));
+        query.setRequestOrigin(getParameter("requestOrigin"));
     }
 
     void parseQuery(SearchQuery query) {
