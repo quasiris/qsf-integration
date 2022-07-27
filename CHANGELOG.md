@@ -2,6 +2,8 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+
+## [5.7]
 ### Fixed
 - fix http oom
 - adjust min range max range for slider in case min < min range or max > max range
