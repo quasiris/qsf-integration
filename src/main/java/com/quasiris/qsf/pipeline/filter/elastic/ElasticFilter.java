@@ -109,6 +109,10 @@ public class ElasticFilter extends AbstractFilter {
         this.elasticSearchClient = elasticClient;
     }
 
+    public ElasticSearchClient getElasticSearchClient() {
+        return elasticSearchClient;
+    }
+
     public QueryTransformerIF getQueryTransformer() {
         return queryTransformer;
     }
