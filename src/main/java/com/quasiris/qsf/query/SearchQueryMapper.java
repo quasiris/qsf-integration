@@ -21,6 +21,7 @@ public class SearchQueryMapper {
         searchQuery.setTracking(searchQueryDTO.getTracking());
         searchQuery.setRequestOrigin(searchQueryDTO.getRequestOrigin());
         searchQuery.setRows(searchQueryDTO.getRows());
+        searchQuery.setTrackingTags(new ArrayList<>(searchQueryDTO.getTrackingTags()));
 
         Sort sort = map(searchQueryDTO.getSort());
         searchQuery.setSort(sort);

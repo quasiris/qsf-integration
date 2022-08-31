@@ -153,6 +153,10 @@ public class TrackingFilter extends AbstractFilter {
             }
         }
 
+        if(searchQuery.getTrackingTags() != null) {
+            tracking.addValue("tags", searchQuery.getTrackingTags());
+        }
+
         tracking = trackSearchResult(pipelineContainer, tracking);
 
 

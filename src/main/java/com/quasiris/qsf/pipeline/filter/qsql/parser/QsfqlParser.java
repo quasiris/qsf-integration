@@ -54,6 +54,7 @@ public class QsfqlParser {
         parseFacetFilter(query);
         parseCtrl(query);
         parseParameter(query);
+        parseTracking(query);
         return query;
     }
 
@@ -100,6 +101,18 @@ public class QsfqlParser {
         query.setExplain(getParameterAsBoolean("explain", query.isExplain()));
         query.setTracking(getParameterAsBoolean("tracking", Boolean.TRUE));
         query.setRequestOrigin(getParameter("requestOrigin"));
+    }
+
+    void parseTracking(SearchQuery query) {
+        List<String> tags = new ArrayList<>();
+        String[] trackingGET = parameters.get("tracking");
+        if(trackingGET != null) {
+            for(String tracking : trackingGET) {
+                tags.addAll(Arrays.asList(tracking.split(Pattern.quote(","))));
+            }
+
+        }
+        query.setTrackingTags(tags);
     }
 
     void parseQuery(SearchQuery query) {

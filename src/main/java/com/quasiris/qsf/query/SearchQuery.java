@@ -18,6 +18,8 @@ public class SearchQuery {
     private List<String> queryChangedReasons;
     private Boolean tracking;
 
+    private List<String> trackingTags;
+
     private List<Token> queryToken = new ArrayList<>();
 
     private String q;
@@ -377,6 +379,21 @@ public class SearchQuery {
 
     public void setExplain(boolean explain) {
         this.explain = explain;
+    }
+
+    public List<String> getTrackingTags() {
+        return trackingTags;
+    }
+
+    public void setTrackingTags(List<String> trackingTags) {
+        this.trackingTags = trackingTags;
+    }
+
+    public void addTrackingTag(String tag) {
+        if(this.trackingTags == null) {
+            this.trackingTags = new ArrayList<>();
+        }
+        this.trackingTags.add(tag);
     }
 
     @Override

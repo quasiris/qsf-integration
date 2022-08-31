@@ -25,6 +25,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class QsfqlParserTest {
 
     @Test
+    public void testTracking() throws Exception {
+        SearchQuery query = createQuery("tracking=testing,monitoring");
+        assertEquals(2, query.getTrackingTags().size());
+        assertEquals("testing", query.getTrackingTags().get(0));
+        assertEquals("monitoring", query.getTrackingTags().get(1));
+    }
+    @Test
     public void testControl() throws Exception {
         SearchQuery query = createQuery("ctrl=loadMoreFacets,modified");
         assertTrue(Control.isLoadMoreFacets(query));
