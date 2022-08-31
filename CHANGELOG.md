@@ -2,6 +2,8 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+### Added
+- implement tracking tags for search query
 
 ## [5.7]
 ### Added

@@ -72,7 +72,26 @@ class QsfSearchQueryParserTest {
             Assertions.assertEquals("*", actual.getQ());
             Assertions.assertEquals(1, actual.getPage());
             Assertions.assertEquals(1, actual.getRows());
+            Assertions.assertNull(actual.getTrackingTags());
             Assertions.assertFalse(actual.isDebug());
+        }
+    }
+
+    @Test
+    void parseSearchQueryPostRequestTrackingTags() throws IOException {
+        String fileName = "/com/quasiris/qsf/migration/qsf-search-query-parser-test-post-tracking-tags.json";
+        try (InputStream is = TestSuiteExecuter.class.getResourceAsStream(fileName)) {
+
+            HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+            ServletInputStream servletInputStream = mockServletInputStream(is);
+            when(mockRequest.getInputStream()).thenReturn(servletInputStream);
+            when(mockRequest.getMethod()).thenReturn("POST");
+
+            SearchQuery actual = parser.parseSearchQuery(mockRequest);
+
+            Assertions.assertEquals(2, actual.getTrackingTags().size());
+            Assertions.assertEquals("testing", actual.getTrackingTags().get(0));
+            Assertions.assertEquals("monitoring", actual.getTrackingTags().get(1));
         }
     }
 
