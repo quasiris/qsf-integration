@@ -139,7 +139,7 @@ public class ElasticFilter extends AbstractFilter {
         } catch (Exception ex) {
             query = ex.getMessage();
         }
-        LOG.error("The filter: {} failed with an error: {} for query: {}", getId(), e.getMessage(), query);
+        LOG.error("The filter: {} failed with an error: {} for query: {}", getId(), e.getMessage(), query, e);
         return super.onError(pipelineContainer, e);
     }
 }
