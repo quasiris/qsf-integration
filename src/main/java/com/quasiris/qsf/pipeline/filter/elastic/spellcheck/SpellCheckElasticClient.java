@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.commons.elasticsearch.client.ElasticSearchClient;
 import com.quasiris.qsf.commons.exception.ResourceNotFoundException;
+import com.quasiris.qsf.commons.text.TextUtils;
 import com.quasiris.qsf.commons.util.JsonUtil;
 import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
@@ -50,6 +51,11 @@ public class SpellCheckElasticClient {
             spellCheckTokens.add(spellCheckToken);
 
             if(token.getValue().length() < minTokenLenght) {
+                spellCheckToken.setTypes(Arrays.asList(SpellCheckTokenType.IGNORED));
+                continue;
+            }
+
+            if(TextUtils.containsNumber(token.getValue())) {
                 spellCheckToken.setTypes(Arrays.asList(SpellCheckTokenType.IGNORED));
                 continue;
             }
