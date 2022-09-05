@@ -92,6 +92,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         if(Control.isLoadMoreFacets(searchQuery)) {
             for(Facet facet : aggregations) {
                 facet.setSize(1000);
+                facet.setSortBy("_key asc");
             }
         }
 
