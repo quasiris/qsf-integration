@@ -4,6 +4,11 @@ All notable changes qsf-integration project will be documented in this file.
 ## [UNRELEASED]
 ### Added
 - implement tracking tags for search query
+- add exception to the log message in the ElasticFilter
+
+### Changed
+- sort facet by key in case of all facets are loaded
+- ignore tokens with numbers in spellcheck
 
 ## [5.7]
 ### Added
