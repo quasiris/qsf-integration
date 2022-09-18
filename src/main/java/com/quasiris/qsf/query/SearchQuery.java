@@ -20,6 +20,8 @@ public class SearchQuery {
 
     private List<String> trackingTags;
 
+    private List<String> tags;
+
     private List<Token> queryToken = new ArrayList<>();
 
     private String q;
@@ -394,6 +396,21 @@ public class SearchQuery {
             this.trackingTags = new ArrayList<>();
         }
         this.trackingTags.add(tag);
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(String tag) {
+        if(this.tags == null) {
+            this.tags = new ArrayList<>();
+        }
+        this.tags.add(tag);
     }
 
     @Override
