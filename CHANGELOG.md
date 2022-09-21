@@ -5,6 +5,7 @@ All notable changes qsf-integration project will be documented in this file.
 ### Added
 - implement tracking tags for search query
 - add exception to the log message in the ElasticFilter
+- add tags to search query
 
 ### Changed
 - sort facet by key in case of all facets are loaded
