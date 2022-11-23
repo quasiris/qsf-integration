@@ -222,8 +222,6 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     protected Facet mapAggregationToNavigation(String id, Aggregation aggregation, FacetMapping mapping) {
-        Facet facet = new Facet();
-
         Node<CategoryDTO> root = new Node<>();
         for(Bucket bucket : aggregation.getBuckets()) {
             String[] categories = bucket.getKey().split(Pattern.quote("|___|"));
@@ -239,7 +237,18 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             }
         }
 
-        facet = traverse(root);
+        Facet facet = traverse(root);
+
+        facet.setType(mapping.getType());
+        String name = mapping.getName();
+
+        if(name == null) {
+            name = id;
+        }
+        facet.setId(id);
+        facet.setName(name);
+        facet.setCount((long) aggregation.getBuckets().size());
+
         return facet;
 
     }

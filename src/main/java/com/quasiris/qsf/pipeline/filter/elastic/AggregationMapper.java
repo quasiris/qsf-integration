@@ -18,6 +18,11 @@ public class AggregationMapper {
             return "date_histogram";
         }
 
+        if(type.equals("navigation")) {
+            return "terms";
+        }
+
+
         return type;
     }
 
