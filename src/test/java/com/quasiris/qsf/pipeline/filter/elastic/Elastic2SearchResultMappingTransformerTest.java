@@ -6,6 +6,7 @@ import com.quasiris.qsf.dto.response.Facet;
 import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.mapper.CategorySelectFacetKeyMapper;
+import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -16,6 +17,41 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Elastic2SearchResultMappingTransformerTest {
+
+    @Test
+    void testCategorySelect() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        int level = 4;
+        String fieldName = "myCategory";
+        FacetKeyMapper facetKeyMapper = new CategorySelectFacetKeyMapper();
+        for (int i = 0; i <= level; i++) {
+            String id = fieldName + "Tree" + i;
+            transformer.addFacetNameMapping(id, "myCategory");
+            transformer.addFacetTypeMapping(id, "categorySelect");
+            transformer.addFacetKeyMapper(id, facetKeyMapper);
+        }
+
+
+
+        ElasticResult elasticResult = readElasticResultFromFile("category-select.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+        assertEquals(3,searchResult.getFacets().size());
+        assertEquals("myCategoryTree0", searchResult.getFacets().get(0).getId());
+        assertEquals("myCategoryTree1", searchResult.getFacets().get(1).getId());
+        assertEquals("myCategoryTree2", searchResult.getFacets().get(2).getId());
+
+        assertEquals("Kunden", searchResult.getFacets().get(0).getValues().get(0).getValue());
+        assertEquals("myCategoryTree0=123456%7C-%7C2%7C-%7CKunden", searchResult.getFacets().get(0).getValues().get(0).getFilter());
+        assertEquals(63, searchResult.getFacets().get(0).getValues().get(0).getCount());
+
+        assertEquals("SMB", searchResult.getFacets().get(1).getValues().get(2).getValue());
+        assertEquals("myCategoryTree1=123456%7C-%7C2%7C-%7CKunden%7C___%7C732606%7C-%7C12%7C-%7CSMB", searchResult.getFacets().get(1).getValues().get(2).getFilter());
+        assertEquals(4, searchResult.getFacets().get(1).getValues().get(2).getCount());
+
+        assertEquals("Kontakte", searchResult.getFacets().get(2).getValues().get(2).getValue());
+        assertEquals("myCategoryTree2=123456%7C-%7C2%7C-%7CKunden%7C___%7C789012%7C-%7C14%7C-%7CBuchhaltung%7C___%7C937264%7C-%7C1%7C-%7CKontakte", searchResult.getFacets().get(2).getValues().get(2).getFilter());
+        assertEquals(2, searchResult.getFacets().get(2).getValues().get(2).getCount());
+    }
 
     @Test
     void testFieldGrouping() throws Exception {

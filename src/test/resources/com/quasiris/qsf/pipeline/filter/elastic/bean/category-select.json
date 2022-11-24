@@ -1,0 +1,93 @@
+{
+    "took": 2,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 2,
+            "relation": "eq"
+        },
+        "max_score": 1.0,
+        "hits": [
+        ]
+    },
+    "aggregations": {
+        "qsc_filtered": {
+            "meta": {},
+            "doc_count": 591,
+            "myCategoryTree0_filter_wrapper": {
+                "meta": {},
+                "doc_count": 591,
+                "myCategoryTree0": {
+                    "doc_count_error_upper_bound": 0,
+                    "sum_other_doc_count": 4,
+                    "buckets": [
+                        {
+                            "key": "123456|-|2|-|Kunden",
+                            "doc_count": 63
+                        },
+                        {
+                            "key": "211022|-|1|-|Vertrieb",
+                            "doc_count": 2
+                        },
+                        {
+                            "key": "255044|-|3|-|Marketing",
+                            "doc_count": 2
+                        }
+                    ]
+                }
+            },
+            "myCategoryTree2_filter_wrapper": {
+                "doc_count": 10,
+                "myCategoryTree2": {
+                    "doc_count_error_upper_bound": 0,
+                    "sum_other_doc_count": 0,
+                    "buckets": [
+                        {
+                            "key": "123456|-|2|-|Kunden|___|789012|-|14|-|Buchhaltung|___|237126|-|2|-|Konto",
+                            "doc_count": 4
+                        },
+                        {
+                            "key": "123456|-|2|-|Kunden|___|789012|-|14|-|Buchhaltung|___|244122|-|0|-|Service",
+                            "doc_count": 2
+                        },
+                        {
+                            "key": "123456|-|2|-|Kunden|___|789012|-|14|-|Buchhaltung|___|937264|-|1|-|Kontakte",
+                            "doc_count": 2
+                        },
+                        {
+                            "key": "123456|-|2|-|Kunden|___|789012|-|14|-|Buchhaltung|___|837440|-|4|-|Kündigung",
+                            "doc_count": 2
+                        }
+                    ]
+                }
+            },
+            "myCategoryTree1_filter_wrapper": {
+                "doc_count": 63,
+                "myCategoryTree1": {
+                    "doc_count_error_upper_bound": 0,
+                    "sum_other_doc_count": 26,
+                    "buckets": [
+                        {
+                            "key": "123456|-|2|-|Kunden|___|789012|-|14|-|Buchhaltung",
+                            "doc_count": 10
+                        },
+                        {
+                            "key": "123456|-|2|-|Kunden|___|132277|-|8|-|Konzerne",
+                            "doc_count": 4
+                        },
+                        {
+                            "key": "123456|-|2|-|Kunden|___|732606|-|12|-|SMB",
+                            "doc_count": 4
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
