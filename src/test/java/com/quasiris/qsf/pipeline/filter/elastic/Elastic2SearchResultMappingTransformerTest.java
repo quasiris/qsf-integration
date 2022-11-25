@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.Facet;
+import com.quasiris.qsf.dto.response.FacetValue;
 import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.mapper.CategorySelectFacetKeyMapper;
@@ -17,6 +18,38 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Elastic2SearchResultMappingTransformerTest {
+
+
+
+    @Test
+    void testNavigation() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        String id = "categories";
+        transformer.addFacetNameMapping(id, "categories");
+        transformer.addFacetTypeMapping(id, "navigation");
+
+
+
+        ElasticResult elasticResult = readElasticResultFromFile("navigation.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+        assertEquals(1,searchResult.getFacets().size());
+        Facet categories = searchResult.getFacetById("categories");
+        assertEquals(3,categories.getValues().size());
+
+
+
+        assertEquals("Industrietechnik", categories.getValues().get(0).getValue());
+        assertEquals(18384, categories.getValues().get(0).getCount());
+        // TODO be careful, the category import rely on this id - if the filter is changed, this must be considered
+        assertEquals("2", categories.getValues().get(0).getFilter());
+
+
+        FacetValue child = categories.getValues().get(0).getChildren().getValues().get(1);
+        assertEquals("Automatisierung und Antriebstechnik", child.getValue());
+        assertEquals(1511, child.getCount());
+        assertEquals("211", child.getFilter());
+    }
+
 
     @Test
     void testCategorySelect() throws Exception {

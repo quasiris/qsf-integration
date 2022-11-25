@@ -1,0 +1,338 @@
+{
+    "took": 16,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 10000,
+            "relation": "gte"
+        },
+        "max_score": null,
+        "hits": []
+    },
+    "aggregations": {
+        "qsc_filtered": {
+            "meta": {},
+            "doc_count": 27806,
+            "categories": {
+                "doc_count_error_upper_bound": 0,
+                "sum_other_doc_count": 0,
+                "buckets": [
+                    {
+                        "key": "2|-|0|-|Industrietechnik",
+                        "doc_count": 18384
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik",
+                        "doc_count": 16873
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221321|-|0|-|Reihenklemmen",
+                        "doc_count": 14800
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik",
+                        "doc_count": 9404
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik",
+                        "doc_count": 9185
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121251|-|0|-|Dosen- u. Installationsklemmen",
+                        "doc_count": 9001
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|211|-|0|-|Automatisierung und Antriebstechnik",
+                        "doc_count": 1511
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|211|-|0|-|Automatisierung und Antriebstechnik|___|211121|-|0|-|Bus-Systeme Industriell",
+                        "doc_count": 1162
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221431|-|0|-|Kennzeichnungsmaterial",
+                        "doc_count": 609
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221239|-|0|-|Sensor-Aktor Kabel",
+                        "doc_count": 570
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221211|-|0|-|Relais Industrie",
+                        "doc_count": 304
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221216|-|0|-|Elektronikbausteine",
+                        "doc_count": 248
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|211|-|0|-|Automatisierung und Antriebstechnik|___|211411|-|0|-|Netzgeräte, Trafos und Stromversorgungen",
+                        "doc_count": 181
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|211|-|0|-|Automatisierung und Antriebstechnik|___|211615|-|0|-|Stromwandler",
+                        "doc_count": 115
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik",
+                        "doc_count": 97
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121822|-|0|-|Werkzeug",
+                        "doc_count": 76
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|141|-|0|-|Netzwerktechnik",
+                        "doc_count": 76
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221215|-|0|-|Trennschaltgeräte / Mess-, Regler-Relais",
+                        "doc_count": 74
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221313|-|0|-|Aderendhülsen blank / isoliert",
+                        "doc_count": 72
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik|___|131115|-|0|-|Schalter Aufputz wassergeschützt",
+                        "doc_count": 66
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121224|-|0|-|Kabelkanal-Zubehör komplett",
+                        "doc_count": 59
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|151|-|0|-|Technisches Licht",
+                        "doc_count": 46
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221238|-|0|-|Sensor-Aktor Boxen",
+                        "doc_count": 45
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|211|-|0|-|Automatisierung und Antriebstechnik|___|211111|-|0|-|SPS-Systeme",
+                        "doc_count": 43
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|151|-|0|-|Technisches Licht|___|151523|-|0|-|Lichtmanagement",
+                        "doc_count": 41
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|141|-|0|-|Netzwerktechnik|___|141251|-|0|-|Computer und Zubehör",
+                        "doc_count": 29
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|141|-|0|-|Netzwerktechnik|___|141221|-|0|-|Industrie Switche 10/100/1000",
+                        "doc_count": 27
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221224|-|0|-|Endschalter mechanisch",
+                        "doc_count": 26
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221228|-|0|-|Signalgeräte optisch / akustisch",
+                        "doc_count": 24
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221118|-|0|-|Profilschienen, Hut-Schienen",
+                        "doc_count": 22
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221432|-|0|-|Kennzeichnungsgeräte",
+                        "doc_count": 19
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121226|-|0|-|Unterflurkanäle / Doppelboden",
+                        "doc_count": 12
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121241|-|0|-|Installationsdosen UP / Hohlwand / Beton",
+                        "doc_count": 12
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221227|-|0|-|Einbau-Befehls- und Meldegeräte",
+                        "doc_count": 12
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik|___|131111|-|0|-|Schalter Unterputz Standard",
+                        "doc_count": 11
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221331|-|0|-|Industrie-Steckverbindersysteme",
+                        "doc_count": 11
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|141|-|0|-|Netzwerktechnik|___|141111|-|0|-|Steckverbinder Koax, D-Sub, BNC, TNC, RJ",
+                        "doc_count": 9
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|211|-|0|-|Automatisierung und Antriebstechnik|___|211113|-|0|-|Touchpanels / HMI",
+                        "doc_count": 9
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221112|-|0|-|Kleingehäuse",
+                        "doc_count": 9
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221332|-|0|-|Industrie-Steckverbinder schwer",
+                        "doc_count": 8
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121231|-|0|-|Gießharz- und Kabelmuffen",
+                        "doc_count": 7
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221421|-|0|-|Schrumpftechnik",
+                        "doc_count": 7
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|141|-|0|-|Netzwerktechnik|___|141411|-|0|-|Überspannungsschutz",
+                        "doc_count": 6
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221212|-|0|-|Zeitrelais Industrie",
+                        "doc_count": 6
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121514|-|0|-|Ex-Installations-Material",
+                        "doc_count": 5
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121222|-|0|-|Geräteeinbaukanäle BR / BRS / BRA / SL /",
+                        "doc_count": 4
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik|___|131113|-|0|-|Schalter Unterputz wassergeschützt",
+                        "doc_count": 4
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik|___|131211|-|0|-|KNX-Material",
+                        "doc_count": 4
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik|___|131122|-|0|-|Bewegungsmelder innen",
+                        "doc_count": 3
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik|___|131131|-|0|-|Tischsteckdosen,Verlängerungen,Trommeln",
+                        "doc_count": 3
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221233|-|0|-|Sicherheits-Sensorik",
+                        "doc_count": 3
+                    },
+                    {
+                        "key": "3|-|0|-|Erneuerbare Energien",
+                        "doc_count": 3
+                    },
+                    {
+                        "key": "3|-|0|-|Erneuerbare Energien|___|331|-|0|-|null",
+                        "doc_count": 3
+                    },
+                    {
+                        "key": "3|-|0|-|Erneuerbare Energien|___|331|-|0|-|null|___|331112|-|0|-|Ladestationen Wand",
+                        "doc_count": 3
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121312|-|0|-|Verteiler-Systeme (Wand-, Stand-)",
+                        "doc_count": 2
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121811|-|0|-|Mess- und Prüfgeräte",
+                        "doc_count": 2
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik|___|131121|-|0|-|Bewegungsmelder, Dämmerungsschalter auß.",
+                        "doc_count": 2
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik|___|131123|-|0|-|Präsenzmelder",
+                        "doc_count": 2
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|141|-|0|-|Netzwerktechnik|___|141222|-|0|-|Switche 10/100/1000",
+                        "doc_count": 2
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|141|-|0|-|Netzwerktechnik|___|141226|-|0|-|Netzwerkkarten / Mediakonverter",
+                        "doc_count": 2
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221117|-|0|-|Schaltschrank Systemzubehör",
+                        "doc_count": 2
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121242|-|0|-|Aufputz Abzweigdosen, wassergeschützt",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121321|-|0|-|Leitungsschutzschalter",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121323|-|0|-|Reiheneinbaugeräte, Schalter, Taster",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121331|-|0|-|Feinsicherungen und Halter",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|121|-|0|-|Installationstechnik|___|121512|-|0|-|Garagentor- / Motoren - Steuerungen",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik|___|131112|-|0|-|Schalter Unterputz Fläche",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|131|-|0|-|Gebäudesystemtechnik|___|131231|-|0|-|Jalousien- und Rohrmotorsteuerungen",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|141|-|0|-|Netzwerktechnik|___|141225|-|0|-|Industriekomponenten Hutschiene",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|151|-|0|-|Technisches Licht|___|151531|-|0|-|Fassungen und Zubehör",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|151|-|0|-|Technisches Licht|___|151571|-|0|-|Office Innenleuchten konventionell",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|151|-|0|-|Technisches Licht|___|151573|-|0|-|Feuchtraumleuchten konventionell",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|151|-|0|-|Technisches Licht|___|151623|-|0|-|LED Panel-Leuchte alle Maße außer 625 x 625",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "1|-|0|-|Gebäudetechnik|___|151|-|0|-|Technisches Licht|___|151641|-|0|-|LED Schnellmontagelichtbänder",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|211|-|0|-|Automatisierung und Antriebstechnik|___|211314|-|0|-|Frequenzumformer / Sanftanlasser Zubehör",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221115|-|0|-|Stromverteilerkomponenten",
+                        "doc_count": 1
+                    },
+                    {
+                        "key": "2|-|0|-|Industrietechnik|___|221|-|0|-|Schalt- und Steuerungstechnik|___|221411|-|0|-|Kabelbinder",
+                        "doc_count": 1
+                    }
+                ]
+            }
+        }
+    }
+}
