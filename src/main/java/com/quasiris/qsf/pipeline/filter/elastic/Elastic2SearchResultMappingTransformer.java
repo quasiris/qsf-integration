@@ -315,6 +315,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                     String key = mapping.getKey();
                     if(key.endsWith("*")) {
                         mapPrefixFields(mapping, fields, document);
+                    } else if(key.contains(".")) {
+                        mapNestedField(mapping, fields, document);
                     } else {
                         mapField(mapping, fields, document);
                     }
@@ -332,6 +334,21 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
         transformHighlight(hit, document);
         return document;
+    }
+
+    /**
+     * Nested fields are taken as-is. The visibility is controlled via elastic source and the search behaviour through search-config.
+     * Note: Mapping to other name is not supported!
+     * Note: Only one level is supported!
+     * @param mapping of nested field
+     * @param fields with values
+     * @param document target
+     */
+    public void mapNestedField(Map.Entry<String, List<String>> mapping, Map fields, Document document) {
+        String[] keyParts = mapping.getKey().split("\\.");
+        String nestedField = keyParts.length > 1 ? keyParts[0] : null;
+        Object mappedValue = fields.get(nestedField);
+        mapValue(document, nestedField, mappedValue);
     }
 
     public void mapField(Map.Entry<String, List<String>> mapping, Map fields, Document document) {
