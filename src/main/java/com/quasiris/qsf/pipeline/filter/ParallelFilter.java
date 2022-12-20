@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter;
 
 import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.pipeline.*;
+import com.quasiris.qsf.pipeline.helper.ExecLocationIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,9 +60,10 @@ public class ParallelFilter extends AbstractFilter {
     @Override
     public PipelineContainer filter(PipelineContainer pipelineContainer) throws Exception {
         List<PipelineFutureTask<PipelineCallableResponse>> futureTaskList = new ArrayList<>();
-
-        for(Pipeline pipeline: pipelines) {
-            futureTaskList.add(new PipelineFutureTask<>(new PipelineCallable(pipeline, pipelineContainer), pipeline));
+        for (int i = 0; i < pipelines.size(); i++) {
+            Pipeline pipeline = pipelines.get(i);
+            String curExecId = ExecLocationIdHelper.addIndexAndPipelineId(getExecLocationId(), i, pipeline);
+            futureTaskList.add(new PipelineFutureTask<>(new PipelineCallable(pipeline, pipelineContainer, curExecId), pipeline));
         }
 
         ExecutorService executorService = executorServices.get(executorName);
@@ -73,23 +75,28 @@ public class ParallelFilter extends AbstractFilter {
 
         List<PipelineContainer> results = new ArrayList<>();
 
-            for(PipelineFutureTask<PipelineCallableResponse> futureTask :futureTaskList) {
-                try {
-                    LOG.debug("getting result for pipeline " + futureTask.getPipeline().getId());
-                    PipelineCallableResponse response = futureTask.getWithTimeout();
-                    ExplainContextHolder.getContext().addChild(response.getExplain());
-                    PipelineContainer value = response.getPipelineContainer();
-                    results.add(value);
-                } catch (TimeoutException e) {
-                    Pipeline pipeline = futureTask.getPipeline();
-                    pipelineContainer.error("The pipeline " + pipeline.getId() + " has not finished in " + pipeline.getTimeout() + " ms.");
-                    pipelineContainer.error(e);
-                    PipelineExecuterService.failOnError(pipelineContainer);
-                } catch (InterruptedException | ExecutionException e) {
-                    pipelineContainer.error(e);
-                    PipelineExecuterService.failOnError(pipelineContainer);
-                }
+        for (int i = 0; i < futureTaskList.size(); i++) {
+            PipelineFutureTask<PipelineCallableResponse> futureTask = futureTaskList.get(i);
+            try {
+                LOG.debug("getting result for pipeline " + futureTask.getPipeline().getId());
+                PipelineCallableResponse response = futureTask.getWithTimeout();
+                ExplainContextHolder.getContext().addChild(response.getExplain());
+                PipelineContainer value = response.getPipelineContainer();
+                results.add(value);
+            } catch (TimeoutException e) {
+                Pipeline pipeline = futureTask.getPipeline();
+                pipelineContainer.error("The pipeline " + pipeline.getId() + " has not finished in " + pipeline.getTimeout() + " ms.");
+                pipelineContainer.error(e);
+                String curExecId = ExecLocationIdHelper.addIndexAndPipelineId(getExecLocationId(), i, futureTask.getPipeline());
+                pipelineContainer.getPipelineStatus().error(curExecId, "The pipeline " + pipeline.getId() + " has not finished in " + pipeline.getTimeout() + " ms.", e);
+                PipelineExecuterService.failOnError(pipelineContainer, e);
+            } catch (InterruptedException | ExecutionException e) {
+                pipelineContainer.error(e);
+                String curExecId = ExecLocationIdHelper.addIndexAndPipelineId(getExecLocationId(), i, futureTask.getPipeline());
+                pipelineContainer.getPipelineStatus().error(curExecId, e);
+                PipelineExecuterService.failOnError(pipelineContainer, e);
             }
+        }
 
 
         // TODO merge searchRequest object

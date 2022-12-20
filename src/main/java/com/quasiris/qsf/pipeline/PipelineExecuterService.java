@@ -7,6 +7,7 @@ import com.quasiris.qsf.explain.ExplainFilter;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.exception.PipelineStopException;
 import com.quasiris.qsf.pipeline.filter.Filter;
+import com.quasiris.qsf.pipeline.helper.ExecLocationIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,7 @@ public class PipelineExecuterService {
     private static Logger LOG = LoggerFactory.getLogger(PipelineExecuterService.class);
 
     private Pipeline pipeline;
+    private String execLocationId;
 
     public PipelineExecuterService(Pipeline pipeline) {
         this.pipeline = pipeline;
@@ -60,34 +62,37 @@ public class PipelineExecuterService {
     }
 
     private PipelineContainer filter(PipelineContainer pipelineContainer) throws PipelineContainerException, PipelineRestartException {
-        for(Filter filter : pipeline.getFilterList()) {
+        List<Filter> filterList = pipeline.getFilterList();
+        for (int i = 0; i < filterList.size(); i++) {
+            Filter filter = filterList.get(i);
+            filter.setExecLocationId(ExecLocationIdHelper.addIndexAndFilterId(execLocationId, i, filter));
             Explain currentExplain = ExplainContextHolder.getContext().getCurrent();
             Explain<ExplainFilter> filterExplain = ExplainContextHolder.getContext().filter(filter.getId());
             failOnError(pipelineContainer);
             try {
                 LOG.debug("The filter: " + filter.getId() + " started.");
                 filter.start();
-                if(filter.isActive() && pipelineContainer.isFilterActive(filter.getId())) {
+                if (filter.isActive() && pipelineContainer.isFilterActive(filter.getId())) {
                     pipelineContainer = filter.filter(pipelineContainer);
                 } else {
                     LOG.debug("The filter: " + filter.getId() + " is not active.");
                 }
-                if(pipelineContainer.isDebugEnabled()) {
+                if (pipelineContainer.isDebugEnabled()) {
                     debugRuntime(pipelineContainer, filter);
                 }
                 LOG.debug("The filter: " + filter.getId() + " took: " + filter.getCurrentTime() + " ms.");
-            } catch(PipelineStopException stop)  {
+            } catch (PipelineStopException stop) {
                 LOG.debug("The filter: " + filter.getId() + " was stopped.");
-                if(pipelineContainer.isDebugEnabled()) {
+                if (pipelineContainer.isDebugEnabled()) {
                     debugRuntime(pipelineContainer, filter);
                 }
                 ExplainContextHolder.getContext().setCurrent(currentExplain);
                 ExplainContextHolder.getContext().explain("stopPipeline", "pipeline.stop", "pipeline.stop");
 
                 return pipelineContainer;
-            } catch(PipelineRestartException restart)  {
+            } catch (PipelineRestartException restart) {
                 LOG.debug("The filter: " + filter.getId() + " initiated a restart of the pipeline.");
-                if(pipelineContainer.isDebugEnabled()) {
+                if (pipelineContainer.isDebugEnabled()) {
                     debugRuntime(pipelineContainer, filter);
                 }
                 ExplainContextHolder.getContext().setCurrent(currentExplain);
@@ -95,7 +100,7 @@ public class PipelineExecuterService {
                 throw restart;
             } catch (Exception e) {
                 LOG.debug("The filter: " + filter.getId() + " failed with an error: " + e.getMessage());
-                if(pipelineContainer.isDebugEnabled()) {
+                if (pipelineContainer.isDebugEnabled()) {
                     debugRuntime(pipelineContainer, filter);
                 }
                 filter.onError(pipelineContainer, e);
@@ -124,9 +129,30 @@ public class PipelineExecuterService {
     }
 
     public static void failOnError(PipelineContainer pipelineContainer) throws PipelineContainerException {
-        if(pipelineContainer.isFailOnError() && !pipelineContainer.isSuccess()) {
-            throw new PipelineContainerException(pipelineContainer, pipelineContainer.getMessage());
+        if(pipelineContainer.isFailOnError() && !pipelineContainer.getPipelineStatus().isSuccess()) {
+            throw new PipelineContainerException(pipelineContainer,
+                    "Failed by failOnError"
+            );
         }
     }
 
+    public static void failOnError(PipelineContainer pipelineContainer, Throwable cause) throws PipelineContainerException {
+        if(pipelineContainer.isFailOnError() && !pipelineContainer.getPipelineStatus().isSuccess()) {
+            throw new PipelineContainerException(pipelineContainer, cause.getMessage()
+                    , cause
+            );
+        }
+    }
+
+    public static void failRootOnError(PipelineContainer pipelineContainer, Throwable cause) throws PipelineContainerException {
+        if(pipelineContainer.isFailOnError() && !pipelineContainer.getPipelineStatus().isSuccess()) {
+            throw new PipelineContainerException(pipelineContainer, pipelineContainer.getPipelineStatus().constructErrorMsg()
+                    , cause
+            );
+        }
+    }
+
+    public void setExecLocationId(String execLocationId) {
+        this.execLocationId = execLocationId;
+    }
 }

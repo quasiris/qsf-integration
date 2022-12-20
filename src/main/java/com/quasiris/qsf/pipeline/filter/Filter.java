@@ -29,4 +29,5 @@ public interface Filter {
 
     PipelineValidation validate(PipelineValidation pipelineValidation);
 
+    void setExecLocationId(String execLocationId);
 }

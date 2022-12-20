@@ -15,9 +15,12 @@ public class PipelineCallable implements Callable<PipelineCallableResponse> {
 
     private PipelineContainer pipelineContainer;
 
-    public PipelineCallable(Pipeline pipeline, PipelineContainer pipelineContainer) {
+    private String execLocationId;
+
+    public PipelineCallable(Pipeline pipeline, PipelineContainer pipelineContainer, String execLocationId) {
         this.pipeline = pipeline;
         this.pipelineContainer = pipelineContainer;
+        this.execLocationId = execLocationId;
     }
 
     @Override
@@ -27,6 +30,7 @@ public class PipelineCallable implements Callable<PipelineCallableResponse> {
         ExplainContextHolder.getContext().setExplain(pipelineContainer.getSearchQuery().isExplain());
         Explain<ExplainPipeline> explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
         PipelineExecuterService pipelineExecuterService = new PipelineExecuterService(pipeline);
+        pipelineExecuterService.setExecLocationId(execLocationId);
         PipelineContainer processedPipelineContainer = pipelineExecuterService.execute(pipelineContainer);
         PipelineCallableResponse response = new PipelineCallableResponse();
         response.setExplain(ExplainContextHolder.getContext().getRoot());

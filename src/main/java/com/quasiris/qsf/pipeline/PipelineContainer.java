@@ -53,6 +53,8 @@ public class PipelineContainer {
     @Deprecated
     private StringBuffer message = new StringBuffer();
 
+    private final PipelineStatus pipelineStatus = new PipelineStatus();
+
     private boolean debug = false;
 
     /**
@@ -376,6 +378,10 @@ public class PipelineContainer {
      */
     public void setTracking(Document tracking) {
         this.tracking = tracking;
+    }
+
+    public PipelineStatus getPipelineStatus() {
+        return pipelineStatus;
     }
 
     @Override

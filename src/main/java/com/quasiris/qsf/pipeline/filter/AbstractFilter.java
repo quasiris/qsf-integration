@@ -17,6 +17,7 @@ public abstract class AbstractFilter implements Filter {
     private long startTime;
 
     private boolean active = true;
+    private String execLocationId;
 
     @Override
     public void start() {
@@ -43,6 +44,7 @@ public abstract class AbstractFilter implements Filter {
     public PipelineContainer onError(PipelineContainer pipelineContainer, Exception e) {
         pipelineContainer.error("error in filter: " + getId() + " message: " + e.getMessage());
         pipelineContainer.error(e);
+        pipelineContainer.getPipelineStatus().error(execLocationId, "error in filter: " + getId() + " message: " + e.getMessage(), e);
         return pipelineContainer;
     }
 
@@ -78,5 +80,14 @@ public abstract class AbstractFilter implements Filter {
             pipelineValidation.error("The id for the filter is missing.");
         }
         return pipelineValidation;
+    }
+
+    public String getExecLocationId() {
+        return execLocationId;
+    }
+
+    @Override
+    public void setExecLocationId(String execLocationId) {
+        this.execLocationId = execLocationId;
     }
 }

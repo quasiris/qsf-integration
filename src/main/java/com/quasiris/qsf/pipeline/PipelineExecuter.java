@@ -90,6 +90,7 @@ public class PipelineExecuter {
     }
 
     public PipelineContainer execute() throws PipelineContainerException, PipelineContainerDebugException {
+        String execLocationId = "root";
         try {
             ExplainContextHolder.clearContext();
             if(pipelineContainer != null) {
@@ -97,7 +98,7 @@ public class PipelineExecuter {
             }
             Explain<ExplainPipeline> explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
             ExecutorService executorService = executorServices.get(executorName);
-            FutureTask<PipelineCallableResponse> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer()));
+            FutureTask<PipelineCallableResponse> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer(), execLocationId));
             executorService.execute(futureTask);
             PipelineCallableResponse response = futureTask.get(pipeline.getTimeout(), TimeUnit.MILLISECONDS);
             ExplainContextHolder.getContext().addChild(response.getExplain());
@@ -109,10 +110,12 @@ public class PipelineExecuter {
         } catch (TimeoutException e) {
             pipelineContainer.error("The pipeline " + pipeline.getId() + " has not finished in " + pipeline.getTimeout() + " ms.");
             pipelineContainer.error(e);
-            PipelineExecuterService.failOnError(pipelineContainer);
+            pipelineContainer.getPipelineStatus().error(execLocationId ,"The pipeline " + pipeline.getId() + " has not finished in " + pipeline.getTimeout() + " ms.", e);
+            PipelineExecuterService.failRootOnError(pipelineContainer, e);
         } catch (InterruptedException | ExecutionException e) {
             pipelineContainer.error(e);
-            PipelineExecuterService.failOnError(pipelineContainer);
+            pipelineContainer.getPipelineStatus().error(execLocationId, e);
+            PipelineExecuterService.failRootOnError(pipelineContainer, e);
         }
         return pipelineContainer;
     }
