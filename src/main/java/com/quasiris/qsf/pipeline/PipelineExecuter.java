@@ -97,9 +97,10 @@ public class PipelineExecuter {
             }
             Explain<ExplainPipeline> explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
             ExecutorService executorService = executorServices.get(executorName);
-            FutureTask<PipelineCallableResponse> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer(), ExplainContextHolder.getContext()));
+            FutureTask<PipelineCallableResponse> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer()));
             executorService.execute(futureTask);
             PipelineCallableResponse response = futureTask.get(pipeline.getTimeout(), TimeUnit.MILLISECONDS);
+            ExplainContextHolder.getContext().addChild(response.getExplain());
             pipelineContainer = response.getPipelineContainer();
             explain.getExplainObject().setDuration(pipelineContainer.currentTime());
             if(pipelineContainer.isDebugEnabled()) {
