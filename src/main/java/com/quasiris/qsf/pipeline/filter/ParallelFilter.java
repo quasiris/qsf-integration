@@ -61,7 +61,7 @@ public class ParallelFilter extends AbstractFilter {
         List<PipelineFutureTask<PipelineCallableResponse>> futureTaskList = new ArrayList<>();
 
         for(Pipeline pipeline: pipelines) {
-            futureTaskList.add(new PipelineFutureTask<>(new PipelineCallable(pipeline, pipelineContainer), pipeline));
+            futureTaskList.add(new PipelineFutureTask<>(new PipelineCallable(pipeline, pipelineContainer, ExplainContextHolder.getContext()), pipeline));
         }
 
         ExecutorService executorService = executorServices.get(executorName);
@@ -77,7 +77,6 @@ public class ParallelFilter extends AbstractFilter {
                 try {
                     LOG.debug("getting result for pipeline " + futureTask.getPipeline().getId());
                     PipelineCallableResponse response = futureTask.getWithTimeout();
-                    ExplainContextHolder.getContext().addChild(response.getExplain());
                     PipelineContainer value = response.getPipelineContainer();
                     results.add(value);
                 } catch (TimeoutException e) {

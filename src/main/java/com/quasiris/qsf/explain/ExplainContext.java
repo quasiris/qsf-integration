@@ -69,7 +69,7 @@ public class ExplainContext {
         addChild(explain);
     }
 
-    public void addChild(Explain explain) {
+    public synchronized void addChild(Explain explain) {
         if(!this.explain) {
             return;
         }

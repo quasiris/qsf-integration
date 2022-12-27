@@ -1,6 +1,7 @@
 package com.quasiris.qsf.pipeline;
 
 import com.quasiris.qsf.explain.Explain;
+import com.quasiris.qsf.explain.ExplainContext;
 import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.explain.ExplainPipeline;
 
@@ -15,9 +16,12 @@ public class PipelineCallable implements Callable<PipelineCallableResponse> {
 
     private PipelineContainer pipelineContainer;
 
-    public PipelineCallable(Pipeline pipeline, PipelineContainer pipelineContainer) {
+    private ExplainContext parentContext;
+
+    public PipelineCallable(Pipeline pipeline, PipelineContainer pipelineContainer, ExplainContext parentContext) {
         this.pipeline = pipeline;
         this.pipelineContainer = pipelineContainer;
+        this.parentContext = parentContext;
     }
 
     @Override
@@ -26,6 +30,7 @@ public class PipelineCallable implements Callable<PipelineCallableResponse> {
         ExplainContextHolder.clearContext();
         ExplainContextHolder.getContext().setExplain(pipelineContainer.getSearchQuery().isExplain());
         Explain<ExplainPipeline> explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
+        parentContext.addChild(explain);
         PipelineExecuterService pipelineExecuterService = new PipelineExecuterService(pipeline);
         PipelineContainer processedPipelineContainer = pipelineExecuterService.execute(pipelineContainer);
         PipelineCallableResponse response = new PipelineCallableResponse();
