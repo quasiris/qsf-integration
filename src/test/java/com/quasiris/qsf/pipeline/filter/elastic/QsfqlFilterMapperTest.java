@@ -3,19 +3,12 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.json.JsonBuilderException;
-import com.quasiris.qsf.query.BoolSearchFilter;
-import com.quasiris.qsf.query.FilterDataType;
-import com.quasiris.qsf.query.FilterOperator;
-import com.quasiris.qsf.query.FilterType;
-import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.test.json.JsonAssert;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static com.quasiris.qsf.pipeline.filter.elastic.QsfqlFilterTransformerTest.mockSearchQuery;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +16,61 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class QsfqlFilterMapperTest {
 
     private final String testBasePackage = "classpath://com/quasiris/qsf/test/elastic/query/expected/";
+
+
+    @Test
+    void createDefinedRangeFilterMultipleFilter() throws JsonBuilderException, IOException {
+        // given
+        List<SearchFilter> filters = new ArrayList<>();
+        SearchFilter searchFilter1 = new SearchFilter();
+        searchFilter1.setFilterOperator(FilterOperator.OR);
+        searchFilter1.setFilterType(FilterType.DEFINED_RANGE);
+        searchFilter1.setFilterDataType(FilterDataType.NUMBER);
+        searchFilter1.setId("stock");
+        searchFilter1.setName("stock");
+        searchFilter1.setValues(Arrays.asList("In Stock", "Not in Stock"));
+        filters.add(searchFilter1);
+
+
+        // when
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper();
+        Map<String, Range> definedFilterMapping = new HashMap<>();
+        Range inStockRange = new Range("In Stock", 1, null);
+        Range notnStockRange = new Range("Not in Stock", null, 1);
+        definedFilterMapping.put(searchFilter1.getId() + "." + inStockRange.getValue() , inStockRange);
+        definedFilterMapping.put(searchFilter1.getId() + "." + notnStockRange.getValue() , notnStockRange);
+        mapper.setDefinedRangeFilterMapping(definedFilterMapping);
+        JsonNode filtersOr = mapper.buildFiltersJson(filters);
+        JsonAssert.assertJsonFile(testBasePackage + "defined-range-filter-query-multiple-filter.json", filtersOr);
+
+    }
+    @Test
+    void createDefinedRangeFilter() throws JsonBuilderException, IOException {
+        // given
+        List<SearchFilter> filters = new ArrayList<>();
+        SearchFilter searchFilter1 = new SearchFilter();
+        searchFilter1.setFilterOperator(FilterOperator.OR);
+        searchFilter1.setFilterType(FilterType.DEFINED_RANGE);
+        searchFilter1.setFilterDataType(FilterDataType.NUMBER);
+        searchFilter1.setId("stock");
+        searchFilter1.setName("stock");
+        searchFilter1.setValues(Arrays.asList("In Stock"));
+        filters.add(searchFilter1);
+
+
+        // when
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper();
+        Map<String, Range> definedFilterMapping = new HashMap<>();
+        Range inStockRange = new Range("In Stock", 1, null);
+        Range notnStockRange = new Range("Not in Stock", null, 1);
+        definedFilterMapping.put(searchFilter1.getId() + "." + inStockRange.getValue() , inStockRange);
+        definedFilterMapping.put(searchFilter1.getId() + "." + notnStockRange.getValue() , notnStockRange);
+        mapper.setDefinedRangeFilterMapping(definedFilterMapping);
+        JsonNode filtersOr = mapper.buildFiltersJson(filters);
+        JsonAssert.assertJsonFile(testBasePackage + "defined-range-filter-query.json", filtersOr);
+
+    }
+
 
     @Test
     void createFilters() throws JsonBuilderException, IOException {
@@ -55,7 +103,8 @@ class QsfqlFilterMapperTest {
         filters.add(searchFilter4);
 
         // when
-        JsonNode filtersOr = QsfqlFilterMapper.createFilters(filters);
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper();
+        JsonNode filtersOr = mapper.buildFiltersJson(filters);
         JsonAssert.assertJsonFile(testBasePackage + "create-filters-elastic-query.json", filtersOr);
 
     }

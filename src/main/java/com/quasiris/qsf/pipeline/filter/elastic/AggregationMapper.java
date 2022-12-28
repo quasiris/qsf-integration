@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.Facet;
+import com.quasiris.qsf.query.Range;
+import com.quasiris.qsf.query.RangeFacet;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
 import org.apache.commons.lang3.StringUtils;
 
@@ -129,6 +131,57 @@ public class AggregationMapper {
             if(filters != null) {
                 JsonBuilder aggFilterWrapper = JsonBuilder.create().
                         object(slider.getName() + "_filter_wrapper").
+                        stash().
+                        object("filter").
+                        json(filters).
+                        unstash().
+                        json("aggs", jsonBuilder.get());
+
+                jsonBuilder = aggFilterWrapper;
+            }
+
+            return jsonBuilder.get();
+        } catch (JsonBuilderException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static JsonNode createRangeFacet(RangeFacet rangeFacet, JsonNode filters) {
+
+        try {
+            JsonBuilder jsonBuilder = new JsonBuilder();
+            jsonBuilder.
+                    object(rangeFacet.getName()).
+                    object("range").
+                    object("keyed", Boolean.FALSE).
+                    object("field", rangeFacet.getId());
+
+            jsonBuilder.array("ranges");
+            for(Range range : rangeFacet.getRanges()) {
+                jsonBuilder.stash("loop");
+                jsonBuilder.object();
+                jsonBuilder.stash("range");
+                if(range.getMin() != null) {
+                    jsonBuilder.object("from", range.getMin());
+                }
+                jsonBuilder.unstash("range");
+
+                jsonBuilder.stash("range");
+                jsonBuilder.object("key", range.getValue());
+                jsonBuilder.unstash("range");
+
+                if(range.getMax() != null) {
+                    jsonBuilder.object("to", range.getMax());
+                }
+
+                jsonBuilder.unstash("loop");
+
+            }
+
+            if(filters != null) {
+                JsonBuilder aggFilterWrapper = JsonBuilder.create().
+                        object(rangeFacet.getName() + "_filter_wrapper").
                         stash().
                         object("filter").
                         json(filters).

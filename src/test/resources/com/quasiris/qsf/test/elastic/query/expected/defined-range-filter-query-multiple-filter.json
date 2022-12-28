@@ -1,0 +1,26 @@
+{
+  "bool" : {
+    "must" : [
+      {
+        "bool" : {
+          "should" : [
+            {
+              "range" : {
+                "stock" : {
+                  "gte" : 1
+                }
+              }
+            },
+            {
+              "range" : {
+                "stock" : {
+                  "lt" : 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

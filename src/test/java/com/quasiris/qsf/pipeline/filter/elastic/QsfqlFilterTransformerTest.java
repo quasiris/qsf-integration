@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.commons.util.IOUtils;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
-import com.quasiris.qsf.query.FilterDataType;
-import com.quasiris.qsf.query.FilterType;
-import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +20,7 @@ public class QsfqlFilterTransformerTest {
     private ObjectMapper objectMapper = new ObjectMapper();
     private Map<String, String> filterRules = new HashMap<>();
     private Map<String, String> filterMapping = new HashMap<>();
+    private Map<String, Range> definedFilterMapping = new HashMap<>();
     private String filterPath = null;
 
     @Test
@@ -37,7 +35,7 @@ public class QsfqlFilterTransformerTest {
         QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
                 elasticVersion, objectMapper,
                 queryNode.deepCopy(), searchQuery,
-                filterRules, filterMapping, filterPath,
+                filterRules, filterMapping, definedFilterMapping, filterPath,
                 filterVariable, multiSelectFilter);
         filterTransformer.transformFilters();
 
@@ -92,7 +90,7 @@ public class QsfqlFilterTransformerTest {
         QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
                 elasticVersion, objectMapper,
                 queryNode.deepCopy(), searchQuery,
-                filterRules, filterMapping, filterPath,
+                filterRules, filterMapping, definedFilterMapping, filterPath,
                 filterVariable, multiSelectFilter);
         filterTransformer.transformFilters();
 
@@ -150,7 +148,7 @@ public class QsfqlFilterTransformerTest {
         QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
                 elasticVersion, objectMapper,
                 queryNode.deepCopy(), searchQuery,
-                filterRules, filterMapping, filterPath,
+                filterRules, filterMapping, definedFilterMapping, filterPath,
                 filterVariable, multiSelectFilter);
         filterTransformer.transformFilters();
 
@@ -205,7 +203,7 @@ public class QsfqlFilterTransformerTest {
         QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
                 elasticVersion, objectMapper,
                 queryNode.deepCopy(), searchQuery,
-                filterRules, filterMapping, filterPath,
+                filterRules, filterMapping, definedFilterMapping, filterPath,
                 filterVariable, multiSelectFilter);
         filterTransformer.transformFilters();
 

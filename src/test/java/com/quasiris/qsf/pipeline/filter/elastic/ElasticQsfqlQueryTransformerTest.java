@@ -29,6 +29,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class ElasticQsfqlQueryTransformerTest {
 
+    @DisplayName("Transform range facet")
+    @Test
+    public void testRangeFacet() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+        transformer.addFilterRule("(.+)", "$1.keyword");
+
+        RangeFacet facet = new RangeFacet();
+        facet.setName("stock");
+        facet.setId("stock");
+        facet.setOperator(FilterOperator.OR);
+
+        Range rangeNotInStock = new Range("Not In Stock", null, 1L);
+        Range rangeCriticalStock = new Range("Critical Stock", 1L, 5L);
+        Range rangeInStock = new Range("In Stock", 5L, null);
+
+        facet.setRanges(Arrays.asList(rangeNotInStock, rangeCriticalStock, rangeInStock));
+
+        transformer.setAggregations(Arrays.asList(facet));
+        ObjectNode elasticQuery = transform(transformer,
+                "q=*"
+        );
+        assertQuery(elasticQuery, "range-facet.json");
+
+    }
     @DisplayName("Transform categorySelect")
     @Test
     public void transformFacetCategorySElect() throws Exception {
@@ -117,7 +143,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setProfile(Profiles.matchAll());
 
         Facet facet = new Facet();
-        facet.setType("range");
+        facet.setType("slider");
         facet.setName("price");
         facet.setId("price");
         facet.setOperator(FilterOperator.OR);

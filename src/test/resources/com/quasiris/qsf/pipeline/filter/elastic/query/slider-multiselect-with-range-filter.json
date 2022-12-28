@@ -4,9 +4,11 @@
   "track_total_hits" : true,
   "query" : {
     "bool" : {
-      "must" : [ {
-        "match_all" : { }
-      } ]
+      "must" : [
+        {
+          "match_all" : { }
+        }
+      ]
     }
   },
   "aggs" : {
@@ -18,16 +20,18 @@
         "price_filter_wrapper" : {
           "filter" : {
             "bool" : {
-              "must" : [ {
-                "term" : {
-                  "color" : "red"
+              "must" : [
+                {
+                  "term" : {
+                    "color" : "red"
+                  }
                 }
-              } ]
+              ]
             }
           },
           "aggs" : {
             "price" : {
-              "range" : {
+              "stats" : {
                 "field" : "price"
               }
             }
@@ -38,18 +42,21 @@
   },
   "post_filter" : {
     "bool" : {
-      "must" : [ {
-        "range" : {
-          "price" : {
-            "gte" : 49.0,
-            "lte" : 170.0
+      "must" : [
+        {
+          "range" : {
+            "price" : {
+              "gte" : 49.0,
+              "lte" : 170.0
+            }
+          }
+        },
+        {
+          "term" : {
+            "color" : "red"
           }
         }
-      }, {
-        "term" : {
-          "color" : "red"
-        }
-      } ]
+      ]
     }
   }
 }

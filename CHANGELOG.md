@@ -3,6 +3,14 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- implement defined range facets for elastic
+
+### Changed
+- sort facet by key in case of all facets are loaded
+- ignore tokens with numbers in spellcheck
+
+## [5.8]
+### Added
 - implement mapping for navigation facet
 - implement tracking tags for search query
 - add exception to the log message in the ElasticFilter

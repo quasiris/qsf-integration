@@ -1,0 +1,44 @@
+{
+  "from" : 0,
+  "size" : 10,
+  "track_total_hits" : true,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "match_all" : { }
+        }
+      ]
+    }
+  },
+  "aggs" : {
+    "qsc_filtered" : {
+      "filter" : {
+        "bool" : { }
+      },
+      "aggs" : {
+        "stock" : {
+          "range" : {
+            "keyed" : false,
+            "field" : "stock",
+            "ranges" : [
+              {
+                "key" : "Not In Stock",
+                "to" : 1
+              },
+              {
+                "from" : 1,
+                "key" : "Critical Stock",
+                "to" : 5
+              },
+              {
+                "from" : 5,
+                "key" : "In Stock"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

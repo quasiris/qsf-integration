@@ -1,0 +1,44 @@
+{
+    "took": 3,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 3221,
+            "relation": "eq"
+        },
+        "max_score": null,
+        "hits": []
+    },
+    "aggregations": {
+        "qsc_filtered": {
+            "meta": {},
+            "doc_count": 3221,
+            "stock": {
+                "buckets": [
+                    {
+                        "key": "Not In Stock",
+                        "to": 1.0,
+                        "doc_count": 2666
+                    },
+                    {
+                        "key": "Critical Stock",
+                        "from": 1.0,
+                        "to": 5.0,
+                        "doc_count": 144
+                    },
+                    {
+                        "key": "In Stock",
+                        "from": 5.0,
+                        "doc_count": 411
+                    }
+                ]
+            }
+        }
+    }
+}

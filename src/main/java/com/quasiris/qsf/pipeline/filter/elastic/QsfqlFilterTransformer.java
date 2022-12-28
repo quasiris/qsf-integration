@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.BaseSearchFilter;
+import com.quasiris.qsf.query.Range;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.SearchQueryFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -52,6 +53,7 @@ public class QsfqlFilterTransformer {
                                   SearchQuery searchQuery,
                                   Map<String, String> filterRules,
                                   Map<String, String> filterMapping,
+                                  Map<String, Range> definedRangeFilterMapping,
                                   String filterPath,
                                   String filterVariable,
                                   boolean multiSelectFilter
@@ -67,6 +69,7 @@ public class QsfqlFilterTransformer {
 
         this.filterMapper = new QsfqlFilterMapper();
         this.filterMapper.setFilterMapping(filterMapping);
+        this.filterMapper.setDefinedRangeFilterMapping(definedRangeFilterMapping);
         this.filterMapper.setFilterRules(filterRules);
 
         this.multiSelectFilter = multiSelectFilter;

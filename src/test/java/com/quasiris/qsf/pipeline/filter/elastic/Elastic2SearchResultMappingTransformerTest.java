@@ -22,6 +22,27 @@ class Elastic2SearchResultMappingTransformerTest {
 
 
     @Test
+    void testRangeFacet() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        String id = "stock";
+        transformer.addFacetNameMapping(id, "stock");
+        transformer.addFacetTypeMapping(id, "range");
+
+        ElasticResult elasticResult = readElasticResultFromFile("range-facet.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+        assertEquals(1,searchResult.getFacets().size());
+        Facet stock = searchResult.getFacetById("stock");
+        assertEquals(3, stock.getValues().size());
+        assertEquals("range", stock.getType());
+
+        assertEquals("Not In Stock", stock.getValues().get(0).getValue());
+        assertEquals(2666, stock.getValues().get(0).getCount());
+        assertEquals("stock=Not+In+Stock", stock.getValues().get(0).getFilter());
+
+
+    }
+
+    @Test
     void testNavigation() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         String id = "categories";

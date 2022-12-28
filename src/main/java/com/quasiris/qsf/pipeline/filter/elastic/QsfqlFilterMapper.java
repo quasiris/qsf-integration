@@ -6,12 +6,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
-import com.quasiris.qsf.query.BaseSearchFilter;
-import com.quasiris.qsf.query.BoolSearchFilter;
-import com.quasiris.qsf.query.FilterOperator;
-import com.quasiris.qsf.query.RangeFilterValue;
-import com.quasiris.qsf.query.SearchFilter;
+import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.commons.util.DateUtil;
+import com.quasiris.qsf.util.SerializationUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +26,7 @@ public class QsfqlFilterMapper {
     private Map<String, String> filterRules = new HashMap<>();
 
     private Map<String, String> filterMapping = new HashMap<>();
+    private Map<String, Range> definedRangeFilterMapping = new HashMap<>();
 
     public QsfqlFilterMapper() {
     }
@@ -60,7 +58,7 @@ public class QsfqlFilterMapper {
      * @return json or null if filter type unknown
      * @throws JsonBuilderException on any json error
      */
-    public static @Nullable ArrayNode computeFilter(@Nonnull SearchFilter searchFilter, @Nullable String elasticField) throws JsonBuilderException {
+    public @Nullable ArrayNode computeFilter(@Nonnull SearchFilter searchFilter, @Nullable String elasticField) throws JsonBuilderException {
         ArrayNode filter = null;
         switch (searchFilter.getFilterType()) {
             case TERM:
@@ -70,6 +68,9 @@ public class QsfqlFilterMapper {
                 break;
             case RANGE:
                 filter = transformRangeFilter(searchFilter, elasticField);
+                break;
+            case DEFINED_RANGE:
+                filter = transformDefinedRangeFilter(searchFilter, elasticField);
                 break;
             case SLIDER:
                 filter = transformRangeFilter(searchFilter, elasticField);
@@ -121,6 +122,38 @@ public class QsfqlFilterMapper {
 
     }
 
+    protected ArrayNode transformDefinedRangeFilter(SearchFilter searchFilter, String elasticField) throws JsonBuilderException {
+        JsonBuilder jsonBuilder = JsonBuilder.create().array();
+
+        for(String filterValue : searchFilter.getValues()) {
+
+            Range range = definedRangeFilterMapping.get(searchFilter.getId() + "." + filterValue);
+            ArrayNode an = transformDefinedRangeFilterForDefinedRange(searchFilter, elasticField, range);
+            if(an != null) {
+                jsonBuilder.stash();
+                jsonBuilder.addJson(an);
+                jsonBuilder.unstash();
+            }
+
+        }
+
+        return (ArrayNode) jsonBuilder.get();
+
+    }
+
+    protected ArrayNode transformDefinedRangeFilterForDefinedRange(SearchFilter searchFilter, String elasticField, Range definedRange) throws JsonBuilderException {
+        if(definedRange == null) {
+            return null;
+        }
+        SearchFilter rangeFilter = SerializationUtils.deepCopy(searchFilter);
+        RangeFilterValue rangeFilterValue = new RangeFilterValue(definedRange.getMin(), definedRange.getMax());
+        rangeFilterValue.setLowerBound(UpperLowerBound.LOWER_INCLUDED);
+        rangeFilterValue.setUpperBound(UpperLowerBound.UPPER_EXCLUDED);
+        rangeFilter.setFilterType(FilterType.RANGE);
+        rangeFilter.setRangeValue(rangeFilterValue);
+        return transformRangeFilter(rangeFilter, elasticField);
+
+    }
 
     protected static ArrayNode transformRangeFilter(SearchFilter searchFilter, String elasticField) throws JsonBuilderException {
         if(elasticField == null) {
@@ -157,11 +190,6 @@ public class QsfqlFilterMapper {
 
         return (ArrayNode) rangeBuilder.root().get();
 
-    }
-
-    public static JsonNode createFilters(List<SearchFilter> searchFilters) throws JsonBuilderException {
-        QsfqlFilterMapper mapper = new QsfqlFilterMapper();
-        return mapper.buildFiltersJson(searchFilters);
     }
 
     public @Nullable ArrayNode getFilterAsJson(@Nonnull List<SearchFilter> searchFilters) throws JsonBuilderException {
@@ -286,5 +314,13 @@ public class QsfqlFilterMapper {
      */
     public void setFilterMapping(Map<String, String> filterMapping) {
         this.filterMapping = filterMapping;
+    }
+
+    public Map<String, Range> getDefinedRangeFilterMapping() {
+        return definedRangeFilterMapping;
+    }
+
+    public void setDefinedRangeFilterMapping(Map<String, Range> definedRangeFilterMapping) {
+        this.definedRangeFilterMapping = definedRangeFilterMapping;
     }
 }

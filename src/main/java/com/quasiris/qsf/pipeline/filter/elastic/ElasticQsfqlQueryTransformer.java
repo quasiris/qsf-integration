@@ -26,6 +26,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     private Map<String, String> sortMapping = new HashMap<>();
     private String defaultSort;
     private Map<String, String> filterMapping = new HashMap<>();
+
+    private Map<String, Range> definedRangeFilterMapping = new HashMap<>();
     private Map<String, String> filterRules = new HashMap<>();
     private Map<String, String> sortRules = new HashMap<>();
     private Integer defaultRows = 10;
@@ -109,6 +111,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public void transformAggregationsMultiSelect() throws JsonBuilderException {
         QsfqlFilterMapper filterMapper = new QsfqlFilterMapper();
         filterMapper.setFilterMapping(this.filterMapping);
+        filterMapper.setDefinedRangeFilterMapping(this.definedRangeFilterMapping);
         filterMapper.setFilterRules(this.filterRules);
 
         JsonBuilder jsonBuilder = new JsonBuilder();
@@ -123,7 +126,14 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 jsonBuilder.json(agg);
                 hasAggs = true;
 
-            } else if ("categorySelect".equals(aggregation.getType())) {
+            } else if("range".equals(aggregation.getType())) {
+                Set<String> excludedFacetIds = new HashSet<>();
+                excludedFacetIds.add(aggregation.getId());
+                ObjectNode filters = getFilterAsJson(filterMapper, null, FilterOperator.OR, excludedFacetIds);
+                JsonNode agg = AggregationMapper.createRangeFacet((RangeFacet) aggregation, filters);
+                jsonBuilder.json(agg);
+                hasAggs = true;
+            }  else if ("categorySelect".equals(aggregation.getType())) {
                 SearchFilter categorySelectFilter = SearchFilters.get(aggregation.getId(), searchQuery.getSearchFilterList());
                 int level = CategorySelectBuilder.getLevelFromFilter(categorySelectFilter);
                 for (int i = 0; i <= level; i++) {
@@ -340,6 +350,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 getSearchQuery(),
                 getFilterRules(),
                 getFilterMapping(),
+                getDefinedRangeFilterMapping(),
                 filterPath,
                 filterVariable,
                 multiSelectFilter
@@ -580,5 +591,13 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public void setInnerHitsSourceFields(Set<String> innerHitsSourceFields) {
         this.innerHitsSourceFields = innerHitsSourceFields;
+    }
+
+    public Map<String, Range> getDefinedRangeFilterMapping() {
+        return definedRangeFilterMapping;
+    }
+
+    public void setDefinedRangeFilterMapping(Map<String, Range> definedRangeFilterMapping) {
+        this.definedRangeFilterMapping = definedRangeFilterMapping;
     }
 }
