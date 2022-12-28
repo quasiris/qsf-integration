@@ -2,6 +2,8 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.commons.elasticsearch.client.ElasticSearchClient;
+import com.quasiris.qsf.commons.http.java.exception.HttpClientException;
+import com.quasiris.qsf.commons.http.java.model.HttpMetadata;
 import com.quasiris.qsf.commons.util.JsonUtil;
 import com.quasiris.qsf.commons.util.UrlUtil;
 import com.quasiris.qsf.dto.response.SearchResult;
@@ -131,6 +133,10 @@ public class ElasticFilter extends AbstractFilter {
 
     @Override
     public PipelineContainer onError(PipelineContainer pipelineContainer, Exception e) {
+        if(e instanceof HttpClientException) {
+            HttpMetadata httpMetadata = ((HttpClientException) e).getHttpMetadata();
+            ExplainContextHolder.getContext().explainJson(getId() + ".httpMetadata" , httpMetadata);
+        }
         String query = "";
         try {
             if(elasticQuery != null) {
