@@ -4,6 +4,7 @@ All notable changes qsf-integration project will be documented in this file.
 ## [UNRELEASED]
 ### Added
 - implement defined range facets for elastic
+- add methods to get a facet and a search filter by id
 
 ### Changed
 - sort facet by key in case of all facets are loaded

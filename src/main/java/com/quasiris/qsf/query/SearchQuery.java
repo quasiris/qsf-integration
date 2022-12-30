@@ -413,6 +413,22 @@ public class SearchQuery {
         this.tags.add(tag);
     }
 
+    public Facet getFacetById(String id) {
+        return getFacetList().stream().
+                filter(f -> id.equals(f.getId())).
+                findFirst().
+                orElse(null);
+
+    }
+    public SearchFilter getSearchFilterById(String id) {
+        return getSearchFilterList().stream().
+                filter(f -> f instanceof SearchFilter).
+                map(f -> (SearchFilter) f).
+                filter(f -> id.equals(f.getId())).
+                findFirst().
+                orElse(null);
+    }
+
     @Override
     public String toString() {
         return "SearchQuery{" +
