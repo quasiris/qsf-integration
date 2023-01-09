@@ -93,9 +93,11 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
         if(Control.isLoadMoreFacets(searchQuery)) {
             for(Facet facet : aggregations) {
-                facet.setSize(1000);
-                facet.setSortBy("_key");
-                facet.setSortOrder("asc");
+                if(hasLoadMoreFacetsAndSortByNameTag(facet)) {
+                    facet.setSize(1000);
+                    facet.setSortBy("_key");
+                    facet.setSortOrder("asc");
+                }
             }
         }
 
@@ -106,6 +108,13 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         }
 
 
+    }
+
+    boolean hasLoadMoreFacetsAndSortByNameTag(Facet facet) {
+        if(facet.getTags() == null) {
+            return false;
+        }
+        return facet.getTags().contains("loadMoreFacetsAndSortByName");
     }
 
     public void transformAggregationsMultiSelect() throws JsonBuilderException {
