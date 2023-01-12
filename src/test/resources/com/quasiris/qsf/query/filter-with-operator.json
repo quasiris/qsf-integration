@@ -1,0 +1,15 @@
+{
+  "page": 1,
+  "q": "*",
+  "requestId": "",
+  "rows": 20,
+  "searchFilters": [
+    {
+      "id": "status",
+      "values": [
+        "ERROR"
+      ],
+      "filterOperator": "NOT"
+    }
+  ]
+}
