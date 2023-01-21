@@ -67,9 +67,6 @@ public class SearchFilter extends BaseSearchFilter {
     }
 
     public FilterOperator getFilterOperator() {
-        if(this.filterOperator == null) {
-            return FilterOperator.AND;
-        }
         return filterOperator;
     }
 

@@ -97,7 +97,7 @@ class QsfSearchQueryParserTest {
             assertEquals("myValue", myIdFilter.getValues().get(0));
             assertEquals(FilterDataType.STRING, myIdFilter.getFilterDataType());
             assertEquals(FilterType.TERM, myIdFilter.getFilterType());
-            assertEquals(FilterOperator.AND, myIdFilter.getFilterOperator());
+            assertEquals(FilterOperator.OR, myIdFilter.getFilterOperator());
 
             SearchFilter myIdOperatorNot = actual.getSearchFilterById("myid-operator-not");
             assertEquals("myValue", myIdOperatorNot.getValues().get(0));
