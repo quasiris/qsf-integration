@@ -348,7 +348,11 @@ public class QsfqlParser {
                 String filterName = m.group(1);
                 String[] filterValues = parameters.get(name);
                 String filterType = m.group(2);
-                if(Strings.isNullOrEmpty(filterType) || ".and".equals(filterType)) {
+                if(Strings.isNullOrEmpty(filterType)) {
+                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues);
+                    searchFilter.setFilterType(FilterType.TERM);
+                    query.getSearchFilterList().add(searchFilter);
+                } else if (".and".equals(filterType)) {
                     SearchFilter searchFilter = createSearchFilter(filterName, filterValues);
                     searchFilter.setFilterType(FilterType.TERM);
                     searchFilter.setFilterOperator(FilterOperator.AND);

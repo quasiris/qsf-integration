@@ -94,7 +94,7 @@ public class QsfqlParserTest {
         SearchQuery query = createQuery();
         assertNull(query.getQ());
         assertNotNull(query.getRequestId());
-        assertNull(query.getPage());
+        assertEquals(1, query.getPage());
         assertNull(query.getRows());
     }
 
@@ -114,7 +114,7 @@ public class QsfqlParserTest {
         assertEquals(searchFilter.getName(), "foo");
         assertEquals(searchFilter.getValues().get(0), "bar");
         assertEquals(searchFilter.getFilterType(), FilterType.TERM);
-        assertEquals(searchFilter.getFilterOperator(), FilterOperator.AND);
+        assertEquals(searchFilter.getFilterOperator(), FilterOperator.OR);
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.STRING);
     }
 
@@ -151,7 +151,7 @@ public class QsfqlParserTest {
         assertEquals("bar", searchFilter.getValues().get(0));
         assertEquals("alice", searchFilter.getValues().get(1));
         assertEquals(searchFilter.getFilterType(), FilterType.TERM);
-        assertEquals(searchFilter.getFilterOperator(), FilterOperator.AND);
+        assertEquals(searchFilter.getFilterOperator(), FilterOperator.OR);
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.STRING);
     }
 

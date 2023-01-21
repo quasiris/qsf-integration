@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.qsql.parser;
 import com.quasiris.qsf.commons.util.EncodingUtil;
 import com.quasiris.qsf.pipeline.filter.web.QSFHttpServletRequest;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.SearchQueryMapper;
 
 /**
  * Created by mki on 13.11.16.
@@ -18,6 +19,8 @@ public class QsfqlParserTestUtil {
         QSFHttpServletRequest request = new QSFHttpServletRequest(urlBuilder.toString());
         QsfqlParser qsfqlParser = new QsfqlParser(request);
         SearchQuery query = qsfqlParser.getQuery();
+        SearchQueryMapper mapper = new SearchQueryMapper();
+        mapper.applyDefaults(query);
         return query;
     }
 

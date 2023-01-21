@@ -37,6 +37,7 @@ class QsfSearchQueryParserTest {
             put("rows", new String[]{"-1"});
             put("f.myHumanDate.humandate", new String[]{"1992"});
             put("f.myTree.tree", new String[]{"node1 > node2"});
+            put("f.sku", new String[]{"2101675", "2092164"});
         }};
         when(mockRequest.getParameterMap()).thenReturn(parameters);
         when(mockRequest.getParameterNames()).thenReturn(Collections.enumeration(parameters.keySet()));
@@ -68,6 +69,13 @@ class QsfSearchQueryParserTest {
         assertEquals("myTree1",myTree1.getId());
         assertEquals("node2",myTree1.getValues().get(0));
 
+
+        SearchFilter sku = actual.getSearchFilterById("sku");
+        assertEquals("2101675", sku.getValues().get(0));
+        assertEquals("2092164", sku.getValues().get(1));
+        assertEquals(FilterDataType.STRING, sku.getFilterDataType());
+        assertEquals(FilterType.TERM, sku.getFilterType());
+        assertEquals(FilterOperator.OR, sku.getFilterOperator());
     }
 
     @Test
