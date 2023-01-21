@@ -15,6 +15,8 @@ import java.util.Set;
 public class QsfSearchQueryParser {
     private static Logger LOG = LoggerFactory.getLogger(QsfSearchQueryParser.class);
 
+    private boolean applyDefaults = true;
+
     public SearchQuery parseSearchQuery(HttpServletRequest httpServletRequest) {
         SearchQuery searchQuery;
         if("POST".equals(httpServletRequest.getMethod())) {
@@ -46,6 +48,11 @@ public class QsfSearchQueryParser {
     public SearchQuery parseSearchQueryDTO(SearchQueryDTO searchQueryDTO, HttpServletRequest httpServletRequest) {
         SearchQueryMapper mapper = new SearchQueryMapper();
         SearchQuery searchQuery = mapper.map(searchQueryDTO);
+
+        if(applyDefaults) {
+            mapper.applyDefaults(searchQuery);
+        }
+
         if("true".equals(httpServletRequest.getParameter("debug"))) {
             searchQuery.setDebug(true);
         }
@@ -63,5 +70,13 @@ public class QsfSearchQueryParser {
         QsfqlParser qsfqlParser = new QsfqlParser(httpServletRequest);
         SearchQuery searchQuery = qsfqlParser.getQuery();
         return searchQuery;
+    }
+
+    public boolean isApplyDefaults() {
+        return applyDefaults;
+    }
+
+    public void setApplyDefaults(boolean applyDefaults) {
+        this.applyDefaults = applyDefaults;
     }
 }

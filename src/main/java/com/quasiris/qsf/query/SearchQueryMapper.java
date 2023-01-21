@@ -15,6 +15,13 @@ import java.util.List;
 
 public class SearchQueryMapper {
 
+    private Integer defaultPage = 1;
+
+    private FilterType defaultFilterType = FilterType.TERM;
+
+    private FilterDataType defaultFilterDataType = FilterDataType.STRING;
+    private FilterOperator defaultFilterOperator = FilterOperator.OR;
+
     public static SearchQuery map(SearchQueryDTO searchQueryDTO) {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQ(searchQueryDTO.getQ());
@@ -28,12 +35,7 @@ public class SearchQueryMapper {
         Sort sort = map(searchQueryDTO.getSort());
         searchQuery.setSort(sort);
 
-
-        Integer page = 1;
-        if(searchQueryDTO.getPage() != null && searchQueryDTO.getPage() > 0) {
-            page = searchQueryDTO.getPage();
-        }
-        searchQuery.setPage(page);
+        searchQuery.setPage(searchQueryDTO.getPage());
 
         if(searchQuery.getParameters() == null) {
             searchQuery.setParameters(new HashMap<>());
@@ -90,29 +92,19 @@ public class SearchQueryMapper {
         SearchFilter searchFilter = new SearchFilter();
         searchFilter.setId(searchFilterDTO.getId());
         searchFilter.setName(searchFilterDTO.getName());
-        if(searchFilter.getName() == null) {
-            searchFilter.setName(searchFilter.getId());
-        }
-        if(searchFilterDTO.getFilterType() == null) {
-            searchFilterDTO.setFilterType(com.quasiris.qsf.dto.query.FilterType.TERM);
-        }
-        if(searchFilterDTO.getFilterType().isRelativeRange()) {
+
+        if(searchFilterDTO.getFilterType() != null && searchFilterDTO.getFilterType().isRelativeRange()) {
             searchFilter.setFilterType(FilterType.RANGE);
-        } else {
-            searchFilter.setFilterType(FilterType.valueOf(searchFilterDTO.getFilterType().toString()));
         }
 
-        if(searchFilterDTO.getFilterDataType() == null) {
-            searchFilterDTO.setFilterDataType(com.quasiris.qsf.dto.query.FilterDataType.STRING);
+        if(searchFilterDTO.getFilterDataType() != null) {
+            searchFilter.setFilterDataType(FilterDataType.valueOf(searchFilterDTO.getFilterDataType().toString()));
         }
-        searchFilter.setFilterDataType(FilterDataType.valueOf(searchFilterDTO.getFilterDataType().toString()));
 
 
-        if(searchFilterDTO.getFilterOperator() == null) {
-            searchFilterDTO.setFilterOperator(com.quasiris.qsf.dto.query.FilterOperator.AND);
+        if(searchFilterDTO.getFilterOperator() != null) {
+            searchFilter.setFilterOperator(FilterOperator.valueOf(searchFilterDTO.getFilterOperator().toString()));
         }
-        searchFilter.setFilterOperator(FilterOperator.valueOf(searchFilterDTO.getFilterOperator().toString()));
-
 
         mapTermFilter(searchFilterDTO, searchFilter);
         mapRangeFilter(searchFilterDTO, searchFilter);
@@ -123,30 +115,32 @@ public class SearchQueryMapper {
     }
 
     public static void mapTermFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
-        if(!searchFilterDTO.getFilterType().isTerm()) {
+        if(searchFilterDTO.getValues() == null) {
             return;
         }
-        searchFilter.setFilterType(FilterType.TERM);
-        if(searchFilter.getFilterOperator() == null) {
-            searchFilter.setFilterOperator(FilterOperator.OR);
+        if(searchFilterDTO.getFilterType()  != null && !searchFilterDTO.getFilterType().isTerm()) {
+            return;
         }
+        if(searchFilterDTO.getFilterOperator() != null) {
+            searchFilter.setFilterOperator(FilterOperator.valueOf(searchFilterDTO.getFilterOperator().getCode().toUpperCase()));
+        }
+        searchFilter.setFilterType(FilterType.TERM);
         searchFilter.setValues(mapValues(searchFilterDTO.getValues()));
     }
 
     public static void mapRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
-        if(!searchFilterDTO.getFilterDataType().isNumber()) {
-            return;
+        if(isNumberDataType(searchFilterDTO)) {
+            RangeFilterValue<Number> rangeFilterValue = new RangeFilterValue<>();
+            rangeFilterValue.setMinValue(((Number) searchFilterDTO.getMinValue()).doubleValue());
+            rangeFilterValue.setMaxValue(((Number) searchFilterDTO.getMaxValue()).doubleValue());
+            searchFilter.setRangeValue(rangeFilterValue);
+            searchFilter.setFilterType(FilterType.RANGE);
+            searchFilter.setFilterDataType(FilterDataType.NUMBER);
         }
-        RangeFilterValue<Number> rangeFilterValue = new RangeFilterValue<>();
-        rangeFilterValue.setMinValue(((Number) searchFilterDTO.getMinValue()).doubleValue());
-        rangeFilterValue.setMaxValue(((Number) searchFilterDTO.getMaxValue()).doubleValue());
-        searchFilter.setRangeValue(rangeFilterValue);
-        searchFilter.setFilterType(FilterType.RANGE);
-        searchFilter.setFilterDataType(FilterDataType.NUMBER);
     }
 
     public static void mapDateRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
-        if(searchFilterDTO.getFilterType().isRange() && searchFilterDTO.getFilterDataType().isDate()) {
+        if(isRangeFilter(searchFilterDTO) && isDateDataType(searchFilterDTO)) {
             RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
             SimpleDateParser parserMin = new SimpleDateParser(searchFilterDTO.getMinValue().toString());
             rangeFilterValue.setMinValue(parserMin.getDate());
@@ -159,8 +153,58 @@ public class SearchQueryMapper {
         }
     }
 
+    public static boolean isRangeFilter(SearchFilterDTO searchFilterDTO) {
+        if(searchFilterDTO.getFilterType() == null) {
+            return false;
+        }
+        return searchFilterDTO.getFilterType().isRange();
+    }
+
+    public static boolean isDateDataType(SearchFilterDTO searchFilterDTO) {
+        if(searchFilterDTO.getFilterDataType() == null) {
+            if(isString(searchFilterDTO.getMinValue())) {
+                return true;
+            }
+            if(isString(searchFilterDTO.getMaxValue())) {
+                return true;
+            }
+        } else {
+            return searchFilterDTO.getFilterDataType().isDate();
+        }
+        return false;
+    }
+    public static boolean isNumberDataType(SearchFilterDTO searchFilterDTO) {
+        if(searchFilterDTO.getFilterDataType() == null) {
+            if(isNumber(searchFilterDTO.getMinValue())) {
+                return true;
+            }
+            if(isNumber(searchFilterDTO.getMaxValue())) {
+                return true;
+            }
+        } else {
+            return searchFilterDTO.getFilterDataType().isNumber();
+        }
+        return false;
+    }
+
+    public static boolean isNumber(Object value) {
+        if(value == null) {
+            return false;
+        }
+        return !isString(value);
+    }
+
+    public static boolean isString(Object value) {
+        if(value == null) {
+            return false;
+        }
+        return value instanceof String;
+    }
+
     public static void mapRelativeDateRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
-        if(searchFilterDTO.getFilterType().isRelativeRange() && searchFilterDTO.getFilterDataType().isDate()) {
+        if(searchFilterDTO.getFilterType() != null &&
+                searchFilterDTO.getFilterType().isRelativeRange() &&
+                searchFilterDTO.getFilterDataType().isDate()) {
             RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
             HumanDateParser parser = new HumanDateParser(searchFilterDTO.getValues().get(0).toString());
             rangeFilterValue.setMinValue(Date.from(parser.getStart()));
@@ -178,9 +222,63 @@ public class SearchQueryMapper {
         for(Object value : values) {
             mappedValues.add(String.valueOf(value));
         }
-
         return mappedValues;
+    }
+
+    public void applyDefaults(SearchQuery searchQuery) {
+        if(searchQuery.getPage() == null) {
+            searchQuery.setPage(defaultPage);
+        }
+        searchQuery.getAllSearchFilters().forEach(this::applyDefaultsForFilter);
 
 
+    }
+    public SearchFilter applyDefaultsForFilter(SearchFilter  searchFilter) {
+        if(searchFilter.getName() == null) {
+            searchFilter.setName(searchFilter.getId());
+        }
+        if(searchFilter.getFilterType() == null) {
+            searchFilter.setFilterType(defaultFilterType);
+        }
+        if(searchFilter.getFilterDataType() == null) {
+            searchFilter.setFilterDataType(defaultFilterDataType);
+        }
+
+        if(searchFilter.getFilterOperator() == null) {
+            searchFilter.setFilterOperator(defaultFilterOperator);
+        }
+        return searchFilter;
+    }
+
+    public Integer getDefaultPage() {
+        return defaultPage;
+    }
+
+    public void setDefaultPage(Integer defaultPage) {
+        this.defaultPage = defaultPage;
+    }
+
+    public FilterType getDefaultFilterType() {
+        return defaultFilterType;
+    }
+
+    public void setDefaultFilterType(FilterType defaultFilterType) {
+        this.defaultFilterType = defaultFilterType;
+    }
+
+    public FilterDataType getDefaultFilterDataType() {
+        return defaultFilterDataType;
+    }
+
+    public void setDefaultFilterDataType(FilterDataType defaultFilterDataType) {
+        this.defaultFilterDataType = defaultFilterDataType;
+    }
+
+    public FilterOperator getDefaultFilterOperator() {
+        return defaultFilterOperator;
+    }
+
+    public void setDefaultFilterOperator(FilterOperator defaultFilterOperator) {
+        this.defaultFilterOperator = defaultFilterOperator;
     }
 }

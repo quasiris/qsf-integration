@@ -14,22 +14,72 @@
       "id": "myid",
       "name": "main-filter",
       "values": [
-        "node1 > node2"
+        "myValue"
       ]
     },
     {
+      "id": "myid-operator-or",
+      "name": "main-filter",
+      "filterOperator" : "OR",
+      "values": [
+        "myValue"
+      ]
+    },
+    {
+      "id": "myid-operator-not",
+      "name": "main-filter",
+      "filterOperator" : "NOT",
+      "values": [
+        "myValue"
+      ]
+    },
+    {
+      "id": "myid-operator-and",
+      "name": "main-filter",
+      "filterOperator" : "AND",
+      "values": [
+        "myValue"
+      ]
+    },
+    {
+      "id" : "my-range-filter",
       "filterDataType": "number",
       "filterType": "range",
       "minValue": 0,
       "maxValue": 10
     },
     {
+      "id" : "my-range-filter-without-filterDataType",
+      "filterType": "range",
+      "minValue": 0,
+      "maxValue": 10
+    },
+    {
+      "id" : "my-range-filter-without-filterDataType-filterType",
+      "minValue": 0,
+      "maxValue": 10
+    },
+    {
+      "id" : "my-range-date-filter",
       "filterDataType": "date",
       "filterType": "range",
       "minValue": "2000-08-06",
       "maxValue": "2020-08-06"
     },
     {
+      "id" : "my-range-date-filter-without-filterDataType",
+      "filterType": "range",
+      "minValue": "2000-08-06",
+      "maxValue": "2020-08-06"
+    },
+    {
+      "id" : "my-range-date-filter-without-filterDataType-filterType",
+      "filterType": "range",
+      "minValue": "2000-08-06",
+      "maxValue": "2020-08-06"
+    },
+    {
+      "id" : "my-relative-range-filter",
       "filterDataType": "date",
       "filterType": "relativerange",
       "values": [

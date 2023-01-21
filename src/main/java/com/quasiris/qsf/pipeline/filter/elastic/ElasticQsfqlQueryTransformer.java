@@ -143,7 +143,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 jsonBuilder.json(agg);
                 hasAggs = true;
             }  else if ("categorySelect".equals(aggregation.getType())) {
-                SearchFilter categorySelectFilter = SearchFilters.get(aggregation.getId(), searchQuery.getSearchFilterList());
+                SearchFilter categorySelectFilter = searchQuery.getSearchFilterById(aggregation.getId());
                 int level = CategorySelectBuilder.getLevelFromFilter(categorySelectFilter);
                 for (int i = 0; i <= level; i++) {
                     createCategorySelectFacet(aggregation, filterMapper, jsonBuilder, i);
@@ -207,7 +207,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
 
         List<BaseSearchFilter> searchQueryfilters = SerializationUtils.deepCopyList(searchQuery.getSearchFilterList());
-        SearchFilter categorySelectFilter = SearchFilters.get(aggregation.getId(), searchQuery.getSearchFilterList());
+        SearchFilter categorySelectFilter = searchQuery.getSearchFilterById(aggregation.getId());
         if(categorySelectFilter != null) {
             searchQueryfilters = SearchFilters.remove(searchQueryfilters, categorySelectFilter.getId());
             SearchFilter categorySearchFilterForFacet = CategorySelectBuilder.getFilterForLevel(aggregation.getId(), level-1, categorySelectFilter.getValues().get(0));

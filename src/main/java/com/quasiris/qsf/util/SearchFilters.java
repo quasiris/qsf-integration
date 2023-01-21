@@ -10,25 +10,6 @@ import java.util.stream.Collectors;
 
 public class SearchFilters {
 
-    public static boolean exists(String id, List<BaseSearchFilter> searchFilters) {
-
-        SearchFilter searchFilter = get(id, searchFilters);
-
-        return searchFilter != null;
-    }
-    public static SearchFilter get(String id, List<BaseSearchFilter> searchFilters) {
-
-        SearchFilter searchFilter = searchFilters.stream().
-                filter(f -> f instanceof SearchFilter).
-                map(f -> (SearchFilter)f).
-                filter(f -> f.getId().startsWith(id)).
-                findFirst().
-                orElse(null);
-
-        return searchFilter;
-    }
-
-
     public static List<BaseSearchFilter> remove(List<BaseSearchFilter> searchFilters, String idToRemove) {
         return remove(searchFilters, Collections.singleton(idToRemove));
     }

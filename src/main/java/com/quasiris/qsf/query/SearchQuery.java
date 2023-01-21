@@ -421,12 +421,27 @@ public class SearchQuery {
 
     }
     public SearchFilter getSearchFilterById(String id) {
-        return getSearchFilterList().stream().
-                filter(f -> f instanceof SearchFilter).
-                map(f -> (SearchFilter) f).
+        return getAllSearchFilters().stream().
                 filter(f -> id.equals(f.getId())).
                 findFirst().
                 orElse(null);
+    }
+
+    public List<SearchFilter> getAllSearchFilters() {
+        return getSearchFilters(getSearchFilterList());
+    }
+
+    public List<SearchFilter> getSearchFilters(List<BaseSearchFilter> baseSearchFilters) {
+        List<SearchFilter> searchFilters = new ArrayList<>();
+        for(BaseSearchFilter baseSearchFilter : baseSearchFilters) {
+            if(baseSearchFilter instanceof BoolSearchFilter) {
+                List<SearchFilter> sf = getSearchFilters(((BoolSearchFilter) baseSearchFilter).getFilters());
+                searchFilters.addAll(sf);
+            } else if (baseSearchFilter instanceof  SearchFilter) {
+                searchFilters.add((SearchFilter) baseSearchFilter);
+            }
+        }
+        return searchFilters;
     }
 
     @Override
