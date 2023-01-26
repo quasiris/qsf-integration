@@ -2,13 +2,19 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+## [5.9]
 ### Added
 - implement defined range facets for elastic
 - add methods to get a facet and a search filter by id
+- add the response to the Explain in case of an error
+- implement a test for mapping the operator in a post query
+- make it possible to apply the defaults for a search query later
 
 ### Changed
 - sort facet by key in case of all facets are loaded
 - ignore tokens with numbers in spellcheck
+- give child responsibility to register explain
+- only load more facets for facets that are tagged by the tag loadMoreFacetsAndSortByName
 
 ## [5.8]
 ### Added
