@@ -3,7 +3,7 @@ package com.quasiris.qsf.response;
 import com.quasiris.qsf.dto.response.Request;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Deprecated
 public class RequestFactory {

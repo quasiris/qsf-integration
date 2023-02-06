@@ -9,9 +9,9 @@ import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.util.SerializationUtils;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

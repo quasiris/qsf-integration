@@ -2,8 +2,8 @@ package com.quasiris.qsf.pipeline.filter.web;
 
 import com.google.common.base.Splitter;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -211,11 +211,6 @@ public class QSFHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public boolean isRequestedSessionIdFromUrl() {
-        throw new UnsupportedOperationException("The method is not implemented yet.");
-    }
-
-    @Override
     public boolean authenticate(HttpServletResponse httpServletResponse) throws IOException, ServletException {
         throw new UnsupportedOperationException("The method is not implemented yet.");
     }
@@ -375,11 +370,6 @@ public class QSFHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public String getRealPath(String s) {
-        throw new UnsupportedOperationException("The method is not implemented yet.");
-    }
-
-    @Override
     public int getRemotePort() {
        throw new UnsupportedOperationException("The method is not implemented yet.");
     }
@@ -431,6 +421,21 @@ public class QSFHttpServletRequest implements HttpServletRequest {
 
     @Override
     public DispatcherType getDispatcherType() {
+        throw new UnsupportedOperationException("The method is not implemented yet.");
+    }
+
+    @Override
+    public String getRequestId() {
+        throw new UnsupportedOperationException("The method is not implemented yet.");
+    }
+
+    @Override
+    public String getProtocolRequestId() {
+        throw new UnsupportedOperationException("The method is not implemented yet.");
+    }
+
+    @Override
+    public ServletConnection getServletConnection() {
         throw new UnsupportedOperationException("The method is not implemented yet.");
     }
 }

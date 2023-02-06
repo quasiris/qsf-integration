@@ -10,8 +10,8 @@ import com.quasiris.qsf.dto.query.SpellcheckDTO;
 import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.text.Splitter;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
