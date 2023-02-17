@@ -1,9 +1,16 @@
 package com.quasiris.qsf.explain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 public class ExplainContext {
 
+    private static final Logger log = LoggerFactory.getLogger(ExplainContext.class);
     private Explain current;
 
     private Explain root;
@@ -67,6 +74,32 @@ public class ExplainContext {
         explain.setExplainObject(value);
         explain.setDataType(ExplainDataType.JSON);
         addChild(explain);
+    }
+
+    public void explainThrowable(String id, Throwable throwable) {
+        if (!explain) {
+            return;
+        }
+        ExplainThrowable explainThrowable = new ExplainThrowable();
+        explainThrowable.setStackTrace(getStackTrace(throwable));
+        explainThrowable.setMessage(throwable.getMessage());
+        Explain explain = new Explain();
+        explain.setId(id);
+        explain.setName(id);
+        explain.setExplainObject(explainThrowable);
+        explain.setDataType(ExplainDataType.JSON);
+        addChild(explain);
+    }
+
+    private String getStackTrace(Throwable throwable) {
+        try (StringWriter sw = new StringWriter();
+             PrintWriter pw = new PrintWriter(sw)) {
+            throwable.printStackTrace(pw);
+            return sw.toString();
+        } catch (IOException e) {
+            log.warn("explainThrowable: Could not get throwable stack trace");
+        }
+        return null;
     }
 
     public synchronized void addChild(Explain explain) {
