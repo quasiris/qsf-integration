@@ -2,6 +2,12 @@
 All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
+### Added
+- implement a sort in the search result
+
+### Changed
+
+
 ## [5.9]
 ### Added
 - implement defined range facets for elastic
