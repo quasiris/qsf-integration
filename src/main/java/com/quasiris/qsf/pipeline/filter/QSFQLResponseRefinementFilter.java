@@ -42,6 +42,8 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
 
         refineFacets(searchResult);
 
+        refineSorts(searchResult, searchQuery);
+
         // paging
         if(checkPagingEnabled(searchQuery)) {
             Paging paging = PagingBuilder.buildPaging(searchResult.getTotal(), searchQuery.getPage(), searchQuery.getRows());
@@ -83,6 +85,23 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
         }
     }
 
+    public void refineSorts(SearchResult searchResult, SearchQuery searchQuery) {
+        if(searchResult.getSort() == null) {
+            return;
+        }
+
+        if(searchResult.getSort().getSort() == null) {
+            return;
+        }
+
+        if(searchQuery.getSort().getField() != null) {
+            for(SortEntry sortEntry : searchResult.getSort().getSort()) {
+                if(sortEntry.getId().equals(searchQuery.getSort().getField())) {
+                    sortEntry.setSelected(Boolean.TRUE);
+                }
+            }
+        }
+    }
     public void refineFacets(SearchResult searchResult) {
         adjustMinRangeMaxRangeForSliders(searchResult.getFacets());
         List<Facet> refinedFacets = removeFacetsWithoutValues(searchResult.getFacets());
