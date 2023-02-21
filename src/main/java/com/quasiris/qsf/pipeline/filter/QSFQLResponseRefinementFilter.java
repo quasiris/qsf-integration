@@ -94,9 +94,9 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
             return;
         }
 
-        if(searchQuery.getSort() != null && searchQuery.getSort().getField() != null) {
+        if(searchQuery.getSort() != null && searchQuery.getSort().getSort() != null) {
             for(SortEntry sortEntry : searchResult.getSort().getSort()) {
-                if(sortEntry.getId().equals(searchQuery.getSort().getField())) {
+                if(sortEntry.getId().equals(searchQuery.getSort().getSort())) {
                     sortEntry.setSelected(Boolean.TRUE);
                 }
             }
