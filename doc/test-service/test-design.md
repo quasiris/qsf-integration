@@ -42,7 +42,7 @@ Example TestSuite
     },
     "dev": {
       "variables" : {
-        "baseUrl" : "https://search-service.dev.cloud.hosting.hornbach.de",
+        "baseUrl" : "https://search-service.dev.cloud.hosting.my-website.de",
         "serviceName" : ""
       }
     }
@@ -91,7 +91,7 @@ Example Environments Object
   },
   "dev": {
     "variables" : {
-      "baseUrl" : "https://search-service.dev.cloud.hosting.hornbach.de",
+      "baseUrl" : "https://search-service.dev.cloud.hosting.my-website.de",
       "serviceName" : ""
     }
   }
@@ -100,7 +100,7 @@ Example Environments Object
 
 Example for a parameterized test query URL:
 ```json
-{"url": "${baseUrl}/${serviceName}kam/search/articleDetail?f.articleCode=4625462&q=*&locale=de_DE"}
+{"url": "${baseUrl}/${serviceName}kam/search/articleDetail?f.articleCode=123456&q=*&locale=de_DE"}
 ```
 
 
@@ -125,7 +125,7 @@ Example TestCase:
   "active": true,
   "envs": ["dev"],
   "query": {
-    "url": "${baseUrl}/${serviceName}kam/search/articleDetail?f.articleCode=4625462&q=*&locale=de_DE"
+    "url": "${baseUrl}/${serviceName}kam/search/articleDetail?f.articleCode=123456&q=*&locale=de_DE"
   },
   "assertions": {
     "jsonPath": [
@@ -156,8 +156,8 @@ Example TestCase:
                   ],
                   "_total": ">:3000",
                   "categoryName": "Pflanzen",
-                  "parentCategoryId": "S10011",
-                  "categoryId": "S11175"
+                  "parentCategoryId": "S11111",
+                  "categoryId": "S11110"
                 }
               }
             ]
@@ -177,7 +177,7 @@ Example TestCase:
                       "value": "containsLowerCase:Rose"
                     }
                   ],
-                  "sku": "10298269"
+                  "sku": "123456789"
                 }
               }
             ]
@@ -207,7 +207,7 @@ Example Query:
 ```json
 {
   "query": {
-    "url": "${baseUrl}/search-autocomplete/v2/autocomplete/search/multiterms?q=${q.encoded}&locale=${locale}&market=740",
+    "url": "${baseUrl}/search-autocomplete/v2/autocomplete/search/multiterms?q=${q.encoded}&locale=${locale}&market=123",
     "variations": [
       {
         "q": "wago",
@@ -544,7 +544,7 @@ Note that these are only keys, testValue Operators still apply for the values!
       "document": {
         "_envs": "prd",
         "_total": ">:3000",
-        "abstractProductId": "6540097",
+        "abstractProductId": "123456",
         "categoryName": "Pflanzen"
       }
     },
