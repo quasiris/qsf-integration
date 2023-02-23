@@ -120,8 +120,17 @@ public class PipelineContainer {
         return (T) context.get(name);
     }
 
+    public Map<String, ? super Object> getContext() {
+        return context;
+    }
+
     public void putContext(String name, Object value) {
         context.put(name, value);
+    }
+    public void putContextIfNotExists(String name, Object value) {
+        if(context.get(name) == null) {
+            putContext(name, value);
+        }
     }
 
     public Map<String, SearchResult> getSearchResults() {

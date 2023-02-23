@@ -1,6 +1,7 @@
 package com.quasiris.qsf.health;
 
 import com.quasiris.qsf.pipeline.*;
+import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilterBuilder;
 import com.quasiris.qsf.dto.response.SearchResult;
 
@@ -63,7 +64,7 @@ public class ElasticHealthChecker {
 
 
 
-    public boolean isHealthy() throws PipelineContainerException, PipelineContainerDebugException {
+    public boolean isHealthy() throws PipelineContainerException, PipelineContainerDebugException, PipelineRestartException {
         Pipeline pipeline = PipelineBuilder.create().
                 pipeline(type).
                 timeout(4000L).

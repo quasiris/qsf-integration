@@ -1,6 +1,7 @@
 package com.quasiris.qsf.monitoring;
 
 import com.quasiris.qsf.pipeline.*;
+import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilterBuilder;
 import com.quasiris.qsf.pipeline.filter.elastic.Profiles;
 import com.quasiris.qsf.query.SearchQuery;
@@ -200,6 +201,12 @@ public class ElasticMonitoringExecuter {
 
             searchResult = pipelineContainer.getSearchResults().get(type);
         } catch (PipelineContainerException e) {
+            searchResult = new SearchResult();
+            searchResult.setDocuments(new ArrayList<>());
+            searchResult.setTotal(0L);
+            searchResult.setTime(e.getPipelineContainer().currentTime());
+            searchResult.setStatusMessage(e.getMessage());
+        } catch (PipelineRestartException e ) {
             searchResult = new SearchResult();
             searchResult.setDocuments(new ArrayList<>());
             searchResult.setTotal(0L);

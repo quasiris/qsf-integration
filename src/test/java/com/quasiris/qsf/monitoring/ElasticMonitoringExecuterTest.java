@@ -32,7 +32,7 @@ class ElasticMonitoringExecuterTest {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
     @Test
-    void doMonitoringEmptyMonitoringList() throws PipelineContainerDebugException, JsonProcessingException, PipelineContainerException {
+    void doMonitoringEmptyMonitoringList() throws Exception{
 
         String baseUrl = "http://localhost:8083";
 
@@ -56,7 +56,7 @@ class ElasticMonitoringExecuterTest {
     }
 
     @Test
-    void doMonitoringNotEmptyMonitoringNotActiveListOk() throws PipelineContainerDebugException, JsonProcessingException, PipelineContainerException {
+    void doMonitoringNotEmptyMonitoringNotActiveListOk() throws Exception {
         long time = 0L;
         long error = 0;
         long warn = 0;
@@ -99,7 +99,7 @@ class ElasticMonitoringExecuterTest {
     }
 
     @Test
-    void doMonitoringNotEmptyMonitoringProcessingTimeFullNotActiveListOk() throws PipelineContainerDebugException, JsonProcessingException, PipelineContainerException {
+    void doMonitoringNotEmptyMonitoringProcessingTimeFullNotActiveListOk() throws Exception {
         long time = 0;
         int error = 0;
         int warn = 0;
@@ -148,7 +148,7 @@ class ElasticMonitoringExecuterTest {
     }
 
     @Test
-    void doMonitoringNotEmptyMonitoringProcessingUpdateTimeFullNotActiveListOk() throws PipelineContainerDebugException, JsonProcessingException, PipelineContainerException {
+    void doMonitoringNotEmptyMonitoringProcessingUpdateTimeFullNotActiveListOk() throws Exception {
         long time = 0;
         int error = 0;
         int warn = 0;

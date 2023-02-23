@@ -11,6 +11,7 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerDebugException;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.PipelineExecuter;
+import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.pipeline.filter.solr.SolrClientFactory;
 import com.quasiris.qsf.pipeline.filter.solr.SolrFilterBuilder;
@@ -84,7 +85,7 @@ public class QsfqlSolrFilterTest extends AbstractPipelineTest {
 
         }
 
-        private SearchResult executePipeline(String url) throws PipelineContainerException, PipelineContainerDebugException {
+        private SearchResult executePipeline(String url) throws PipelineContainerException, PipelineContainerDebugException, PipelineRestartException {
                 String baseUrl = "http://localhost:8983/solr/gettingstarted";
                 SolrClientFactory.setSolrClient(Mockfactory.createSolrClient(baseUrl), baseUrl);
 

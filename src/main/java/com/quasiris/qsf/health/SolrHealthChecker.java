@@ -1,6 +1,7 @@
 package com.quasiris.qsf.health;
 
 import com.quasiris.qsf.pipeline.*;
+import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.filter.solr.SolrFilterBuilder;
 import com.quasiris.qsf.pipeline.filter.solr.SolrParameterQueryTransformer;
 import com.quasiris.qsf.dto.response.SearchResult;
@@ -57,12 +58,12 @@ public class SolrHealthChecker {
 
     }
 
-    public Long getTotal() throws PipelineContainerException, PipelineContainerDebugException {
+    public Long getTotal() throws PipelineContainerException, PipelineContainerDebugException, PipelineRestartException {
         SearchResult searchResult = getSearchResult();
         return searchResult.getTotal();
     }
 
-    public SearchResult getSearchResult() throws PipelineContainerException, PipelineContainerDebugException {
+    public SearchResult getSearchResult() throws PipelineContainerException, PipelineContainerDebugException, PipelineRestartException {
         Pipeline pipeline = PipelineBuilder.create().
                 pipeline(type).
                 timeout(4000L).
@@ -83,7 +84,7 @@ public class SolrHealthChecker {
     }
 
 
-    public boolean isHealthy() throws PipelineContainerException, PipelineContainerDebugException {
+    public boolean isHealthy() throws PipelineContainerException, PipelineContainerDebugException, PipelineRestartException {
         SearchResult searchResult = getSearchResult();
         for(Predicate<SearchResult> p : getPredicates()) {
             if(!p.test(searchResult)) {

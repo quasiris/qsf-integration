@@ -3,11 +3,13 @@ package com.quasiris.qsf.pipeline;
 import com.quasiris.qsf.explain.Explain;
 import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.explain.ExplainPipeline;
+import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.query.SearchQuery;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.*;
 
 /**
@@ -36,6 +38,14 @@ public class PipelineExecuter {
 
     public PipelineExecuter context(String name, Object value) {
         getPipelineContainer().putContext(name, value);
+        return this;
+    }
+    public PipelineExecuter contextMerge(Map<String, ? super Object> context ) {
+        if(context != null) {
+            for (Map.Entry<String, ? super Object> entry : context.entrySet()) {
+                getPipelineContainer().putContextIfNotExists(entry.getKey(), entry.getValue());
+            }
+        }
         return this;
     }
 
@@ -89,7 +99,7 @@ public class PipelineExecuter {
         return this;
     }
 
-    public PipelineContainer execute() throws PipelineContainerException, PipelineContainerDebugException {
+    public PipelineContainer execute() throws PipelineContainerException, PipelineContainerDebugException, PipelineRestartException {
         try {
             ExplainContextHolder.clearContext();
             if(pipelineContainer != null) {
@@ -110,6 +120,9 @@ public class PipelineExecuter {
             pipelineContainer.error(e);
             PipelineExecuterService.failOnError(pipelineContainer);
         } catch (InterruptedException | ExecutionException e) {
+            if(e.getCause() instanceof PipelineRestartException) {
+                throw (PipelineRestartException) e.getCause();
+            }
             pipelineContainer.error(e);
             PipelineExecuterService.failOnError(pipelineContainer);
         }
