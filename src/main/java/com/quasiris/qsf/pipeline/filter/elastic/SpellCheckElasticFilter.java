@@ -115,7 +115,7 @@ public class SpellCheckElasticFilter extends AbstractFilter {
             didYouMeanResult.setOriginal(searchQuery.getOriginalQuery());
             SpellCheckContext.get(pipelineContainer).setDidYouMeanResult(didYouMeanResult);
             if(restartPipelineId != null) {
-                throw new PipelineRestartException(restartPipelineId);
+                throw new PipelineRestartException(restartPipelineId, pipelineContainer);
             }
         }
     }
