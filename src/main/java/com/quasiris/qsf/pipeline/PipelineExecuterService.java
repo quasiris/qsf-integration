@@ -41,7 +41,7 @@ public class PipelineExecuterService {
                 pipelineContainer = filter(pipelineContainer);
                 restartCount = 1000;
             } catch (PipelineRestartException e) {
-                if(e.getStartPipelineId().equals(pipeline.getId())) {
+                if(e.getStartPipelineId() != null && e.getStartPipelineId().equals(pipeline.getId())) {
                     restartCount++;
                 } else {
                     throw e;
