@@ -7,31 +7,52 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ExplainContext {
 
     private static final Logger log = LoggerFactory.getLogger(ExplainContext.class);
     private Explain current;
+    private Explain currentPipeline;
+    private boolean clearOnNewPipeline = true;
 
-    private Explain root;
+    private Explain root = new Explain();
+
+    {
+        root.setId("root");
+        root.setName("root");
+        root.setDataType(ExplainDataType.STRING);
+        root.setType("root");
+        root.setExplainObject(new HashMap<String, Object>());
+    }
 
     private boolean explain = false;
 
 
-    public Explain<ExplainPipeline> pipeline(String id) {
+    public ExplainPipelineAutoClosable pipeline(String id) {
         Explain<ExplainPipeline> explainPipeline = new Explain();
         explainPipeline.setExplainObject(new ExplainPipeline());
         if(!explain) {
-            return explainPipeline;
+            return new ExplainPipelineAutoClosable(explainPipeline);
         }
-
         explainPipeline.setId(id);
         explainPipeline.setName(id);
         explainPipeline.setType("pipeline");
         explainPipeline.setDataType(ExplainDataType.STRING);
-        this.root = explainPipeline;
-        return explainPipeline;
+        this.currentPipeline = explainPipeline;
+        this.current = explainPipeline;
+        addPipelineAsChild(explainPipeline);
+        return new ExplainPipelineAutoClosable(explainPipeline);
     }
+
+    private void addPipelineAsChild(Explain<ExplainPipeline> explainPipeline) {
+        Explain actualRoot = getRoot();
+        if (actualRoot.getChildren() == null) {
+            actualRoot.setChildren(new ArrayList<>());
+        }
+        actualRoot.getChildren().add(explainPipeline);
+    }
+
     public Explain<ExplainFilter> filter(String id) {
         Explain<ExplainFilter> explainFilter = new Explain();
         explainFilter.setExplainObject(new ExplainFilter());
@@ -121,6 +142,16 @@ public class ExplainContext {
         }
         return current;
     }
+    public Explain getCurrentPipeline() {
+        if(!explain) {
+            return null;
+        }
+        return currentPipeline;
+    }
+
+    public void setCurrentPipeline(Explain currentPipeline) {
+        this.currentPipeline = currentPipeline;
+    }
 
     public void setCurrent(Explain current) {
         this.current = current;
@@ -129,11 +160,6 @@ public class ExplainContext {
     public Explain getRoot() {
         if(!explain) {
             return null;
-        }
-        if(root == null) {
-            root = new Explain();
-            root.setId("root");
-            root.setName("root");
         }
         return root;
     }
@@ -148,5 +174,13 @@ public class ExplainContext {
 
     public void setExplain(boolean explain) {
         this.explain = explain;
+    }
+
+    public boolean isClearOnNewPipeline() {
+        return clearOnNewPipeline;
+    }
+
+    public void setClearOnNewPipeline(boolean clearOnNewPipeline) {
+        this.clearOnNewPipeline = clearOnNewPipeline;
     }
 }

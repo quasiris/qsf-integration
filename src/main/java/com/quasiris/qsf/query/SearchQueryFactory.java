@@ -13,6 +13,7 @@ public class SearchQueryFactory {
     public static SearchQuery deepCopy(SearchQuery searchQuery) {
         SearchQuery searchQueryCopy = new SearchQuery();
         searchQueryCopy.setOriginalQuery(searchQuery.getOriginalQuery());
+        searchQueryCopy.setExplain(searchQuery.isExplain());
         searchQueryCopy.setQueryChanged(searchQuery.isQueryChanged());
         if(searchQuery.getQueryChangedReasons() != null) {
             searchQueryCopy.setQueryChangedReasons(SerializationUtils.deepCopyList(searchQuery.getQueryChangedReasons()));

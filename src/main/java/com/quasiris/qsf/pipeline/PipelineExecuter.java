@@ -1,8 +1,7 @@
 package com.quasiris.qsf.pipeline;
 
-import com.quasiris.qsf.explain.Explain;
 import com.quasiris.qsf.explain.ExplainContextHolder;
-import com.quasiris.qsf.explain.ExplainPipeline;
+import com.quasiris.qsf.explain.ExplainPipelineAutoClosable;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.query.SearchQuery;
 
@@ -105,13 +104,14 @@ public class PipelineExecuter {
             if(pipelineContainer != null) {
                 ExplainContextHolder.getContext().setExplain(pipelineContainer.getSearchQuery().isExplain());
             }
-            Explain<ExplainPipeline> explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
-            ExecutorService executorService = executorServices.get(executorName);
-            FutureTask<PipelineCallableResponse> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer(), ExplainContextHolder.getContext()));
-            executorService.execute(futureTask);
-            PipelineCallableResponse response = futureTask.get(pipeline.getTimeout(), TimeUnit.MILLISECONDS);
-            pipelineContainer = response.getPipelineContainer();
-            explain.getExplainObject().setDuration(pipelineContainer.currentTime());
+            try (ExplainPipelineAutoClosable explainPipelineAutoClosable = ExplainContextHolder.getContext().pipeline(pipeline.getId())) {
+                ExecutorService executorService = executorServices.get(executorName);
+                FutureTask<PipelineCallableResponse> futureTask = new FutureTask<>(new PipelineCallable(pipeline, getPipelineContainer(), ExplainContextHolder.getContext()));
+                executorService.execute(futureTask);
+                PipelineCallableResponse response = futureTask.get(pipeline.getTimeout(), TimeUnit.MILLISECONDS);
+                pipelineContainer = response.getPipelineContainer();
+                explainPipelineAutoClosable.getPipelineExplain().getExplainObject().setDuration(pipelineContainer.currentTime());
+            }
             if(pipelineContainer.isDebugEnabled()) {
                 throw new PipelineContainerDebugException(pipelineContainer);
             }

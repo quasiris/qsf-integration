@@ -1,9 +1,6 @@
 package com.quasiris.qsf.pipeline;
 
-import com.quasiris.qsf.explain.Explain;
-import com.quasiris.qsf.explain.ExplainContext;
-import com.quasiris.qsf.explain.ExplainContextHolder;
-import com.quasiris.qsf.explain.ExplainPipeline;
+import com.quasiris.qsf.explain.*;
 
 import java.util.concurrent.Callable;
 
@@ -27,16 +24,19 @@ public class PipelineCallable implements Callable<PipelineCallableResponse> {
     @Override
     public PipelineCallableResponse call() throws Exception {
         long start = System.currentTimeMillis();
+        ExplainContextHolder.getContext().setClearOnNewPipeline(parentContext.isClearOnNewPipeline());
         ExplainContextHolder.clearContext();
         ExplainContextHolder.getContext().setExplain(pipelineContainer.getSearchQuery().isExplain());
-        Explain<ExplainPipeline> explain = ExplainContextHolder.getContext().pipeline(pipeline.getId());
-        parentContext.addChild(explain);
-        PipelineExecuterService pipelineExecuterService = new PipelineExecuterService(pipeline);
-        PipelineContainer processedPipelineContainer = pipelineExecuterService.execute(pipelineContainer);
-        PipelineCallableResponse response = new PipelineCallableResponse();
-        response.setExplain(ExplainContextHolder.getContext().getRoot());
-        response.setPipelineContainer(pipelineContainer);
-        explain.getExplainObject().setDuration(System.currentTimeMillis() - start);
+        PipelineCallableResponse response;
+        try (ExplainPipelineAutoClosable explainPipelineAutoClosable = ExplainContextHolder.getContext().pipeline(pipeline.getId())) {
+            parentContext.addChild(explainPipelineAutoClosable.getPipelineExplain());
+            PipelineExecuterService pipelineExecuterService = new PipelineExecuterService(pipeline);
+            PipelineContainer processedPipelineContainer = pipelineExecuterService.execute(pipelineContainer);
+            response = new PipelineCallableResponse();
+            response.setExplain(ExplainContextHolder.getContext().getRoot());
+            response.setPipelineContainer(pipelineContainer);
+            explainPipelineAutoClosable.getPipelineExplain().getExplainObject().setDuration(System.currentTimeMillis() - start);
+        }
         return response;
     }
 }
