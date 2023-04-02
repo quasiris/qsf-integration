@@ -3,9 +3,14 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
-- implement a sort in the search result
+- add variantSort, variantSize parameters for collapsing
 
 ### Changed
+
+
+## [5.10]
+### Added
+- implement a sort in the search result
 
 
 ## [5.9]

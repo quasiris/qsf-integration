@@ -43,6 +43,9 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     private String variantId;
     protected Set<String> innerHitsSourceFields;
 
+    protected String variantSort;
+    protected Integer variantSize;
+
 
     @Override
     public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
@@ -387,18 +390,28 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
     public void collapseResults() {
+        // https://www.elastic.co/guide/en/elasticsearch/reference/current/collapse-search-results.html
         if(StringUtils.isNotEmpty(getVariantId())) {
             try {
                 String elasticField = getVariantId()+".keyword";
                 JsonBuilder jsonBuilder = new JsonBuilder().
                         object("field", elasticField);
 
+                int size = 100;
+                if(variantSize != null) {
+                    size = variantSize;
+                }
 
+                // TODO variant sorting here
                 if(innerHitsSourceFields != null) {
                     jsonBuilder.object("inner_hits").
                             object("name", "most_recent").
-                            object("size", 100).
+                            object("size", size).
                             object("_source", innerHitsSourceFields);
+
+                    if(variantSort != null) {
+                        jsonBuilder.object("sort", variantSort);
+                    }
                 }
 
                 elasticQuery.set("collapse", jsonBuilder.get());
@@ -608,5 +621,22 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public void setDefinedRangeFilterMapping(Map<String, Range> definedRangeFilterMapping) {
         this.definedRangeFilterMapping = definedRangeFilterMapping;
+    }
+
+    public String getVariantSort() {
+        return variantSort;
+    }
+
+    public void setVariantSort(String variantSort) {
+        this.variantSort = variantSort;
+    }
+
+
+    public Integer getVariantSize() {
+        return variantSize;
+    }
+
+    public void setVariantSize(Integer variantSize) {
+        this.variantSize = variantSize;
     }
 }
