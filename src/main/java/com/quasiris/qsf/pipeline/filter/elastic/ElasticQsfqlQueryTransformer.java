@@ -410,7 +410,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                             object("_source", innerHitsSourceFields);
 
                     if(variantSort != null) {
-                        jsonBuilder.object("sort", variantSort);
+                        jsonBuilder.string("sort", variantSort);
                     }
                 }
 
