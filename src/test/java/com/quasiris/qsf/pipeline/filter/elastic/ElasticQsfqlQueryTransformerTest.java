@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -602,6 +603,77 @@ public class ElasticQsfqlQueryTransformerTest {
         ObjectNode elasticQuery = transform(transformer,  searchQuery);
         assertQuery(elasticQuery, "facet-with-filter-and-variants.json");
     }
+    @DisplayName("Transform facet with filter and variantId")
+    @Test
+    public void transformVariantId() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+        transformer.setVariantId("variantId");
+
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQ("*");
+
+        ObjectNode elasticQuery = transform(transformer,  searchQuery);
+        assertQuery(elasticQuery, "variant-id.json");
+    }
+
+    @DisplayName("Transform with variantId and source fields")
+    @Test
+    public void transformVariantIdAndSource() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+        transformer.setVariantId("variantId");
+        Set<String> innerHitsSourceFields = new HashSet<>();
+        innerHitsSourceFields.add("productDetails");
+        transformer.setInnerHitsSourceFields(innerHitsSourceFields);
+
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQ("*");
+
+        ObjectNode elasticQuery = transform(transformer,  searchQuery);
+        assertQuery(elasticQuery, "variant-id-source.json");
+    }
+
+    @DisplayName("Transform with variantId and source fields and size")
+    @Test
+    public void transformVariantIdAndSourceAndSize() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+        transformer.setVariantId("variantId");
+        Set<String> innerHitsSourceFields = new HashSet<>();
+        innerHitsSourceFields.add("productDetails");
+        transformer.setInnerHitsSourceFields(innerHitsSourceFields);
+        transformer.setVariantSize(12);
+
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQ("*");
+
+        ObjectNode elasticQuery = transform(transformer,  searchQuery);
+        assertQuery(elasticQuery, "variant-id-source-size.json");
+    }
+
+    @DisplayName("Transform with variantId and source fields and sort")
+    @Test
+    public void transformVariantIdAndSourceAndSort() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+        transformer.setVariantId("variantId");
+        Set<String> innerHitsSourceFields = new HashSet<>();
+        innerHitsSourceFields.add("productDetails");
+        transformer.setInnerHitsSourceFields(innerHitsSourceFields);
+        transformer.setVariantSort("[ { \"productPosition\": \"desc\" } ]");
+
+        SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQ("*");
+
+        ObjectNode elasticQuery = transform(transformer,  searchQuery);
+        assertQuery(elasticQuery, "variant-id-source-sort.json");
+    }
+
     @DisplayName("Transform facet with filter and variantId and source fields")
     @Test
     public void transformFacetWithFilterAndVariantIdAndSourceFields() throws Exception {

@@ -402,7 +402,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                     size = variantSize;
                 }
 
-                // TODO variant sorting here
                 if(innerHitsSourceFields != null) {
                     jsonBuilder.object("inner_hits").
                             object("name", "most_recent").

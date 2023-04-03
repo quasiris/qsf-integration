@@ -1,0 +1,31 @@
+{
+  "from" : 0,
+  "size" : 10,
+  "track_total_hits" : true,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "match_all" : { }
+        }
+      ]
+    }
+  },
+  "aggs" : {
+    "qsc_filtered" : {
+      "filter" : {
+        "bool" : { }
+      },
+      "aggs" : {
+        "_total_count" : {
+          "cardinality" : {
+            "field" : "variantId.keyword"
+          }
+        }
+      }
+    }
+  },
+  "collapse" : {
+    "field" : "variantId.keyword"
+  }
+}
