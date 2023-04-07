@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ElasticTrackingClient {
     public enum ROTATION {
-        DAILY, HOURLY, MONTHLY, YEARLY
+        NONE, DAILY, HOURLY, MONTHLY, YEARLY
     }
 
     private ROTATION rotation = ROTATION.DAILY;
@@ -50,9 +50,14 @@ public class ElasticTrackingClient {
     }
 
     public void trackDocument(Document tracking) throws IOException {
-        DateFormat dateFormat = new SimpleDateFormat(rotationPatterns.get(rotation));
-        String datePattern = dateFormat.format(new Date());
-        String indexUrl = baseUrl + "_" + datePattern + "/_doc";
+        String indexUrl;
+        if (rotation != ROTATION.NONE) {
+            DateFormat dateFormat = new SimpleDateFormat(rotationPatterns.get(rotation));
+            String datePattern = dateFormat.format(new Date());
+            indexUrl = baseUrl + "_" + datePattern + "/_doc";
+        } else {
+            indexUrl = baseUrl + "/_doc";
+        }
 
         ExplainContextHolder.getContext().explain("trackingUrl", indexUrl);
         ExplainContextHolder.getContext().explainJson("trackingDocument", tracking.getDocument());
