@@ -4,6 +4,9 @@ All notable changes qsf-integration project will be documented in this file.
 ## [UNRELEASED]
 ### Added
 - add variantSort, variantSize parameters for collapsing
+- add ability to disable tracking index name rotation
+- create option to not delete explain on each new pipeline
+  save
 
 ### Changed
 
