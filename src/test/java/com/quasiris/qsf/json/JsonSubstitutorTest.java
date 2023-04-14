@@ -25,7 +25,7 @@ public class JsonSubstitutorTest {
         jsonBuilder.object("$foo", "bar");
 
         Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("$foo", "bar");
+        valueMap.put("foo", "bar");
 
         JsonSubstitutor jsonSubstitutor = new JsonSubstitutor(valueMap);
         JsonNode json = jsonSubstitutor.replace(jsonBuilder.get());
@@ -40,7 +40,7 @@ public class JsonSubstitutorTest {
         jsonBuilder.object("foo", "$bar");
 
         Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("$bar", "foo");
+        valueMap.put("bar", "foo");
 
         JsonSubstitutor jsonSubstitutor = new JsonSubstitutor(valueMap);
         JsonNode json = jsonSubstitutor.replace(jsonBuilder.get());
@@ -66,9 +66,9 @@ public class JsonSubstitutorTest {
 
 
         Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("$varSimple", "drei");
-        valueMap.put("$varArray", Arrays.asList("fünf", "sechs"));
-        valueMap.put("$number", 8);
+        valueMap.put("varSimple", "drei");
+        valueMap.put("varArray", Arrays.asList("fünf", "sechs"));
+        valueMap.put("number", 8);
 
         JsonSubstitutor jsonSubstitutor = new JsonSubstitutor(valueMap);
         JsonNode json = jsonSubstitutor.replace(jsonBuilder.get());
@@ -86,10 +86,8 @@ public class JsonSubstitutorTest {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.classpath("com/quasiris/qsf/json/test-nested-replace-array.json");
 
-        Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("$foo", "bar");
-
-        jsonBuilder.replace(valueMap);
+        jsonBuilder.valueMap("foo", "bar");
+        jsonBuilder.replace();
 
         JsonAssert.assertJson(
                 "{ \"must\" : [ { \"foo\" : \"bar\", \"bool\" : { } } ] }",
@@ -105,11 +103,8 @@ public class JsonSubstitutorTest {
         replaceBuilder.
                 object("foo", "bar");
 
-
-        Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("$replaceMe", replaceBuilder.get());
-
-        jsonBuilder.replace(valueMap);
+        jsonBuilder.valueMap("replaceMe", replaceBuilder.get());
+        jsonBuilder.replace();
 
         JsonAssert.assertJson(
                 "{\"alice\" : \"bob\", \"foo\" : \"bar\"}",
@@ -124,10 +119,8 @@ public class JsonSubstitutorTest {
         JsonNode replaceMe = JsonBuilder.create().
                 classpath("com/quasiris/qsf/json/test-replace-object-node-with-multiple-keys.json").get();
 
-        Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("$replaceMe", replaceMe);
-
-        jsonBuilder.replace(valueMap);
+        jsonBuilder.valueMap("replaceMe", replaceMe);
+        jsonBuilder.replace();
 
         JsonAssert.assertJson(
                 "{\"alice\" : \"bob\", \"eins\" : \"1\", \"zwei\" : \"2\", \"drei\" : \"3\"}",
@@ -141,11 +134,8 @@ public class JsonSubstitutorTest {
 
         JsonNode replaceMe = JsonBuilder.create().string("{}").get();
 
-
-        Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("$replaceMe", replaceMe);
-
-        jsonBuilder.replace(valueMap);
+        jsonBuilder.valueMap("replaceMe", replaceMe);
+        jsonBuilder.replace();
 
         JsonAssert.assertJson(
                 "{\"alice\" : \"bob\"}",
@@ -157,10 +147,8 @@ public class JsonSubstitutorTest {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.classpath("com/quasiris/qsf/json/test-remove-object-node.json");
 
-        Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("$removeMe", new EmptyNode());
-
-        jsonBuilder.replace(valueMap);
+        jsonBuilder.valueMap("removeMe", new EmptyNode());
+        jsonBuilder.replace();
 
         JsonAssert.assertJson(
                 "{\"alice\" : \"bob\"}",

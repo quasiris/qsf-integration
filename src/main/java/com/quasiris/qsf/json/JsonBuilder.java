@@ -303,7 +303,7 @@ public class JsonBuilder {
         return this;
     }
 
-    public JsonBuilder replace(Map<String, Object> valueMap) throws JsonBuilderException {
+    private JsonBuilder replace(Map<String, Object> valueMap) throws JsonBuilderException {
         JsonSubstitutor jsonSubstitutor = new JsonSubstitutor(valueMap);
         this.root = jsonSubstitutor.replace(this.root);
         this.current = this.root;
@@ -319,7 +319,7 @@ public class JsonBuilder {
         if(value == null) {
             value = new EmptyNode();
         }
-        this.valueMap.put("$" + key, value);
+        this.valueMap.put(key, value);
         return this;
     }
     public JsonBuilder valueMap(Map<String, Object> valueMap) {

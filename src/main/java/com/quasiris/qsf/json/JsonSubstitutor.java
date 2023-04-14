@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+import org.apache.commons.text.StringSubstitutor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +33,7 @@ public class JsonSubstitutor {
             Map.Entry<String, JsonNode> next = it.next();
             if(next.getKey().startsWith("$")) {
                 JsonNode oldNode = node.get(next.getKey());
-                Object value = valueMap.get(next.getKey());
+                Object value = getValue(next.getKey());
                 if(value instanceof EmptyNode) {
                     removeFromNode.add(next.getKey());
                 } else if(value instanceof ObjectNode) {
@@ -53,11 +55,22 @@ public class JsonSubstitutor {
                     next.getValue().textValue().startsWith("$")) {
                 ObjectMapper mapper = new ObjectMapper();
                 String key = next.getValue().textValue();
-                Object value = valueMap.get(key);
+                Object value = getValue(key);
                 if(value != null) {
                     JsonNode newValue = mapper.valueToTree(value);
                     next.setValue(newValue);
                 }
+            } else if(next.getValue().isValueNode() &&
+                    next.getValue().textValue() != null &&
+                    next.getValue().textValue().startsWith("[jsonBuilder:replace] ")) {
+
+                String value = next.getValue().textValue();
+                value = value.replace("[jsonBuilder:replace] ", "");
+
+                StringSubstitutor stringSubstitutor = new StringSubstitutor(valueMap);
+                value = stringSubstitutor.replace(value);
+                next.setValue(new TextNode(value));
+
             } else {
                 replace(next.getValue());
             }
@@ -71,7 +84,7 @@ public class JsonSubstitutor {
                 if (next.isValueNode() && next.textValue() != null && next.textValue().startsWith("$")) {
                     ObjectMapper mapper = new ObjectMapper();
                     String key = next.textValue();
-                    Object value = valueMap.get(key);
+                    Object value = getValue(key);
                     if (value != null) {
                         JsonNode newValue = mapper.valueToTree(value);
                         addToArrayNode.addAll(jsonNodeToList(newValue));
@@ -94,6 +107,13 @@ public class JsonSubstitutor {
             ((ObjectNode) node).set(entry.getKey(), entry.getValue());
         }
         return node;
+    }
+
+
+    Object getValue(String key) {
+        // remove $
+        key = key.substring(1);
+        return valueMap.get(key);
     }
 
     private List<JsonNode> jsonNodeToList(JsonNode jsonNode) {

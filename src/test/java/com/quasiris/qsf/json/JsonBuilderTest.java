@@ -108,6 +108,26 @@ public class JsonBuilderTest {
     }
 
 
+
+    @Test
+    public void testReplaceValueInTextNode() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.string("{\"my-string-value\" : \"[jsonBuilder:replace] This is a text where i want to replace ${myVar}\"}");
+        jsonBuilder.valueMap("myVar", "myValue");
+        jsonBuilder.replace();
+        JsonAssert.assertJson("{\"my-string-value\" : \"This is a text where i want to replace myValue\"}", jsonBuilder.get());
+    }
+
+    @Test
+    public void testReplaceLong() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.string("{\"my-long-value\" : \"$myValue\"}");
+        jsonBuilder.valueMap("myValue", 1L);
+        jsonBuilder.replace();
+        JsonAssert.assertJson("{\"my-long-value\" : 1}", jsonBuilder.get());
+    }
+
+
     @Test
     public void testStringWithBrokenJson() throws Exception {
         Assertions.assertThrows(JsonBuilderException.class, () -> {
@@ -393,12 +413,11 @@ public class JsonBuilderTest {
 
     @Test
     public void testReplace() throws Exception {
-        Map<String, Object> valueMap = new HashMap<>();
-        valueMap.put("$foo", "bar");
-
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object("$foo", "bar");
-        jsonBuilder.replace(valueMap);
+
+        jsonBuilder.valueMap("foo", "bar");
+        jsonBuilder.replace();
 
         JsonAssert.assertJson("{\"bar\": \"bar\"}", jsonBuilder.get());
     }
