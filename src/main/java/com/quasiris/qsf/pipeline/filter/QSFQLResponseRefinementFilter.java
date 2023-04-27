@@ -100,6 +100,12 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
                     sortEntry.setSelected(Boolean.TRUE);
                 }
             }
+        } else {
+            // if no search is selected, automatically select the first entry
+            if(searchResult.getSort().getSort().size() > 1) {
+                searchResult.getSort().getSort().get(0).setSelected(Boolean.TRUE);
+            }
+
         }
     }
     public void refineFacets(SearchResult searchResult) {
