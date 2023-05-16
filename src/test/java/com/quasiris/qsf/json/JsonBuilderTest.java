@@ -42,6 +42,13 @@ public class JsonBuilderTest {
     }
 
     @Test
+    public void testObjectWithoutWrapper() throws Exception {
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.object("foo");
+        JsonAssert.assertJson("{\"foo\" : {}}", jsonBuilder.get());
+    }
+
+    @Test
     public void testObjectWithArray() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.array();
