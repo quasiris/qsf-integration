@@ -94,13 +94,22 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
             return;
         }
 
+        boolean selected = false;
         if(searchQuery.getSort() != null && searchQuery.getSort().getSort() != null) {
             for(SortEntry sortEntry : searchResult.getSort().getSort()) {
                 if(sortEntry.getId().equals(searchQuery.getSort().getSort())) {
                     sortEntry.setSelected(Boolean.TRUE);
+                    selected = true;
                 }
             }
         }
+
+        // if no search is selected, automatically select the first entry
+        if(!selected && searchResult.getSort().getSort().size() > 1) {
+            searchResult.getSort().getSort().get(0).setSelected(Boolean.TRUE);
+        }
+
+
     }
     public void refineFacets(SearchResult searchResult) {
         adjustMinRangeMaxRangeForSliders(searchResult.getFacets());
