@@ -13,6 +13,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class SearchQueryMapperTest {
 
     @Test
+    void testDateRangeFilter() throws Exception {
+        SearchQueryDTO searchQueryDTO = readQueryFromFile("filter-date-range.json");
+        SearchQuery searchQuery = SearchQueryMapper.map(searchQueryDTO);
+        SearchFilter searchFilter = (SearchFilter) searchQuery.getSearchFilterList().get(0);
+
+        assertNotNull(searchFilter.getMinValue());
+        assertNotNull(searchFilter.getMaxValue());
+        assertEquals(FilterType.RANGE, searchFilter.getFilterType());
+        assertEquals(FilterDataType.DATE, searchFilter.getFilterDataType());
+    }
+
+    @Test
     void mapOperator() throws Exception {
         SearchQueryDTO searchQueryDTO = readQueryFromFile("filter-with-operator.json");
         SearchQuery searchQuery = SearchQueryMapper.map(searchQueryDTO);
