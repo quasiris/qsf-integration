@@ -1,0 +1,24 @@
+{
+  "result": {
+    "facet": {
+      "enabled": true
+    }
+  },
+  "q": "*",
+  "rows": 10,
+  "requestId": "cdee7a05-8639-4121-a114-7942ba09aa1e9",
+  "requestOrigin": "my-app",
+  "parameters": {
+    "foo": [
+      "bar"
+    ]
+  },
+  "searchFilters": [
+    {
+      "id": "publishDate",
+      "filterDataType" : "date",
+      "filterType" : "range",
+      "minValue" : "2024-02-01"
+    }
+  ]
+}

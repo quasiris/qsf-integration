@@ -142,11 +142,17 @@ public class SearchQueryMapper {
     public static void mapDateRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
         if(isRangeFilter(searchFilterDTO) && isDateDataType(searchFilterDTO)) {
             RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
-            SimpleDateParser parserMin = new SimpleDateParser(searchFilterDTO.getMinValue().toString());
-            rangeFilterValue.setMinValue(parserMin.getDate());
 
-            SimpleDateParser parserMax = new SimpleDateParser(searchFilterDTO.getMaxValue().toString());
-            rangeFilterValue.setMaxValue(parserMax.getDate());
+            if(searchFilterDTO.getMinValue() != null) {
+                SimpleDateParser parserMin = new SimpleDateParser(searchFilterDTO.getMinValue().toString());
+                rangeFilterValue.setMinValue(parserMin.getDate());
+            }
+
+            if(searchFilterDTO.getMaxValue() != null) {
+                SimpleDateParser parserMax = new SimpleDateParser(searchFilterDTO.getMaxValue().toString());
+                rangeFilterValue.setMaxValue(parserMax.getDate());
+            }
+
             searchFilter.setRangeValue(rangeFilterValue);
             searchFilter.setFilterType(FilterType.RANGE);
             searchFilter.setFilterDataType(FilterDataType.DATE);
