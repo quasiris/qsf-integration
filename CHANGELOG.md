@@ -7,6 +7,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add ability to disable tracking index name rotation
 - create option to not delete explain on each new pipeline
 - add documentation for json builder
+- improve the logic to use different ISO formats for date range query
 
 ### Changed
 

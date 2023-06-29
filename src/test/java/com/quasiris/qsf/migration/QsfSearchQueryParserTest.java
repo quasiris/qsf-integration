@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -148,29 +147,29 @@ class QsfSearchQueryParserTest {
             SearchFilter myRangeDateFilter= actual.getSearchFilterById("my-range-date-filter");
             assertEquals(FilterDataType.DATE, myRangeDateFilter.getFilterDataType());
             assertEquals(FilterType.RANGE, myRangeDateFilter.getFilterType());
-            assertTrue(myRangeDateFilter.getMinValue() instanceof Date);
-            assertTrue(myRangeDateFilter.getMaxValue() instanceof Date);
-            assertEquals(9.655128E11, ((Date) myRangeDateFilter.getMinValue()).getTime());
-            assertEquals(1.5966648E12, ((Date) myRangeDateFilter.getMaxValue()).getTime());
+            assertTrue(myRangeDateFilter.getMinValue() instanceof String);
+            assertTrue(myRangeDateFilter.getMaxValue() instanceof String);
+            assertEquals("2000-08-06", myRangeDateFilter.getMinValue());
+            assertEquals("2020-08-06", myRangeDateFilter.getMaxValue());
 
 
 
             SearchFilter myRangeDateFilterWithoutFilterDataType = actual.getSearchFilterById("my-range-date-filter-without-filterDataType");
             assertEquals(FilterDataType.DATE, myRangeDateFilterWithoutFilterDataType.getFilterDataType());
             assertEquals(FilterType.RANGE, myRangeDateFilterWithoutFilterDataType.getFilterType());
-            assertTrue(myRangeDateFilterWithoutFilterDataType.getMinValue() instanceof Date);
-            assertTrue(myRangeDateFilterWithoutFilterDataType.getMaxValue() instanceof Date);
-            assertEquals(9.655128E11, ((Date) myRangeDateFilterWithoutFilterDataType.getMinValue()).getTime());
-            assertEquals(1.5966648E12, ((Date) myRangeDateFilterWithoutFilterDataType.getMaxValue()).getTime());
+            assertTrue(myRangeDateFilterWithoutFilterDataType.getMinValue() instanceof String);
+            assertTrue(myRangeDateFilterWithoutFilterDataType.getMaxValue() instanceof String);
+            assertEquals("2000-08-06", myRangeDateFilterWithoutFilterDataType.getMinValue());
+            assertEquals("2020-08-06", myRangeDateFilterWithoutFilterDataType.getMaxValue());
 
 
             SearchFilter myRangeDateFilterWithoutFilterDataTypeFilterType = actual.getSearchFilterById("my-range-date-filter-without-filterDataType-filterType");
             assertEquals(FilterDataType.DATE, myRangeDateFilterWithoutFilterDataTypeFilterType.getFilterDataType());
             assertEquals(FilterType.RANGE, myRangeDateFilterWithoutFilterDataTypeFilterType.getFilterType());
-            assertTrue(myRangeDateFilterWithoutFilterDataTypeFilterType.getMinValue() instanceof Date);
-            assertTrue(myRangeDateFilterWithoutFilterDataTypeFilterType.getMaxValue() instanceof Date);
-            assertEquals(9.655128E11, ((Date) myRangeDateFilterWithoutFilterDataTypeFilterType.getMinValue()).getTime());
-            assertEquals(1.5966648E12, ((Date) myRangeDateFilterWithoutFilterDataTypeFilterType.getMaxValue()).getTime());
+            assertTrue(myRangeDateFilterWithoutFilterDataTypeFilterType.getMinValue() instanceof String);
+            assertTrue(myRangeDateFilterWithoutFilterDataTypeFilterType.getMaxValue() instanceof String);
+            assertEquals("2000-08-06", myRangeDateFilterWithoutFilterDataTypeFilterType.getMinValue());
+            assertEquals("2020-08-06", myRangeDateFilterWithoutFilterDataTypeFilterType.getMaxValue());
 
         }
     }

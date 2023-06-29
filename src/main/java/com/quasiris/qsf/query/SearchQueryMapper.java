@@ -1,7 +1,7 @@
 package com.quasiris.qsf.query;
 
 import com.quasiris.qsf.commons.text.date.HumanDateParser;
-import com.quasiris.qsf.commons.text.date.SimpleDateParser;
+import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
 import com.quasiris.qsf.dto.query.BaseSearchFilterDTO;
 import com.quasiris.qsf.dto.query.BoolSearchFilterDTO;
 import com.quasiris.qsf.dto.query.SearchFilterDTO;
@@ -9,7 +9,6 @@ import com.quasiris.qsf.dto.query.SearchQueryDTO;
 import com.quasiris.qsf.dto.query.SortDTO;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -141,16 +140,24 @@ public class SearchQueryMapper {
 
     public static void mapDateRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
         if(isRangeFilter(searchFilterDTO) && isDateDataType(searchFilterDTO)) {
-            RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
+            RangeFilterValue<String> rangeFilterValue = new RangeFilterValue<>();
 
-            if(searchFilterDTO.getMinValue() != null) {
-                SimpleDateParser parserMin = new SimpleDateParser(searchFilterDTO.getMinValue().toString());
-                rangeFilterValue.setMinValue(parserMin.getDate());
+            if (searchFilterDTO.getMinValue() != null) {
+                SupportedDateFormatsParser parser = new SupportedDateFormatsParser(searchFilterDTO.getMinValue().toString());
+                if (parser.parse()) {
+                    rangeFilterValue.setMinValue(parser.getOutputDate());
+                } else {
+                    throw new RuntimeException("Not valid date format " + searchFilterDTO.getMinValue().toString());
+                }
             }
 
-            if(searchFilterDTO.getMaxValue() != null) {
-                SimpleDateParser parserMax = new SimpleDateParser(searchFilterDTO.getMaxValue().toString());
-                rangeFilterValue.setMaxValue(parserMax.getDate());
+            if (searchFilterDTO.getMaxValue() != null) {
+                SupportedDateFormatsParser parser = new SupportedDateFormatsParser(searchFilterDTO.getMaxValue().toString());
+                if (parser.parse()) {
+                    rangeFilterValue.setMaxValue(parser.getOutputDate());
+                } else {
+                    throw new RuntimeException("Not valid date format " + searchFilterDTO.getMinValue().toString());
+                }
             }
 
             searchFilter.setRangeValue(rangeFilterValue);
@@ -211,10 +218,10 @@ public class SearchQueryMapper {
         if(searchFilterDTO.getFilterType() != null &&
                 searchFilterDTO.getFilterType().isRelativeRange() &&
                 searchFilterDTO.getFilterDataType().isDate()) {
-            RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
+            RangeFilterValue<String> rangeFilterValue = new RangeFilterValue<>();
             HumanDateParser parser = new HumanDateParser(searchFilterDTO.getValues().get(0).toString());
-            rangeFilterValue.setMinValue(Date.from(parser.getStart()));
-            rangeFilterValue.setMaxValue(Date.from(parser.getEnd()));
+            rangeFilterValue.setMinValue(parser.getStart().toString());
+            rangeFilterValue.setMaxValue(parser.getEnd().toString());
             searchFilter.setRangeValue(rangeFilterValue);
             searchFilter.setFilterType(FilterType.RANGE);
             searchFilter.setFilterDataType(FilterDataType.DATE);

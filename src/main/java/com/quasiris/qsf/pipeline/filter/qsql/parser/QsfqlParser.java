@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -239,9 +238,9 @@ public class QsfqlParser {
         searchFilter.setFilterDataType(FilterDataType.DATE);
         searchFilter.setFilterOperator(FilterOperator.AND);
 
-        RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
-        rangeFilterValue.setMinValue(Date.from(start));
-        rangeFilterValue.setMaxValue(Date.from(end));
+        RangeFilterValue<String> rangeFilterValue = new RangeFilterValue<>();
+        rangeFilterValue.setMinValue(start.toString());
+        rangeFilterValue.setMaxValue(end.toString());
         rangeFilterValue.setLowerBound(UpperLowerBound.LOWER_INCLUDED);
         rangeFilterValue.setUpperBound(UpperLowerBound.UPPER_EXCLUDED);
 
@@ -259,7 +258,7 @@ public class QsfqlParser {
         searchFilter.setFilterDataType(FilterDataType.DATE);
         searchFilter.setFilterOperator(FilterOperator.AND);
 
-        RangeFilterValue<Date> rangeFilterValue = createRangeFilterValue(filterValues);
+        RangeFilterValue<String> rangeFilterValue = createRangeFilterValue(filterValues);
 
         searchFilter.setName(filterName);
         searchFilter.setId(filterName);
@@ -267,8 +266,8 @@ public class QsfqlParser {
         return searchFilter;
     }
 
-    RangeFilterValue<Date> createRangeFilterValue(String[] filterValues) {
-        RangeFilterValue<Date> rangeFilterValue = new RangeFilterValue<>();
+    RangeFilterValue<String> createRangeFilterValue(String[] filterValues) {
+        RangeFilterValue<String> rangeFilterValue = new RangeFilterValue<>();
         for(String value : filterValues) {
             String[] valueSplitted = value.split(Pattern.quote(","));
             if(valueSplitted.length != 2) {
@@ -295,20 +294,20 @@ public class QsfqlParser {
 
                 if("NOW".equals(min)) {
                     // TODO consider Time zones
-                    rangeFilterValue.setMinValue(Date.from(QsfInstant.now()));
+                    rangeFilterValue.setMinValue(QsfInstant.now().toString());
                 } else if("*".equals(min)) {
-                    rangeFilterValue.setMinValue(DateUtil.min());
+                    rangeFilterValue.setMinValue(DateUtil.min().toInstant().toString());
                 } else {
-                    rangeFilterValue.setMinValue(DateUtil.getDate(min));
+                    rangeFilterValue.setMinValue(min);
                 }
 
                 if("NOW".equals(max)) {
                     // TODO consider Time zones
-                    rangeFilterValue.setMaxValue(Date.from(QsfInstant.now()));
+                    rangeFilterValue.setMaxValue(QsfInstant.now().toString());
                 } else if("*".equals(max)) {
-                    rangeFilterValue.setMaxValue(DateUtil.max());
+                    rangeFilterValue.setMaxValue(DateUtil.max().toInstant().toString());
                 } else {
-                    rangeFilterValue.setMaxValue(DateUtil.getDate(max));
+                    rangeFilterValue.setMaxValue(max);
                 }
             } catch (Exception e) {
                 throw new IllegalArgumentException("The min value " + min + " or max value " + max + " is no date value. " + e.getMessage(), e);
