@@ -14,11 +14,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class QsfqlFilterMapper {
 
@@ -177,9 +175,9 @@ public class QsfqlFilterMapper {
                     object(rangeFilterValue.getUpperBound().getOperator(), rangeFilterValue.getMaxValue());
 
         } else if(searchFilter.getFilterDataType().isDate()) {
-            RangeFilterValue<Date> rangeFilterValue = searchFilter.getRangeValue(Date.class);
-            String minValue = DateUtil.getDate(rangeFilterValue.getMinValue());
-            String maxValue = DateUtil.getDate(rangeFilterValue.getMaxValue());
+            RangeFilterValue<String> rangeFilterValue = searchFilter.getRangeValue(String.class);
+            String minValue = rangeFilterValue.getMinValue();
+            String maxValue = rangeFilterValue.getMaxValue();
             rangeBuilder.
                     object(rangeFilterValue.getLowerBound().getOperator(), minValue).
                     object(rangeFilterValue.getUpperBound().getOperator(), maxValue);

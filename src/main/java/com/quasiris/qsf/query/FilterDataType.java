@@ -1,13 +1,11 @@
 package com.quasiris.qsf.query;
 
-import java.util.Date;
-
 /**
  * Created by mki on 11.11.16.
  */
 public enum FilterDataType {
 
-    STRING("string", String.class),DATE("date", Date.class), NUMBER("number", Number.class);
+    STRING("string", String.class),DATE("date", String.class), NUMBER("number", Number.class);
 
     private final String code;
 

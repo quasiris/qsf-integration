@@ -188,8 +188,8 @@ public class QsfqlParserTest {
         SearchQuery query = createQuery("f.timestamp.daterange=NOW,*");
         SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("timestamp", searchFilter.getName());
-        assertEquals(Date.from(reference), searchFilter.getRangeValue(Date.class).getMinValue());
-        assertTrue(searchFilter.getRangeValue(Date.class).getMaxValue().equals(DateUtil.max()));
+        assertEquals(reference.toString(), searchFilter.getRangeValue(String.class).getMinValue());
+        assertTrue(searchFilter.getRangeValue(String.class).getMaxValue().equals(DateUtil.max().toInstant().toString()));
         assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.DATE);
         assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
