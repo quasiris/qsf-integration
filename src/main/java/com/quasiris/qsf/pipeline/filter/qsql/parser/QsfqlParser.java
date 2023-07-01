@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.qsql.parser;
 
 import com.google.common.base.Strings;
 import com.quasiris.qsf.commons.text.date.HumanDateParser;
+import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
 import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
 import com.quasiris.qsf.dto.query.ResultDTO;
@@ -239,8 +240,8 @@ public class QsfqlParser {
         searchFilter.setFilterOperator(FilterOperator.AND);
 
         RangeFilterValue<String> rangeFilterValue = new RangeFilterValue<>();
-        rangeFilterValue.setMinValue(start.toString());
-        rangeFilterValue.setMaxValue(end.toString());
+        rangeFilterValue.setMinValue(SupportedDateFormatsParser.requireFromInstant(start));
+        rangeFilterValue.setMaxValue(SupportedDateFormatsParser.requireFromInstant(end));
         rangeFilterValue.setLowerBound(UpperLowerBound.LOWER_INCLUDED);
         rangeFilterValue.setUpperBound(UpperLowerBound.UPPER_EXCLUDED);
 
@@ -294,18 +295,18 @@ public class QsfqlParser {
 
                 if("NOW".equals(min)) {
                     // TODO consider Time zones
-                    rangeFilterValue.setMinValue(QsfInstant.now().toString());
+                    rangeFilterValue.setMinValue(SupportedDateFormatsParser.requireFromInstant(QsfInstant.now()));
                 } else if("*".equals(min)) {
-                    rangeFilterValue.setMinValue(DateUtil.min().toInstant().toString());
+                    rangeFilterValue.setMinValue(SupportedDateFormatsParser.requireFromInstant(DateUtil.min().toInstant()));
                 } else {
                     rangeFilterValue.setMinValue(min);
                 }
 
                 if("NOW".equals(max)) {
                     // TODO consider Time zones
-                    rangeFilterValue.setMaxValue(QsfInstant.now().toString());
+                    rangeFilterValue.setMaxValue(SupportedDateFormatsParser.requireFromInstant(QsfInstant.now()));
                 } else if("*".equals(max)) {
-                    rangeFilterValue.setMaxValue(DateUtil.max().toInstant().toString());
+                    rangeFilterValue.setMaxValue(SupportedDateFormatsParser.requireFromInstant(DateUtil.max().toInstant()));
                 } else {
                     rangeFilterValue.setMaxValue(max);
                 }

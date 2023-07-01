@@ -143,21 +143,11 @@ public class SearchQueryMapper {
             RangeFilterValue<String> rangeFilterValue = new RangeFilterValue<>();
 
             if (searchFilterDTO.getMinValue() != null) {
-                SupportedDateFormatsParser parser = new SupportedDateFormatsParser(searchFilterDTO.getMinValue().toString());
-                if (parser.parse()) {
-                    rangeFilterValue.setMinValue(parser.getOutputDate());
-                } else {
-                    throw new RuntimeException("Not valid date format " + searchFilterDTO.getMinValue().toString());
-                }
+                rangeFilterValue.setMinValue(SupportedDateFormatsParser.requireFromString(searchFilterDTO.getMinValue().toString()));
             }
 
             if (searchFilterDTO.getMaxValue() != null) {
-                SupportedDateFormatsParser parser = new SupportedDateFormatsParser(searchFilterDTO.getMaxValue().toString());
-                if (parser.parse()) {
-                    rangeFilterValue.setMaxValue(parser.getOutputDate());
-                } else {
-                    throw new RuntimeException("Not valid date format " + searchFilterDTO.getMinValue().toString());
-                }
+                rangeFilterValue.setMaxValue(SupportedDateFormatsParser.requireFromString(searchFilterDTO.getMaxValue().toString()));
             }
 
             searchFilter.setRangeValue(rangeFilterValue);
@@ -220,8 +210,8 @@ public class SearchQueryMapper {
                 searchFilterDTO.getFilterDataType().isDate()) {
             RangeFilterValue<String> rangeFilterValue = new RangeFilterValue<>();
             HumanDateParser parser = new HumanDateParser(searchFilterDTO.getValues().get(0).toString());
-            rangeFilterValue.setMinValue(parser.getStart().toString());
-            rangeFilterValue.setMaxValue(parser.getEnd().toString());
+            rangeFilterValue.setMinValue(SupportedDateFormatsParser.requireFromInstant(parser.getStart()));
+            rangeFilterValue.setMaxValue(SupportedDateFormatsParser.requireFromInstant(parser.getEnd()));
             searchFilter.setRangeValue(rangeFilterValue);
             searchFilter.setFilterType(FilterType.RANGE);
             searchFilter.setFilterDataType(FilterDataType.DATE);

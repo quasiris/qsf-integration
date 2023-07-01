@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.qsql.parser;
 
+import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
 import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
 import com.quasiris.qsf.query.Control;
@@ -183,13 +184,13 @@ public class QsfqlParserTest {
 
     @Test
     public void testRangeFilterForDateValuesNOWAndInfinity() throws Exception {
-        Instant reference = Instant.parse("2021-08-26T10:58:09.000Z");
-        QsfInstant.setNow(reference);
+        String expectedDateString = "2021-08-26T10:58:09.000+0000";
+        QsfInstant.setNow(Instant.parse("2021-08-26T10:58:09.000Z"));
         SearchQuery query = createQuery("f.timestamp.daterange=NOW,*");
         SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
         assertEquals("timestamp", searchFilter.getName());
-        assertEquals(reference.toString(), searchFilter.getRangeValue(String.class).getMinValue());
-        assertTrue(searchFilter.getRangeValue(String.class).getMaxValue().equals(DateUtil.max().toInstant().toString()));
+        assertEquals(expectedDateString, searchFilter.getRangeValue(String.class).getMinValue());
+        assertEquals(searchFilter.getRangeValue(String.class).getMaxValue(), SupportedDateFormatsParser.requireFromInstant(DateUtil.max().toInstant()));
         assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.DATE);
         assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
