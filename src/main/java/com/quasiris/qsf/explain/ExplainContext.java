@@ -112,6 +112,22 @@ public class ExplainContext {
         addChild(explain);
     }
 
+    public void explainStringOrJson(String id, Object value) {
+        if(!explain) {
+            return;
+        }
+        Explain explain = new Explain();
+        explain.setId(id);
+        explain.setName(id);
+        explain.setExplainObject(value);
+        if (value instanceof String){
+            explain.setDataType(ExplainDataType.STRING);
+        }else {
+            explain.setDataType(ExplainDataType.JSON);
+        }
+        addChild(explain);
+    }
+
     private String getStackTrace(Throwable throwable) {
         try (StringWriter sw = new StringWriter();
              PrintWriter pw = new PrintWriter(sw)) {
