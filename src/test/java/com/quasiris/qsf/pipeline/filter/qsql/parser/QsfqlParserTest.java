@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 import static com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTestUtil.createQuery;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +25,21 @@ import static org.junit.jupiter.api.Assertions.*;
  * Created by mki on 13.11.16.
  */
 public class QsfqlParserTest {
+
+    @Test
+    public void testParameters() throws Exception {
+        SearchQuery query = createQuery("p.myParam=myValue");
+        assertEquals("myValue", query.getParameters().get("myParam"));
+    }
+    @Test
+    public void testParametersMultipleValues() throws Exception {
+        SearchQuery query = createQuery("p.myParam=myValue1", "p.myParam=myValue2");
+        List<String> myParamList =  (List<String>) query.getParameters().get("myParam");
+        assertEquals(2, myParamList.size());
+        assertEquals("myValue1", myParamList.get(0));
+        assertEquals("myValue2", myParamList.get(1));
+    }
+
 
     @Test
     public void testTracking() throws Exception {

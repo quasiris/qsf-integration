@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 public class QsfqlParser {
 
     private static final Pattern filterPattern = Pattern.compile("f\\.([^\\.]+)(.*)");
+    private static final Pattern parameterPattern = Pattern.compile("p\\.([^\\.]+)(.*)");
     private static final Pattern facetFilterPattern = Pattern.compile("ff\\.([^\\.]+)(.*)");
 
     private Map<String, String[]> parameters;
@@ -62,8 +63,23 @@ public class QsfqlParser {
         if(httpServletRequest == null) {
             return;
         }
-
         Map<String, Object> params = getRequestParameter(httpServletRequest);
+
+        for(String name: getParameterNames()) {
+            Matcher m = parameterPattern.matcher(name);
+            if (m.matches()) {
+                String parameterName = m.group(1);
+                String[] parameterValues = parameters.get(name);
+                if(parameterValues.length == 1) {
+                    params.put(parameterName, parameterValues[0]);
+                } else {
+                    params.put(parameterName, Arrays.asList(parameterValues));
+                }
+            }
+        }
+
+
+
         query.setParameters(params);
     }
 
