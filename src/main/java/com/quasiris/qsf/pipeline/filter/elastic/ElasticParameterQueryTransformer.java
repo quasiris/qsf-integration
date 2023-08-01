@@ -139,7 +139,11 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
                 rawValues.put("qsfql.q", searchQuery.getQ());
             }
 
+            // deprecated remove this in future releases
             rawValues.putAll(searchQuery.getParametersWithPrefix("qsfql"));
+            rawValues.putAll(searchQuery.getParametersWithPrefix("qsfql.parameters"));
+
+
         }
 
         for(Map.Entry<String, String> param :pipelineContainer.getParameters().entrySet()) {

@@ -4,6 +4,7 @@ All notable changes qsf-integration project will be documented in this file.
 ## [UNRELEASED]
 ### Added
 - add support for parameters in GET queries
+- add qsfql.parameters for variable replacement
 ### Changed
 
 ## [5.14]
