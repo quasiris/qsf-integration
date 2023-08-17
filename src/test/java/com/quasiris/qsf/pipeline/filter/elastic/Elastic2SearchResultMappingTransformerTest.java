@@ -196,10 +196,43 @@ class Elastic2SearchResultMappingTransformerTest {
         List<Map<String, Object>> snippets = (List<Map<String, Object>>) searchResult.getDocuments().get(0).getFieldValueAsObject("snippets");
         Map<String, Object> firstSnippet = snippets.get(0);
         assertEquals(4, snippets.size());
-        assertEquals(3, firstSnippet.size());
+        assertEquals(4, firstSnippet.size());
         assertEquals("Features", firstSnippet.get("title"));
         assertEquals(0.0, firstSnippet.get("_score"));
         assertEquals(0, firstSnippet.get("_offset"));
+
+    }
+
+    @Test
+    void transformMultipleInnerhits() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addInnerhitsMapping("lineItems_positions", "lineItems");
+        transformer.addInnerhitsMapping("lineItems_order", "lineItems");
+        ElasticResult elasticResult = readElasticResultFromFile("multiple-innerhits.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> lineItems = (List<Map<String, Object>>) searchResult.getDocuments().get(0).getFieldValueAsObject("lineItems");
+        Map<String, Object> firstLineItem = lineItems.get(0);
+        assertEquals(10, lineItems.size());
+        assertEquals(6, firstLineItem.size());
+        assertEquals("12345678", firstLineItem.get("sku"));
+        assertEquals(0.0, firstLineItem.get("_score"));
+        assertEquals(0, firstLineItem.get("_offset"));
+        assertEquals(true, firstLineItem.get("_found"));
+
+
+
+        assertEquals(true, lineItems.get(0).get("_found"));
+        assertEquals(true, lineItems.get(1).get("_found"));
+        assertEquals(true, lineItems.get(2).get("_found"));
+        assertEquals(false, lineItems.get(3).get("_found"));
+        assertEquals(false, lineItems.get(4).get("_found"));
+        assertEquals(false, lineItems.get(5).get("_found"));
+        assertEquals(true, lineItems.get(6).get("_found"));
+        assertEquals(false, lineItems.get(7).get("_found"));
+        assertEquals(false, lineItems.get(8).get("_found"));
+        assertEquals(false, lineItems.get(9).get("_found"));
 
     }
 

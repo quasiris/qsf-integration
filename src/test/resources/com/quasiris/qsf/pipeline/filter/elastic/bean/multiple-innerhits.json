@@ -1,0 +1,172 @@
+{
+  "took": 48,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 65,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "my-index",
+        "_type": "_doc",
+        "_id": "71962fe1-3311-455a-1234-e18f9e2aeaa1",
+        "_score": null,
+        "_source": {
+          "orderState": "1",
+          "lineItems": [
+            {
+              "sku": "12345678",
+              "name": "PV-Anlage",
+              "state": "1"
+            },
+            {
+              "sku": "1119798",
+              "name": "Photovoltaik-Module",
+              "state": "1"
+            },
+            {
+              "sku": "3561222",
+              "name": "Modultragprofil - 6 Meter",
+              "state": "1"
+            },
+            {
+              "sku": "3344424",
+              "name": "Kunststoff-Endkappe",
+              "state": "1"
+            },
+            {
+              "sku": "3803678",
+              "name": "Einschub Profi Set",
+              "state": "1"
+            },
+            {
+              "sku": "5334487",
+              "name": "Biberschwanz",
+              "state": "1"
+            },
+            {
+              "sku": "6694184",
+              "name": "Dachhaken für Biberschwanz",
+              "state": "1"
+            },
+            {
+              "sku": "3021569",
+              "name": "Schraube Tellerkopf Torx Holz",
+              "state": "1"
+            },
+            {
+              "sku": "5321784",
+              "name": "Alu-Modulendklemme Rapid",
+              "state": "1"
+            },
+            {
+              "sku": "5304789",
+              "name": "Alu-Modulmittelklemme",
+              "state": "1"
+            }
+          ],
+          "id": "71962fe1-3311-455a-1234-e18f9e2aeaa1",
+          "processingtime": "2023-08-01T15:50:42+0000",
+          "orderDate": "2022-04-11T14:40:51.000+02:00"
+        },
+        "sort": [
+          1649680851000
+        ],
+        "inner_hits": {
+          "lineItems_positions": {
+            "hits": {
+              "total": {
+                "value": 27,
+                "relation": "eq"
+              },
+              "max_score": 0.5614109,
+              "hits": [
+                {
+                  "_index": "my-index",
+                  "_type": "_doc",
+                  "_id": "71962fe1-3311-455a-1234-e18f9e2aeaa1",
+                  "_nested": {
+                    "field": "lineItems",
+                    "offset": 6
+                  },
+                  "_score": 0.5614109,
+                  "matched_queries": [
+                    "edismax"
+                  ]
+                },
+                {
+                  "_index": "my-index",
+                  "_type": "_doc",
+                  "_id": "71962fe1-3311-455a-1234-e18f9e2aeaa1",
+                  "_nested": {
+                    "field": "lineItems",
+                    "offset": 1
+                  },
+                  "_score": 0.55827624,
+                  "matched_queries": [
+                    "edismax"
+                  ]
+                }
+              ]
+            }
+          },
+          "lineItems_order": {
+            "hits": {
+              "total": {
+                "value": 29,
+                "relation": "eq"
+              },
+              "max_score": 0.0,
+              "hits": [
+                {
+                  "_index": "my-index",
+                  "_type": "_doc",
+                  "_id": "71962fe1-3311-455a-1234-e18f9e2aeaa1",
+                  "_nested": {
+                    "field": "lineItems",
+                    "offset": 0
+                  },
+                  "_score": 0.0
+                },
+                {
+                  "_index": "my-index",
+                  "_type": "_doc",
+                  "_id": "71962fe1-3311-455a-1234-e18f9e2aeaa1",
+                  "_nested": {
+                    "field": "lineItems",
+                    "offset": 1
+                  },
+                  "_score": 0.0,
+                  "matched_queries": [
+                    "edismax"
+                  ]
+                },
+                {
+                  "_index": "my-index",
+                  "_type": "_doc",
+                  "_id": "71962fe1-3311-455a-1234-e18f9e2aeaa1",
+                  "_nested": {
+                    "field": "lineItems",
+                    "offset": 2
+                  },
+                  "_score": 0.0,
+                  "matched_queries": [
+                    "edismax"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}

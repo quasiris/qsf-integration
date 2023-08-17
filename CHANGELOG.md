@@ -3,9 +3,15 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- support multiple innerhits for nested elastic queries
+- 
+### Changed
+
+## [5.15]
+### Added
 - add support for parameters in GET queries
 - add qsfql.parameters for variable replacement
-### Changed
+
 
 ## [5.14]
 ### Added

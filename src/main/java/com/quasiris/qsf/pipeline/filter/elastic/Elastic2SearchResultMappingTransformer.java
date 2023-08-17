@@ -38,6 +38,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     private Map<String, List<String>> fieldMapping = new LinkedHashMap<>();
 
+    // mapping for innerhits to a field, if there are multiple inner hits, that belong to one field
+    private Map<String, String> innerhitsMapping = new HashMap<>();
 
     private Map<String, FacetMapping> facetMapping = new LinkedHashMap<>();
 
@@ -383,11 +385,17 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     }
 
+
     public void transformInnerHits(Document document,Map fields, LinkedHashMap<String, InnerHitResult> innerHits) {
         ObjectMapper objectMapper = new ObjectMapper();
         for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
-            String fieldName = entry.getKey();
+            String innerHitsName = entry.getKey();
+            String fieldName = innerhitsMapping.get(innerHitsName);
+            if(fieldName == null) {
+                fieldName = innerHitsName;
+            }
             List<Map<String, Object>> values = (List) fields.get(fieldName);
+
             List<String> mappedFieldNames = fieldMapping.get(fieldName);
             if(groupInnerhitsMapping != null) {
                 for(Map.Entry<String, List<String>> groupInnerhitsMappingEntry : groupInnerhitsMapping.entrySet()) {
@@ -415,13 +423,18 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             } else if(values != null) {
                 int valueOffset = 0;
                 for (Map<String, Object> value : values) {
-                    value.put("_score", 0.0);
-                    value.put("_offset", valueOffset++);
+                    if(value.get("_found") == null) {
+                        value.put("_score", 0.0);
+                        value.put("_offset", valueOffset++);
+                        value.put("_found", false);
+                    }
                 }
                 for (Hit innerHit : entry.getValue().getHits().getHits()) {
                     Integer offset = innerHit.get_nested().getOffset();
                     Double score = innerHit.get_score();
                     values.get(offset).put("_score", score);
+                    values.get(offset).put("_found", true);
+
                 }
             }
         }
@@ -531,5 +544,19 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     public void setVariantId(String variantId) {
         this.variantId = variantId;
+    }
+
+    public void addInnerhitsMapping(String from, String to) {
+        if(innerhitsMapping == null) {
+            innerhitsMapping = new HashMap<>();
+        }
+        innerhitsMapping.put(from, to);
+    }
+    public Map<String, String> getInnerhitsMapping() {
+        return innerhitsMapping;
+    }
+
+    public void setInnerhitsMapping(Map<String, String> innerhitsMapping) {
+        this.innerhitsMapping = innerhitsMapping;
     }
 }
