@@ -19,6 +19,8 @@ import com.quasiris.qsf.util.PrintUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+
 /**
  * Created by mki on 19.11.17.
  */
@@ -38,6 +40,7 @@ public class ElasticFilter extends AbstractFilter {
     private SearchResultTransformerIF searchResultTransformer;
 
     private ObjectNode elasticQuery;
+    private long requestTimeout = 4000L;
 
     @Override
     public void init() {
@@ -62,7 +65,7 @@ public class ElasticFilter extends AbstractFilter {
         ElasticResult elasticResult = null;
         if(elasticSearchClient != null) {
             String jsonQuery = JsonUtil.toJson(elasticQuery);
-            elasticResult = elasticSearchClient.search(baseUrl, jsonQuery);
+            elasticResult = elasticSearchClient.search(baseUrl, jsonQuery, Duration.ofMillis(requestTimeout));
         } else {
             elasticResult = elasticClient.request(baseUrl + "/_search", elasticQuery);
         }
@@ -147,5 +150,13 @@ public class ElasticFilter extends AbstractFilter {
         }
         LOG.error("The filter: {} failed with an error: {} for query: {}", getId(), e.getMessage(), query, e);
         return super.onError(pipelineContainer, e);
+    }
+
+    public long getRequestTimeout() {
+        return requestTimeout;
+    }
+
+    public void setRequestTimeout(long requestTimeout) {
+        this.requestTimeout = requestTimeout;
     }
 }
