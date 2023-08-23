@@ -2,7 +2,9 @@ package com.quasiris.qsf.query;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Facet implements Serializable {
 
@@ -29,6 +31,8 @@ public class Facet implements Serializable {
 
     private List<String> excludeTags;
     private List<String> tags;
+
+    private Map<String, Object> parameters;
 
     public List<String> getExcludeTags() {
         return excludeTags;
@@ -254,4 +258,21 @@ public class Facet implements Serializable {
     public void setFacetFilters(List<BaseSearchFilter> facetFilters) {
         this.facetFilters = facetFilters;
     }
+
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = parameters;
+    }
+
+    public void addParameter(String key, Object value) {
+        if(this.parameters == null) {
+            this.parameters = new HashMap<>();
+        }
+        parameters.put(key, value);
+    }
+
+
 }
