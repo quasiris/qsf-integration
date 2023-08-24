@@ -20,7 +20,7 @@ public class MockElasticSearchClient extends ElasticSearchClient {
     private boolean mock = true;
 
     @Override
-    public ElasticResult search(String indexUrl, String jsonQuery) throws ResourceNotFoundException {
+    public ElasticResult search(String indexUrl, String jsonQuery) {
         MockRequestFileHandler mockRequestFileHandler = new MockRequestFileHandler(mockDir, mockFile);
         if(mock) {
             return mockRequestFileHandler.getMockedElasticResult(jsonQuery, ElasticResult.class);
@@ -34,7 +34,7 @@ public class MockElasticSearchClient extends ElasticSearchClient {
     }
 
     @Override
-    public ElasticResult search(String indexUrl, String jsonQuery, Duration requestTimeout) throws ResourceNotFoundException {
+    public ElasticResult search(String indexUrl, String jsonQuery, Duration requestTimeout) {
         MockRequestFileHandler mockRequestFileHandler = new MockRequestFileHandler(mockDir, mockFile);
         if(mock) {
             return mockRequestFileHandler.getMockedElasticResult(jsonQuery, ElasticResult.class);
@@ -48,7 +48,7 @@ public class MockElasticSearchClient extends ElasticSearchClient {
     }
 
     @Override
-    public MultiElasticResult multiSearch(String elasticUrl, List<String> requests) throws ResourceNotFoundException {
+    public MultiElasticResult multiSearch(String elasticUrl, List<String> requests) {
         MockRequestFileHandler mockRequestFileHandler = new MockRequestFileHandler(mockDir, mockFile);
 
         String request = StandardMultiElasticClient.createRequest(requests);

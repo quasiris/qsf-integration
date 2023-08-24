@@ -75,11 +75,7 @@ public class SpellCheckElasticClient {
 
         MultiElasticResult multiElasticResult = null;
         if(elasticSearchClient != null) {
-            try {
-                multiElasticResult = elasticSearchClient.multiSearch(baseUrl, elasticQueries);
-            } catch (ResourceNotFoundException e) {
-                throw new PipelineContainerException("Error during elastic request!", e);
-            }
+            multiElasticResult = elasticSearchClient.multiSearch(baseUrl, elasticQueries);
         } else {
             multiElasticResult = elasticClient.request(requestUrl, elasticQueries);
         }
