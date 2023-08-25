@@ -31,7 +31,7 @@ public class QsfSearchQueryParser {
     protected SearchQuery handlePOSTRequest(HttpServletRequest httpServletRequest) {
         try {
             SearchQueryDTO searchQueryDTO = readPost(httpServletRequest);
-             SearchQuery searchQuery = parseSearchQueryDTO(searchQueryDTO, httpServletRequest);
+            SearchQuery searchQuery = parseSearchQueryDTO(searchQueryDTO, httpServletRequest);
             return searchQuery;
         } catch (Exception e) {
             throw new RuntimeException("Could not read convert search query, because: " + e.getMessage(), e);

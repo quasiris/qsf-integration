@@ -11,6 +11,7 @@ import com.quasiris.qsf.dto.query.SortDTO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class SearchQueryMapper {
 
@@ -49,6 +50,10 @@ public class SearchQueryMapper {
         searchQuery.setSearchFilterList(searchFilters);
 
         searchQuery.setResult(searchQueryDTO.getResult());
+
+        if(searchQuery.getRequestId() == null) {
+            searchQuery.setRequestId(UUID.randomUUID().toString());
+        }
 
         return searchQuery;
     }
