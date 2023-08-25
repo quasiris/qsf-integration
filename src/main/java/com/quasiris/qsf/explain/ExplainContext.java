@@ -92,7 +92,11 @@ public class ExplainContext {
         Explain explain = new Explain();
         explain.setId(id);
         explain.setName(id);
-        explain.setExplainObject(value);
+        if(value == null) {
+            explain.setExplainObject("null");
+        } else {
+            explain.setExplainObject(value);
+        }
         explain.setDataType(ExplainDataType.JSON);
         addChild(explain);
     }
