@@ -9,6 +9,8 @@ import com.quasiris.qsf.query.RangeFacet;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
+
 public class AggregationMapper {
     @Deprecated // TODO remove this
     public static JsonNode createAgg(Facet facet, boolean isSubFacet) {
@@ -45,16 +47,17 @@ public class AggregationMapper {
                     object("include", facet.getInclude()).
                     object("exclude", facet.getExclude());
 
-
             if("date_histogram".equals(facet.getType())) {
+                // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#fixed_intervals
+                // "fixed_interval" is not handled at the moment
                 jsonBuilder.
-                        object("calendar_interval", "hour").
-                        object("time_zone", "Europe/Berlin").
+                        object("calendar_interval", getValueOrDefault(facet.getParameters(), "calendar_interval", "hour")).
+                        object("time_zone", getValueOrDefault(facet.getParameters(), "time_zone", "Europe/Berlin")).
                         object("min_doc_count", 0);
             } else if ("year".equals(facet.getType())) {
                 jsonBuilder.
                         object("calendar_interval", "year").
-                        object("time_zone", "Europe/Berlin").
+                        object("time_zone", getValueOrDefault(facet.getParameters(), "time_zone", "Europe/Berlin")).
                         object("format", "yyyy").
                         object("min_doc_count", 0);
             } else if ("cardinality".equals(facet.getType())) {
@@ -113,6 +116,18 @@ public class AggregationMapper {
         } catch (JsonBuilderException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getValueOrDefault(Map<String, Object> parameters, String key, String defaultValue) {
+        if(parameters == null) {
+            return defaultValue;
+        }
+
+        Object value = parameters.get(key);
+        if(value == null) {
+            return defaultValue;
+        }
+        return value.toString();
     }
 
     public static JsonNode createSlider(Facet slider) {
