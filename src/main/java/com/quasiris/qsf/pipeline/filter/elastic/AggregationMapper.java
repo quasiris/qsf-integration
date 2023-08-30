@@ -60,6 +60,16 @@ public class AggregationMapper {
                     jsonBuilder.object("fixed_interval", "hour");
                 }
 
+                String extendedBoundsMin = getValueOrDefault(facet.getParameters(), "extended_bounds_min", null);
+                String extendedBoundsMax = getValueOrDefault(facet.getParameters(), "extended_bounds_max", null);
+                if(extendedBoundsMin != null && extendedBoundsMax != null) {
+                    jsonBuilder.
+                            stash().
+                            object("extended_bounds").
+                            object("min", extendedBoundsMin).
+                            object("max", extendedBoundsMax).
+                            unstash();
+                }
                 jsonBuilder.
                         object("time_zone", getValueOrDefault(facet.getParameters(), "time_zone", "Europe/Berlin")).
                         object("min_doc_count", 0);
