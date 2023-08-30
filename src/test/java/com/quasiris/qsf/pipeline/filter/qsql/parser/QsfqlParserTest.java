@@ -194,8 +194,8 @@ public class QsfqlParserTest {
         assertNotNull(searchFilter.getRangeValue(Date.class).getMaxValue());
         assertEquals(searchFilter.getFilterType(), FilterType.RANGE);
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.DATE);
-        assertEquals(searchFilter.getRangeValue(Double.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
-        assertEquals(searchFilter.getRangeValue(Double.class).getUpperBound(), UpperLowerBound.UPPER_INCLUDED);
+        assertEquals(searchFilter.getRangeValue(Date.class).getLowerBound(), UpperLowerBound.LOWER_INCLUDED);
+        assertEquals(searchFilter.getRangeValue(Date.class).getUpperBound(), UpperLowerBound.UPPER_INCLUDED);
     }
 
     @Test
