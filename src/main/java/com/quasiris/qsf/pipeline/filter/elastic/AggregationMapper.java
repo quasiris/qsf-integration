@@ -49,9 +49,18 @@ public class AggregationMapper {
 
             if("date_histogram".equals(facet.getType())) {
                 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#fixed_intervals
-                // "fixed_interval" is not handled at the moment
+                String fixedInterval = getValueOrDefault(facet.getParameters(), "fixed_interval", null);
+                String calendarInterval = getValueOrDefault(facet.getParameters(), "calendar_interval", null);
+
+                if(fixedInterval != null) {
+                    jsonBuilder.object("fixed_interval", fixedInterval);
+                } else if (calendarInterval != null) {
+                    jsonBuilder.object("calendar_interval", calendarInterval);
+                } else {
+                    jsonBuilder.object("fixed_interval", "hour");
+                }
+
                 jsonBuilder.
-                        object("calendar_interval", getValueOrDefault(facet.getParameters(), "calendar_interval", "hour")).
                         object("time_zone", getValueOrDefault(facet.getParameters(), "time_zone", "Europe/Berlin")).
                         object("min_doc_count", 0);
             } else if ("year".equals(facet.getType())) {
