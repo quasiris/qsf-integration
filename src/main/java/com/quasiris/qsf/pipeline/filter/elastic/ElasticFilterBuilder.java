@@ -2,6 +2,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.quasiris.qsf.commons.elasticsearch.client.ElasticSearchClient;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
+import com.quasiris.qsf.pipeline.filter.mapper.FacetFilterMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 import com.quasiris.qsf.query.Facet;
 
@@ -175,6 +176,11 @@ public class ElasticFilterBuilder {
 
     public ElasticFilterBuilder facetKeyMapper(String id, FacetKeyMapper facetKeyMapper) {
         getMappingTransformer().addFacetKeyMapper(id, facetKeyMapper);
+        return this;
+    }
+
+    public ElasticFilterBuilder facetFilterMapper(String id, FacetFilterMapper facetFilterMapper) {
+        getMappingTransformer().addFacetFilterMapper(id, facetFilterMapper);
         return this;
     }
 
