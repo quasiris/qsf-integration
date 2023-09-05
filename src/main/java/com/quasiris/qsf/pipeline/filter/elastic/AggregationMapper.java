@@ -57,7 +57,7 @@ public class AggregationMapper {
                 } else if (calendarInterval != null) {
                     jsonBuilder.object("calendar_interval", calendarInterval);
                 } else {
-                    jsonBuilder.object("fixed_interval", "hour");
+                    jsonBuilder.object("calendar_interval", "hour");
                 }
 
                 String extendedBoundsMin = getValueOrDefault(facet.getParameters(), "extended_bounds_min", null);
