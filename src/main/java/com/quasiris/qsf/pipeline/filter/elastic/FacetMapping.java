@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.quasiris.qsf.pipeline.filter.mapper.FacetFilterMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 
 public class FacetMapping {
@@ -8,6 +9,7 @@ public class FacetMapping {
     private String name;
     private String type;
     private FacetKeyMapper facetKeyMapper;
+    private FacetFilterMapper facetFilterMapper;
 
     /**
      * Getter for property 'id'.
@@ -79,5 +81,13 @@ public class FacetMapping {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    public FacetFilterMapper getFacetFilterMapper() {
+        return facetFilterMapper;
+    }
+
+    public void setFacetFilterMapper(FacetFilterMapper facetFilterMapper) {
+        this.facetFilterMapper = facetFilterMapper;
     }
 }

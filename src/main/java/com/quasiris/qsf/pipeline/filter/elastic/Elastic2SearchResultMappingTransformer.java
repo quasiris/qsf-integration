@@ -15,7 +15,9 @@ import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.InnerHitResult;
+import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetFilterMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetKeyMapper;
+import com.quasiris.qsf.pipeline.filter.mapper.FacetFilterMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 import com.quasiris.qsf.tree.Node;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
@@ -189,9 +191,19 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         if(facetKeyMapper == null) {
             facetKeyMapper = new DefaultFacetKeyMapper();
         }
+
+        FacetFilterMapper facetFilterMapper = mapping.getFacetFilterMapper();
+        if(facetFilterMapper == null) {
+            facetFilterMapper = new DefaultFacetFilterMapper();
+        }
+        facetFilterMapper.setFacet(facet);
+        facetFilterMapper.setFilterPrefix(filterPrefix);
+        facetFilterMapper.setFilterValuePrefix(filterValuePrefix);
+        facetFilterMapper.setFilterType(filterType);
+
         for(Bucket bucket : aggregation.getBuckets()) {
             String key = facetKeyMapper.map(bucket.getKey());
-
+            facetFilterMapper.setKey(bucket.getKey());
             Long count = bucket.getDoc_count();
             if(bucket.getVariant_count() != null && bucket.getVariant_count().getValue() != null) {
                 count = bucket.getVariant_count().getValue();
@@ -200,11 +212,9 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             FacetValue facetValue = new FacetValue(key, count);
             facetReseultCount = facetReseultCount + facetValue.getCount();
 
-            String filterValueEncoded = UrlUtil.encode(bucket.getKey());
-
-            facetValue.setFilter(filterPrefix + facet.getId() + filterType + "=" + filterValuePrefix + filterValueEncoded);
-
+            facetFilterMapper.map(facetValue);
             if(bucket.getSubFacet() != null) {
+                String filterValueEncoded = UrlUtil.encode(bucket.getKey());
                 filterType=".tree";
                 String treeFilterSeperator = UrlUtil.encode(" > ");
                 Facet subFacet = mapAggregationToFacet(
@@ -512,6 +522,11 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     public void addFacetKeyMapper(String id, FacetKeyMapper facetKeyMapper) {
         FacetMapping facetMapping = getOrCreateFacetMapping(id);
         facetMapping.setFacetKeyMapper(facetKeyMapper);
+    }
+
+    public void addFacetFilterMapper(String id, FacetFilterMapper facetFilterMapper) {
+        FacetMapping facetMapping = getOrCreateFacetMapping(id);
+        facetMapping.setFacetFilterMapper(facetFilterMapper);
     }
 
     public Map<String, List<String>> getFieldMapping() {

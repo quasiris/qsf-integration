@@ -3,6 +3,13 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- implement a mapper for the filter property in a facet
+- add properties to facet and facet value
+
+### Changed
+
+## [5.16]
+### Added
 - support multiple innerhits for nested elastic queries
 - 
 ### Changed
