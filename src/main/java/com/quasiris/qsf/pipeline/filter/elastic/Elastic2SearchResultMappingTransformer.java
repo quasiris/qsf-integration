@@ -400,9 +400,9 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         ObjectMapper objectMapper = new ObjectMapper();
         for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
             String innerHitsName = entry.getKey();
-            String fieldName = innerhitsMapping.get(innerHitsName);
-            if(fieldName == null) {
-                fieldName = innerHitsName;
+            String fieldName = innerHitsName;
+            if(innerhitsMapping != null && innerhitsMapping.get(innerHitsName) != null) {
+                fieldName = innerhitsMapping.get(innerHitsName);
             }
             List<Map<String, Object>> values = (List) fields.get(fieldName);
 
