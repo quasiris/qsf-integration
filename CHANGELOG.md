@@ -3,10 +3,14 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+
+### Changed
+
+## [5.17]
+### Added
 - implement a mapper for the filter property in a facet
 - add properties to facet and facet value
 
-### Changed
 
 ## [5.16]
 ### Added
