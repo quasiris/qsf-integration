@@ -115,7 +115,6 @@ public class QsfqlParser {
         query.setRequestId(getParameter("requestId", UUID.randomUUID().toString()));
         query.setDebug(getParameterAsBoolean("debug", query.isDebug()));
         query.setExplain(getParameterAsBoolean("explain", query.isExplain()));
-        query.setTracking(getParameterAsBoolean("tracking", Boolean.TRUE));
         query.setRequestOrigin(getParameter("requestOrigin"));
     }
 
@@ -129,6 +128,12 @@ public class QsfqlParser {
 
         }
         query.setTrackingTags(tags);
+
+        if(tags.contains("notracking")) {
+            query.setTracking(false);
+        } else {
+            query.setTracking(true);
+        }
     }
 
     void parseQuery(SearchQuery query) {
