@@ -2,11 +2,7 @@ package com.quasiris.qsf.query;
 
 import com.quasiris.qsf.dto.query.ResultDTO;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by mki on 11.11.16.
@@ -348,6 +344,13 @@ public class SearchQuery {
      */
     public void setCtrl(Set<String> ctrl) {
         this.ctrl = ctrl;
+    }
+
+    public void addCtrl(String ctrl) {
+        if(this.ctrl == null) {
+            this.ctrl = new HashSet<>();
+        }
+        this.ctrl.add(ctrl);
     }
 
     public boolean isCtrl(String value) {
