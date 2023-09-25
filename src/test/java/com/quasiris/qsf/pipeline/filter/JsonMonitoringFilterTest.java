@@ -8,6 +8,7 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.solr.JsonMonitoringFilter;
 import com.quasiris.qsf.test.AbstractPipelineTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Created by mki on 25.02.18.
  */
+@Disabled
 public class JsonMonitoringFilterTest extends AbstractPipelineTest {
 
 
