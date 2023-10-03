@@ -3,7 +3,8 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
-- add a trace parameter to return the elastic _explanation in the result document
+- add a trace parameter to return the elastic _explanation and the _score in the result document
+- make it possible to map the score to a document field
 ### Changed
 
 ## [5.17]

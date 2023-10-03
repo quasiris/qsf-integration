@@ -147,6 +147,21 @@ class Elastic2SearchResultMappingTransformerTest {
         assertEquals("schwarz", document.getFieldValue("farbe"));
     }
     @Test
+    void testScoreMapping() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        PipelineContainer pipelineContainer = new PipelineContainer();
+        pipelineContainer.setSearchQuery(new SearchQuery());
+        pipelineContainer.getSearchQuery().setCtrl(new HashSet<>());
+        transformer.init(pipelineContainer);
+        transformer.addFieldMapping("id", "id");
+        transformer.addFieldMapping("_score", "myScore");
+        ElasticResult elasticResult = readElasticResultFromFile("variant-count.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+        assertEquals(69.09049, searchResult.getDocuments().get(0).getDocument().get("myScore"));
+    }
+
+
+    @Test
     void testExplanationMapping() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         PipelineContainer pipelineContainer = new PipelineContainer();
@@ -158,6 +173,7 @@ class Elastic2SearchResultMappingTransformerTest {
         ElasticResult elasticResult = readElasticResultFromFile("variant-count.json");
         SearchResult searchResult = transformer.transform(elasticResult);
         assertNotNull(searchResult.getDocuments().get(0).getDocument().get("_explanation"));
+        assertEquals(69.09049, searchResult.getDocuments().get(0).getDocument().get("_score"));
     }
     @Test
     void testVariantCountHotfix() throws Exception {

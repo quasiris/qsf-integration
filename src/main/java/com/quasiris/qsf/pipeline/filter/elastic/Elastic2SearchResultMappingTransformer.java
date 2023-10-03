@@ -333,7 +333,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                     } else if(key.contains(".")) {
                         mapNestedField(mapping, fields, document);
                     } else {
-                        mapField(mapping, fields, document);
+                        mapField(mapping, fields, document, hit);
                     }
                 }
             }
@@ -367,9 +367,13 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         mapValue(document, nestedField, mappedValue);
     }
 
-    public void mapField(Map.Entry<String, List<String>> mapping, Map fields, Document document) {
+    public void mapField(Map.Entry<String, List<String>> mapping, Map fields, Document document, Hit hit) {
         String key = mapping.getKey();
         Object mappedValue = fields.get(key);
+
+        if (mappedValue == null && "_score".equals(key)) {
+            mappedValue = hit.get_score();
+        }
         if(mappedValue != null) {
             for(String mappedKey: mapping.getValue()) {
                 mapValue(document, mappedKey, mappedValue);
@@ -476,6 +480,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             return;
         }
         document.getDocument().put("_explanation", hit.get_explanation());
+        document.getDocument().put("_score", hit.get_score());
     }
 
     @Override
