@@ -19,6 +19,7 @@ import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetFilterMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetFilterMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
+import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.tree.Node;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +51,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     private Map<String, List<String>> groupInnerhitsMapping;
 
+    private SearchQuery searchQuery;
+
     public Elastic2SearchResultMappingTransformer() {
 
 
@@ -57,7 +60,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     @Override
     public void init(PipelineContainer pipelineContainer) {
-
+        this.searchQuery = pipelineContainer.getSearchQuery();
     }
 
     @Override
@@ -345,6 +348,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
 
         transformHighlight(hit, document);
+        transformExplanation(hit, document);
         return document;
     }
 
@@ -463,6 +467,15 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         for(Map.Entry<String, List<String>> entry : hit.getHighlight().entrySet()) {
             document.getDocument().put("highlight." + entry.getKey(), entry.getValue());
         }
+    }
+    public void transformExplanation(Hit hit, Document document) {
+        if(hit.get_explanation() == null) {
+            return;
+        }
+        if(!searchQuery.isCtrl("trace")) {
+            return;
+        }
+        document.getDocument().put("_explanation", hit.get_explanation());
     }
 
     @Override

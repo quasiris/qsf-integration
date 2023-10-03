@@ -5,17 +5,21 @@ import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.Facet;
 import com.quasiris.qsf.dto.response.FacetValue;
 import com.quasiris.qsf.dto.response.SearchResult;
+import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.mapper.CategorySelectFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
+import com.quasiris.qsf.query.SearchQuery;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class Elastic2SearchResultMappingTransformerTest {
 
@@ -143,8 +147,24 @@ class Elastic2SearchResultMappingTransformerTest {
         assertEquals("schwarz", document.getFieldValue("farbe"));
     }
     @Test
+    void testExplanationMapping() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        PipelineContainer pipelineContainer = new PipelineContainer();
+        pipelineContainer.setSearchQuery(new SearchQuery());
+        pipelineContainer.getSearchQuery().setCtrl(new HashSet<>());
+        pipelineContainer.getSearchQuery().getCtrl().add("trace");
+        transformer.init(pipelineContainer);
+        transformer.addFieldMapping("id", "id");
+        ElasticResult elasticResult = readElasticResultFromFile("variant-count.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+        assertNotNull(searchResult.getDocuments().get(0).getDocument().get("_explanation"));
+    }
+    @Test
     void testVariantCountHotfix() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        PipelineContainer pipelineContainer = new PipelineContainer();
+        pipelineContainer.setSearchQuery(new SearchQuery());
+        transformer.init(pipelineContainer);
         transformer.addFieldMapping("id", "id");
         transformer.addFieldMapping("title", "title");
         transformer.addFieldMapping("description", "description");

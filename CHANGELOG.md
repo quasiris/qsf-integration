@@ -3,7 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
-
+- add a trace parameter to return the elastic _explanation in the result document
 ### Changed
 
 ## [5.17]

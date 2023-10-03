@@ -88,7 +88,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     }
 
     public void transformDebug() {
-        if(pipelineContainer.isDebugEnabled()) {
+        if(searchQuery.isCtrl("trace")) {
             getElasticQuery().put("explain", true);
         }
     }
