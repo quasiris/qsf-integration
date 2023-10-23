@@ -154,12 +154,12 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             if(aggregation == null) {
                 continue;
             }
-            Facet facet = mapAggregation(facetMapping.getId(), aggregation, "", "");
+            Facet facet = mapAggregation(facetMapping.getId(), aggregation);
             searchResult.addFacet(facet);
         }
     }
 
-    protected Facet mapAggregation(String facetId, Aggregation aggregation, String filterType, String filterValuePrefix) {
+    protected Facet mapAggregation(String facetId, Aggregation aggregation) {
         FacetMapping mapping = facetMapping.get(facetId);
 
         if ("slider".equals(mapping.getType())) {
@@ -167,42 +167,52 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         } else if ("navigation".equals(mapping.getType())) {
             return mapAggregationToNavigation(facetId, aggregation, mapping);
         } else if ("categorySelect".equals(mapping.getType())) {
-            return mapAggregationToFacet(facetId, aggregation, filterType, filterValuePrefix);
+            return mapAggregationToFacet(facetId, aggregation, null, 0);
         }
 
 
-        return mapAggregationToFacet(facetId, aggregation, filterType, filterValuePrefix);
+        return mapAggregationToFacet(facetId, aggregation, null, 0);
     }
 
 
-    protected Facet mapAggregationToFacet(String facetId, Aggregation aggregation, String filterType, String filterValuePrefix) {
+    protected Facet mapAggregationToFacet(String facetId, Aggregation aggregation, FacetFilterMapper facetFilterMapper, int level) {
         Facet facet = new Facet();
         facet.setValues(new ArrayList<>());
         FacetMapping mapping = facetMapping.get(facetId);
-        facet.setType(mapping.getType());
-        String name = mapping.getName();
+        String name = null;
+        if(mapping != null) {
+            facet.setId(mapping.getId());
+            facet.setType(mapping.getType());
+            name = mapping.getName();
+        }
 
         if(name == null) {
             name = facetId;
         }
-        facet.setId(facetId);
+        if(facet.getId() == null) {
+            facet.setId(facetId);
+        }
         facet.setName(name);
         facet.setCount((long) aggregation.getBuckets().size());
 
         Long facetReseultCount = 0L;
-        FacetKeyMapper facetKeyMapper = mapping.getFacetKeyMapper();
+        FacetKeyMapper facetKeyMapper = null;
+        if(mapping != null) {
+            facetKeyMapper = mapping.getFacetKeyMapper();
+        }
         if(facetKeyMapper == null) {
             facetKeyMapper = new DefaultFacetKeyMapper();
         }
 
-        FacetFilterMapper facetFilterMapper = mapping.getFacetFilterMapper();
+        if(facetFilterMapper == null) {
+            facetFilterMapper = mapping.getFacetFilterMapper();
+        }
+
         if(facetFilterMapper == null) {
             facetFilterMapper = new DefaultFacetFilterMapper();
         }
         facetFilterMapper.setFacet(facet);
         facetFilterMapper.setFilterPrefix(filterPrefix);
-        facetFilterMapper.setFilterValuePrefix(filterValuePrefix);
-        facetFilterMapper.setFilterType(filterType);
 
         for(Bucket bucket : aggregation.getBuckets()) {
             String key = facetKeyMapper.map(bucket.getKey());
@@ -217,19 +227,21 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
             facetFilterMapper.map(facetValue);
             if(bucket.getSubFacet() != null) {
-                String filterValueEncoded = UrlUtil.encode(bucket.getKey());
-                filterType=".tree";
-                String treeFilterSeperator = UrlUtil.encode(" > ");
+                level++;
+                facetFilterMapper.setParentFacetValue(facetValue);
                 Facet subFacet = mapAggregationToFacet(
-                        facetId,
-                        bucket.getSubFacet(),
-                        filterType,
-                        filterValueEncoded + treeFilterSeperator);
+                        facetId + "." + level,
+                        bucket.getSubFacet(), facetFilterMapper, level);
                 facetValue.setChildren(subFacet);
             }
             facet.getValues().add(facetValue);
         }
-        facet.setFilterName(filterPrefix + facetId + filterType);
+        if(mapping != null) {
+            facet.setFilterName(filterPrefix + mapping.getId());
+        } else {
+            facet.setFilterName(filterPrefix + facetId);
+        }
+
         facet.setResultCount(facetReseultCount);
 
         return facet;

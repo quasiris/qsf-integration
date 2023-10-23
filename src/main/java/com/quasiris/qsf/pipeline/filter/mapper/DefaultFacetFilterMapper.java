@@ -8,6 +8,12 @@ public class DefaultFacetFilterMapper extends AbstractFacetFilterMapper implemen
     @Override
     public void map(FacetValue value) {
         String filterValueEncoded = UrlUtil.encode(getKey());
-        value.setFilter(getFilterPrefix() + getFacet().getId() + getFilterType() + "=" + getFilterValuePrefix() + filterValueEncoded);
+        String filter = getFilterPrefix() + getFacet().getId() + getFilterType() + "=" + getFilterValuePrefix() + filterValueEncoded;
+
+        if(getParentFacetValue() != null) {
+            filter = getParentFacetValue().getFilter().toString() + "&" + filter;
+
+        }
+        value.setFilter(filter);
     }
 }

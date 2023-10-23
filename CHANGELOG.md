@@ -3,6 +3,12 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- implement a subFacet mapper for elastic
+
+### Changed
+
+## [5.18]
+### Added
 - add a trace parameter to return the elastic _explanation and the _score in the result document
 - make it possible to map the score to a document field
 ### Changed

@@ -22,4 +22,6 @@ public interface FacetFilterMapper {
     Facet getFacet();
     void setFacet(Facet facet);
     void map(FacetValue value);
+
+    void setParentFacetValue(FacetValue parentFacetValue);
 }

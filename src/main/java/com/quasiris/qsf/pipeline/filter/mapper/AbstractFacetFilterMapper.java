@@ -12,6 +12,8 @@ public class AbstractFacetFilterMapper implements FacetFilterMapper {
     private String filterPrefix;
     private String key;
 
+    private FacetValue parentFacetValue;
+
     @Override
     public void setKey(String key) {
         this.key = key;
@@ -29,6 +31,9 @@ public class AbstractFacetFilterMapper implements FacetFilterMapper {
 
     @Override
     public String getFilterPrefix() {
+        if(filterPrefix == null) {
+            return "";
+        }
         return filterPrefix;
     }
 
@@ -39,6 +44,9 @@ public class AbstractFacetFilterMapper implements FacetFilterMapper {
 
     @Override
     public String getFilterValuePrefix() {
+        if(filterValuePrefix == null) {
+            return "";
+        }
         return filterValuePrefix;
     }
 
@@ -49,6 +57,9 @@ public class AbstractFacetFilterMapper implements FacetFilterMapper {
 
     @Override
     public String getFilterType() {
+        if(filterType == null) {
+            return "";
+        }
         return filterType;
     }
 
@@ -65,5 +76,14 @@ public class AbstractFacetFilterMapper implements FacetFilterMapper {
 
     @Override
     public void map(FacetValue value) {
+    }
+
+    public FacetValue getParentFacetValue() {
+        return parentFacetValue;
+    }
+
+    @Override
+    public void setParentFacetValue(FacetValue parentFacetValue) {
+        this.parentFacetValue = parentFacetValue;
     }
 }
