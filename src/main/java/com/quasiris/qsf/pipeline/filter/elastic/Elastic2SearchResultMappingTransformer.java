@@ -226,6 +226,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             facetReseultCount = facetReseultCount + facetValue.getCount();
 
             facetFilterMapper.map(facetValue);
+            FacetValue parentFacetValue = facetValue;
             if(bucket.getSubFacet() != null) {
                 int l = level + 1;
                 facetFilterMapper.setParentFacetValue(facetValue);
@@ -234,9 +235,13 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                         bucket.getSubFacet(), facetFilterMapper, l);
                 facetValue.setChildren(subFacet);
 
+                // reset the mapper
+                facetFilterMapper.setParentFacetValue(parentFacetValue);
+                facetFilterMapper.setFacet(facet);
+
             }
             facet.getValues().add(facetValue);
-            facetFilterMapper.setParentFacetValue(null);
+
 
         }
         if(mapping != null) {
