@@ -226,9 +226,10 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             facetReseultCount = facetReseultCount + facetValue.getCount();
 
             facetFilterMapper.map(facetValue);
-            FacetValue parentFacetValue = facetValue;
+
             if(bucket.getSubFacet() != null) {
                 int l = level + 1;
+                FacetValue parentFacetValue = facetFilterMapper.getParentFacetValue();
                 facetFilterMapper.setParentFacetValue(facetValue);
                 Facet subFacet = mapAggregationToFacet(
                         facetId + "." + l,
