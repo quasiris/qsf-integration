@@ -3,9 +3,18 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+
+### Changed
+
+## [6.0]
+### Added
 - implement a subFacet mapper for elastic
 
 ### Changed
+- dependency updates
+
+### Deprecated
+- the solr filter in combination with solrj is deprecated
 
 ## [5.18]
 ### Added
