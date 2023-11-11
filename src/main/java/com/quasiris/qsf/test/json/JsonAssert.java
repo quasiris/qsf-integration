@@ -15,7 +15,7 @@ public class JsonAssert {
 
 
 
-    public static void assertJsonFile(String expectedFile, JsonNode json) throws IOException {
+    public static void assertJsonFile(String expectedFile, Object json) throws IOException {
         String expected = IOUtils.getString(expectedFile);
         assertJson(expected, json);
     }

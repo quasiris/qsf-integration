@@ -10,6 +10,7 @@ import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.mapper.CategorySelectFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.test.json.JsonAssert;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -23,7 +24,30 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class Elastic2SearchResultMappingTransformerTest {
 
+    @Test
+    void testSubFacet() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.setFilterPrefix("f.");
+        ElasticResult elasticResult = readElasticResultFromFile("sub-facet.json");
+        String facetId = "supplierName";
+        String facetName = "Hersteller";
+        String subFacetName = "Kategorie";
 
+        transformer.addFacetNameMapping(facetId, facetName);
+        transformer.addFacetTypeMapping(facetId, "term");
+
+        transformer.addFacetNameMapping(facetId + ".1", subFacetName);
+        transformer.addFacetTypeMapping(facetId + ".1", "term");
+        transformer.getFacetMapping().get(facetId + ".1").setId("category");
+
+        SearchResult searchResult = transformer.transform(elasticResult);
+        searchResult.setName("sub-facet");
+
+
+
+
+        assertSearchResult(searchResult, "sub-facet.json");
+    }
 
     @Test
     void testRangeFacet() throws Exception {
@@ -383,5 +407,9 @@ class Elastic2SearchResultMappingTransformerTest {
         String file = "src/test/resources/com/quasiris/qsf/pipeline/filter/elastic/bean/" + fileName;
         ElasticResult elasticResult = objectMapper.readValue(new File(file), ElasticResult.class);
         return elasticResult;
+    }
+
+    private void assertSearchResult(SearchResult searchResult, String file) throws IOException {
+        JsonAssert.assertJsonFile("classpath://com/quasiris/qsf/pipeline/filter/elastic/searchresult/" + file, searchResult);
     }
 }

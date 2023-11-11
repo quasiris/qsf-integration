@@ -1,0 +1,70 @@
+{
+  "statusCode": 200,
+  "name": "sub-facet",
+  "statusMessage": "OK",
+  "documents": [],
+  "time": 28,
+  "total": 2892,
+  "facets": [
+    {
+      "name": "Hersteller",
+      "id": "supplierName",
+      "type": "term",
+      "filterName": "f.supplierName",
+      "count": 2,
+      "resultCount": 2879,
+      "values": [
+        {
+          "value": "WAGO",
+          "count": 2857,
+          "filter": "f.supplierName=WAGO",
+          "children": {
+            "name": "Kategorie",
+            "id": "category",
+            "type": "term",
+            "filterName": "f.category",
+            "count": 2,
+            "resultCount": 2361,
+            "values": [
+              {
+                "value": "Reihenklemmen",
+                "count": 2080,
+                "filter": "f.supplierName=WAGO&f.category=Reihenklemmen"
+              },
+              {
+                "value": "Kennzeichnungsmaterial",
+                "count": 281,
+                "filter": "f.supplierName=WAGO&f.category=Kennzeichnungsmaterial"
+              }
+            ]
+          }
+        },
+        {
+          "value": "WAGO Kontakttechnik",
+          "count": 22,
+          "filter": "f.supplierName=WAGO+Kontakttechnik",
+          "children": {
+            "name": "Kategorie",
+            "id": "category",
+            "type": "term",
+            "filterName": "f.category",
+            "count": 2,
+            "resultCount": 12,
+            "values": [
+              {
+                "value": "Reihenklemmen",
+                "count": 9,
+                "filter": "f.supplierName=WAGO+Kontakttechnik&f.category=Reihenklemmen"
+              },
+              {
+                "value": "Industrielle Netzwerktechnik",
+                "count": 3,
+                "filter": "f.supplierName=WAGO+Kontakttechnik&f.category=Industrielle+Netzwerktechnik"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

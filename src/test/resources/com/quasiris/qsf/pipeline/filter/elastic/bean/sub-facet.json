@@ -1,0 +1,66 @@
+{
+  "took": 28,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 2892,
+      "relation": "eq"
+    },
+    "max_score": 646.0213,
+    "hits": []
+  },
+  "aggregations": {
+    "qsc_filtered": {
+      "meta": {},
+      "doc_count": 2892,
+      "supplierName": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 13,
+        "buckets": [
+          {
+            "key": "WAGO",
+            "doc_count": 2857,
+            "subFacet": {
+              "doc_count_error_upper_bound": 0,
+              "sum_other_doc_count": 496,
+              "buckets": [
+                {
+                  "key": "Reihenklemmen",
+                  "doc_count": 2080
+                },
+                {
+                  "key": "Kennzeichnungsmaterial",
+                  "doc_count": 281
+                }
+              ]
+            }
+          },
+          {
+            "key": "WAGO Kontakttechnik",
+            "doc_count": 22,
+            "subFacet": {
+              "doc_count_error_upper_bound": 0,
+              "sum_other_doc_count": 9,
+              "buckets": [
+                {
+                  "key": "Reihenklemmen",
+                  "doc_count": 9
+                },
+                {
+                  "key": "Industrielle Netzwerktechnik",
+                  "doc_count": 3
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

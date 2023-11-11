@@ -30,6 +30,35 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class ElasticQsfqlQueryTransformerTest {
 
+    @DisplayName("Transform sub facet")
+    @Test
+    public void testSubFacet() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+        transformer.addFilterRule("(.+)", "$1.keyword");
+
+        Facet facet = new Facet();
+        facet.setName("supplierName");
+        facet.setId("supplierName.keyword");
+        facet.setOperator(FilterOperator.OR);
+
+
+        Facet subFacet = new Facet();
+        subFacet.setName("category");
+        subFacet.setId("category.keyword");
+        subFacet.setOperator(FilterOperator.OR);
+
+        facet.setChildren(subFacet);
+        transformer.setAggregations(Arrays.asList(facet));
+        ObjectNode elasticQuery = transform(transformer,
+                "q=*"
+        );
+        assertQuery(elasticQuery, "sub-facet.json");
+
+    }
+
+
     @DisplayName("Transform range facet")
     @Test
     public void testRangeFacet() throws Exception {
