@@ -1,0 +1,27 @@
+{
+  "statusCode" : 200,
+  "statusMessage" : "OK",
+  "documents" : [
+    {
+      "id" : "938a465e-049d-4b8f-97eb-087352c7dfab",
+      "document" : {
+        "sku" : "123456789",
+        "name" : "Samsung Galaxy",
+        "filtered_article_numbers" : [
+          "16_01235737"
+        ]
+      },
+      "fieldCount" : 3
+    },
+    {
+      "id" : "38c4c317-78d6-4855-917b-7cbd3bf92a2d",
+      "document" : {
+        "sku" : "987654321",
+        "name" : "iphone X"
+      },
+      "fieldCount" : 2
+    }
+  ],
+  "time" : 79,
+  "total" : 27870
+}

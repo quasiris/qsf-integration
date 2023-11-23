@@ -48,6 +48,14 @@ class Elastic2SearchResultMappingTransformerTest {
 
         assertSearchResult(searchResult, "sub-facet.json");
     }
+    @Test
+    void testScriptFields() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        ElasticResult elasticResult = readElasticResultFromFile("script-fields.json");
+
+        SearchResult searchResult = transformer.transform(elasticResult);
+        assertSearchResult(searchResult, "script-fields.json");
+    }
 
     @Test
     void testRangeFacet() throws Exception {

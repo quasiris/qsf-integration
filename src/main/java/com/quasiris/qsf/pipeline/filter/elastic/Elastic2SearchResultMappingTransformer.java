@@ -363,6 +363,15 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                 transformInnerHits(document, fields, innerHits);
             }
 
+            if(hit.getFields() != null) {
+                for(Map.Entry<String, List<Object>> field :  hit.getFields().entrySet()) {
+                    if(field.getValue() != null && field.getValue().size() > 0 && field.getValue().get(0) != null) {
+                        document.setValue(field.getKey(), field.getValue());
+                    }
+                }
+            }
+
+
 
         } catch (IOException e) {
             e.printStackTrace();

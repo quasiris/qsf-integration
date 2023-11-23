@@ -3,6 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- implement script_fields for elasticsearch
 
 ### Changed
 

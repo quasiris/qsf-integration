@@ -1,0 +1,53 @@
+{
+  "took": 79,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 27870,
+      "relation": "eq"
+    },
+    "max_score": 693.85345,
+    "hits": [
+      {
+        "_index": "my-index",
+        "_id": "938a465e-049d-4b8f-97eb-087352c7dfab",
+        "_score": 693.85345,
+        "_source": {
+          "sku": "123456789",
+          "name": "Samsung Galaxy"
+        },
+        "fields": {
+          "filtered_article_numbers": [
+            "16_01235737"
+          ]
+        },
+        "matched_queries": [
+          "edismax"
+        ]
+      },
+      {
+        "_index": "my-index",
+        "_id": "38c4c317-78d6-4855-917b-7cbd3bf92a2d",
+        "_score": 688.2135,
+        "_source": {
+          "sku": "987654321",
+          "name": "iphone X"
+        },
+        "fields": {
+          "filtered_article_numbers": [
+            null
+          ]
+        },
+        "matched_queries": [
+          "edismax"
+        ]
+      }
+    ]
+  }
+}
