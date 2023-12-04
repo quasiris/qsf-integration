@@ -1,6 +1,12 @@
 # Changelog
 All notable changes qsf-integration project will be documented in this file.
 
+## [6.2]
+### Added
+
+### Changed
+
+
 ## [UNRELEASED]
 ### Added
 - implement script_fields for elasticsearch
