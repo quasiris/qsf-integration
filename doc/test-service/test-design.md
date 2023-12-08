@@ -17,6 +17,9 @@
       * [Available testValue Operators](#available-testvalue-operators)
     * [How to build a jsonPath test](#how-to-build-a-jsonpath-test)
     * [Available special elementKey operators for testing QSF documents](#available-special-elementkey-operators-for-testing-qsf-documents)
+* [Running a testsuite](#running-a-testsuite)
+  * [1. Organizing the directory structure](#1-organizing-the-directory-structure)
+  * [2. Implementing a TestSuite Executer](#2-implementing-a-testsuite-executer)
 <!-- TOC -->
 
 
