@@ -563,3 +563,49 @@ Note that these are only keys, testValue Operators still apply for the values!
   ]
 }
 ```
+
+# Running a testsuite
+In order tu run a testsuite, you need to
+
+1. Organize the testsuite with its test cases in the correct directory structure
+2. Implement a TestSuite Executer
+
+## 1. Organizing the directory structure
+1. Create a directory for your testsuite.json at `src/test/resources/com/quasiris/qsf/test/testsuite/YOUR_TESTSUITE` and paste your testsuite json into this directory 
+2. Create a directory for your testcases at `src/test/resources/com/quasiris/qsf/test/testsuite/YOUR_TESTSUITE/testcases` and paste all your testcases to the directory 
+3. Make your that your testsuite json contains `"location": "classpath://com/quasiris/qsf/test/testsuite/YOUR_TESTSUITE/testcases",`
+
+## 2. Implementing a TestSuite Executer
+You have to implement a TestSuiteExecuter at `src/test/java/com.quasiris.qsf.test.service`
+
+e.g. the following uses YOUR_TESTSUITE dir name as tenant and the defined testsuite at YOUR_TESTSUITE_JSON.
+```java
+package com.quasiris.qsf.test.service;
+
+import com.quasiris.qsf.test.dto.AssertionResult;
+import com.quasiris.qsf.test.dto.Status;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import java.util.stream.Stream;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class TestSuiteExecuter {
+
+
+    @ParameterizedTest
+    @MethodSource("provideResult")
+    void testTestsuite(AssertionResult assertionResult) {
+        assertTrue(assertionResult.getStatus() == Status.SUCCESS, assertionResult.getMessage());
+    }
+
+    private static Stream<Arguments> provideResult() {
+        TestSuiteExecuter executer = new TestSuiteExecuter("YOUR_TESTSUITE", "YOUR_TESTSUITE_JSON");
+        executer.execute();
+        return executer.getAssertionResults().stream().map(Arguments::of);
+    }
+
+}
+```
+
+To run your testsuite, simply call the `testTestsuite()` method
