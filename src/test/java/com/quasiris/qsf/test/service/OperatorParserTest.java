@@ -105,7 +105,7 @@ public class OperatorParserTest {
 
     @Test
     public void testIsBooleanTrueOperator() {
-        OperatorParser parser = new OperatorParser("isBoolean:true");
+        OperatorParser parser = new OperatorParser("isBoolean:");
         assertTrue(parser.eval("true"));
     }
 

@@ -30,19 +30,22 @@ public class TestSuiteExecuter {
 
     private List<TestCaseResult> testCaseResults = new ArrayList<>();
 
+    /**
+     * constructs a TestSuiteExecuter by specifying the tenant and code of the search API that should be tested
+     * @param tenant doc
+     * @param code doc
+     */
     public TestSuiteExecuter(String tenant, String code) {
         this.tenant = tenant;
         this.code = code;
     }
 
-    public void init() {
-
-        this.testSuite = getTestSuite();
-    }
-
+    /**
+     * executes a test suite by executing each testcase
+     */
     public void execute() {
 
-        init();
+        this.testSuite = getTestSuite();
 
         for(TestCase testCaseId : this.testSuite.getTestCases()) {
             if(testCaseId.getId().startsWith("#")) {
@@ -54,7 +57,7 @@ public class TestSuiteExecuter {
                 // test is disabled for this env
                 continue;
             }
-            TestExecuter testExecuter = null;
+            TestExecuter testExecuter;
             TestCase testCase = null;
             try {
                 testCase = getTestCase(testCaseId.getId());
@@ -72,6 +75,8 @@ public class TestSuiteExecuter {
                     TestCaseResult testCaseResult = testExecuter.execute();
                     testCaseResults.add(testCaseResult);
                 } else {
+
+                    // TODO variations doc
                     for (Map<String, Object> variations : testCase.getQuery().getVariations()) {
                         TestCase alternativeTestCase = getTestCase(testCaseId.getId());
 
@@ -106,7 +111,11 @@ public class TestSuiteExecuter {
         }
     }
 
-
+    /**
+     * doc
+     * @param id doc
+     * @return doc
+     */
     TestCase getTestCase(String id) {
         InputStream is = null;
         if(this.testSuite.getLocation().startsWith("classpath://")) {
@@ -116,9 +125,7 @@ public class TestSuiteExecuter {
             if(is == null) {
                 throw new RuntimeException("Resource filename " + fileName + " not found." );
             }
-        }
-
-
+        } //TODO else case not needed since it would then be defined in testsuite already
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -131,7 +138,10 @@ public class TestSuiteExecuter {
         }
     }
 
-
+    /**
+     * doc
+     * @return doc
+     */
     TestSuite getTestSuite() {
         String fileName = "/com/quasiris/qsf/test/testsuite/" + tenant + "/" + code + ".json";
         InputStream is = TestSuiteExecuter.class.getResourceAsStream(fileName);
@@ -149,6 +159,10 @@ public class TestSuiteExecuter {
         }
     }
 
+    /**
+     * doc
+     * @param testCaseResult doc
+     */
     void serializeTestCaseResult(TestCaseResult testCaseResult) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();

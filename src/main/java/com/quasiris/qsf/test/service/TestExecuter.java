@@ -337,7 +337,7 @@ public class TestExecuter {
         }
         if(expected.getDocument().get("_total") != null) {
             OperatorParser operatorParser = new OperatorParser(expected.getDocument().get("_total"));
-            operatorParser.parse();
+            operatorParser.parseRawValue();
             String message = "Check total hits for " + actual.getName() + " is " + operatorParser.getOperator().getCode() + " " + operatorParser.getParsedValue().toString() + " results. actual: " + actual.getTotal();
             String name = "total hits " + operatorParser.getOperator().getCode() + " " + operatorParser.getParsedValue() + " actual: " + actual.getTotal();
             if(operatorParser.eval(actual.getTotal())) {
@@ -466,7 +466,7 @@ public class TestExecuter {
     public List<AssertionResult>  assertStringValue(String fieldName, String expectedValue, String actualValue) {
         List<AssertionResult> assertionDocuments = new ArrayList<>();
         OperatorParser operatorParser = new OperatorParser(expectedValue);
-        operatorParser.parse();
+        operatorParser.parseRawValue();
         String message = "Check value for field: " + fieldName + " " + operatorParser.getOperator().getCode() + " " + expectedValue;
 
         if(actualValue != null && operatorParser.eval(actualValue)) {

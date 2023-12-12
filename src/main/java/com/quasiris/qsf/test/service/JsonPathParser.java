@@ -7,6 +7,13 @@ import net.minidev.json.JSONArray;
 public class JsonPathParser {
 
 
+    /**
+     * returns the value at the given Json path in the given object
+     * @param path String, a jayway Json path <br>
+     *             see <a href="https://github.com/json-path/JsonPath#operators">github.com/json-path/JsonPath</a> for a set of operators and examples
+     * @param object doc
+     * @return doc
+     */
     public static String getValue(String path, Object object) {
         try {
             Object value = JsonPath.parse(object).read(path, Object.class);

@@ -2,21 +2,52 @@ package com.quasiris.qsf.test.dto;
 
 import java.util.List;
 
+/**
+ * A Testcase represents a query against an API that should fulfill certain assertions for a specific test environment
+ */
 public class TestCase {
 
+    /**
+     * Unique identifier to specify the TestCase within a TestSuite
+     */
     private String id;
+
+    /**
+     * (optional) Specifies the testing environment in which this TestCase is currently used
+     */
     private String env;
 
+    /**
+     * (optional) Restricts the TestCase to only run on the specified list of environments specified in TestSuite
+     */
     private List<String> envs;
 
+    /**
+     *  Human-readable name for the TestCase, used for outputs and logging
+     */
     private String name;
 
+    /**
+     * (optional) Comment describing what kind of requirements or features the TestCase should cover
+     */
     private String comment;
 
+    /**
+     * Test query that should be executed for this TestCase
+     * @see Query
+     */
     private Query query;
 
+    /**
+     * (optional) Note that the test is active in a TestSuite (has not function at test execution)
+     * TODO implement actual inactivation
+     */
     private Boolean active;
 
+    /**
+     * Test assertions that should be executed on the query response
+     * @see Assertions
+     */
     private Assertions assertions;
 
     /**

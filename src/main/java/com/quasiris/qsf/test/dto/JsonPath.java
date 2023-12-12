@@ -2,8 +2,20 @@ package com.quasiris.qsf.test.dto;
 
 public class JsonPath {
 
+    /**
+     * The JSON key of the field in which the raw JSON that should be tested for is stored
+     */
     private String fieldName;
+
+    /**
+     * A Jayway JsonPath to determine the key path for which the value in the raw JSON should be tested <br>
+     * See <a href="https://github.com/json-path/JsonPath#operators">Jayway JsonPath on Github</a> for info how to build the path
+     */
     private String path;
+
+    /**
+     * A value for which should be tested. Can contain an {@link com.quasiris.qsf.test.service.Operator}
+     */
     private String value;
 
 
