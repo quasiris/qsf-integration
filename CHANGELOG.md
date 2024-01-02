@@ -4,6 +4,7 @@ All notable changes qsf-integration project will be documented in this file.
 ## [UNRELEASED]
 ### Added
 - add a ctrl=facetDisabled to disable facets
+- add children to facet
 ### Changed
 
 
