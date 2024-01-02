@@ -1,13 +1,13 @@
 # Changelog
 All notable changes qsf-integration project will be documented in this file.
 
-## [6.2]
+## [UNRELEASED]
 ### Added
 - add a ctrl=facetDisabled to disable facets
 ### Changed
 
 
-## [UNRELEASED]
+## [6.2]
 ### Added
 - implement script_fields for elasticsearch
 
