@@ -5,6 +5,7 @@ import com.quasiris.qsf.commons.text.date.HumanDateParser;
 import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
 import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
+import com.quasiris.qsf.dto.query.FacetDTO;
 import com.quasiris.qsf.dto.query.ResultDTO;
 import com.quasiris.qsf.dto.query.SpellcheckDTO;
 import com.quasiris.qsf.query.*;
@@ -90,17 +91,13 @@ public class QsfqlParser {
         }
         query.setCtrl(ctrl);
         if(Control.isSpellcheckDisabled(query)) {
-            ResultDTO resultDTO = query.getResult();
-            if(resultDTO == null) {
-                resultDTO = new ResultDTO();
-                query.setResult(resultDTO);
-            }
-            SpellcheckDTO spellcheckDTO = resultDTO.getSpellcheck();
-            if(spellcheckDTO == null) {
-                spellcheckDTO = new SpellcheckDTO();
-                resultDTO.setSpellcheck(spellcheckDTO);
-            }
-            spellcheckDTO.setEnabled(Boolean.FALSE);
+            initSpellcheck(query);
+            query.getResult().getSpellcheck().setEnabled(Boolean.FALSE);
+        }
+
+        if(Control.isFacetDisabled(query)) {
+            initFacet(query);
+            query.getResult().getFacet().setEnabled(Boolean.FALSE);
         }
     }
 
@@ -116,6 +113,25 @@ public class QsfqlParser {
         query.setDebug(getParameterAsBoolean("debug", query.isDebug()));
         query.setExplain(getParameterAsBoolean("explain", query.isExplain()));
         query.setRequestOrigin(getParameter("requestOrigin"));
+    }
+
+    void initSpellcheck(SearchQuery query) {
+        initResult(query);
+        if(query.getResult().getSpellcheck() == null) {
+            query.getResult().setSpellcheck(new SpellcheckDTO());
+        }
+    }
+    void initFacet(SearchQuery query) {
+        initResult(query);
+        if(query.getResult().getFacet() == null) {
+            query.getResult().setFacet(new FacetDTO());
+        }
+    }
+    void initResult(SearchQuery query) {
+        ResultDTO resultDTO = query.getResult();
+        if(resultDTO == null) {
+            query.setResult(new ResultDTO());
+        }
     }
 
     void parseTracking(SearchQuery query) {

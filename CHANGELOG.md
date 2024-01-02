@@ -3,7 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [6.2]
 ### Added
-
+- add a ctrl=facetDisabled to disable facets
 ### Changed
 
 

@@ -27,6 +27,21 @@ import static org.junit.jupiter.api.Assertions.*;
 public class QsfqlParserTest {
 
     @Test
+    public void testDefaults() throws Exception {
+        SearchQuery query = createQuery("q=foo");
+        assertNull(query.getResult());
+    }
+    @Test
+    public void testSpellcheckDisabled() throws Exception {
+        SearchQuery query = createQuery("ctrl=spellcheckDisabled");
+        assertFalse(query.getResult().getSpellcheck().getEnabled());
+    }
+    @Test
+    public void testFacetDisabled() throws Exception {
+        SearchQuery query = createQuery("ctrl=facetDisabled");
+        assertFalse(query.getResult().getFacet().getEnabled());
+    }
+    @Test
     public void testParameters() throws Exception {
         SearchQuery query = createQuery("p.myParam=myValue");
         assertEquals("myValue", query.getParameters().get("myParam"));

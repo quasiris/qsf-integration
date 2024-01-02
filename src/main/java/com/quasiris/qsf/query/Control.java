@@ -8,6 +8,7 @@ public class Control {
     public static final String NO_CAHCE = "noCache";
 
     public static final String SPELLCHECK_DISABLED = "spellcheckDisabled";
+    public static final String FACET_DISABLED = "facetDisabled";
 
     public static boolean isLoadMoreFacets(SearchQuery searchQuery) {
         return searchQuery.isCtrl(LOAD_MORE_FACETS);
@@ -23,5 +24,8 @@ public class Control {
 
     public static boolean isSpellcheckDisabled(SearchQuery searchQuery) {
         return searchQuery.isCtrl(SPELLCHECK_DISABLED);
+    }
+    public static boolean isFacetDisabled(SearchQuery searchQuery) {
+        return searchQuery.isCtrl(FACET_DISABLED);
     }
 }
