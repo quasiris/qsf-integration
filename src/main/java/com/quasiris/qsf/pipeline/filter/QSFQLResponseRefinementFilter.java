@@ -37,6 +37,10 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
         SearchResult searchResult = pipelineContainer.getSearchResult(resultId);
         SearchQuery searchQuery = pipelineContainer.getSearchQuery();
 
+        if(searchResult.getTotal() == null) {
+            searchResult.setTotal((long) searchResult.getDocuments().size());
+        }
+
         // filter, facets, sliders
         refineFilters(searchResult, searchQuery.getSearchFilterList());
 
