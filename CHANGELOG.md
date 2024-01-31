@@ -3,6 +3,22 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+
+
+### Changed
+
+
+## [6.4]
+### Changed
+- set the total of a result set to the number of documents of the first page, in case total is null
+
+### Fixed
+- jackson serialization of BaseSearchFilterDTO
+
+
+
+## [6.3]
+### Added
 - add a ctrl=facetDisabled to disable facets
 - add children to facet
 ### Changed
