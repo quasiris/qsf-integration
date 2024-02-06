@@ -73,7 +73,7 @@ class Elastic2SearchResultMappingTransformerTest {
 
         assertEquals("Not In Stock", stock.getValues().get(0).getValue());
         assertEquals(2666, stock.getValues().get(0).getCount());
-        assertEquals("stock=Not+In+Stock", stock.getValues().get(0).getFilter());
+        assertEquals("stock=Not%20In%20Stock", stock.getValues().get(0).getFilter());
 
 
     }
