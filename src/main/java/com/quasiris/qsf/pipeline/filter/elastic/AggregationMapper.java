@@ -118,6 +118,10 @@ public class AggregationMapper {
                 if(filters != null) {
                     facetPath = name+"_filter_wrapper/aggs/"+name;
                 }
+
+                if(!isSubFacet) {
+                    facetPath = facetPath + "/aggs";
+                }
                 JsonBuilder jsonBuilderVariant = new JsonBuilder();
                 jsonBuilderVariant
                         .object(QsfIntegrationConstants.VARIANT_COUNT_SUB_AGGREGATION_NAME)
@@ -127,7 +131,7 @@ public class AggregationMapper {
                 jsonBuilder = JsonBuilder.create()
                         .newJson(jsonBuilder.replace().get())
                         .pathsForceCreate(facetPath)
-                        .json("aggs", jsonBuilderVariant.get());
+                        .json(jsonBuilderVariant.get());
             }
 
             return jsonBuilder.get();

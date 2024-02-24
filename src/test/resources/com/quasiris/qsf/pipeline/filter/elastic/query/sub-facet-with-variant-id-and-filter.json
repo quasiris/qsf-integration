@@ -1,0 +1,94 @@
+{
+  "from" : 0,
+  "size" : 10,
+  "track_total_hits" : true,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "match_all" : { }
+        }
+      ]
+    }
+  },
+  "aggs" : {
+    "qsc_filtered" : {
+      "filter" : {
+        "bool" : { }
+      },
+      "aggs" : {
+        "supplierName_filter_wrapper" : {
+          "filter" : {
+            "bool" : {
+              "must" : [
+                {
+                  "term" : {
+                    "sku.keyword" : "1234"
+                  }
+                }
+              ]
+            }
+          },
+          "aggs" : {
+            "supplierName" : {
+              "terms" : {
+                "field" : "supplierName.keyword"
+              },
+              "aggs" : {
+                "subFacet" : {
+                  "terms" : {
+                    "field" : "category.keyword"
+                  },
+                  "variant_count" : {
+                    "cardinality" : {
+                      "field" : "myVariantId.keyword"
+                    }
+                  }
+                },
+                "variant_count" : {
+                  "cardinality" : {
+                    "field" : "myVariantId.keyword"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "_total_count_filter_wrapper" : {
+          "filter" : {
+            "bool" : {
+              "must" : [
+                {
+                  "term" : {
+                    "sku.keyword" : "1234"
+                  }
+                }
+              ]
+            }
+          },
+          "aggs" : {
+            "_total_count" : {
+              "cardinality" : {
+                "field" : "myVariantId.keyword"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post_filter" : {
+    "bool" : {
+      "must" : [
+        {
+          "term" : {
+            "sku.keyword" : "1234"
+          }
+        }
+      ]
+    }
+  },
+  "collapse" : {
+    "field" : "myVariantId.keyword"
+  }
+}

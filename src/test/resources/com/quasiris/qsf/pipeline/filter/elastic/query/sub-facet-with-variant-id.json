@@ -1,0 +1,53 @@
+{
+  "from" : 0,
+  "size" : 10,
+  "track_total_hits" : true,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "match_all" : { }
+        }
+      ]
+    }
+  },
+  "aggs" : {
+    "qsc_filtered" : {
+      "filter" : {
+        "bool" : { }
+      },
+      "aggs" : {
+        "supplierName" : {
+          "terms" : {
+            "field" : "supplierName.keyword"
+          },
+          "aggs" : {
+            "subFacet" : {
+              "terms" : {
+                "field" : "category.keyword"
+              },
+              "variant_count" : {
+                "cardinality" : {
+                  "field" : "myVariantId.keyword"
+                }
+              }
+            },
+            "variant_count" : {
+              "cardinality" : {
+                "field" : "myVariantId.keyword"
+              }
+            }
+          }
+        },
+        "_total_count" : {
+          "cardinality" : {
+            "field" : "myVariantId.keyword"
+          }
+        }
+      }
+    }
+  },
+  "collapse" : {
+    "field" : "myVariantId.keyword"
+  }
+}

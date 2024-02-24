@@ -30,14 +30,45 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class ElasticQsfqlQueryTransformerTest {
 
+
+    @DisplayName("Transform sub facet with variant id and filter")
+    @Test
+    public void testSubFacetWithVariantIdAndFilter() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = createSubFacetTransformer();
+        transformer.setVariantId("myVariantId");
+        ObjectNode elasticQuery = transform(transformer,
+                "q=*","f.sku=1234"
+        );
+        assertQuery(elasticQuery, "sub-facet-with-variant-id-and-filter.json");
+
+    }
+    @DisplayName("Transform sub facet with variant id")
+    @Test
+    public void testSubFacetWithVariantId() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = createSubFacetTransformer();
+        transformer.setVariantId("myVariantId");
+        ObjectNode elasticQuery = transform(transformer,
+                "q=*"
+        );
+        assertQuery(elasticQuery, "sub-facet-with-variant-id.json");
+
+    }
     @DisplayName("Transform sub facet")
     @Test
     public void testSubFacet() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = createSubFacetTransformer();
+        ObjectNode elasticQuery = transform(transformer,
+                "q=*"
+        );
+        assertQuery(elasticQuery, "sub-facet.json");
+
+    }
+
+    private ElasticQsfqlQueryTransformer createSubFacetTransformer() {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
         transformer.setProfile(Profiles.matchAll());
         transformer.setMultiSelectFilter(true);
         transformer.addFilterRule("(.+)", "$1.keyword");
-
         Facet facet = new Facet();
         facet.setName("supplierName");
         facet.setId("supplierName.keyword");
@@ -50,12 +81,9 @@ public class ElasticQsfqlQueryTransformerTest {
         subFacet.setOperator(FilterOperator.OR);
 
         facet.setChildren(subFacet);
-        transformer.setAggregations(Arrays.asList(facet));
-        ObjectNode elasticQuery = transform(transformer,
-                "q=*"
-        );
-        assertQuery(elasticQuery, "sub-facet.json");
 
+        transformer.setAggregations(Arrays.asList(facet));
+        return transformer;
     }
 
 
