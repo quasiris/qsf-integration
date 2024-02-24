@@ -25,11 +25,6 @@
             "subFacet" : {
               "terms" : {
                 "field" : "category.keyword"
-              },
-              "variant_count" : {
-                "cardinality" : {
-                  "field" : "myVariantId.keyword"
-                }
               }
             },
             "variant_count" : {

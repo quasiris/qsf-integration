@@ -113,7 +113,7 @@ public class AggregationMapper {
                 jsonBuilder = aggFilterWrapper;
             }
 
-            if(StringUtils.isNotEmpty(variantId)) {
+            if(StringUtils.isNotEmpty(variantId) && !isSubFacet) {
                 String facetPath = name;
                 if(filters != null) {
                     facetPath = name+"_filter_wrapper/aggs/"+name;
