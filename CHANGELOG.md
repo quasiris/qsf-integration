@@ -3,6 +3,11 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+
+### Changed
+
+## [6.5]
+### Added
 - support sub facets in combination with variants
 
 ### Changed
