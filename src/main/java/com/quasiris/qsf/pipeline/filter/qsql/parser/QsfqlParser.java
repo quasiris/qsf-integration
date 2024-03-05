@@ -424,6 +424,11 @@ public class QsfqlParser {
                     searchFilter.setFilterType(FilterType.TERM);
                     searchFilter.setFilterOperator(FilterOperator.NOT);
                     query.getSearchFilterList().add(searchFilter);
+                } else if (".not[]".equals(filterType)) {
+                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues, true);
+                    searchFilter.setFilterType(FilterType.TERM);
+                    searchFilter.setFilterOperator(FilterOperator.NOT);
+                    query.getSearchFilterList().add(searchFilter);
                 } else if (".slider".equals(filterType)) {
                     SearchFilter searchFilter = createRangeFilter(filterName, filterValues);
                     searchFilter.setFilterType(FilterType.SLIDER);
