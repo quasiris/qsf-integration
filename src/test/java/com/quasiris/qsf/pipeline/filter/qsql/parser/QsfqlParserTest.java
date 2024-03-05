@@ -187,6 +187,19 @@ public class QsfqlParserTest {
         assertEquals(searchFilter.getFilterDataType(), FilterDataType.STRING);
     }
 
+
+    @Test
+    public void testFilterWithMultipleValuesCommaSeperated() throws Exception {
+        SearchQuery query = createQuery("f.foo.or[]=bar,alice");
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
+        assertEquals("foo", searchFilter.getName());
+        assertEquals("bar", searchFilter.getValues().get(0));
+        assertEquals("alice", searchFilter.getValues().get(1));
+        assertEquals(searchFilter.getFilterType(), FilterType.TERM);
+        assertEquals(searchFilter.getFilterOperator(), FilterOperator.OR);
+        assertEquals(searchFilter.getFilterDataType(), FilterDataType.STRING);
+    }
+
     @Test
     public void testRangeFilterForDoubleValues() throws Exception {
         SearchQuery query = createQuery("f.foo.range=0.1,5.2");

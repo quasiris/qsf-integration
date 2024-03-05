@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by mki on 13.11.16.
@@ -181,11 +182,20 @@ public class QsfqlParser {
     }
 
 
-    SearchFilter createSearchFilter(String filterName, String[] filterValues)  {
+    SearchFilter createSearchFilter(String filterName, String[] filterValues, boolean isArray)  {
         SearchFilter searchFilter = new SearchFilter();
         searchFilter.setId(filterName);
         searchFilter.setName(filterName);
-        searchFilter.setValues(Arrays.asList(filterValues));
+
+        List<String> values = Arrays.asList(filterValues);
+
+        if(isArray) {
+            values = values.stream()
+                    .flatMap(s -> Arrays.stream(s.split(",")))
+                    .collect(Collectors.toList());
+
+        }
+        searchFilter.setValues(values);
         return searchFilter;
     }
 
@@ -386,24 +396,34 @@ public class QsfqlParser {
                 String[] filterValues = parameters.get(name);
                 String filterType = m.group(2);
                 if(Strings.isNullOrEmpty(filterType)) {
-                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues);
+                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues, false);
                     searchFilter.setFilterType(FilterType.TERM);
                     query.getSearchFilterList().add(searchFilter);
                 } else if (".and".equals(filterType)) {
-                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues);
+                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues, false);
+                    searchFilter.setFilterType(FilterType.TERM);
+                    searchFilter.setFilterOperator(FilterOperator.AND);
+                    query.getSearchFilterList().add(searchFilter);
+                } else if (".and[]".equals(filterType)) {
+                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues, true);
                     searchFilter.setFilterType(FilterType.TERM);
                     searchFilter.setFilterOperator(FilterOperator.AND);
                     query.getSearchFilterList().add(searchFilter);
                 } else if (".or".equals(filterType)) {
-                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues);
+                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues,false);
+                    searchFilter.setFilterType(FilterType.TERM);
+                    searchFilter.setFilterOperator(FilterOperator.OR);
+                    query.getSearchFilterList().add(searchFilter);
+                } else if (".or[]".equals(filterType)) {
+                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues, true);
                     searchFilter.setFilterType(FilterType.TERM);
                     searchFilter.setFilterOperator(FilterOperator.OR);
                     query.getSearchFilterList().add(searchFilter);
                 } else if (".not".equals(filterType)) {
-                        SearchFilter searchFilter = createSearchFilter(filterName, filterValues);
-                        searchFilter.setFilterType(FilterType.TERM);
-                        searchFilter.setFilterOperator(FilterOperator.NOT);
-                        query.getSearchFilterList().add(searchFilter);
+                    SearchFilter searchFilter = createSearchFilter(filterName, filterValues, false);
+                    searchFilter.setFilterType(FilterType.TERM);
+                    searchFilter.setFilterOperator(FilterOperator.NOT);
+                    query.getSearchFilterList().add(searchFilter);
                 } else if (".slider".equals(filterType)) {
                     SearchFilter searchFilter = createRangeFilter(filterName, filterValues);
                     searchFilter.setFilterType(FilterType.SLIDER);

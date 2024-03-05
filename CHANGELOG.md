@@ -3,6 +3,8 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- add an array syntax to QSFQL `f.id.not[]=42,44
+- implement testing for spellcheck in the test framework
 
 ### Changed
 
