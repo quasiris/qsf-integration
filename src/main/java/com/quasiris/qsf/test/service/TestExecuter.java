@@ -195,29 +195,49 @@ public class TestExecuter {
         }
 
         if(expected.getDidYouMeanResult() != null) {
-
-            if(actual.getDidYouMeanResult() == null || actual.getDidYouMeanResult().getDidYouMean() == null) {
-                String message = "Spellcheck expected: " + expected.getDidYouMeanResult().getDidYouMean() + " but was empty.";
-                AssertionResult assertionResult = new AssertionResult(message);
-                assertionResult.setName(globalName(message));
-                assertionResult.setStatus(Status.FAILED);
-                assertionResults.add(assertionResult);
-            } else if(expected.getDidYouMeanResult().getDidYouMean().equals(actual.getDidYouMeanResult().getDidYouMean())) {
-                String message = "Spellcheck expected: " + expected.getDidYouMeanResult().getDidYouMean();
-                AssertionResult assertionResult = new AssertionResult(message);
-                assertionResult.setName(globalName(message));
-                assertionResult.setStatus(Status.SUCCESS);
-                assertionResults.add(assertionResult);
-
+            if(expected.getDidYouMeanResult().getCorrected() != null) {
+                if(actual.getDidYouMeanResult() == null) {
+                    String message = "Spellcheck Correct expected: " + expected.getDidYouMeanResult().getCorrected() + " but didYouMeanResult was null";
+                    AssertionResult assertionResult = new AssertionResult(message);
+                    assertionResult.setName(globalName(message));
+                    assertionResult.setStatus(Status.FAILED);
+                    assertionResults.add(assertionResult);
+                } else if (expected.getDidYouMeanResult().getCorrected().equals(actual.getDidYouMeanResult().getCorrected())) {
+                    String message = "Spellcheck Corrected expected: " + expected.getDidYouMeanResult().getCorrected();
+                    AssertionResult assertionResult = new AssertionResult(message);
+                    assertionResult.setName(globalName(message));
+                    assertionResult.setStatus(Status.SUCCESS);
+                    assertionResults.add(assertionResult);
+                } else {
+                    String message = "Spellcheck Correct expected: " + expected.getDidYouMeanResult().getCorrected() + " but was " + actual.getDidYouMeanResult().getCorrected();
+                    AssertionResult assertionResult = new AssertionResult(message);
+                    assertionResult.setName(globalName(message));
+                    assertionResult.setStatus(Status.FAILED);
+                    assertionResults.add(assertionResult);
+                }
             } else {
-                String message = "Spellcheck expected: " + expected.getDidYouMeanResult().getDidYouMean() + " but was " + actual.getDidYouMeanResult().getDidYouMean();
-                AssertionResult assertionResult = new AssertionResult(message);
-                assertionResult.setName(globalName(message));
-                assertionResult.setStatus(Status.FAILED);
-                assertionResults.add(assertionResult);
+
+                if (actual.getDidYouMeanResult() == null || actual.getDidYouMeanResult().getDidYouMean() == null) {
+                    String message = "Spellcheck expected: " + expected.getDidYouMeanResult().getDidYouMean() + " but was empty.";
+                    AssertionResult assertionResult = new AssertionResult(message);
+                    assertionResult.setName(globalName(message));
+                    assertionResult.setStatus(Status.FAILED);
+                    assertionResults.add(assertionResult);
+                } else if (expected.getDidYouMeanResult().getDidYouMean().equals(actual.getDidYouMeanResult().getDidYouMean())) {
+                    String message = "Spellcheck expected: " + expected.getDidYouMeanResult().getDidYouMean();
+                    AssertionResult assertionResult = new AssertionResult(message);
+                    assertionResult.setName(globalName(message));
+                    assertionResult.setStatus(Status.SUCCESS);
+                    assertionResults.add(assertionResult);
+
+                } else {
+                    String message = "Spellcheck expected: " + expected.getDidYouMeanResult().getDidYouMean() + " but was " + actual.getDidYouMeanResult().getDidYouMean();
+                    AssertionResult assertionResult = new AssertionResult(message);
+                    assertionResult.setName(globalName(message));
+                    assertionResult.setStatus(Status.FAILED);
+                    assertionResults.add(assertionResult);
+                }
             }
-
-
         }
 
         return assertionResults;
