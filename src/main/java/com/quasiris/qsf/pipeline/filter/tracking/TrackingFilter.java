@@ -191,12 +191,21 @@ public class TrackingFilter extends AbstractFilter {
         tracking.setValue("total", searchResult.getTotal());
         tracking.setValue("duration", pipelineContainer.currentTime());
 
-        if(idFieldName != null) {
-            for (Document document : searchResult.getDocuments()) {
-                String id = document.getFieldValue(idFieldName);
-                tracking.addValue("docIds", id);
+        List<String> docIds = new ArrayList<>();
+
+
+        for (Document document : searchResult.getDocuments()) {
+            String id = null;
+            if(idFieldName != null) {
+                id = document.getFieldValue(idFieldName);
             }
+            if(id == null) {
+                id = document.getId();
+            }
+            docIds.add(id);
         }
+        tracking.setValue("docIds", docIds);
+
         return tracking;
     }
 

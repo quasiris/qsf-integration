@@ -6,6 +6,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 
 ### Changed
+- use the document id as a fallback for tracking returned documents
 
 ## [6.6]
 ### Added
