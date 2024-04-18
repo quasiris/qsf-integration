@@ -24,6 +24,8 @@ public class SearchQueryFactory {
         }
         searchQueryCopy.setQ(searchQuery.getQ());
         searchQueryCopy.setRequestId(searchQuery.getRequestId());
+        searchQueryCopy.setSessionId(searchQuery.getSessionId());
+        searchQueryCopy.setUserId(searchQuery.getUserId());
 
         if(searchQuery.getSearchFilterList() != null) {
             searchQueryCopy.setSearchFilterList(SerializationUtils.deepCopyList(searchQuery.getSearchFilterList()));

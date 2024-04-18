@@ -118,9 +118,8 @@ public class TrackingFilter extends AbstractFilter {
         tracking.setValue("requestId", searchQuery.getRequestId());
         tracking.setValue("requestOrigin", searchQuery.getRequestOrigin());
 
-        // TODO implement a logic for session and user id
-        tracking.setValue("sessionId", searchQuery.getRequestId());
-        tracking.setValue("userId", searchQuery.getRequestId());
+        tracking.setValue("sessionId", searchQuery.getSessionId());
+        tracking.setValue("userId", searchQuery.getUserId());
 
         tracking = trackRequestParameter(pipelineContainer, tracking);
 

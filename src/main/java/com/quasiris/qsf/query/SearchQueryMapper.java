@@ -53,7 +53,11 @@ public class SearchQueryMapper {
 
         if(searchQuery.getRequestId() == null) {
             searchQuery.setRequestId(UUID.randomUUID().toString());
+        } else {
+            searchQuery.setRequestId(searchQueryDTO.getRequestId());
         }
+        searchQuery.setSessionId(searchQueryDTO.getSessionId());
+        searchQuery.setUserId(searchQueryDTO.getUserId());
 
         return searchQuery;
     }

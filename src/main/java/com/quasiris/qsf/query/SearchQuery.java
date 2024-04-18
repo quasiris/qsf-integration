@@ -23,6 +23,8 @@ public class SearchQuery {
     private String q;
 
     private String requestId;
+    private String userId;
+    private String sessionId;
 
     private List<BaseSearchFilter> searchFilterList = new ArrayList<>();
     private List<Facet> facetList;
@@ -445,6 +447,22 @@ public class SearchQuery {
             }
         }
         return searchFilters;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     @Override
