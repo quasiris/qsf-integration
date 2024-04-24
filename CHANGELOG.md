@@ -7,6 +7,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Changed
 - use the document id as a fallback for tracking returned documents
+- don't return an error in case the spellchecker throws an exception
 
 ## [6.6]
 ### Added

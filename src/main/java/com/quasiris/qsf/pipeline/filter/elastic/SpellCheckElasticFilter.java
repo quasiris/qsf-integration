@@ -67,56 +67,61 @@ public class SpellCheckElasticFilter extends AbstractFilter {
 
     private void process(PipelineContainer pipelineContainer) throws IOException, PipelineContainerException, PipelineRestartException {
 
-        if(pipelineContainer.getSearchQuery().getQueryToken().size() > maxTokenLenght) {
-            return;
-        }
-
-        List<SpellCheckToken> spellCheckTokens = spellCheckElasticClient.spellspeck(pipelineContainer.getSearchQuery());
-        ExplainContextHolder.getContext().explainJson(getId() + ".spellCheckTokens", spellCheckTokens);
-
-        if(pipelineContainer.isDebugEnabled()) {
-            pipelineContainer.debug("spellCheckTokens", DebugType.JSON, spellCheckTokens);
-        }
-
-        SpellcheckVariants spellcheckVariants = new SpellcheckVariants();
-        List<Score> correctedQueryVariants = spellcheckVariants.computeVariants(spellCheckTokens);
-
-
-        if(sentenceScoringEnabled && correctedQueryVariants.size() > 1) {
-            // do some bert magic
-            List<String> s = correctedQueryVariants.stream().
-                    limit(4).
-                    map(Score::getText).
-                    collect(Collectors.toList());
-
-            Sentences sentences = new Sentences();
-            sentences.setSentences(s);
-
-
-            SentencesResponse sentencesResponse = httpClient.
-                    post("http://localhost:5000/v1/sentence-scoring", sentences, castTypeReference(SentencesResponse.class));
-
-            correctedQueryVariants = sentencesResponse.getSentences();
-            correctedQueryVariants.sort(Comparator.comparing(Score::getScore).reversed());
-        }
-
-        Score corrected = correctedQueryVariants.stream().findFirst().orElse(null);
-        SearchQuery searchQuery = pipelineContainer.getSearchQuery();
-        if(!SpellcheckUtils.fuzzyEquals(corrected.getText(), searchQuery.getQ())) {
-            searchQuery.setOriginalQuery(searchQuery.getQ());
-            searchQuery.setQ(corrected.getText());
-            searchQuery.setQueryChanged(true);
-            searchQuery.addQueryChangedReason("spellcheck");
-
-            DidYouMeanResult didYouMeanResult = new DidYouMeanResult();
-            didYouMeanResult.setName("spellCorrection");
-            didYouMeanResult.setType("corrected");
-            didYouMeanResult.setCorrected(corrected.getText());
-            didYouMeanResult.setOriginal(searchQuery.getOriginalQuery());
-            SpellCheckContext.get(pipelineContainer).setDidYouMeanResult(didYouMeanResult);
-            if(restartPipelineId != null) {
-                throw new PipelineRestartException(restartPipelineId, pipelineContainer);
+        try {
+            if (pipelineContainer.getSearchQuery().getQueryToken().size() > maxTokenLenght) {
+                return;
             }
+
+            List<SpellCheckToken> spellCheckTokens = spellCheckElasticClient.spellspeck(pipelineContainer.getSearchQuery());
+            ExplainContextHolder.getContext().explainJson(getId() + ".spellCheckTokens", spellCheckTokens);
+
+            if (pipelineContainer.isDebugEnabled()) {
+                pipelineContainer.debug("spellCheckTokens", DebugType.JSON, spellCheckTokens);
+            }
+
+            SpellcheckVariants spellcheckVariants = new SpellcheckVariants();
+            List<Score> correctedQueryVariants = spellcheckVariants.computeVariants(spellCheckTokens);
+
+
+            if (sentenceScoringEnabled && correctedQueryVariants.size() > 1) {
+                // do some bert magic
+                List<String> s = correctedQueryVariants.stream().
+                        limit(4).
+                        map(Score::getText).
+                        collect(Collectors.toList());
+
+                Sentences sentences = new Sentences();
+                sentences.setSentences(s);
+
+
+                SentencesResponse sentencesResponse = httpClient.
+                        post("http://localhost:5000/v1/sentence-scoring", sentences, castTypeReference(SentencesResponse.class));
+
+                correctedQueryVariants = sentencesResponse.getSentences();
+                correctedQueryVariants.sort(Comparator.comparing(Score::getScore).reversed());
+            }
+
+            Score corrected = correctedQueryVariants.stream().findFirst().orElse(null);
+            SearchQuery searchQuery = pipelineContainer.getSearchQuery();
+            if (!SpellcheckUtils.fuzzyEquals(corrected.getText(), searchQuery.getQ())) {
+                searchQuery.setOriginalQuery(searchQuery.getQ());
+                searchQuery.setQ(corrected.getText());
+                searchQuery.setQueryChanged(true);
+                searchQuery.addQueryChangedReason("spellcheck");
+
+                DidYouMeanResult didYouMeanResult = new DidYouMeanResult();
+                didYouMeanResult.setName("spellCorrection");
+                didYouMeanResult.setType("corrected");
+                didYouMeanResult.setCorrected(corrected.getText());
+                didYouMeanResult.setOriginal(searchQuery.getOriginalQuery());
+                SpellCheckContext.get(pipelineContainer).setDidYouMeanResult(didYouMeanResult);
+                if (restartPipelineId != null) {
+                    throw new PipelineRestartException(restartPipelineId, pipelineContainer);
+                }
+            }
+        } catch (Exception e) {
+            // don't fail on error
+            LOG.warn("Could not execute spell checker becaust: " + e.getMessage(), e);
         }
     }
 
