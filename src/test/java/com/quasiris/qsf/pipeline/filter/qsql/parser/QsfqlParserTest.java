@@ -31,6 +31,16 @@ public class QsfqlParserTest {
         SearchQuery query = createQuery("q=foo");
         assertNull(query.getResult());
     }
+
+
+    @Test
+    public void testMultipleCtrlParameters() throws Exception {
+        SearchQuery query = createQuery("ctrl=spellcheckDisabled", "ctrl=facetDisabled,noCache");
+        assertFalse(query.getResult().getSpellcheck().getEnabled());
+        assertFalse(query.getResult().getFacet().getEnabled());
+        assertTrue(query.isCtrl("noCache"));
+    }
+
     @Test
     public void testSpellcheckDisabled() throws Exception {
         SearchQuery query = createQuery("ctrl=spellcheckDisabled");

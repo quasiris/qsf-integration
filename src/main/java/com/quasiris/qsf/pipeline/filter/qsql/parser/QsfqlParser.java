@@ -14,14 +14,7 @@ import com.quasiris.qsf.text.Splitter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -86,10 +79,19 @@ public class QsfqlParser {
     }
 
     void parseCtrl(SearchQuery query) {
-        Set<String> ctrl = parseCtrlFromString(getParameter("ctrl"));
-        if(ctrl == null || ctrl.size() == 0) {
+        String[] ctrlParameters = this.parameters.get("ctrl");
+        if(ctrlParameters == null || ctrlParameters.length == 0) {
             return;
         }
+
+        Set<String> ctrl = new HashSet<>();
+
+        for(String ctrlParameter : ctrlParameters) {
+            Set<String> parsed = parseCtrlFromString(ctrlParameter);
+            ctrl.addAll(parsed);
+        }
+
+
         query.setCtrl(ctrl);
         if(Control.isSpellcheckDisabled(query)) {
             initSpellcheck(query);
