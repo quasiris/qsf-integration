@@ -349,6 +349,16 @@ public class JsonBuilder {
         return root;
     }
 
+    public ObjectNode getObjectNode() throws JsonBuilderException {
+        if(root instanceof ObjectNode) {
+            return (ObjectNode) root;
+        }
+        return JsonBuilder.
+                create().array("values").
+                addValue(root).
+                getObjectNode();
+    }
+
     public JsonBuilder include(String id, JsonBuilder jsonBuilder) throws JsonBuilderException {
         jsonBuilder.valueMap = mergeValueMap(this.valueMap, jsonBuilder.valueMap);
         jsonBuilder.replace();

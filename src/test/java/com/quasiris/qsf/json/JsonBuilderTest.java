@@ -1,6 +1,7 @@
 package com.quasiris.qsf.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.test.json.JsonAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,20 @@ import java.util.Map;
 public class JsonBuilderTest {
 
 
+    @Test
+    public void testGetObjectNode() throws Exception {
+        ObjectNode objectNode = JsonBuilder.create().
+                string("{}").
+                getObjectNode();
+        JsonAssert.assertJson("{}", objectNode);
+    }
+    @Test
+    public void testGetObjectNodeArray() throws Exception {
+        ObjectNode objectNode = JsonBuilder.create().
+                string("[]").
+                getObjectNode();
+        JsonAssert.assertJson("{\"values\" : []}", objectNode);
+    }
     @Test
     public void testEmptyObject() throws Exception {
         JsonBuilder jsonBuilder = new JsonBuilder();
