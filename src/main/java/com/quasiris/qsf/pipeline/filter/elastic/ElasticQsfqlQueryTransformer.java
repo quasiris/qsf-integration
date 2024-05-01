@@ -166,7 +166,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 excludedFacetIds.add(aggregation.getId());
 
                 ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getFacetFilters(), aggregation.getOperator(), excludedFacetIds);
-                JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, variantId);
+                JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, variantId, searchQuery);
                 jsonBuilder.json(agg);
                 hasAggs = true;
             }
@@ -182,7 +182,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             Set<String> excludeIds = new HashSet<>();
             excludeIds.add(aggregation.getId());
             ObjectNode filters = getFilterAsJson(filterMapper, aggregation.getFacetFilters(), aggregation.getOperator(), excludeIds);
-            JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, null);
+            JsonNode agg = AggregationMapper.createAgg(aggregation, false, filters, null, searchQuery);
             jsonBuilder.json(agg);
             hasAggs = true;
         }
@@ -220,7 +220,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         }
 
         ObjectNode filters = filterMapper.buildFiltersJson(searchQueryfilters);
-        JsonNode agg = AggregationMapper.createAgg(categoryTree, false, filters, variantId);
+        JsonNode agg = AggregationMapper.createAgg(categoryTree, false, filters, variantId, searchQuery);
         jsonBuilder.json(agg);
     }
 

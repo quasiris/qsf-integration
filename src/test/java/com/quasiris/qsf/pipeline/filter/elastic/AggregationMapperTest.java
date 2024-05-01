@@ -30,7 +30,7 @@ class AggregationMapperTest {
         String variantId = null;
 
         // when
-        JsonNode agg = AggregationMapper.createAgg(facet, isSubFacet, filters, variantId);
+        JsonNode agg = AggregationMapper.createAgg(facet, isSubFacet, filters, variantId, null);
 
         // then
         ObjectNode queryNode = TestUtils.mockQuery("/com/quasiris/qsf/pipeline/filter/elastic/query/single-facet.json");
@@ -53,7 +53,7 @@ class AggregationMapperTest {
         String variantId = "variantId";
 
         // when
-        JsonNode agg = AggregationMapper.createAgg(facet, isSubFacet, filters, variantId);
+        JsonNode agg = AggregationMapper.createAgg(facet, isSubFacet, filters, variantId, null);
 
         // then
         ObjectNode queryNode = TestUtils.mockQuery("/com/quasiris/qsf/pipeline/filter/elastic/query/single-facet-with-variant.json");
@@ -76,7 +76,7 @@ class AggregationMapperTest {
         String variantId = "variantId";
 
         // when
-        JsonNode agg = AggregationMapper.createAgg(facet, isSubFacet, filters, variantId);
+        JsonNode agg = AggregationMapper.createAgg(facet, isSubFacet, filters, variantId, null);
 
         // then
         ObjectNode queryNode = TestUtils.mockQuery("/com/quasiris/qsf/pipeline/filter/elastic/query/single-facet-with-variant-and-filter.json");

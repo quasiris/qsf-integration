@@ -117,8 +117,12 @@ public class QsfqlFilterTransformer {
                 resultJsonBuilder.valueMap(filterVariable, JsonBuilder.create().object("filter", filterObj).get());
             } else if(searchQuery.getSearchFilterList().size() > 0) {
                 // append filters to defined path
-                JsonNode filterNode = JsonBuilder.create().newJson(resultJsonBuilder.replace().get()).pathsForceCreate("query/bool/filter").json(filters).get();
-                resultJsonBuilder.json(filterNode);
+                if(resultJsonBuilder.exists("query/bool/filter")) {
+                    resultJsonBuilder.path("query/bool/filter").addJson(filters);
+                } else {
+                    JsonNode filterNode = JsonBuilder.create().newJson(resultJsonBuilder.replace().get()).pathsForceCreate("query/bool/filter").json(filters).get();
+                    resultJsonBuilder.json(filterNode);
+                }
             }
         }
 

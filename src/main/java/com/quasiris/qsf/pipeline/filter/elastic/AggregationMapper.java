@@ -1,20 +1,25 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
+import com.quasiris.qsf.commons.util.JsonUtil;
+import com.quasiris.qsf.dto.query.HistogramFacetConfigDTO;
+import com.quasiris.qsf.dto.query.IntervalDTO;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
-import com.quasiris.qsf.query.Facet;
-import com.quasiris.qsf.query.Range;
-import com.quasiris.qsf.query.RangeFacet;
+import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 public class AggregationMapper {
     @Deprecated // TODO remove this
-    public static JsonNode createAgg(Facet facet, boolean isSubFacet) {
-        return createAgg(facet, isSubFacet, null, null);
+    public static JsonNode createAgg(Facet facet, boolean isSubFacet, SearchQuery searchQuery) {
+        return createAgg(facet, isSubFacet, null, null, searchQuery);
     }
 
     public static String mapType(String type) {
@@ -30,9 +35,14 @@ public class AggregationMapper {
         return type;
     }
 
-    public static JsonNode createAgg(Facet facet, boolean isSubFacet, JsonNode filters, String variantId) {
+    public static JsonNode createAgg(Facet facet, boolean isSubFacet, JsonNode filters, String variantId, SearchQuery searchQuery) {
 
         try {
+
+            if("elastic".equals(facet.getType())) {
+                JsonNode query = getParameter(facet.getParameters(), "query", null, JsonNode.class);
+                return query;
+            }
 
             String name = facet.getName();
             if(isSubFacet) {
@@ -49,30 +59,21 @@ public class AggregationMapper {
 
             if("date_histogram".equals(facet.getType())) {
                 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#fixed_intervals
-                String fixedInterval = getValueOrDefault(facet.getParameters(), "fixed_interval", null);
-                String calendarInterval = getValueOrDefault(facet.getParameters(), "calendar_interval", null);
+                JsonNode query = getParameter(facet.getParameters(), "query", null, JsonNode.class);
+                if(query != null) {
 
-                if(fixedInterval != null) {
-                    jsonBuilder.object("fixed_interval", fixedInterval);
-                } else if (calendarInterval != null) {
-                    jsonBuilder.object("calendar_interval", calendarInterval);
+                    HistogramFacetConfigDTO histogramFacetConfigDTO = getParameter(facet.getParameters(), "config", null, HistogramFacetConfigDTO.class);
+                    SearchFilter timestampFilter = searchQuery.getSearchFilterById(facet.getId());
+
+                    JsonNode interval = getInterval(timestampFilter, histogramFacetConfigDTO.getIntervals());
+                    return JsonBuilder.create().json(query).valueMap("interval", interval).replace().get();
                 } else {
+                    // deprecated ... used in the old qsc dashboard
                     jsonBuilder.object("calendar_interval", "hour");
-                }
-
-                String extendedBoundsMin = getValueOrDefault(facet.getParameters(), "extended_bounds_min", null);
-                String extendedBoundsMax = getValueOrDefault(facet.getParameters(), "extended_bounds_max", null);
-                if(extendedBoundsMin != null && extendedBoundsMax != null) {
                     jsonBuilder.
-                            stash().
-                            object("extended_bounds").
-                            object("min", extendedBoundsMin).
-                            object("max", extendedBoundsMax).
-                            unstash();
+                            object("time_zone", getValueOrDefault(facet.getParameters(), "time_zone", "Europe/Berlin")).
+                            object("min_doc_count", 0);
                 }
-                jsonBuilder.
-                        object("time_zone", getValueOrDefault(facet.getParameters(), "time_zone", "Europe/Berlin")).
-                        object("min_doc_count", 0);
             } else if ("year".equals(facet.getType())) {
                 jsonBuilder.
                         object("calendar_interval", "year").
@@ -97,7 +98,7 @@ public class AggregationMapper {
 
             if(facet.getChildren() != null) {
                 jsonBuilder.root().path(name);
-                JsonNode subAggs = createAgg(facet.getChildren(), true, null, variantId);
+                JsonNode subAggs = createAgg(facet.getChildren(), true, null, variantId, searchQuery);
                 jsonBuilder.json("aggs", subAggs);
             }
 
@@ -139,6 +140,34 @@ public class AggregationMapper {
         } catch (JsonBuilderException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    static JsonNode getInterval(SearchFilter timestampFilter, List<IntervalDTO> intervalConfigList) throws JsonBuilderException {
+
+        IntervalDTO interval = null;
+
+        String from = timestampFilter.getMinValue().toString();
+        String to = timestampFilter.getMaxValue().toString();
+        long minutesBetween = getMinutesBetween(from, to);
+        for(IntervalDTO intervalItem : intervalConfigList) {
+            if(intervalItem.getMinute() == null || minutesBetween < intervalItem.getMinute()) {
+                interval = intervalItem;
+                break;
+            }
+        }
+
+
+        if(interval == null) {
+            return JsonBuilder.create().object("calendar_interval", "hour").get();
+        }
+        return JsonBuilder.create().object(interval.getType(), interval.getInterval()).get() ;
+    }
+
+    static long getMinutesBetween(String from, String to) {
+        Instant fromInstant = SupportedDateFormatsParser.requireInstantFromString(from);
+        Instant toInstant = SupportedDateFormatsParser.requireInstantFromString(to);
+        long minutesBetween  = Duration.between(fromInstant, toInstant).toMinutes();
+        return minutesBetween;
     }
 
     public static String getValueOrDefault(Map<String, Object> parameters, String key, String defaultValue) {
@@ -233,5 +262,17 @@ public class AggregationMapper {
         } catch (JsonBuilderException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    static <T> T getParameter(Map<String, Object> parameters, String param, T defaultValue, Class<T> toValueType) {
+        if(parameters == null) {
+            return defaultValue;
+        }
+        Object value = parameters.get(param);
+        if(value == null) {
+            return defaultValue;
+        }
+
+        return JsonUtil.defaultMapper().convertValue(value, toValueType);
     }
 }

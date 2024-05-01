@@ -113,7 +113,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
                 jsonBuilder.json(agg);
                 hasAggs = true;
             } else {
-                JsonNode agg = AggregationMapper.createAgg(aggregation, false, null, variantId);
+                JsonNode agg = AggregationMapper.createAgg(aggregation, false, null, variantId, searchQuery);
                 jsonBuilder.json(agg);
                 hasAggs = true;
             }
