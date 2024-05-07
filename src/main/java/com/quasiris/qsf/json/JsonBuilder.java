@@ -349,6 +349,10 @@ public class JsonBuilder {
         return root;
     }
 
+    public <T> T get(Class<T> toValueType) {
+        return mapper.convertValue(get(), toValueType);
+    }
+
     public ObjectNode getObjectNode() throws JsonBuilderException {
         if(root instanceof ObjectNode) {
             return (ObjectNode) root;

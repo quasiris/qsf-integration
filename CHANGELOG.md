@@ -7,6 +7,7 @@ All notable changes qsf-integration project will be documented in this file.
 - add a method to get a ObjectNode in the JsonBuilder
 - support date_histogram facets with a custom query
 - add a field name to the search filter
+- jsonbuilder get by class
 
 ### Changed
 - use the document id as a fallback for tracking returned documents
