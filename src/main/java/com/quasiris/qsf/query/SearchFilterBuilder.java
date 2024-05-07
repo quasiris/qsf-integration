@@ -10,6 +10,7 @@ public final class SearchFilterBuilder {
     private boolean exclude = true;
     private String id;
     private String name;
+    private String fieldName;
     private List<String> values;
     private RangeFilterValue<?> rangeValue;
     private UpperLowerBound lowerBound = UpperLowerBound.LOWER_INCLUDED;
@@ -52,6 +53,10 @@ public final class SearchFilterBuilder {
 
     public SearchFilterBuilder withFilterType(FilterType filterType) {
         this.filterType = filterType;
+        return this;
+    }
+    public SearchFilterBuilder withFieldName(String fieldName) {
+        this.fieldName = fieldName;
         return this;
     }
 
@@ -119,6 +124,7 @@ public final class SearchFilterBuilder {
         searchFilter.setId(id);
         searchFilter.setName(name);
         searchFilter.setValues(values);
+        searchFilter.setFieldName(fieldName);
 
         if(rangeValue != null) {
             this.rangeValue.setLowerBound(lowerBound);
