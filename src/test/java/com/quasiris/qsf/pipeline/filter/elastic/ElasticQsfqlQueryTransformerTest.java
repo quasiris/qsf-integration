@@ -937,7 +937,7 @@ public class ElasticQsfqlQueryTransformerTest {
         ObjectNode elasticQuery = transform(transformer,  "q=*");
 
         assertEquals("timestamp", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("field").asText());
-        assertEquals("hour", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("calendar_interval").asText());
+        assertEquals("1w", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("calendar_interval").asText());
         assertEquals("Europe/Berlin", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("time_zone").asText());
         assertEquals("0", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("min_doc_count").asText());
     }

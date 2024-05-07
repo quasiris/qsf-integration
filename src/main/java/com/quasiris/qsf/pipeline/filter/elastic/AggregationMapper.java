@@ -59,20 +59,31 @@ public class AggregationMapper {
 
             if("date_histogram".equals(facet.getType())) {
                 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#fixed_intervals
-                JsonNode query = getParameter(facet.getParameters(), "query", null, JsonNode.class);
-                if(query != null) {
+                HistogramFacetConfigDTO histogramFacetConfigDTO = getParameter(facet.getParameters(), "config", null, HistogramFacetConfigDTO.class);
+                if(histogramFacetConfigDTO == null) {
+                    histogramFacetConfigDTO = JsonBuilder.create().
+                            classpath("com/quasiris/qsf/elastic/config/default-histogram-facet-config.json").
+                            get(HistogramFacetConfigDTO.class);
+                }
 
-                    HistogramFacetConfigDTO histogramFacetConfigDTO = getParameter(facet.getParameters(), "config", null, HistogramFacetConfigDTO.class);
-                    SearchFilter timestampFilter = searchQuery.getSearchFilterById(facet.getId());
-
-                    JsonNode interval = getInterval(timestampFilter, histogramFacetConfigDTO.getIntervals());
-                    return JsonBuilder.create().json(query).valueMap("interval", interval).replace().get();
+                SearchFilter timestampFilter = searchQuery.getSearchFilterById(facet.getId());
+                JsonNode interval = getInterval(timestampFilter, histogramFacetConfigDTO.getIntervals());
+                String timeZone = histogramFacetConfigDTO.getTimeZone();
+                if(timeZone == null) {
+                    timeZone = "Europe/Berlin";
+                }
+                Integer minDocCount = histogramFacetConfigDTO.getMinDocCount();
+                if(minDocCount == null) {
+                    minDocCount = 0;
+                }
+                if(histogramFacetConfigDTO.getQuery() != null) {
+                    return JsonBuilder.create().json(histogramFacetConfigDTO.getQuery()).valueMap("interval", interval).replace().get();
                 } else {
                     // deprecated ... used in the old qsc dashboard
-                    jsonBuilder.object("calendar_interval", "hour");
+                    jsonBuilder.json(interval);
                     jsonBuilder.
-                            object("time_zone", getValueOrDefault(facet.getParameters(), "time_zone", "Europe/Berlin")).
-                            object("min_doc_count", 0);
+                            object("time_zone", getValueOrDefault(facet.getParameters(), "time_zone", timeZone)).
+                            object("min_doc_count", minDocCount);
                 }
             } else if ("year".equals(facet.getType())) {
                 jsonBuilder.
@@ -145,16 +156,21 @@ public class AggregationMapper {
     static JsonNode getInterval(SearchFilter timestampFilter, List<IntervalDTO> intervalConfigList) throws JsonBuilderException {
 
         IntervalDTO interval = null;
-
-        String from = timestampFilter.getMinValue().toString();
-        String to = timestampFilter.getMaxValue().toString();
-        long minutesBetween = getMinutesBetween(from, to);
-        for(IntervalDTO intervalItem : intervalConfigList) {
-            if(intervalItem.getMinute() == null || minutesBetween < intervalItem.getMinute()) {
-                interval = intervalItem;
-                break;
+        if(timestampFilter == null) {
+            // take the last one in the config
+            interval = intervalConfigList.get(intervalConfigList.size() - 1);
+        } else {
+            String from = timestampFilter.getMinValue().toString();
+            String to = timestampFilter.getMaxValue().toString();
+            long minutesBetween = getMinutesBetween(from, to);
+            for(IntervalDTO intervalItem : intervalConfigList) {
+                if(intervalItem.getMinute() == null || minutesBetween < intervalItem.getMinute()) {
+                    interval = intervalItem;
+                    break;
+                }
             }
         }
+
 
 
         if(interval == null) {
