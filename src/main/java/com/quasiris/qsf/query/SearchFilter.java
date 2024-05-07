@@ -19,6 +19,7 @@ public class SearchFilter extends BaseSearchFilter {
     private String id;
 
     private String name;
+    private String fieldName;
 
     private List<String> values;
 
@@ -230,6 +231,14 @@ public class SearchFilter extends BaseSearchFilter {
         searchFilter.setFilterType(FilterType.TERM);
         searchFilter.setFilterDataType(FilterDataType.STRING);
         return searchFilter;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
     @Override
