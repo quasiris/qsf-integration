@@ -1,0 +1,60 @@
+{
+  "intervals": [
+    {
+      "minute": 121,
+      "comment": "1 h",
+      "type": "fixed_interval",
+      "interval": "1m",
+      "format": "HH:mm"
+    },
+    {
+      "minute": 720,
+      "comment": "12 h",
+      "type": "fixed_interval",
+      "interval": "5m",
+      "format": "HH:mm"
+    },
+    {
+      "minute": 11520,
+      "comment": "8 Tage",
+      "type": "fixed_interval",
+      "interval": "1h",
+      "format": "dd.MM HH:mm"
+    },
+    {
+      "minute": 21600,
+      "comment": "15 Tage",
+      "type": "fixed_interval",
+      "interval": "3h",
+      "format": "dd.MM HH:mm"
+    },
+    {
+      "minute": 31680,
+      "comment": "22 Tage",
+      "type": "fixed_interval",
+      "interval": "4h",
+      "format": "dd.MM HH:mm"
+    },
+    {
+      "minute": 46080,
+      "comment": "32 Tage",
+      "type": "fixed_interval",
+      "interval": "12h",
+      "format": "dd.MM HH:mm"
+    },
+    {
+      "minute": 178560,
+      "comment": "4 Monate a 31 Tage",
+      "type": "fixed_interval",
+      "interval": "1d",
+      "format": "dd.MM HH:mm"
+    },
+    {
+      "comment": "everything else",
+      "type": "calendar_interval",
+      "interval": "1w",
+      "facetKeyMapper": "kw",
+      "format": "dd.MM"
+    }
+  ]
+}
