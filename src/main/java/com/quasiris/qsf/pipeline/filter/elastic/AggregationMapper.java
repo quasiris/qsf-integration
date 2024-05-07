@@ -40,7 +40,7 @@ public class AggregationMapper {
         try {
 
             if("elastic".equals(facet.getType())) {
-                JsonNode query = getParameter(facet.getParameters(), "query", null, JsonNode.class);
+                JsonNode query = HistogramFacet.getParameter(facet.getParameters(), "query", null, JsonNode.class);
                 return query;
             }
 
@@ -59,15 +59,9 @@ public class AggregationMapper {
 
             if("date_histogram".equals(facet.getType())) {
                 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#fixed_intervals
-                HistogramFacetConfigDTO histogramFacetConfigDTO = getParameter(facet.getParameters(), "config", null, HistogramFacetConfigDTO.class);
-                if(histogramFacetConfigDTO == null) {
-                    histogramFacetConfigDTO = JsonBuilder.create().
-                            classpath("com/quasiris/qsf/elastic/config/default-histogram-facet-config.json").
-                            get(HistogramFacetConfigDTO.class);
-                }
-
+                HistogramFacetConfigDTO histogramFacetConfigDTO = HistogramFacet.loadHistogramFacetConfigDTO(facet.getParameters());
                 SearchFilter timestampFilter = searchQuery.getSearchFilterById(facet.getId());
-                JsonNode interval = getInterval(timestampFilter, histogramFacetConfigDTO.getIntervals());
+                JsonNode interval = HistogramFacet.getIntervalJson(timestampFilter, histogramFacetConfigDTO.getIntervals());
                 String timeZone = histogramFacetConfigDTO.getTimeZone();
                 if(timeZone == null) {
                     timeZone = "Europe/Berlin";
@@ -151,39 +145,6 @@ public class AggregationMapper {
         } catch (JsonBuilderException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    static JsonNode getInterval(SearchFilter timestampFilter, List<IntervalDTO> intervalConfigList) throws JsonBuilderException {
-
-        IntervalDTO interval = null;
-        if(timestampFilter == null) {
-            // take the last one in the config
-            interval = intervalConfigList.get(intervalConfigList.size() - 1);
-        } else {
-            String from = timestampFilter.getMinValue().toString();
-            String to = timestampFilter.getMaxValue().toString();
-            long minutesBetween = getMinutesBetween(from, to);
-            for(IntervalDTO intervalItem : intervalConfigList) {
-                if(intervalItem.getMinute() == null || minutesBetween < intervalItem.getMinute()) {
-                    interval = intervalItem;
-                    break;
-                }
-            }
-        }
-
-
-
-        if(interval == null) {
-            return JsonBuilder.create().object("calendar_interval", "hour").get();
-        }
-        return JsonBuilder.create().object(interval.getType(), interval.getInterval()).get() ;
-    }
-
-    static long getMinutesBetween(String from, String to) {
-        Instant fromInstant = SupportedDateFormatsParser.requireInstantFromString(from);
-        Instant toInstant = SupportedDateFormatsParser.requireInstantFromString(to);
-        long minutesBetween  = Duration.between(fromInstant, toInstant).toMinutes();
-        return minutesBetween;
     }
 
     public static String getValueOrDefault(Map<String, Object> parameters, String key, String defaultValue) {
@@ -278,17 +239,5 @@ public class AggregationMapper {
         } catch (JsonBuilderException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    static <T> T getParameter(Map<String, Object> parameters, String param, T defaultValue, Class<T> toValueType) {
-        if(parameters == null) {
-            return defaultValue;
-        }
-        Object value = parameters.get(param);
-        if(value == null) {
-            return defaultValue;
-        }
-
-        return JsonUtil.defaultMapper().convertValue(value, toValueType);
     }
 }
