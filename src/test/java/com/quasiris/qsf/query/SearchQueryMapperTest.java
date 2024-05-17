@@ -13,6 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class SearchQueryMapperTest {
 
     @Test
+    void testNextPageToken() throws Exception {
+        SearchQueryDTO searchQueryDTO = readQueryFromFile("next-page-token.json");
+        SearchQuery searchQuery = SearchQueryMapper.map(searchQueryDTO);
+        assertEquals("cdee7a05-8639-4121-a114-7942ba09aa1e9", searchQuery.getNextPageToken());
+    }
+    @Test
     void testDateRangeMaxNullFilter() throws Exception {
         SearchQueryDTO searchQueryDTO = readQueryFromFile("filter-date-range-max-null.json");
         SearchQuery searchQuery = SearchQueryMapper.map(searchQueryDTO);

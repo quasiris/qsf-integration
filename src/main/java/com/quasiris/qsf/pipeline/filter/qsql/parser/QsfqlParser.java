@@ -172,6 +172,8 @@ public class QsfqlParser {
         }
         query.setPage(page);
         query.setRows(rows);
+
+        query.setNextPageToken(getParameter("nextPageToken"));
     }
 
     void parseSort(SearchQuery query) {

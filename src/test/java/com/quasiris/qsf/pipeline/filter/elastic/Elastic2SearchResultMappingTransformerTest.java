@@ -25,6 +25,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class Elastic2SearchResultMappingTransformerTest {
 
     @Test
+    void testNextPageToken() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        ElasticResult elasticResult = readElasticResultFromFile("next-page-token.json");
+
+        SearchResult searchResult = transformer.transform(elasticResult);
+        assertSearchResult(searchResult, "next-page-token.json");
+    }
+
+    @Test
     void testSubFacet() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         transformer.setFilterPrefix("f.");
@@ -42,10 +51,6 @@ class Elastic2SearchResultMappingTransformerTest {
 
         SearchResult searchResult = transformer.transform(elasticResult);
         searchResult.setName("sub-facet");
-
-
-
-
         assertSearchResult(searchResult, "sub-facet.json");
     }
     @Test

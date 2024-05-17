@@ -51,6 +51,15 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
         // paging
         if(checkPagingEnabled(searchQuery)) {
             Paging paging = PagingBuilder.buildPaging(searchResult.getTotal(), searchQuery.getPage(), searchQuery.getRows());
+
+            // if next page token exists
+            if(searchResult.getPaging() != null && searchResult.getPaging().getNextPage() != null) {
+                paging.setNextPage(searchResult.getPaging().getNextPage());
+                paging.setPreviousPage(null);
+                paging.setCurrentPage(null);
+                paging.setLastPage(null);
+                paging.setFirstPage(null);
+            }
             searchResult.setPaging(paging);
         }
 

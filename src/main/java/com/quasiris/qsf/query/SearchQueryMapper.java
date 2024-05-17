@@ -36,6 +36,7 @@ public class SearchQueryMapper {
         searchQuery.setSort(sort);
 
         searchQuery.setPage(searchQueryDTO.getPage());
+        searchQuery.setNextPageToken(searchQueryDTO.getNextPageToken());
 
         if(searchQuery.getParameters() == null) {
             searchQuery.setParameters(new HashMap<>());

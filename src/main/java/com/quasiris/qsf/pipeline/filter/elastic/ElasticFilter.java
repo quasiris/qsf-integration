@@ -56,6 +56,21 @@ public class ElasticFilter extends AbstractFilter {
         if(elasticQuery == null) {
             return pipelineContainer;
         }
+
+        String queryString = null;
+        String nextPageToken = pipelineContainer.getSearchQuery().getNextPageToken();
+        if(nextPageToken != null ) {
+            if(nextPageToken.toString().equals("init")) {
+                queryString ="?scroll=1m";
+            } else {
+                this.baseUrl = UrlUtil.replacePath(this.baseUrl, "/_search/scroll");
+                elasticQuery = JsonBuilder.create().
+                        object("scroll", "1m").
+                        object("scroll_id", nextPageToken).
+                        getObjectNode();
+            }
+
+        }
         ExplainContextHolder.getContext().explain(getId() + ".baseUrl", UrlUtil.removePassword(baseUrl));
         ExplainContextHolder.getContext().explainJson(getId() + ".query", elasticQuery);
 
@@ -65,7 +80,7 @@ public class ElasticFilter extends AbstractFilter {
         ElasticResult elasticResult = null;
         if(elasticSearchClient != null) {
             String jsonQuery = JsonUtil.toJson(elasticQuery);
-            elasticResult = elasticSearchClient.search(baseUrl, jsonQuery, Duration.ofMillis(requestTimeout));
+            elasticResult = elasticSearchClient.search(baseUrl, jsonQuery, Duration.ofMillis(requestTimeout),queryString);
         } else {
             elasticResult = elasticClient.request(baseUrl + "/_search", elasticQuery);
         }

@@ -1,0 +1,72 @@
+{
+  "statusCode" : 200,
+  "statusMessage" : "OK",
+  "documents" : [
+    {
+      "id" : "4910",
+      "document" : {
+        "rating" : "4.6",
+        "identifier_exists" : "no",
+        "description" : "my description"
+      },
+      "fieldCount" : 3
+    }
+  ],
+  "time" : 11,
+  "total" : 303,
+  "facets" : [
+    {
+      "name" : "location_city",
+      "id" : "location_city",
+      "filterName" : "location_city",
+      "count" : 0,
+      "resultCount" : 0,
+      "values" : [ ]
+    },
+    {
+      "name" : "vendor_id",
+      "id" : "vendor_id",
+      "filterName" : "vendor_id",
+      "count" : 0,
+      "resultCount" : 0,
+      "values" : [ ]
+    },
+    {
+      "name" : "vendor_id_ext",
+      "id" : "vendor_id_ext",
+      "filterName" : "vendor_id_ext",
+      "count" : 0,
+      "resultCount" : 0,
+      "values" : [ ]
+    },
+    {
+      "name" : "show_teaser",
+      "id" : "show_teaser",
+      "filterName" : "show_teaser",
+      "count" : 0,
+      "resultCount" : 0,
+      "values" : [ ]
+    },
+    {
+      "name" : "location_state",
+      "id" : "location_state",
+      "filterName" : "location_state",
+      "count" : 0,
+      "resultCount" : 0,
+      "values" : [ ]
+    },
+    {
+      "name" : "brand",
+      "id" : "brand",
+      "filterName" : "brand",
+      "count" : 0,
+      "resultCount" : 0,
+      "values" : [ ]
+    }
+  ],
+  "paging" : {
+    "nextPage" : {
+      "token" : "FGluY2x1ZGVfY29udGV4dF91dWlkDXF1ZXJ5QW5kRmV0Y2gBFkhBMl9NXzFwUnMtempPa3VQQ01oSmcAAAAAAABgihZ6NG9aSVB0LVFzQ1p6cHllcXQwdXFB"
+    }
+  }
+}

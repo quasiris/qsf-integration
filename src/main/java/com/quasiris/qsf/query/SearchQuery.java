@@ -35,6 +35,8 @@ public class SearchQuery {
 
     private Integer rows;
 
+    private String nextPageToken;
+
     private boolean debug = false;
     private boolean explain = false;
 
@@ -74,6 +76,7 @@ public class SearchQuery {
         }
         this.sort = searchQuery.getSort();
         this.page = searchQuery.getPage();
+        this.nextPageToken = searchQuery.getNextPageToken();
         this.rows = searchQuery.getRows();
         this.debug = searchQuery.isDebug();
         this.explain = searchQuery.isExplain();
@@ -463,6 +466,14 @@ public class SearchQuery {
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public String getNextPageToken() {
+        return nextPageToken;
+    }
+
+    public void setNextPageToken(String nextPageToken) {
+        this.nextPageToken = nextPageToken;
     }
 
     @Override

@@ -4,17 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.category.dto.CategoryDTO;
-import com.quasiris.qsf.commons.util.UrlUtil;
-import com.quasiris.qsf.dto.response.Document;
-import com.quasiris.qsf.dto.response.Facet;
-import com.quasiris.qsf.dto.response.FacetValue;
-import com.quasiris.qsf.dto.response.SearchResult;
+import com.quasiris.qsf.dto.response.*;
 import com.quasiris.qsf.pipeline.PipelineContainer;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.Aggregation;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.Bucket;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
-import com.quasiris.qsf.pipeline.filter.elastic.bean.InnerHitResult;
+import com.quasiris.qsf.pipeline.filter.elastic.bean.*;
 import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetFilterMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetFilterMapper;
@@ -25,13 +17,7 @@ import com.quasiris.qsf.util.QsfIntegrationConstants;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -65,12 +51,21 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     @Override
     public SearchResult transform(ElasticResult elasticResult) {
+
         SearchResult searchResult = new SearchResult();
         searchResult.initDocuments();
         searchResult.setTotal(elasticResult.getHits().getTotal());
         searchResult.setStatusMessage("OK");
         searchResult.setStatusCode(200);
         searchResult.setTime(elasticResult.getTook());
+
+        if(elasticResult.get_scroll_id() != null) {
+
+            Paging paging = new Paging();
+            paging.setNextPage(new Page());
+            paging.getNextPage().setToken(elasticResult.get_scroll_id());
+            searchResult.setPaging(paging);
+        }
 
         for(Hit hit :elasticResult.getHits().getHits()) {
             Document document = transformHit(hit);

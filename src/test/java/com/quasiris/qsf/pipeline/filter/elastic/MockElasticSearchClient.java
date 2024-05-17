@@ -34,13 +34,13 @@ public class MockElasticSearchClient extends ElasticSearchClient {
     }
 
     @Override
-    public ElasticResult search(String indexUrl, String jsonQuery, Duration requestTimeout) {
+    public ElasticResult search(String indexUrl, String jsonQuery, Duration requestTimeout, String queryString) {
         MockRequestFileHandler mockRequestFileHandler = new MockRequestFileHandler(mockDir, mockFile);
         if(mock) {
             return mockRequestFileHandler.getMockedElasticResult(jsonQuery, ElasticResult.class);
         }
 
-        ElasticResult elasticResult = super.search(indexUrl, jsonQuery);
+        ElasticResult elasticResult = super.search(indexUrl, jsonQuery, queryString);
         if(record) {
             mockRequestFileHandler.recordQueryElasticResult(jsonQuery, elasticResult);
         }

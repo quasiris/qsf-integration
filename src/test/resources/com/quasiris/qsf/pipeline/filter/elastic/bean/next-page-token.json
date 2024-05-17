@@ -1,0 +1,70 @@
+{
+  "_scroll_id": "FGluY2x1ZGVfY29udGV4dF91dWlkDXF1ZXJ5QW5kRmV0Y2gBFkhBMl9NXzFwUnMtempPa3VQQ01oSmcAAAAAAABgihZ6NG9aSVB0LVFzQ1p6cHllcXQwdXFB",
+  "took": 11,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 303,
+      "relation": "eq"
+    },
+    "max_score": 41.5257,
+    "hits": [
+      {
+        "_index": "my-index",
+        "_type": "_doc",
+        "_id": "4910",
+        "_score": 41.5257,
+        "_source": {
+          "rating": "4.6",
+          "identifier_exists": "no",
+          "description": "my description"
+        },
+        "matched_queries": [
+          "search"
+        ]
+      }
+    ]
+  },
+  "aggregations": {
+    "qsc_filtered": {
+      "meta": {},
+      "doc_count": 303,
+      "location_city": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": []
+      },
+      "vendor_id": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": []
+      },
+      "vendor_id_ext": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": []
+      },
+      "show_teaser": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": []
+      },
+      "location_state": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": []
+      },
+      "brand": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": []
+      }
+    }
+  }
+}

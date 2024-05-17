@@ -106,6 +106,11 @@ public class QsfqlParserTest {
     }
 
     @Test
+    public void testParameterNextPageToken() throws Exception {
+        SearchQuery query = createQuery("nextPageToken=init");
+        assertEquals("init", query.getNextPageToken());
+    }
+    @Test
     public void testParameterPage() throws Exception {
         SearchQuery query = createQuery("page=5");
         assertEquals(Integer.valueOf(5), query.getPage());

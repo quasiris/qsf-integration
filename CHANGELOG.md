@@ -3,6 +3,13 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- make it possible to export all search results with a next page token
+- 
+### Changed
+
+
+## [6.7]
+### Added
 - add userId and sessionId to the request and tracking
 - add a method to get a ObjectNode in the JsonBuilder
 - support date_histogram facets with a custom query
