@@ -3,6 +3,13 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+
+
+### Changed
+
+
+## [6.8]
+### Added
 - make it possible to export all search results with a next page token
 - 
 ### Changed
