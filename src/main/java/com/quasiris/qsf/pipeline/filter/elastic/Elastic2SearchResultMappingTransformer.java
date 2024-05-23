@@ -218,6 +218,9 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             }
 
             FacetValue facetValue = new FacetValue(key, count);
+            if(bucket.getCustomData() != null) {
+                facetValue.setCustomData(bucket.getCustomData());
+            }
             facetReseultCount = facetReseultCount + facetValue.getCount();
 
             facetFilterMapper.map(facetValue);

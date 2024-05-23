@@ -3,7 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
-
+- support custom data in facets
 
 ### Changed
 

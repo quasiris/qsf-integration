@@ -1,0 +1,52 @@
+{
+  "took": 474,
+  "timed_out": false,
+  "_shards": {
+    "total": 364,
+    "successful": 364,
+    "skipped": 359,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 128304,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": []
+  },
+  "aggregations": {
+    "timestamp": {
+      "buckets": [
+        {
+          "key_as_string": "2024-05-19T22:00:00.000Z",
+          "key": 1716156000000,
+          "doc_count": 49,
+          "searches": {
+            "doc_count": 15
+          },
+          "addToCart": {
+            "doc_count": 1
+          },
+          "ctr": {
+            "value": 6.666666666666667
+          }
+        },
+        {
+          "key_as_string": "2024-05-19T23:00:00.000Z",
+          "key": 1716159600000,
+          "doc_count": 5,
+          "searches": {
+            "doc_count": 2
+          },
+          "addToCart": {
+            "doc_count": 1
+          },
+          "ctr": {
+            "value": 50.0
+          }
+        }
+      ]
+    }
+  }
+}
