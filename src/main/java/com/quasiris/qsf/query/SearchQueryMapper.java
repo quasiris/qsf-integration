@@ -2,11 +2,7 @@ package com.quasiris.qsf.query;
 
 import com.quasiris.qsf.commons.text.date.HumanDateParser;
 import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
-import com.quasiris.qsf.dto.query.BaseSearchFilterDTO;
-import com.quasiris.qsf.dto.query.BoolSearchFilterDTO;
-import com.quasiris.qsf.dto.query.SearchFilterDTO;
-import com.quasiris.qsf.dto.query.SearchQueryDTO;
-import com.quasiris.qsf.dto.query.SortDTO;
+import com.quasiris.qsf.dto.query.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,8 +136,8 @@ public class SearchQueryMapper {
     public static void mapRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
         if(isNumberDataType(searchFilterDTO)) {
             RangeFilterValue<Number> rangeFilterValue = new RangeFilterValue<>();
-            rangeFilterValue.setMinValue(((Number) searchFilterDTO.getMinValue()).doubleValue());
-            rangeFilterValue.setMaxValue(((Number) searchFilterDTO.getMaxValue()).doubleValue());
+            rangeFilterValue.setMinValue(parseObjectAsDouble(searchFilterDTO.getMinValue()));
+            rangeFilterValue.setMaxValue(parseObjectAsDouble(searchFilterDTO.getMaxValue()));
             searchFilter.setRangeValue(rangeFilterValue);
             searchFilter.setFilterType(FilterType.RANGE);
             searchFilter.setFilterDataType(FilterDataType.NUMBER);
@@ -294,4 +290,22 @@ public class SearchQueryMapper {
     public void setDefaultFilterOperator(FilterOperator defaultFilterOperator) {
         this.defaultFilterOperator = defaultFilterOperator;
     }
+
+    public static Double parseObjectAsDouble(Object obj) throws IllegalArgumentException {
+        if(obj == null) {
+            return null;
+        }
+        if (obj instanceof String) {
+            return Double.parseDouble((String) obj);
+        } else if (obj instanceof Double) {
+            return (Double) obj;
+        } else if (obj instanceof Integer) {
+            return ((Integer) obj).doubleValue();
+        } else if (obj instanceof Long) {
+            return ((Long) obj).doubleValue();
+        } else {
+            throw new IllegalArgumentException("Can not parse " + obj + " to a Double value");
+        }
+    }
+
 }
