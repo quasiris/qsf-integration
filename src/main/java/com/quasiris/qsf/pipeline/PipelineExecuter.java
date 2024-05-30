@@ -1,12 +1,14 @@
 package com.quasiris.qsf.pipeline;
 
+import com.quasiris.qsf.commons.util.YamlFactory;
+import com.quasiris.qsf.explain.Explain;
 import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.explain.ExplainPipelineAutoClosable;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.query.SearchQuery;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -110,6 +112,12 @@ public class PipelineExecuter {
                 executorService.execute(futureTask);
                 PipelineCallableResponse response = futureTask.get(pipeline.getTimeout(), TimeUnit.MILLISECONDS);
                 pipelineContainer = response.getPipelineContainer();
+
+                if(ExplainContextHolder.getContext().isExplain()) {
+                    String debugPipeline = YamlFactory.serialize(pipeline);
+                    Explain debugPipelineExplain = ExplainContextHolder.getContext().createExplainJson("pipeline", debugPipeline);
+                    explainPipelineAutoClosable.getPipelineExplain().getChildren().add(debugPipelineExplain);
+                }
                 explainPipelineAutoClosable.getPipelineExplain().getExplainObject().setDuration(pipelineContainer.currentTime());
             }
             if(pipelineContainer.isDebugEnabled()) {

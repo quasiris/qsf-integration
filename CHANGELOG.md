@@ -6,7 +6,8 @@ All notable changes qsf-integration project will be documented in this file.
 - support custom data in facets
 - support range filters with string values
 - implement request validation for search query
-
+- log the pipeline in the explain
+- 
 ### Changed
 
 

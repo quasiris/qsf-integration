@@ -89,6 +89,11 @@ public class ExplainContext {
         if(!explain) {
             return;
         }
+        Explain explain = createExplainJson(id, value);
+        addChild(explain);
+    }
+
+    public Explain createExplainJson(String id, Object value) {
         Explain explain = new Explain();
         explain.setId(id);
         explain.setName(id);
@@ -98,9 +103,8 @@ public class ExplainContext {
             explain.setExplainObject(value);
         }
         explain.setDataType(ExplainDataType.JSON);
-        addChild(explain);
+        return explain;
     }
-
     public void explainThrowable(String id, Throwable throwable) {
         if (!explain) {
             return;
