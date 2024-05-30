@@ -1,6 +1,7 @@
 package com.quasiris.qsf.migration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.quasiris.qsf.dto.error.SearchQueryException;
 import com.quasiris.qsf.dto.query.SearchQueryDTO;
 import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParser;
 import com.quasiris.qsf.query.SearchQuery;
@@ -33,6 +34,8 @@ public class QsfSearchQueryParser {
             SearchQueryDTO searchQueryDTO = readPost(httpServletRequest);
             SearchQuery searchQuery = parseSearchQueryDTO(searchQueryDTO, httpServletRequest);
             return searchQuery;
+        } catch (SearchQueryException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Could not read convert search query, because: " + e.getMessage(), e);
         }

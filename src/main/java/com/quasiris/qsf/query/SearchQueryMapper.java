@@ -2,6 +2,7 @@ package com.quasiris.qsf.query;
 
 import com.quasiris.qsf.commons.text.date.HumanDateParser;
 import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
+import com.quasiris.qsf.dto.error.SearchQueryException;
 import com.quasiris.qsf.dto.query.*;
 
 import java.util.ArrayList;
@@ -135,12 +136,16 @@ public class SearchQueryMapper {
 
     public static void mapRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
         if(isNumberDataType(searchFilterDTO)) {
-            RangeFilterValue<Number> rangeFilterValue = new RangeFilterValue<>();
-            rangeFilterValue.setMinValue(parseObjectAsDouble(searchFilterDTO.getMinValue()));
-            rangeFilterValue.setMaxValue(parseObjectAsDouble(searchFilterDTO.getMaxValue()));
-            searchFilter.setRangeValue(rangeFilterValue);
-            searchFilter.setFilterType(FilterType.RANGE);
-            searchFilter.setFilterDataType(FilterDataType.NUMBER);
+            try {
+                RangeFilterValue<Number> rangeFilterValue = new RangeFilterValue<>();
+                rangeFilterValue.setMinValue(parseObjectAsDouble(searchFilterDTO.getMinValue()));
+                rangeFilterValue.setMaxValue(parseObjectAsDouble(searchFilterDTO.getMaxValue()));
+                searchFilter.setRangeValue(rangeFilterValue);
+                searchFilter.setFilterType(FilterType.RANGE);
+                searchFilter.setFilterDataType(FilterDataType.NUMBER);
+            } catch (SearchQueryException e) {
+                throw new SearchQueryException(e.getMessage() + " filter: " + searchFilter.getId());
+            }
         }
     }
 
@@ -295,16 +300,22 @@ public class SearchQueryMapper {
         if(obj == null) {
             return null;
         }
-        if (obj instanceof String) {
-            return Double.parseDouble((String) obj);
-        } else if (obj instanceof Double) {
-            return (Double) obj;
-        } else if (obj instanceof Integer) {
-            return ((Integer) obj).doubleValue();
-        } else if (obj instanceof Long) {
-            return ((Long) obj).doubleValue();
-        } else {
-            throw new IllegalArgumentException("Can not parse " + obj + " to a Double value");
+        try {
+            if (obj instanceof String) {
+                return Double.parseDouble((String) obj);
+            } else if (obj instanceof Double) {
+                return (Double) obj;
+            } else if (obj instanceof Integer) {
+                return ((Integer) obj).doubleValue();
+            } else if (obj instanceof Long) {
+                return ((Long) obj).doubleValue();
+            } else {
+                throw new SearchQueryException("Can not parse " + obj + " to a Double value");
+            }
+        } catch (SearchQueryException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new SearchQueryException("Can not parse " + obj + " to a Double value becaouse: " + e.getMessage());
         }
     }
 
