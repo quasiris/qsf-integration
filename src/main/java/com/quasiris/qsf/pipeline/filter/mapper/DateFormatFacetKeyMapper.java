@@ -28,4 +28,20 @@ public class DateFormatFacetKeyMapper implements FacetKeyMapper {
                 .format(formatter);
         return formattedDate;
     }
+
+    public DateTimeFormatter getFormatter() {
+        return formatter;
+    }
+
+    public void setFormatter(DateTimeFormatter formatter) {
+        this.formatter = formatter;
+    }
+
+    public ZoneId getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(ZoneId zoneId) {
+        this.zoneId = zoneId;
+    }
 }
