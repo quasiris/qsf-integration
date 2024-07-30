@@ -3,11 +3,17 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+
+### Changed
+- use java http client as default in elastic client and elastic filter
+
+## [6.10]
+### Added
 - support custom data in facets
 - support range filters with string values
 - implement request validation for search query
 - log the pipeline in the explain
-- 
+-
 ### Changed
 
 
