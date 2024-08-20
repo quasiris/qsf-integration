@@ -13,7 +13,7 @@
       "resultCount" : 54,
       "values" : [
         {
-          "value" : "1716156000000",
+          "value" : 1716156000000,
           "count" : 49,
           "filter" : "timestamp=1716156000000",
           "customData" : {
@@ -23,7 +23,7 @@
           }
         },
         {
-          "value" : "1716159600000",
+          "value" : 1716159600000,
           "count" : 5,
           "filter" : "timestamp=1716159600000",
           "customData" : {

@@ -10,17 +10,17 @@ public class AbstractFacetFilterMapper implements FacetFilterMapper {
     private String filterValuePrefix;
     private String filterType;
     private String filterPrefix;
-    private String key;
+    private Object key;
 
     private FacetValue parentFacetValue;
 
     @Override
-    public void setKey(String key) {
+    public void setKey(Object key) {
         this.key = key;
     }
 
     @Override
-    public String getKey() {
+    public Object getKey() {
         return this.key;
     }
 

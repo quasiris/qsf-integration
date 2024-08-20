@@ -7,9 +7,9 @@ public interface FacetFilterMapper {
 
 
 
-    void setKey(String key);
+    void setKey(Object key);
 
-    String getKey();
+    Object getKey();
     void setFilterPrefix(String filterPrefix);
 
     String getFilterPrefix();

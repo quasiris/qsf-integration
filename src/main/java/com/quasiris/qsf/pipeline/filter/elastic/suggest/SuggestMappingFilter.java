@@ -47,7 +47,7 @@ public class SuggestMappingFilter extends AbstractFilter {
             Document document = new Document();
             String keyword = null;
             if(startTokenJoiner.length() == 0) {
-                keyword = facetValue.getValue();
+                keyword = facetValue.getValue().toString();
             } else {
                 keyword = startToken + " " + facetValue.getValue();
             }
@@ -61,12 +61,12 @@ public class SuggestMappingFilter extends AbstractFilter {
 
     private void mergeFacet(Map<String, FacetValue> mergedFacet, SearchResult searchResult, String fieldName, Set<String> startTokens ) {
         for(FacetValue facetValue : searchResult.getFacetById(fieldName).getValues()) {
-            if (startTokens.contains(facetValue.getValue())) {
+            if (startTokens.contains(facetValue.getValue().toString())) {
                 continue;
             }
-            FacetValue f = mergedFacet.get(facetValue.getValue());
+            FacetValue f = mergedFacet.get(facetValue.getValue().toString());
             if(f ==  null) {
-                mergedFacet.put(facetValue.getValue(), facetValue);
+                mergedFacet.put(facetValue.getValue().toString(), facetValue);
             } else {
                 f.setCount(f.getCount() + facetValue.getCount());
             }

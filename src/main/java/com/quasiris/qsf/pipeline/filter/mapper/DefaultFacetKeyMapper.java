@@ -4,7 +4,7 @@ public class DefaultFacetKeyMapper implements FacetKeyMapper {
 
 
     @Override
-    public String map(String value) {
+    public Object map(Object value) {
         return value;
     }
 }

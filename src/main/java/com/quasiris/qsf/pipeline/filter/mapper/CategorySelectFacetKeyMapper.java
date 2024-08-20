@@ -6,8 +6,8 @@ public class CategorySelectFacetKeyMapper implements FacetKeyMapper {
 
 
     @Override
-    public String map(String value) {
-        String[] categories = value.split(Pattern.quote("|___|"));
+    public String map(Object value) {
+        String[] categories = value.toString().split(Pattern.quote("|___|"));
 
         String lastCategory = categories[categories.length -1];
 

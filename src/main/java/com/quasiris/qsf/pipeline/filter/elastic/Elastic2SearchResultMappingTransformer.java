@@ -210,7 +210,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         facetFilterMapper.setFilterPrefix(filterPrefix);
 
         for(Bucket bucket : aggregation.getBuckets()) {
-            String key = facetKeyMapper.map(bucket.getKey());
+            Object key = facetKeyMapper.map(bucket.getKey());
             facetFilterMapper.setKey(bucket.getKey());
             Long count = bucket.getDoc_count();
             if(bucket.getVariant_count() != null && bucket.getVariant_count().getValue() != null) {
@@ -258,7 +258,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     protected Facet mapAggregationToNavigation(String id, Aggregation aggregation, FacetMapping mapping) {
         Node<CategoryDTO> root = new Node<>();
         for(Bucket bucket : aggregation.getBuckets()) {
-            String[] categories = bucket.getKey().split(Pattern.quote("|___|"));
+            String[] categories = bucket.getKey().toString().split(Pattern.quote("|___|"));
             Node<CategoryDTO> current = root;
             for (String categoryString : categories) {
                 String[] splitted = categoryString.split(Pattern.quote("|-|"));

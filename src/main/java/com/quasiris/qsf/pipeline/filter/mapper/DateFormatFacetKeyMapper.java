@@ -21,9 +21,9 @@ public class DateFormatFacetKeyMapper implements FacetKeyMapper {
     }
 
     @Override
-    public String map(String value) {
+    public String map(Object value) {
 
-        final String formattedDate = Instant.ofEpochMilli(Long.valueOf(value))
+        final String formattedDate = Instant.ofEpochMilli(Long.valueOf(value.toString()))
                 .atZone(zoneId)
                 .format(formatter);
         return formattedDate;
