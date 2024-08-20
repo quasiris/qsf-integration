@@ -3,6 +3,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+-use Object for facet value to support non string values like integer, double, ...
 
 ### Changed
 - use java http client as default in elastic client and elastic filter

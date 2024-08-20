@@ -1,0 +1,73 @@
+{
+  "statusCode" : 200,
+  "statusMessage" : "OK",
+  "documents" : [ ],
+  "time" : 3,
+  "total" : 1004,
+  "facets" : [
+    {
+      "name" : "price",
+      "id" : "price",
+      "filterName" : "price",
+      "count" : 11,
+      "resultCount" : 1004,
+      "values" : [
+        {
+          "value" : 15.0,
+          "count" : 20,
+          "filter" : "price=15.0"
+        },
+        {
+          "value" : 20.0,
+          "count" : 100,
+          "filter" : "price=20.0"
+        },
+        {
+          "value" : 25.0,
+          "count" : 100,
+          "filter" : "price=25.0"
+        },
+        {
+          "value" : 30.0,
+          "count" : 100,
+          "filter" : "price=30.0"
+        },
+        {
+          "value" : 35.0,
+          "count" : 100,
+          "filter" : "price=35.0"
+        },
+        {
+          "value" : 40.0,
+          "count" : 100,
+          "filter" : "price=40.0"
+        },
+        {
+          "value" : 45.0,
+          "count" : 104,
+          "filter" : "price=45.0"
+        },
+        {
+          "value" : 50.0,
+          "count" : 100,
+          "filter" : "price=50.0"
+        },
+        {
+          "value" : 55.0,
+          "count" : 100,
+          "filter" : "price=55.0"
+        },
+        {
+          "value" : 60.0,
+          "count" : 100,
+          "filter" : "price=60.0"
+        },
+        {
+          "value" : 65.0,
+          "count" : 80,
+          "filter" : "price=65.0"
+        }
+      ]
+    }
+  ]
+}

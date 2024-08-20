@@ -1,0 +1,23 @@
+{
+  "from" : 0,
+  "size" : 10,
+  "track_total_hits" : true,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "match_all" : { }
+        }
+      ]
+    }
+  },
+  "aggs" : {
+    "price" : {
+      "histogram" : {
+        "field" : "price",
+        "interval" : 1.0,
+        "min_doc_count" : 1
+      }
+    }
+  }
+}

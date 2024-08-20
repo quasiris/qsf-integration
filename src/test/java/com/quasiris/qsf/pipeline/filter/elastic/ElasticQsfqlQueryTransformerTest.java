@@ -923,7 +923,21 @@ public class ElasticQsfqlQueryTransformerTest {
 
     }
 
-    @DisplayName("Transform date range filter")
+    @DisplayName("Transform histogram facet")
+    @Test
+    public void transformHistogramFacet() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+
+        Facet facet = new Facet();
+        facet.setId("price");
+        facet.setName("price");
+        facet.setType("histogram");
+        transformer.addAggregation(facet);
+        ObjectNode elasticQuery = transform(transformer,  "q=*");
+        assertQuery(elasticQuery, "histogram-facet.json");
+    }
+    @DisplayName("Transform date histogram facet")
     @Test
     public void transformDateHistogramFacet() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
@@ -935,11 +949,7 @@ public class ElasticQsfqlQueryTransformerTest {
         facet.setType("date_histogram");
         transformer.addAggregation(facet);
         ObjectNode elasticQuery = transform(transformer,  "q=*");
-
-        assertEquals("timestamp", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("field").asText());
-        assertEquals("1w", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("calendar_interval").asText());
-        assertEquals("Europe/Berlin", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("time_zone").asText());
-        assertEquals("0", elasticQuery.get("aggs").get("searchQueries").get("date_histogram").get("min_doc_count").asText());
+        assertQuery(elasticQuery, "date-histogram-facet.json");
     }
 
     @DisplayName("Transform paging")

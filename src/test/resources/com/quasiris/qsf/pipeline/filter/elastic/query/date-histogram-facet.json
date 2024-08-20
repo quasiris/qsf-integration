@@ -1,0 +1,24 @@
+{
+  "from" : 0,
+  "size" : 10,
+  "track_total_hits" : true,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "match_all" : { }
+        }
+      ]
+    }
+  },
+  "aggs" : {
+    "searchQueries" : {
+      "date_histogram" : {
+        "field" : "timestamp",
+        "calendar_interval" : "1w",
+        "time_zone" : "Europe/Berlin",
+        "min_doc_count" : 0
+      }
+    }
+  }
+}

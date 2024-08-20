@@ -1,19 +1,13 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
-import com.quasiris.qsf.commons.util.JsonUtil;
 import com.quasiris.qsf.dto.query.HistogramFacetConfigDTO;
-import com.quasiris.qsf.dto.query.IntervalDTO;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
 import org.apache.commons.lang3.StringUtils;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 
 public class AggregationMapper {
@@ -57,7 +51,19 @@ public class AggregationMapper {
                     object("include", facet.getInclude()).
                     object("exclude", facet.getExclude());
 
-            if("date_histogram".equals(facet.getType())) {
+            if("histogram".equals(facet.getType())) {
+                // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-histogram-aggregation.html
+                // min_doc_count
+                // interval
+                // missing - not supported
+                // extended_bounds - not supported
+
+                Integer minDocCount = getValueOrDefault(facet.getParameters(), "min_doc_count", 1);
+                Float interval = getValueOrDefault(facet.getParameters(), "interval", 1.0f);
+                jsonBuilder.object("interval", interval);
+                jsonBuilder.object("min_doc_count", minDocCount);
+
+            } else if("date_histogram".equals(facet.getType())) {
                 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#fixed_intervals
                 HistogramFacetConfigDTO histogramFacetConfigDTO = HistogramFacet.loadHistogramFacetConfigDTO(facet.getParameters());
                 SearchFilter timestampFilter = searchQuery.getSearchFilterById(facet.getId());
@@ -147,17 +153,41 @@ public class AggregationMapper {
         }
     }
 
-    public static String getValueOrDefault(Map<String, Object> parameters, String key, String defaultValue) {
-        if(parameters == null) {
-            return defaultValue;
-        }
+    @SuppressWarnings("unchecked")
+    public static <T> T getValueOrDefault(Map<String, Object> parameters, String key, T defaultValue) {
+        if (parameters != null && parameters.containsKey(key)) {
+            Object value = parameters.get(key);
 
-        Object value = parameters.get(key);
-        if(value == null) {
-            return defaultValue;
+            if (defaultValue != null) {
+                Class<?> defaultClass = defaultValue.getClass();
+
+                // Direct type check
+                if (defaultClass.isInstance(value)) {
+                    return (T) value;
+                }
+
+                // Type conversion logic
+                if (value instanceof Number) {
+                    Number numberValue = (Number) value;
+                    if (defaultValue instanceof Float) {
+                        return (T) Float.valueOf(numberValue.floatValue());
+                    } else if (defaultValue instanceof Double) {
+                        return (T) Double.valueOf(numberValue.doubleValue());
+                    } else if (defaultValue instanceof Integer) {
+                        return (T) Integer.valueOf(numberValue.intValue());
+                    } else if (defaultValue instanceof Long) {
+                        return (T) Long.valueOf(numberValue.longValue());
+                    } else if (defaultValue instanceof Short) {
+                        return (T) Short.valueOf(numberValue.shortValue());
+                    } else if (defaultValue instanceof Byte) {
+                        return (T) Byte.valueOf(numberValue.byteValue());
+                    }
+                }
+            }
         }
-        return value.toString();
+        return defaultValue;
     }
+
 
     public static JsonNode createSlider(Facet slider) {
         return createSlider(slider, null);
