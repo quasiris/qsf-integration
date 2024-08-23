@@ -149,12 +149,12 @@
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js</artifactId>
-            <version>23.0.3</version>
+            <version>23.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js-scriptengine</artifactId>
-            <version>23.0.3</version>
+            <version>23.0.5</version>
         </dependency>
     </dependencies>
 
