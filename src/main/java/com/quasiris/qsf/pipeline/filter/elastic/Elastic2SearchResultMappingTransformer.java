@@ -402,6 +402,11 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         if (mappedValue == null && "_score".equals(key)) {
             mappedValue = hit.get_score();
         }
+
+        if (mappedValue == null && "_matched_queries".equals(key)) {
+            mappedValue = hit.getMatched_queries();
+        }
+
         if(mappedValue != null) {
             for(String mappedKey: mapping.getValue()) {
                 mapValue(document, mappedKey, mappedValue);
@@ -509,6 +514,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
         document.getDocument().put("_explanation", hit.get_explanation());
         document.getDocument().put("_score", hit.get_score());
+        document.getDocument().put("_matched_queries", hit.getMatched_queries());
     }
 
     @Override

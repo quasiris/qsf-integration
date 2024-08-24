@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -208,9 +209,11 @@ class Elastic2SearchResultMappingTransformerTest {
         transformer.init(pipelineContainer);
         transformer.addFieldMapping("id", "id");
         transformer.addFieldMapping("_score", "myScore");
+        transformer.addFieldMapping("_matched_queries", "myQueries");
         ElasticResult elasticResult = readElasticResultFromFile("variant-count.json");
         SearchResult searchResult = transformer.transform(elasticResult);
         assertEquals(69.09049, searchResult.getDocuments().get(0).getDocument().get("myScore"));
+        assertEquals(List.of("edismax"), searchResult.getDocuments().get(0).getDocument().get("myQueries"));
     }
 
 
@@ -227,7 +230,9 @@ class Elastic2SearchResultMappingTransformerTest {
         SearchResult searchResult = transformer.transform(elasticResult);
         assertNotNull(searchResult.getDocuments().get(0).getDocument().get("_explanation"));
         assertEquals(69.09049, searchResult.getDocuments().get(0).getDocument().get("_score"));
+        assertEquals(List.of("edismax"), searchResult.getDocuments().get(0).getDocument().get("_matched_queries"));
     }
+
     @Test
     void testVariantCountHotfix() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
