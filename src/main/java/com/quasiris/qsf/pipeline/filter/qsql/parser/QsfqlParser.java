@@ -5,10 +5,11 @@ import com.quasiris.qsf.commons.text.date.HumanDateParser;
 import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
 import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.commons.util.QsfInstant;
-import com.quasiris.qsf.dto.query.FacetDTO;
-import com.quasiris.qsf.dto.query.ResultDTO;
-import com.quasiris.qsf.dto.query.SpellcheckDTO;
+import com.quasiris.qsf.dto.query.*;
 import com.quasiris.qsf.query.*;
+import com.quasiris.qsf.query.FilterDataType;
+import com.quasiris.qsf.query.FilterOperator;
+import com.quasiris.qsf.query.FilterType;
 import com.quasiris.qsf.text.Splitter;
 
 import jakarta.servlet.http.Cookie;
@@ -51,7 +52,46 @@ public class QsfqlParser {
         parseCtrl(query);
         parseParameter(query);
         parseTracking(query);
+        parseResultDisplayFields(query);
         return query;
+    }
+
+    void parseResultDisplayFields(SearchQuery query) {
+        if(httpServletRequest == null) {
+            return;
+        }
+
+        String[] displayFields = httpServletRequest.getParameterMap().get("result.displayFields");
+        if(displayFields == null) {
+            return;
+        }
+
+        List<String> displayFieldsParsed = new ArrayList<>();
+        for(String field : displayFields)  {
+            displayFieldsParsed.addAll(Arrays.asList(field.split(Pattern.quote(","))));
+        }
+        initResultDocumentFields(query);
+        Map<String, FieldDTO> fieldsMap = query.getResult().getDocument().getFields();
+        for(String field : displayFieldsParsed) {
+            fieldsMap.put(field, new FieldDTO());
+        }
+
+
+
+    }
+
+    void initResultDocument(SearchQuery query) {
+        initResult(query);
+        if(query.getResult().getDocument() == null) {
+            query.getResult().setDocument(new DocumentsDTO());
+        }
+    }
+
+    void initResultDocumentFields(SearchQuery query) {
+        initResultDocument(query);
+        if(query.getResult().getDocument().getFields() == null) {
+            query.getResult().getDocument().setFields(new HashMap<>());
+        }
     }
 
     void parseParameter(SearchQuery query) {

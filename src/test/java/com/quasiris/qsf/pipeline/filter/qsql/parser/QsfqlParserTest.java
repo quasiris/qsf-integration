@@ -26,6 +26,15 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class QsfqlParserTest {
 
+
+    @Test
+    public void testDisplayFields() throws Exception {
+        SearchQuery query = createQuery("result.displayFields=foo,bar");
+        assertNotNull(query.getResult().getDocument().getFields().get("foo"));
+        assertNotNull(query.getResult().getDocument().getFields().get("bar"));
+        assertNull(query.getResult().getDocument().getFields().get("alice"));
+    }
+
     @Test
     public void testDefaults() throws Exception {
         SearchQuery query = createQuery("q=foo");
