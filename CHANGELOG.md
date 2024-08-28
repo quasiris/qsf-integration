@@ -4,6 +4,7 @@ All notable changes qsf-integration project will be documented in this file.
 ## [UNRELEASED]
 ### Added
 - map matched_queries for debugging queries
+- implement a color facet filter mapper
 
 ### Changed
 
