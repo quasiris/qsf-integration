@@ -7,6 +7,7 @@ All notable changes qsf-integration project will be documented in this file.
 - implement a color facet filter mapper
 
 ### Changed
+- add minRange and maxRange to the histogram facet
 
 
 ## [6.11]

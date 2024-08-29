@@ -163,6 +163,29 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             return mapAggregationToNavigation(facetId, aggregation, mapping);
         } else if ("categorySelect".equals(mapping.getType())) {
             return mapAggregationToFacet(facetId, aggregation, null, 0);
+        } else if ("histogram".equals(mapping.getType())) {
+            Facet facet =  mapAggregationToFacet(facetId, aggregation, null, 0);
+
+            Number minRange = null;
+            Number maxRange = null;
+            for(FacetValue facetValue : facet.getValues()) {
+                if(minRange == null) {
+                    minRange = (Number) facetValue.getValue();
+                }
+                if(maxRange == null) {
+                    maxRange = (Number) facetValue.getValue();
+                }
+
+                if(((Number) facetValue.getValue()).doubleValue() < minRange.doubleValue()) {
+                    minRange = (Number) facetValue.getValue();
+                }
+                if(((Number) facetValue.getValue()).doubleValue() > maxRange.doubleValue()) {
+                    maxRange = (Number) facetValue.getValue();
+                }
+            }
+            facet.setMinRange(minRange.doubleValue());
+            facet.setMaxRange(maxRange.doubleValue());
+            return facet;
         }
 
 

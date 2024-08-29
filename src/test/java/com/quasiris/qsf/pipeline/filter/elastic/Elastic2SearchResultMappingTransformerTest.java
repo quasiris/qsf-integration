@@ -28,6 +28,7 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void testHistogramFacet() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFacetTypeMapping("price", "histogram");
         ElasticResult elasticResult = readElasticResultFromFile("histogram-facet.json");
 
         SearchResult searchResult = transformer.transform(elasticResult);

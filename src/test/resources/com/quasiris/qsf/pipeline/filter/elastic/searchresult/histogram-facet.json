@@ -8,6 +8,7 @@
     {
       "name" : "price",
       "id" : "price",
+      "type" : "histogram",
       "filterName" : "price",
       "count" : 11,
       "resultCount" : 1004,
@@ -67,7 +68,9 @@
           "count" : 80,
           "filter" : "price=65.0"
         }
-      ]
+      ],
+      "minRange" : 15.0,
+      "maxRange" : 65.0
     }
   ]
 }
