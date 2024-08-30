@@ -183,8 +183,13 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                     maxRange = (Number) facetValue.getValue();
                 }
             }
-            facet.setMinRange(minRange.doubleValue());
-            facet.setMaxRange(maxRange.doubleValue());
+            if(minRange != null) {
+                facet.setMinRange(minRange.doubleValue());
+            }
+
+            if(maxRange != null) {
+                facet.setMaxRange(maxRange.doubleValue());
+            }
             return facet;
         }
 
