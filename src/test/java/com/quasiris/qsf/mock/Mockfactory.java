@@ -1,7 +1,6 @@
 package com.quasiris.qsf.mock;
 
 import com.quasiris.qsf.commons.util.IOUtils;
-import com.quasiris.qsf.pipeline.filter.solr.MockSolrClient;
 import com.quasiris.qsf.pipeline.filter.web.QSFHttpServletRequest;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
@@ -46,11 +45,5 @@ public class Mockfactory {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static MockSolrClient createSolrClient(String url) {
-        MockSolrClient mockSolrClient = new MockSolrClient(url);
-        //mockSolrClient.setRecord(true);
-        return mockSolrClient;
     }
 }

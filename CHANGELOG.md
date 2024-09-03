@@ -3,6 +3,16 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+
+
+### Changed
+
+
+### Breaking Changes
+- Move Solr Filter to a separate package
+
+## [6.12]
+### Added
 - map matched_queries for debugging queries
 - implement a color facet filter mapper
 

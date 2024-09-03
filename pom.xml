@@ -3,7 +3,7 @@
 	<groupId>com.quasiris.qsf</groupId>
 	<artifactId>qsf-integration</artifactId>
 	<packaging>jar</packaging>
-	<version>6.13-SNAPSHOT</version>
+	<version>7.0-SNAPSHOT</version>
 	<name>qsf-integration</name>
 	<url>https://www.quasiris.de/de/quasiris-search-cloud/</url>
     <description>Quasiris Search Framework for search integration</description>
