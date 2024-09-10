@@ -28,6 +28,13 @@ public class QsfqlParserTest {
 
 
     @Test
+    public void testDisplayFacets() throws Exception {
+        SearchQuery query = createQuery("result.displayFacets=foo,bar");
+        assertNotNull(query.getResult().getFacet().getFacets().get("foo"));
+        assertNotNull(query.getResult().getFacet().getFacets().get("bar"));
+        assertNull(query.getResult().getFacet().getFacets().get("alice"));
+    }
+    @Test
     public void testDisplayFields() throws Exception {
         SearchQuery query = createQuery("result.displayFields=foo,bar");
         assertNotNull(query.getResult().getDocument().getFields().get("foo"));

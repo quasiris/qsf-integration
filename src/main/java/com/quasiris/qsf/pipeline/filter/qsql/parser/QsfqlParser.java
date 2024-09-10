@@ -53,6 +53,7 @@ public class QsfqlParser {
         parseParameter(query);
         parseTracking(query);
         parseResultDisplayFields(query);
+        parseResultDisplayFacets(query);
         return query;
     }
 
@@ -75,9 +76,27 @@ public class QsfqlParser {
         for(String field : displayFieldsParsed) {
             fieldsMap.put(field, new FieldDTO());
         }
+    }
 
+    void parseResultDisplayFacets(SearchQuery query) {
+        if(httpServletRequest == null) {
+            return;
+        }
 
+        String[] displayFacets = httpServletRequest.getParameterMap().get("result.displayFacets");
+        if(displayFacets == null) {
+            return;
+        }
 
+        List<String> displayFacetsParsed = new ArrayList<>();
+        for(String facet : displayFacets)  {
+            displayFacetsParsed.addAll(Arrays.asList(facet.split(Pattern.quote(","))));
+        }
+        initResultFacetFacets(query);
+        Map<String, FacetsDTO> facetMap = query.getResult().getFacet().getFacets();
+        for(String facet : displayFacetsParsed) {
+            facetMap.put(facet, new FacetsDTO());
+        }
     }
 
     void initResultDocument(SearchQuery query) {
@@ -91,6 +110,12 @@ public class QsfqlParser {
         initResultDocument(query);
         if(query.getResult().getDocument().getFields() == null) {
             query.getResult().getDocument().setFields(new HashMap<>());
+        }
+    }
+    void initResultFacetFacets(SearchQuery query) {
+        initFacet(query);
+        if(query.getResult().getFacet().getFacets() == null) {
+            query.getResult().getFacet().setFacets(new HashMap<>());
         }
     }
 
