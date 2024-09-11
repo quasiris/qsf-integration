@@ -169,7 +169,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
                 pipelineContainer.debug("profile", DebugType.STRING, request);
                 pipelineContainer.debug("replaceMap", DebugType.OBJECT, replaceMap);
             }
-            throw new RuntimeException("Could not load elastic query from profile: " + profile, e);
+            throw new RuntimeException("Could not load elastic query from profile: " + profile + " " + e.getMessage(), e);
         }
 
     }
