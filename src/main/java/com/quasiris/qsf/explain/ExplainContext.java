@@ -1,5 +1,7 @@
 package com.quasiris.qsf.explain;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.quasiris.qsf.commons.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +78,7 @@ public class ExplainContext {
         if(!explain) {
             return;
         }
-        Explain explain = new Explain();
+        Explain<String> explain = new Explain<>();
         explain.setId(id);
         explain.setName(id);
         explain.setType(type);
@@ -89,18 +91,20 @@ public class ExplainContext {
         if(!explain) {
             return;
         }
-        Explain explain = createExplainJson(id, value);
+        Explain<JsonNode> explain = createExplainJson(id, value);
         addChild(explain);
     }
 
-    public Explain createExplainJson(String id, Object value) {
-        Explain explain = new Explain();
+    public Explain<JsonNode> createExplainJson(String id, Object value) {
+        Explain<JsonNode> explain = new Explain<>();
         explain.setId(id);
         explain.setName(id);
         if(value == null) {
-            explain.setExplainObject("null");
+            JsonNode jsonValue = JsonUtil.defaultMapper().convertValue("null", JsonNode.class);
+            explain.setExplainObject(jsonValue);
         } else {
-            explain.setExplainObject(value);
+            JsonNode jsonValue = JsonUtil.defaultMapper().convertValue(value, JsonNode.class);
+            explain.setExplainObject(jsonValue);
         }
         explain.setDataType(ExplainDataType.JSON);
         return explain;
@@ -112,7 +116,7 @@ public class ExplainContext {
         ExplainThrowable explainThrowable = new ExplainThrowable();
         explainThrowable.setStackTrace(getStackTrace(throwable));
         explainThrowable.setMessage(throwable.getMessage());
-        Explain explain = new Explain();
+        Explain<ExplainThrowable> explain = new Explain<>();
         explain.setId(id);
         explain.setName(id);
         explain.setExplainObject(explainThrowable);
