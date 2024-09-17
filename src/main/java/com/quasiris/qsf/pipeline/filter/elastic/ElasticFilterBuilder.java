@@ -147,17 +147,17 @@ public class ElasticFilterBuilder {
         return this;
     }
 
-    public ElasticFilterBuilder addAggregation(String name, String field) {
+    public ElasticFilterBuilder addAggregation(String name, String id, String field) {
 
-        getElasticParameterQueryTransformer().addAggregation(name, field);
-        getElasticQsfqlQueryTransformer().addAggregation(name, field);
+        getElasticParameterQueryTransformer().addAggregation(name, id, field);
+        getElasticQsfqlQueryTransformer().addAggregation(name, id, field);
         mapAggregationType(name, "terms");
         return this;
     }
 
-    public ElasticFilterBuilder addAggregation(String name, String field, int size) {
-        getElasticParameterQueryTransformer().addAggregation(name, field, size);
-        getElasticQsfqlQueryTransformer().addAggregation(name, field, size);
+    public ElasticFilterBuilder addAggregation(String name, String id, String field, int size) {
+        getElasticParameterQueryTransformer().addAggregation(name, id, field, size);
+        getElasticQsfqlQueryTransformer().addAggregation(name, id, field, size);
         return this;
     }
 

@@ -220,17 +220,19 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         return elasticQuery;
     }
 
-    public void addAggregation(String name, String field) {
+    public void addAggregation(String name, String id, String field) {
         Facet facet = new Facet();
         facet.setName(name);
-        facet.setId(field);
+        facet.setId(id);
+        facet.setFieldName(field);
         aggregations.add(facet);
     }
 
-    public void addAggregation(String name, String field, int size) {
+    public void addAggregation(String name, String id, String field, int size) {
         Facet facet = new Facet();
         facet.setName(name);
-        facet.setId(field);
+        facet.setId(id);
+        facet.setFieldName(field);
         facet.setSize(size);
         aggregations.add(facet);
     }
@@ -240,10 +242,11 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     }
 
-    public void addAggregation(String name, String field, int size, String sortOrder, String sortBy, String type) {
+    public void addAggregation(String name, String id, String field, int size, String sortOrder, String sortBy, String type) {
         Facet facet = new Facet();
         facet.setName(name);
-        facet.setId(field);
+        facet.setId(id);
+        facet.setFieldName(field);
         facet.setSortBy(sortBy);
         facet.setSortOrder(sortOrder);
         facet.setSize(size);

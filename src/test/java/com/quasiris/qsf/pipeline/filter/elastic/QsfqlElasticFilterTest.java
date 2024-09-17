@@ -43,9 +43,9 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
                             client(mockElasticClient).
                             baseUrl(baseUrl).
                             profile("classpath://com/quasiris/qsf/elastic/profiles/" + profile ).
-                            addAggregation("places", "place").
+                            addAggregation("places", "place", "place").
                             mapAggregationName("places", "Places").
-                            addAggregation("tag", "tagkey_is_in").
+                            addAggregation("tag", "tagkey_is_in", "tagkey_is_in").
                             mapFilter("place", "tagkey_place").
                             mapField("id","id").
                             mapAggregation("tag", "tag").

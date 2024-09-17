@@ -178,7 +178,7 @@ public class ElasticMonitoringExecuter {
 
             if(monitoringDocument.getType().equals("facet")) {
                 elasticFilterBuilder.
-                        addAggregation(monitoringDocument.getFieldName(), monitoringDocument.getFieldName(), aggSize);
+                        addAggregation(monitoringDocument.getFieldName(),monitoringDocument.getId(),  monitoringDocument.getFieldName(), aggSize);
             }
         }
 
