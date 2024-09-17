@@ -10,6 +10,7 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Breaking Changes
 - Move Solr Filter to a separate package
+- for the elastic Filter a field name is required
 
 ## [6.12]
 ### Added
