@@ -259,8 +259,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 // TODO we need a better solution for this workaround
 
                 SearchFilter searchFilter = (SearchFilter) filter;
-                String filterId = filterMapper.mapFilterField(searchFilter.getId());
-                if(excludeIds.contains(filterId)) {
+                if(excludeIds.contains(searchFilter.getId())) {
                     it.remove();
                 }
             } else if(filter instanceof BoolSearchFilter) {
