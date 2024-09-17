@@ -19,8 +19,8 @@ public interface FacetFilterMapper {
     String getFilterValuePrefix();
     void setFilterType(String filterType);
     String getFilterType();
-    Facet getFacet();
-    void setFacet(Facet facet);
+    String getFacetId();
+    void setFacetId(String facetId);
     void map(FacetValue value);
 
     void setParentFacetValue(FacetValue parentFacetValue);

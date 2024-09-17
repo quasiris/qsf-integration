@@ -1,11 +1,10 @@
 package com.quasiris.qsf.pipeline.filter.mapper;
 
-import com.quasiris.qsf.dto.response.Facet;
 import com.quasiris.qsf.dto.response.FacetValue;
 
 public class AbstractFacetFilterMapper implements FacetFilterMapper {
 
-    private Facet facet;
+    private String facetId;
 
     private String filterValuePrefix;
     private String filterType;
@@ -64,14 +63,13 @@ public class AbstractFacetFilterMapper implements FacetFilterMapper {
     }
 
     @Override
-    public Facet getFacet() {
-        return facet;
+    public String getFacetId() {
+        return facetId;
     }
 
     @Override
-    public void setFacet(Facet facet) {
-        this.facet = facet;
-
+    public void setFacetId(String facetId) {
+        this.facetId = facetId;
     }
 
     @Override

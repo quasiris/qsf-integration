@@ -4,13 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.category.dto.CategoryDTO;
+import com.quasiris.qsf.commons.util.UrlUtil;
 import com.quasiris.qsf.dto.response.*;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.*;
-import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetFilterMapper;
-import com.quasiris.qsf.pipeline.filter.mapper.DefaultFacetKeyMapper;
-import com.quasiris.qsf.pipeline.filter.mapper.FacetFilterMapper;
-import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
+import com.quasiris.qsf.pipeline.filter.mapper.*;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.tree.Node;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
@@ -219,24 +217,12 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         facet.setCount((long) aggregation.getBuckets().size());
 
         Long facetReseultCount = 0L;
-        FacetKeyMapper facetKeyMapper = null;
-        if(mapping != null) {
-            facetKeyMapper = mapping.getFacetKeyMapper();
-        }
-        if(facetKeyMapper == null) {
-            facetKeyMapper = new DefaultFacetKeyMapper();
-        }
 
+        FacetKeyMapper facetKeyMapper = getFacetKeyMapper(mapping);
         if(facetFilterMapper == null) {
-            facetFilterMapper = mapping.getFacetFilterMapper();
+            facetFilterMapper = getFacetFilterMapper(mapping, new DefaultFacetFilterMapper());
         }
-
-        if(facetFilterMapper == null) {
-            facetFilterMapper = new DefaultFacetFilterMapper();
-        }
-        facetFilterMapper.setFacet(facet);
-        facetFilterMapper.setFilterPrefix(filterPrefix);
-
+        facetFilterMapper.setFacetId(facet.getId());
         for(Bucket bucket : aggregation.getBuckets()) {
             Object key = facetKeyMapper.map(bucket.getKey());
             facetFilterMapper.setKey(bucket.getKey());
@@ -264,7 +250,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
                 // reset the mapper
                 facetFilterMapper.setParentFacetValue(parentFacetValue);
-                facetFilterMapper.setFacet(facet);
+                facetFilterMapper.setFacetId(facet.getId());
 
             }
             facet.getValues().add(facetValue);
@@ -283,6 +269,26 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     }
 
+    private FacetKeyMapper getFacetKeyMapper(FacetMapping mapping) {
+        FacetKeyMapper facetKeyMapper = null;
+        if(mapping != null) {
+            facetKeyMapper = mapping.getFacetKeyMapper();
+        }
+        if(facetKeyMapper == null) {
+            facetKeyMapper = new DefaultFacetKeyMapper();
+        }
+        return facetKeyMapper;
+    }
+
+    private FacetFilterMapper getFacetFilterMapper(FacetMapping mapping, FacetFilterMapper defaultFacetFilterMapper) {
+        FacetFilterMapper facetFilterMapper = mapping.getFacetFilterMapper();
+        if(facetFilterMapper == null) {
+            facetFilterMapper = defaultFacetFilterMapper;
+        }
+        facetFilterMapper.setFilterPrefix(filterPrefix);
+        return facetFilterMapper;
+    }
+
     protected Facet mapAggregationToNavigation(String id, Aggregation aggregation, FacetMapping mapping) {
         Node<CategoryDTO> root = new Node<>();
         for(Bucket bucket : aggregation.getBuckets()) {
@@ -299,7 +305,10 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             }
         }
 
-        Facet facet = traverse(root);
+        FacetKeyMapper facetKeyMapper = getFacetKeyMapper(mapping);
+        FacetFilterMapper facetFilterMapper = getFacetFilterMapper(mapping, new NavigationIdFacetFilterMapper());
+        facetFilterMapper.setFacetId(id);
+        Facet facet = traverse(root, id, facetKeyMapper, facetFilterMapper);
 
         facet.setType(mapping.getType());
         String name = mapping.getName();
@@ -316,7 +325,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
 
-    public Facet traverse(Node<CategoryDTO> node){
+    public Facet traverse(Node<CategoryDTO> node, String filterName, FacetKeyMapper facetKeyMapper, FacetFilterMapper facetFilterMapper ){
         Collections.sort(node.getChildren(), new Comparator<Node<CategoryDTO>>() {
             @Override
             public int compare(Node<CategoryDTO> left, Node<CategoryDTO> right) {
@@ -324,13 +333,17 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             }
         });
         Facet facet = new Facet();
+        facet.setFilterName(filterPrefix + filterName);
         facet.setValues(new ArrayList<>());
         for (Node<CategoryDTO> child : node.getChildren()) {
+
             FacetValue facetValue = new FacetValue();
             facetValue.setCount(child.getData().getCount());
-            facetValue.setValue(child.getData().getName());
+            Object value = facetKeyMapper.map(child.getData().getName());
             facetValue.setFilter(child.getData().getId());
-            Facet subFacet = traverse(child);
+            facetValue.setValue(value);
+            facetFilterMapper.map(facetValue);
+            Facet subFacet = traverse(child, filterName, facetKeyMapper, facetFilterMapper);
             facetValue.setChildren(subFacet);
             facet.getValues().add(facetValue);
         }
