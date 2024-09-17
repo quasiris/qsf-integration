@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
 import com.quasiris.qsf.commons.util.JsonUtil;
+import com.quasiris.qsf.commons.util.ParameterUtils;
 import com.quasiris.qsf.dto.query.HistogramFacetConfigDTO;
 import com.quasiris.qsf.dto.query.IntervalDTO;
 import com.quasiris.qsf.json.JsonBuilder;
@@ -18,7 +19,7 @@ public class HistogramFacet {
 
 
     public static HistogramFacetConfigDTO loadHistogramFacetConfigDTO(Map<String, Object> parameters) throws JsonBuilderException {
-        HistogramFacetConfigDTO histogramFacetConfigDTO = getParameter(parameters, "config", null, HistogramFacetConfigDTO.class);
+        HistogramFacetConfigDTO histogramFacetConfigDTO = ParameterUtils.getParameter(parameters, "config", null, HistogramFacetConfigDTO.class);
         if(histogramFacetConfigDTO == null) {
             histogramFacetConfigDTO = JsonBuilder.create().
                     classpath("com/quasiris/qsf/elastic/config/default-histogram-facet-config.json").
@@ -61,18 +62,6 @@ public class HistogramFacet {
         Instant toInstant = SupportedDateFormatsParser.requireInstantFromString(to);
         long minutesBetween  = Duration.between(fromInstant, toInstant).toMinutes();
         return minutesBetween;
-    }
-
-    static <T> T getParameter(Map<String, Object> parameters, String param, T defaultValue, Class<T> toValueType) {
-        if(parameters == null) {
-            return defaultValue;
-        }
-        Object value = parameters.get(param);
-        if(value == null) {
-            return defaultValue;
-        }
-
-        return JsonUtil.defaultMapper().convertValue(value, toValueType);
     }
 
 }

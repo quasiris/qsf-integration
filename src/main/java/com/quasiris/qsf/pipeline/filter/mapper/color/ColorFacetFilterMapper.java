@@ -1,6 +1,7 @@
 package com.quasiris.qsf.pipeline.filter.mapper.color;
 
 import com.quasiris.qsf.commons.util.JsonUtil;
+import com.quasiris.qsf.commons.util.ParameterUtils;
 import com.quasiris.qsf.dto.config.ColorPickerFacetConfigDTO;
 import com.quasiris.qsf.dto.response.FacetValue;
 import com.quasiris.qsf.json.JsonBuilder;
@@ -45,7 +46,7 @@ public class ColorFacetFilterMapper extends DefaultFacetFilterMapper implements 
                     classpath("com/quasiris/qsf/facet/default-color-picker-facet-config.json").
                     get(ColorPickerFacetConfigDTO.class);
 
-            ColorPickerFacetConfigDTO colorPickerFacetConfig = getParameter(parameters, "config", null, ColorPickerFacetConfigDTO.class);
+            ColorPickerFacetConfigDTO colorPickerFacetConfig = ParameterUtils.getParameter(parameters, "config", null, ColorPickerFacetConfigDTO.class);
             if (colorPickerFacetConfig != null && colorPickerFacetConfig.getColorMappings() != null) {
                 colorPickerFacetDefaultConfig.getColorMappings().putAll(colorPickerFacetConfig.getColorMappings());
             }
@@ -53,17 +54,5 @@ public class ColorFacetFilterMapper extends DefaultFacetFilterMapper implements 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    static <T> T getParameter(Map<String, Object> parameters, String param, T defaultValue, Class<T> toValueType) {
-        if(parameters == null) {
-            return defaultValue;
-        }
-        Object value = parameters.get(param);
-        if(value == null) {
-            return defaultValue;
-        }
-
-        return JsonUtil.defaultMapper().convertValue(value, toValueType);
     }
 }

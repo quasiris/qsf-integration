@@ -1,6 +1,7 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.quasiris.qsf.commons.util.ParameterUtils;
 import com.quasiris.qsf.dto.query.HistogramFacetConfigDTO;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
@@ -34,7 +35,7 @@ public class AggregationMapper {
         try {
 
             if("elastic".equals(facet.getType())) {
-                JsonNode query = HistogramFacet.getParameter(facet.getParameters(), "query", null, JsonNode.class);
+                JsonNode query = ParameterUtils.getParameter(facet.getParameters(), "query", null, JsonNode.class);
                 return query;
             }
 
