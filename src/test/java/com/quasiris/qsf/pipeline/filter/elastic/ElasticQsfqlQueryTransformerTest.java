@@ -596,9 +596,8 @@ public class ElasticQsfqlQueryTransformerTest {
 
 
         ObjectNode elasticQuery = transform(transformer,  "q=*");
+        assertQuery(elasticQuery, "facet-query.json");
 
-        assertEquals("brand", elasticQuery.get("aggs").get("brand").get("terms").get("field").asText());
-        assertEquals("stock", elasticQuery.get("aggs").get("stock").get("terms").get("field").asText());
     }
     @DisplayName("Transform facet with filter")
     @Test
@@ -793,21 +792,8 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("type", "typeElasticField");
 
         ObjectNode elasticQuery = transform(transformer,  "q=*", "f.brand=waldschuh", "f.stock=true");
+        assertQuery(elasticQuery, "facet-filter-multiselect-operator-or.json");
 
-        assertEquals("true", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("brand_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("stockElasticField").asText());
-        assertEquals("brandElasticField", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("brand_filter_wrapper").get("aggs").get("brand").get("terms").get("field").asText());
-
-        assertEquals("waldschuh", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("stock_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("stockElasticField", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("stock_filter_wrapper").get("aggs").get("stock").get("terms").get("field").asText());
-
-
-
-        assertEquals("waldschuh", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("type_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("true", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("type_filter_wrapper").get("filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
-        assertEquals("typeElasticField", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("type_filter_wrapper").get("aggs").get("type").get("terms").get("field").asText());
-
-        assertEquals("waldschuh", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("true", elasticQuery.get("post_filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
     }
 
    @DisplayName("Transform facet with multi select filters with AND operator")
@@ -840,24 +826,9 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("type", "typeElasticField");
 
         ObjectNode elasticQuery = transform(transformer,  "q=*", "f.brand=waldschuh", "f.stock=true");
+        assertQuery(elasticQuery, "facet-filter-multiselect-operator-and.json");
 
-        assertEquals("waldschuh", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("brand_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("true", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("brand_filter_wrapper").get("filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
-        assertEquals("brandElasticField", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("brand_filter_wrapper").get("aggs").get("brand").get("terms").get("field").asText());
-
-        assertEquals("waldschuh", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("stock_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("true", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("stock_filter_wrapper").get("filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
-        assertEquals("stockElasticField", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("stock_filter_wrapper").get("aggs").get("stock").get("terms").get("field").asText());
-
-
-
-        assertEquals("waldschuh", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("type_filter_wrapper").get("filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("true", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("type_filter_wrapper").get("filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
-        assertEquals("typeElasticField", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("type_filter_wrapper").get("aggs").get("type").get("terms").get("field").asText());
-
-        assertEquals("waldschuh", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("true", elasticQuery.get("post_filter").get("bool").get("must").get(1).get("term").get("stockElasticField").asText());
-    }
+   }
 
     @DisplayName("Transform facet with multi select filters")
     @Test
@@ -916,10 +887,7 @@ public class ElasticQsfqlQueryTransformerTest {
 
         ObjectNode elasticQuery = transform(transformer,  "q=*");
 
-        assertEquals("brand", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("brand").get("terms").get("field").asText());
-        assertEquals("stock", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("stock").get("terms").get("field").asText());
-        assertEquals("type", elasticQuery.get("aggs").get("qsc_filtered").get("aggs").get("type").get("terms").get("field").asText());
-
+        assertQuery(elasticQuery, "facet-filter-multiselect-no-filter-in-query.json");
 
     }
 

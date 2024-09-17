@@ -1,0 +1,114 @@
+{
+  "from" : 0,
+  "size" : 10,
+  "track_total_hits" : true,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "match_all" : { }
+        }
+      ]
+    }
+  },
+  "aggs" : {
+    "qsc_filtered" : {
+      "filter" : {
+        "bool" : { }
+      },
+      "aggs" : {
+        "brand_filter_wrapper" : {
+          "filter" : {
+            "bool" : {
+              "must" : [
+                {
+                  "term" : {
+                    "brandElasticField" : "waldschuh"
+                  }
+                },
+                {
+                  "term" : {
+                    "stockElasticField" : "true"
+                  }
+                }
+              ]
+            }
+          },
+          "aggs" : {
+            "brand" : {
+              "terms" : {
+                "field" : "brandElasticField"
+              }
+            }
+          }
+        },
+        "stock_filter_wrapper" : {
+          "filter" : {
+            "bool" : {
+              "must" : [
+                {
+                  "term" : {
+                    "brandElasticField" : "waldschuh"
+                  }
+                },
+                {
+                  "term" : {
+                    "stockElasticField" : "true"
+                  }
+                }
+              ]
+            }
+          },
+          "aggs" : {
+            "stock" : {
+              "terms" : {
+                "field" : "stockElasticField"
+              }
+            }
+          }
+        },
+        "type_filter_wrapper" : {
+          "filter" : {
+            "bool" : {
+              "must" : [
+                {
+                  "term" : {
+                    "brandElasticField" : "waldschuh"
+                  }
+                },
+                {
+                  "term" : {
+                    "stockElasticField" : "true"
+                  }
+                }
+              ]
+            }
+          },
+          "aggs" : {
+            "type" : {
+              "terms" : {
+                "field" : "typeElasticField"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post_filter" : {
+    "bool" : {
+      "must" : [
+        {
+          "term" : {
+            "brandElasticField" : "waldschuh"
+          }
+        },
+        {
+          "term" : {
+            "stockElasticField" : "true"
+          }
+        }
+      ]
+    }
+  }
+}

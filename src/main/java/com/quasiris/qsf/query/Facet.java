@@ -10,6 +10,7 @@ public class Facet implements Serializable {
 
     private String id;
     private String name;
+    private String fieldName;
 
     private String type = "terms";
 
@@ -274,5 +275,14 @@ public class Facet implements Serializable {
         parameters.put(key, value);
     }
 
+    public String getFieldName() {
+        if(fieldName == null) {
+            return id;
+        }
+        return fieldName;
+    }
 
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
 }

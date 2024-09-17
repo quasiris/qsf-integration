@@ -48,7 +48,7 @@ public class AggregationMapper {
             jsonBuilder.
                     object(name).
                     object(mapType(facet.getType())).
-                    object("field", facet.getId()).
+                    object("field", facet.getFieldName()).
                     object("include", facet.getInclude()).
                     object("exclude", facet.getExclude());
 
@@ -201,7 +201,7 @@ public class AggregationMapper {
             jsonBuilder.
                     object(slider.getName()).
                     object("stats").
-                    object("field", slider.getId());
+                    object("field", slider.getFieldName());
 
             if(filters != null) {
                 JsonBuilder aggFilterWrapper = JsonBuilder.create().
@@ -230,7 +230,7 @@ public class AggregationMapper {
                     object(rangeFacet.getName()).
                     object("range").
                     object("keyed", Boolean.FALSE).
-                    object("field", rangeFacet.getId());
+                    object("field", rangeFacet.getFieldName());
 
             jsonBuilder.array("ranges");
             for(Range range : rangeFacet.getRanges()) {
