@@ -9,6 +9,7 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.mapper.CategorySelectFacetKeyMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
+import com.quasiris.qsf.pipeline.filter.mapper.NavigationValueFacetFilterMapper;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.test.json.JsonAssert;
 import org.junit.jupiter.api.Test;
@@ -100,8 +101,9 @@ class Elastic2SearchResultMappingTransformerTest {
 
     }
 
+
     @Test
-    void testNavigation() throws Exception {
+    void testNavigationIdFilter() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         String id = "categories";
         transformer.addFacetNameMapping(id, "categories");
@@ -111,22 +113,21 @@ class Elastic2SearchResultMappingTransformerTest {
 
         ElasticResult elasticResult = readElasticResultFromFile("navigation.json");
         SearchResult searchResult = transformer.transform(elasticResult);
-        assertEquals(1,searchResult.getFacets().size());
-        Facet categories = searchResult.getFacetById("categories");
-        assertEquals(3,categories.getValues().size());
+        assertSearchResult(searchResult, "navigation-id-filter.json");
 
+    }
 
+    @Test
+    void testNavigationValueFilter() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        String id = "categories";
+        transformer.addFacetNameMapping(id, "categories");
+        transformer.addFacetTypeMapping(id, "navigation");
+        transformer.addFacetFilterMapper(id, new NavigationValueFacetFilterMapper());
 
-        assertEquals("Industrietechnik", categories.getValues().get(0).getValue());
-        assertEquals(18384, categories.getValues().get(0).getCount());
-        // TODO be careful, the category import rely on this id - if the filter is changed, this must be considered
-        assertEquals("2", categories.getValues().get(0).getFilter());
-
-
-        FacetValue child = categories.getValues().get(0).getChildren().getValues().get(1);
-        assertEquals("Automatisierung und Antriebstechnik", child.getValue());
-        assertEquals(1511, child.getCount());
-        assertEquals("211", child.getFilter());
+        ElasticResult elasticResult = readElasticResultFromFile("navigation.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+        assertSearchResult(searchResult, "navigation-value-filter.json");
     }
 
 

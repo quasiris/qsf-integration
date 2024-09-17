@@ -6,6 +6,9 @@ public class NavigationIdFacetFilterMapper extends AbstractFacetFilterMapper imp
 
     @Override
     public void map(FacetValue facetValue) {
-        // do nothing
+        if(facetValue.getCustomData() != null) {
+            facetValue.setFilter(facetValue.getCustomData().get("id"));
+            facetValue.setCustomData(null);
+        }
     }
 }

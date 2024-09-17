@@ -1,0 +1,721 @@
+{
+  "statusCode" : 200,
+  "statusMessage" : "OK",
+  "documents" : [ ],
+  "time" : 16,
+  "total" : 10000,
+  "facets" : [
+    {
+      "name" : "categories",
+      "id" : "categories",
+      "type" : "navigation",
+      "filterName" : "categories",
+      "count" : 77,
+      "values" : [
+        {
+          "value" : "Industrietechnik",
+          "count" : 18384,
+          "filter" : "2",
+          "children" : {
+            "filterName" : "categories",
+            "values" : [
+              {
+                "value" : "Schalt- und Steuerungstechnik",
+                "count" : 16873,
+                "filter" : "221",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Reihenklemmen",
+                      "count" : 14800,
+                      "filter" : "221321",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Kennzeichnungsmaterial",
+                      "count" : 609,
+                      "filter" : "221431",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Sensor-Aktor Kabel",
+                      "count" : 570,
+                      "filter" : "221239",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Relais Industrie",
+                      "count" : 304,
+                      "filter" : "221211",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Elektronikbausteine",
+                      "count" : 248,
+                      "filter" : "221216",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Trennschaltgeräte / Mess-, Regler-Relais",
+                      "count" : 74,
+                      "filter" : "221215",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Aderendhülsen blank / isoliert",
+                      "count" : 72,
+                      "filter" : "221313",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Sensor-Aktor Boxen",
+                      "count" : 45,
+                      "filter" : "221238",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Endschalter mechanisch",
+                      "count" : 26,
+                      "filter" : "221224",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Signalgeräte optisch / akustisch",
+                      "count" : 24,
+                      "filter" : "221228",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Profilschienen, Hut-Schienen",
+                      "count" : 22,
+                      "filter" : "221118",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Kennzeichnungsgeräte",
+                      "count" : 19,
+                      "filter" : "221432",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Einbau-Befehls- und Meldegeräte",
+                      "count" : 12,
+                      "filter" : "221227",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Industrie-Steckverbindersysteme",
+                      "count" : 11,
+                      "filter" : "221331",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Kleingehäuse",
+                      "count" : 9,
+                      "filter" : "221112",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Industrie-Steckverbinder schwer",
+                      "count" : 8,
+                      "filter" : "221332",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Schrumpftechnik",
+                      "count" : 7,
+                      "filter" : "221421",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Zeitrelais Industrie",
+                      "count" : 6,
+                      "filter" : "221212",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Sicherheits-Sensorik",
+                      "count" : 3,
+                      "filter" : "221233",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Schaltschrank Systemzubehör",
+                      "count" : 2,
+                      "filter" : "221117",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Stromverteilerkomponenten",
+                      "count" : 1,
+                      "filter" : "221115",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Kabelbinder",
+                      "count" : 1,
+                      "filter" : "221411",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "value" : "Automatisierung und Antriebstechnik",
+                "count" : 1511,
+                "filter" : "211",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Bus-Systeme Industriell",
+                      "count" : 1162,
+                      "filter" : "211121",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Netzgeräte, Trafos und Stromversorgungen",
+                      "count" : 181,
+                      "filter" : "211411",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Stromwandler",
+                      "count" : 115,
+                      "filter" : "211615",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "SPS-Systeme",
+                      "count" : 43,
+                      "filter" : "211111",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Touchpanels / HMI",
+                      "count" : 9,
+                      "filter" : "211113",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Frequenzumformer / Sanftanlasser Zubehör",
+                      "count" : 1,
+                      "filter" : "211314",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "value" : "Gebäudetechnik",
+          "count" : 9404,
+          "filter" : "1",
+          "children" : {
+            "filterName" : "categories",
+            "values" : [
+              {
+                "value" : "Installationstechnik",
+                "count" : 9185,
+                "filter" : "121",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Dosen- u. Installationsklemmen",
+                      "count" : 9001,
+                      "filter" : "121251",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Werkzeug",
+                      "count" : 76,
+                      "filter" : "121822",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Kabelkanal-Zubehör komplett",
+                      "count" : 59,
+                      "filter" : "121224",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Unterflurkanäle / Doppelboden",
+                      "count" : 12,
+                      "filter" : "121226",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Installationsdosen UP / Hohlwand / Beton",
+                      "count" : 12,
+                      "filter" : "121241",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Gießharz- und Kabelmuffen",
+                      "count" : 7,
+                      "filter" : "121231",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Ex-Installations-Material",
+                      "count" : 5,
+                      "filter" : "121514",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Geräteeinbaukanäle BR / BRS / BRA / SL /",
+                      "count" : 4,
+                      "filter" : "121222",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Verteiler-Systeme (Wand-, Stand-)",
+                      "count" : 2,
+                      "filter" : "121312",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Mess- und Prüfgeräte",
+                      "count" : 2,
+                      "filter" : "121811",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Aufputz Abzweigdosen, wassergeschützt",
+                      "count" : 1,
+                      "filter" : "121242",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Leitungsschutzschalter",
+                      "count" : 1,
+                      "filter" : "121321",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Reiheneinbaugeräte, Schalter, Taster",
+                      "count" : 1,
+                      "filter" : "121323",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Feinsicherungen und Halter",
+                      "count" : 1,
+                      "filter" : "121331",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Garagentor- / Motoren - Steuerungen",
+                      "count" : 1,
+                      "filter" : "121512",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "value" : "Gebäudesystemtechnik",
+                "count" : 97,
+                "filter" : "131",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Schalter Aufputz wassergeschützt",
+                      "count" : 66,
+                      "filter" : "131115",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Schalter Unterputz Standard",
+                      "count" : 11,
+                      "filter" : "131111",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Schalter Unterputz wassergeschützt",
+                      "count" : 4,
+                      "filter" : "131113",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "KNX-Material",
+                      "count" : 4,
+                      "filter" : "131211",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Bewegungsmelder innen",
+                      "count" : 3,
+                      "filter" : "131122",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Tischsteckdosen,Verlängerungen,Trommeln",
+                      "count" : 3,
+                      "filter" : "131131",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Bewegungsmelder, Dämmerungsschalter auß.",
+                      "count" : 2,
+                      "filter" : "131121",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Präsenzmelder",
+                      "count" : 2,
+                      "filter" : "131123",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Schalter Unterputz Fläche",
+                      "count" : 1,
+                      "filter" : "131112",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Jalousien- und Rohrmotorsteuerungen",
+                      "count" : 1,
+                      "filter" : "131231",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "value" : "Netzwerktechnik",
+                "count" : 76,
+                "filter" : "141",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Computer und Zubehör",
+                      "count" : 29,
+                      "filter" : "141251",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Industrie Switche 10/100/1000",
+                      "count" : 27,
+                      "filter" : "141221",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Steckverbinder Koax, D-Sub, BNC, TNC, RJ",
+                      "count" : 9,
+                      "filter" : "141111",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Überspannungsschutz",
+                      "count" : 6,
+                      "filter" : "141411",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Switche 10/100/1000",
+                      "count" : 2,
+                      "filter" : "141222",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Netzwerkkarten / Mediakonverter",
+                      "count" : 2,
+                      "filter" : "141226",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Industriekomponenten Hutschiene",
+                      "count" : 1,
+                      "filter" : "141225",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "value" : "Technisches Licht",
+                "count" : 46,
+                "filter" : "151",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Lichtmanagement",
+                      "count" : 41,
+                      "filter" : "151523",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Fassungen und Zubehör",
+                      "count" : 1,
+                      "filter" : "151531",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Office Innenleuchten konventionell",
+                      "count" : 1,
+                      "filter" : "151571",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "Feuchtraumleuchten konventionell",
+                      "count" : 1,
+                      "filter" : "151573",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "LED Panel-Leuchte alle Maße außer 625 x 625",
+                      "count" : 1,
+                      "filter" : "151623",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    },
+                    {
+                      "value" : "LED Schnellmontagelichtbänder",
+                      "count" : 1,
+                      "filter" : "151641",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "value" : "Erneuerbare Energien",
+          "count" : 3,
+          "filter" : "3",
+          "children" : {
+            "filterName" : "categories",
+            "values" : [
+              {
+                "value" : "null",
+                "count" : 3,
+                "filter" : "331",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Ladestationen Wand",
+                      "count" : 3,
+                      "filter" : "331112",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

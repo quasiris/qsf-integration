@@ -301,6 +301,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                 category.setPosition(Integer.valueOf(splitted[1]));
                 category.setName(splitted[2]);
                 category.setCount(bucket.getDoc_count());
+                category.setFilter(bucket.getKey().toString());
                 current = current.addChildIfNotExists(category);
             }
         }
@@ -340,7 +341,10 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             FacetValue facetValue = new FacetValue();
             facetValue.setCount(child.getData().getCount());
             Object value = facetKeyMapper.map(child.getData().getName());
-            facetValue.setFilter(child.getData().getId());
+            facetValue.setFilter(child.getData().getFilter());
+            Map<String, Object> customData = new HashMap<>();
+            customData.put("id", child.getData().getId());
+            facetValue.setCustomData(customData);
             facetValue.setValue(value);
             facetFilterMapper.map(facetValue);
             Facet subFacet = traverse(child, filterName, facetKeyMapper, facetFilterMapper);

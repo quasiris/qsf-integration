@@ -1,0 +1,952 @@
+{
+  "statusCode" : 200,
+  "statusMessage" : "OK",
+  "documents" : [ ],
+  "time" : 16,
+  "total" : 10000,
+  "facets" : [
+    {
+      "name" : "categories",
+      "id" : "categories",
+      "type" : "navigation",
+      "filterName" : "categories",
+      "count" : 77,
+      "values" : [
+        {
+          "value" : "Industrietechnik",
+          "count" : 18384,
+          "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik",
+          "children" : {
+            "filterName" : "categories",
+            "values" : [
+              {
+                "value" : "Schalt- und Steuerungstechnik",
+                "count" : 16873,
+                "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Reihenklemmen",
+                      "count" : 14800,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221321%7C-%7C0%7C-%7CReihenklemmen",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221321"
+                      }
+                    },
+                    {
+                      "value" : "Kennzeichnungsmaterial",
+                      "count" : 609,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221431%7C-%7C0%7C-%7CKennzeichnungsmaterial",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221431"
+                      }
+                    },
+                    {
+                      "value" : "Sensor-Aktor Kabel",
+                      "count" : 570,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221239%7C-%7C0%7C-%7CSensor-Aktor%20Kabel",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221239"
+                      }
+                    },
+                    {
+                      "value" : "Relais Industrie",
+                      "count" : 304,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221211%7C-%7C0%7C-%7CRelais%20Industrie",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221211"
+                      }
+                    },
+                    {
+                      "value" : "Elektronikbausteine",
+                      "count" : 248,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221216%7C-%7C0%7C-%7CElektronikbausteine",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221216"
+                      }
+                    },
+                    {
+                      "value" : "Trennschaltgeräte / Mess-, Regler-Relais",
+                      "count" : 74,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221215%7C-%7C0%7C-%7CTrennschaltger%C3%A4te%20%2F%20Mess-%2C%20Regler-Relais",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221215"
+                      }
+                    },
+                    {
+                      "value" : "Aderendhülsen blank / isoliert",
+                      "count" : 72,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221313%7C-%7C0%7C-%7CAderendh%C3%BClsen%20blank%20%2F%20isoliert",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221313"
+                      }
+                    },
+                    {
+                      "value" : "Sensor-Aktor Boxen",
+                      "count" : 45,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221238%7C-%7C0%7C-%7CSensor-Aktor%20Boxen",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221238"
+                      }
+                    },
+                    {
+                      "value" : "Endschalter mechanisch",
+                      "count" : 26,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221224%7C-%7C0%7C-%7CEndschalter%20mechanisch",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221224"
+                      }
+                    },
+                    {
+                      "value" : "Signalgeräte optisch / akustisch",
+                      "count" : 24,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221228%7C-%7C0%7C-%7CSignalger%C3%A4te%20optisch%20%2F%20akustisch",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221228"
+                      }
+                    },
+                    {
+                      "value" : "Profilschienen, Hut-Schienen",
+                      "count" : 22,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221118%7C-%7C0%7C-%7CProfilschienen%2C%20Hut-Schienen",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221118"
+                      }
+                    },
+                    {
+                      "value" : "Kennzeichnungsgeräte",
+                      "count" : 19,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221432%7C-%7C0%7C-%7CKennzeichnungsger%C3%A4te",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221432"
+                      }
+                    },
+                    {
+                      "value" : "Einbau-Befehls- und Meldegeräte",
+                      "count" : 12,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221227%7C-%7C0%7C-%7CEinbau-Befehls-%20und%20Meldeger%C3%A4te",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221227"
+                      }
+                    },
+                    {
+                      "value" : "Industrie-Steckverbindersysteme",
+                      "count" : 11,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221331%7C-%7C0%7C-%7CIndustrie-Steckverbindersysteme",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221331"
+                      }
+                    },
+                    {
+                      "value" : "Kleingehäuse",
+                      "count" : 9,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221112%7C-%7C0%7C-%7CKleingeh%C3%A4use",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221112"
+                      }
+                    },
+                    {
+                      "value" : "Industrie-Steckverbinder schwer",
+                      "count" : 8,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221332%7C-%7C0%7C-%7CIndustrie-Steckverbinder%20schwer",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221332"
+                      }
+                    },
+                    {
+                      "value" : "Schrumpftechnik",
+                      "count" : 7,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221421%7C-%7C0%7C-%7CSchrumpftechnik",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221421"
+                      }
+                    },
+                    {
+                      "value" : "Zeitrelais Industrie",
+                      "count" : 6,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221212%7C-%7C0%7C-%7CZeitrelais%20Industrie",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221212"
+                      }
+                    },
+                    {
+                      "value" : "Sicherheits-Sensorik",
+                      "count" : 3,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221233%7C-%7C0%7C-%7CSicherheits-Sensorik",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221233"
+                      }
+                    },
+                    {
+                      "value" : "Schaltschrank Systemzubehör",
+                      "count" : 2,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221117%7C-%7C0%7C-%7CSchaltschrank%20Systemzubeh%C3%B6r",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221117"
+                      }
+                    },
+                    {
+                      "value" : "Stromverteilerkomponenten",
+                      "count" : 1,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221115%7C-%7C0%7C-%7CStromverteilerkomponenten",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221115"
+                      }
+                    },
+                    {
+                      "value" : "Kabelbinder",
+                      "count" : 1,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C221%7C-%7C0%7C-%7CSchalt-%20und%20Steuerungstechnik%7C___%7C221411%7C-%7C0%7C-%7CKabelbinder",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "221411"
+                      }
+                    }
+                  ]
+                },
+                "customData" : {
+                  "id" : "221"
+                }
+              },
+              {
+                "value" : "Automatisierung und Antriebstechnik",
+                "count" : 1511,
+                "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C211%7C-%7C0%7C-%7CAutomatisierung%20und%20Antriebstechnik",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Bus-Systeme Industriell",
+                      "count" : 1162,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C211%7C-%7C0%7C-%7CAutomatisierung%20und%20Antriebstechnik%7C___%7C211121%7C-%7C0%7C-%7CBus-Systeme%20Industriell",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "211121"
+                      }
+                    },
+                    {
+                      "value" : "Netzgeräte, Trafos und Stromversorgungen",
+                      "count" : 181,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C211%7C-%7C0%7C-%7CAutomatisierung%20und%20Antriebstechnik%7C___%7C211411%7C-%7C0%7C-%7CNetzger%C3%A4te%2C%20Trafos%20und%20Stromversorgungen",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "211411"
+                      }
+                    },
+                    {
+                      "value" : "Stromwandler",
+                      "count" : 115,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C211%7C-%7C0%7C-%7CAutomatisierung%20und%20Antriebstechnik%7C___%7C211615%7C-%7C0%7C-%7CStromwandler",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "211615"
+                      }
+                    },
+                    {
+                      "value" : "SPS-Systeme",
+                      "count" : 43,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C211%7C-%7C0%7C-%7CAutomatisierung%20und%20Antriebstechnik%7C___%7C211111%7C-%7C0%7C-%7CSPS-Systeme",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "211111"
+                      }
+                    },
+                    {
+                      "value" : "Touchpanels / HMI",
+                      "count" : 9,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C211%7C-%7C0%7C-%7CAutomatisierung%20und%20Antriebstechnik%7C___%7C211113%7C-%7C0%7C-%7CTouchpanels%20%2F%20HMI",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "211113"
+                      }
+                    },
+                    {
+                      "value" : "Frequenzumformer / Sanftanlasser Zubehör",
+                      "count" : 1,
+                      "filter" : "categories=2%7C-%7C0%7C-%7CIndustrietechnik%7C___%7C211%7C-%7C0%7C-%7CAutomatisierung%20und%20Antriebstechnik%7C___%7C211314%7C-%7C0%7C-%7CFrequenzumformer%20%2F%20Sanftanlasser%20Zubeh%C3%B6r",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "211314"
+                      }
+                    }
+                  ]
+                },
+                "customData" : {
+                  "id" : "211"
+                }
+              }
+            ]
+          },
+          "customData" : {
+            "id" : "2"
+          }
+        },
+        {
+          "value" : "Gebäudetechnik",
+          "count" : 9404,
+          "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik",
+          "children" : {
+            "filterName" : "categories",
+            "values" : [
+              {
+                "value" : "Installationstechnik",
+                "count" : 9185,
+                "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Dosen- u. Installationsklemmen",
+                      "count" : 9001,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121251%7C-%7C0%7C-%7CDosen-%20u.%20Installationsklemmen",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121251"
+                      }
+                    },
+                    {
+                      "value" : "Werkzeug",
+                      "count" : 76,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121822%7C-%7C0%7C-%7CWerkzeug",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121822"
+                      }
+                    },
+                    {
+                      "value" : "Kabelkanal-Zubehör komplett",
+                      "count" : 59,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121224%7C-%7C0%7C-%7CKabelkanal-Zubeh%C3%B6r%20komplett",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121224"
+                      }
+                    },
+                    {
+                      "value" : "Unterflurkanäle / Doppelboden",
+                      "count" : 12,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121226%7C-%7C0%7C-%7CUnterflurkan%C3%A4le%20%2F%20Doppelboden",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121226"
+                      }
+                    },
+                    {
+                      "value" : "Installationsdosen UP / Hohlwand / Beton",
+                      "count" : 12,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121241%7C-%7C0%7C-%7CInstallationsdosen%20UP%20%2F%20Hohlwand%20%2F%20Beton",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121241"
+                      }
+                    },
+                    {
+                      "value" : "Gießharz- und Kabelmuffen",
+                      "count" : 7,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121231%7C-%7C0%7C-%7CGie%C3%9Fharz-%20und%20Kabelmuffen",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121231"
+                      }
+                    },
+                    {
+                      "value" : "Ex-Installations-Material",
+                      "count" : 5,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121514%7C-%7C0%7C-%7CEx-Installations-Material",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121514"
+                      }
+                    },
+                    {
+                      "value" : "Geräteeinbaukanäle BR / BRS / BRA / SL /",
+                      "count" : 4,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121222%7C-%7C0%7C-%7CGer%C3%A4teeinbaukan%C3%A4le%20BR%20%2F%20BRS%20%2F%20BRA%20%2F%20SL%20%2F",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121222"
+                      }
+                    },
+                    {
+                      "value" : "Verteiler-Systeme (Wand-, Stand-)",
+                      "count" : 2,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121312%7C-%7C0%7C-%7CVerteiler-Systeme%20%28Wand-%2C%20Stand-%29",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121312"
+                      }
+                    },
+                    {
+                      "value" : "Mess- und Prüfgeräte",
+                      "count" : 2,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121811%7C-%7C0%7C-%7CMess-%20und%20Pr%C3%BCfger%C3%A4te",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121811"
+                      }
+                    },
+                    {
+                      "value" : "Aufputz Abzweigdosen, wassergeschützt",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121242%7C-%7C0%7C-%7CAufputz%20Abzweigdosen%2C%20wassergesch%C3%BCtzt",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121242"
+                      }
+                    },
+                    {
+                      "value" : "Leitungsschutzschalter",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121321%7C-%7C0%7C-%7CLeitungsschutzschalter",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121321"
+                      }
+                    },
+                    {
+                      "value" : "Reiheneinbaugeräte, Schalter, Taster",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121323%7C-%7C0%7C-%7CReiheneinbauger%C3%A4te%2C%20Schalter%2C%20Taster",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121323"
+                      }
+                    },
+                    {
+                      "value" : "Feinsicherungen und Halter",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121331%7C-%7C0%7C-%7CFeinsicherungen%20und%20Halter",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121331"
+                      }
+                    },
+                    {
+                      "value" : "Garagentor- / Motoren - Steuerungen",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C121%7C-%7C0%7C-%7CInstallationstechnik%7C___%7C121512%7C-%7C0%7C-%7CGaragentor-%20%2F%20Motoren%20-%20Steuerungen",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "121512"
+                      }
+                    }
+                  ]
+                },
+                "customData" : {
+                  "id" : "121"
+                }
+              },
+              {
+                "value" : "Gebäudesystemtechnik",
+                "count" : 97,
+                "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Schalter Aufputz wassergeschützt",
+                      "count" : 66,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik%7C___%7C131115%7C-%7C0%7C-%7CSchalter%20Aufputz%20wassergesch%C3%BCtzt",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "131115"
+                      }
+                    },
+                    {
+                      "value" : "Schalter Unterputz Standard",
+                      "count" : 11,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik%7C___%7C131111%7C-%7C0%7C-%7CSchalter%20Unterputz%20Standard",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "131111"
+                      }
+                    },
+                    {
+                      "value" : "Schalter Unterputz wassergeschützt",
+                      "count" : 4,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik%7C___%7C131113%7C-%7C0%7C-%7CSchalter%20Unterputz%20wassergesch%C3%BCtzt",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "131113"
+                      }
+                    },
+                    {
+                      "value" : "KNX-Material",
+                      "count" : 4,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik%7C___%7C131211%7C-%7C0%7C-%7CKNX-Material",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "131211"
+                      }
+                    },
+                    {
+                      "value" : "Bewegungsmelder innen",
+                      "count" : 3,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik%7C___%7C131122%7C-%7C0%7C-%7CBewegungsmelder%20innen",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "131122"
+                      }
+                    },
+                    {
+                      "value" : "Tischsteckdosen,Verlängerungen,Trommeln",
+                      "count" : 3,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik%7C___%7C131131%7C-%7C0%7C-%7CTischsteckdosen%2CVerl%C3%A4ngerungen%2CTrommeln",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "131131"
+                      }
+                    },
+                    {
+                      "value" : "Bewegungsmelder, Dämmerungsschalter auß.",
+                      "count" : 2,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik%7C___%7C131121%7C-%7C0%7C-%7CBewegungsmelder%2C%20D%C3%A4mmerungsschalter%20au%C3%9F.",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "131121"
+                      }
+                    },
+                    {
+                      "value" : "Präsenzmelder",
+                      "count" : 2,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik%7C___%7C131123%7C-%7C0%7C-%7CPr%C3%A4senzmelder",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "131123"
+                      }
+                    },
+                    {
+                      "value" : "Schalter Unterputz Fläche",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik%7C___%7C131112%7C-%7C0%7C-%7CSchalter%20Unterputz%20Fl%C3%A4che",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "131112"
+                      }
+                    },
+                    {
+                      "value" : "Jalousien- und Rohrmotorsteuerungen",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C131%7C-%7C0%7C-%7CGeb%C3%A4udesystemtechnik%7C___%7C131231%7C-%7C0%7C-%7CJalousien-%20und%20Rohrmotorsteuerungen",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "131231"
+                      }
+                    }
+                  ]
+                },
+                "customData" : {
+                  "id" : "131"
+                }
+              },
+              {
+                "value" : "Netzwerktechnik",
+                "count" : 76,
+                "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C141%7C-%7C0%7C-%7CNetzwerktechnik",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Computer und Zubehör",
+                      "count" : 29,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C141%7C-%7C0%7C-%7CNetzwerktechnik%7C___%7C141251%7C-%7C0%7C-%7CComputer%20und%20Zubeh%C3%B6r",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "141251"
+                      }
+                    },
+                    {
+                      "value" : "Industrie Switche 10/100/1000",
+                      "count" : 27,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C141%7C-%7C0%7C-%7CNetzwerktechnik%7C___%7C141221%7C-%7C0%7C-%7CIndustrie%20Switche%2010%2F100%2F1000",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "141221"
+                      }
+                    },
+                    {
+                      "value" : "Steckverbinder Koax, D-Sub, BNC, TNC, RJ",
+                      "count" : 9,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C141%7C-%7C0%7C-%7CNetzwerktechnik%7C___%7C141111%7C-%7C0%7C-%7CSteckverbinder%20Koax%2C%20D-Sub%2C%20BNC%2C%20TNC%2C%20RJ",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "141111"
+                      }
+                    },
+                    {
+                      "value" : "Überspannungsschutz",
+                      "count" : 6,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C141%7C-%7C0%7C-%7CNetzwerktechnik%7C___%7C141411%7C-%7C0%7C-%7C%C3%9Cberspannungsschutz",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "141411"
+                      }
+                    },
+                    {
+                      "value" : "Switche 10/100/1000",
+                      "count" : 2,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C141%7C-%7C0%7C-%7CNetzwerktechnik%7C___%7C141222%7C-%7C0%7C-%7CSwitche%2010%2F100%2F1000",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "141222"
+                      }
+                    },
+                    {
+                      "value" : "Netzwerkkarten / Mediakonverter",
+                      "count" : 2,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C141%7C-%7C0%7C-%7CNetzwerktechnik%7C___%7C141226%7C-%7C0%7C-%7CNetzwerkkarten%20%2F%20Mediakonverter",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "141226"
+                      }
+                    },
+                    {
+                      "value" : "Industriekomponenten Hutschiene",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C141%7C-%7C0%7C-%7CNetzwerktechnik%7C___%7C141225%7C-%7C0%7C-%7CIndustriekomponenten%20Hutschiene",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "141225"
+                      }
+                    }
+                  ]
+                },
+                "customData" : {
+                  "id" : "141"
+                }
+              },
+              {
+                "value" : "Technisches Licht",
+                "count" : 46,
+                "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C151%7C-%7C0%7C-%7CTechnisches%20Licht",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Lichtmanagement",
+                      "count" : 41,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C151%7C-%7C0%7C-%7CTechnisches%20Licht%7C___%7C151523%7C-%7C0%7C-%7CLichtmanagement",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "151523"
+                      }
+                    },
+                    {
+                      "value" : "Fassungen und Zubehör",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C151%7C-%7C0%7C-%7CTechnisches%20Licht%7C___%7C151531%7C-%7C0%7C-%7CFassungen%20und%20Zubeh%C3%B6r",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "151531"
+                      }
+                    },
+                    {
+                      "value" : "Office Innenleuchten konventionell",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C151%7C-%7C0%7C-%7CTechnisches%20Licht%7C___%7C151571%7C-%7C0%7C-%7COffice%20Innenleuchten%20konventionell",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "151571"
+                      }
+                    },
+                    {
+                      "value" : "Feuchtraumleuchten konventionell",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C151%7C-%7C0%7C-%7CTechnisches%20Licht%7C___%7C151573%7C-%7C0%7C-%7CFeuchtraumleuchten%20konventionell",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "151573"
+                      }
+                    },
+                    {
+                      "value" : "LED Panel-Leuchte alle Maße außer 625 x 625",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C151%7C-%7C0%7C-%7CTechnisches%20Licht%7C___%7C151623%7C-%7C0%7C-%7CLED%20Panel-Leuchte%20alle%20Ma%C3%9Fe%20au%C3%9Fer%20625%20x%20625",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "151623"
+                      }
+                    },
+                    {
+                      "value" : "LED Schnellmontagelichtbänder",
+                      "count" : 1,
+                      "filter" : "categories=1%7C-%7C0%7C-%7CGeb%C3%A4udetechnik%7C___%7C151%7C-%7C0%7C-%7CTechnisches%20Licht%7C___%7C151641%7C-%7C0%7C-%7CLED%20Schnellmontagelichtb%C3%A4nder",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "151641"
+                      }
+                    }
+                  ]
+                },
+                "customData" : {
+                  "id" : "151"
+                }
+              }
+            ]
+          },
+          "customData" : {
+            "id" : "1"
+          }
+        },
+        {
+          "value" : "Erneuerbare Energien",
+          "count" : 3,
+          "filter" : "categories=3%7C-%7C0%7C-%7CErneuerbare%20Energien",
+          "children" : {
+            "filterName" : "categories",
+            "values" : [
+              {
+                "value" : "null",
+                "count" : 3,
+                "filter" : "categories=3%7C-%7C0%7C-%7CErneuerbare%20Energien%7C___%7C331%7C-%7C0%7C-%7Cnull",
+                "children" : {
+                  "filterName" : "categories",
+                  "values" : [
+                    {
+                      "value" : "Ladestationen Wand",
+                      "count" : 3,
+                      "filter" : "categories=3%7C-%7C0%7C-%7CErneuerbare%20Energien%7C___%7C331%7C-%7C0%7C-%7Cnull%7C___%7C331112%7C-%7C0%7C-%7CLadestationen%20Wand",
+                      "children" : {
+                        "filterName" : "categories",
+                        "values" : [ ]
+                      },
+                      "customData" : {
+                        "id" : "331112"
+                      }
+                    }
+                  ]
+                },
+                "customData" : {
+                  "id" : "331"
+                }
+              }
+            ]
+          },
+          "customData" : {
+            "id" : "3"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -8,6 +8,7 @@ public class CategoryDTO {
     private String name;
     private Integer position;
     private Long count;
+    private String filter;
 
     /**
      * Getter for property 'id'.
@@ -79,6 +80,14 @@ public class CategoryDTO {
      */
     public void setCount(Long count) {
         this.count = count;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
     @Override
