@@ -49,7 +49,7 @@ public class SearchQueryMapper {
 
         searchQuery.setResult(searchQueryDTO.getResult());
 
-        if(searchQuery.getRequestId() == null) {
+        if(searchQueryDTO.getRequestId() == null) {
             searchQuery.setRequestId(UUID.randomUUID().toString());
         } else {
             searchQuery.setRequestId(searchQueryDTO.getRequestId());
