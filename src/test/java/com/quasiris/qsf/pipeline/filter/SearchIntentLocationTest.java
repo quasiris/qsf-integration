@@ -47,8 +47,8 @@ public class SearchIntentLocationTest extends AbstractPipelineTest {
                         client(mockElasticClient).
                         baseUrl("http://localhost:9214/osm").
                         profile("classpath://com/quasiris/qsf/elastic/profiles/location.json").
-                        addAggregation("places", "place", "place").
-                        addAggregation("tag", "tagkey_is_in", "tagkey_is_in").
+                        addAggregation("places", "place", "place.keyword").
+                        addAggregation("tag", "tagkey_is_in", "tagkey_is_in.keyword").
                         //filterPrefix("f.").
                         //mapFilter("farbe", "attrFarbe").
                         //mapField("url","url").

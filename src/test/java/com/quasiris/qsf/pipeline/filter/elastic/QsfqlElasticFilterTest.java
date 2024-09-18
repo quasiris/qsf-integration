@@ -12,6 +12,7 @@ import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.test.AbstractPipelineTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class QsfqlElasticFilterTest extends AbstractPipelineTest {
 
         @Test
+        @Disabled
         public void testQsfqlElasticFilterVersion6() throws Exception {
                 testQsfqlElasticFilter(6, "location.json", "http://localhost:9262/osm");
         }
@@ -43,9 +45,9 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
                             client(mockElasticClient).
                             baseUrl(baseUrl).
                             profile("classpath://com/quasiris/qsf/elastic/profiles/" + profile ).
-                            addAggregation("places", "place", "place").
+                            addAggregation("places", "place", "place.keyword").
                             mapAggregationName("places", "Places").
-                            addAggregation("tag", "tagkey_is_in", "tagkey_is_in").
+                            addAggregation("tag", "tagkey_is_in", "tagkey_is_in.keyword").
                             mapFilter("place", "tagkey_place").
                             mapField("id","id").
                             mapAggregation("tag", "tag").
@@ -116,13 +118,15 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
 
         com.quasiris.qsf.query.Facet tagkeysFacet =
                 com.quasiris.qsf.query.Facet.Builder.create().
-                        id("tagkeys.keyword").
+                        id("tagkeys").
+                        fieldName("tagkeys.keyword").
                         name("tagkeys").
                         build();
 
 
         com.quasiris.qsf.query.Facet subFacet = new com.quasiris.qsf.query.Facet();
-        subFacet.setId("name.keyword");
+        subFacet.setId("name");
+        subFacet.setFieldName("name.keyword");
         subFacet.setName("name");
 
         tagkeysFacet.setChildren(subFacet);

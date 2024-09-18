@@ -39,7 +39,7 @@ public class AggregationMapper {
                 return query;
             }
 
-            String name = facet.getName();
+            String name = facet.getId();
             if(isSubFacet) {
                 name = "subFacet";
             }
@@ -199,13 +199,13 @@ public class AggregationMapper {
         try {
             JsonBuilder jsonBuilder = new JsonBuilder();
             jsonBuilder.
-                    object(slider.getName()).
+                    object(slider.getId()).
                     object("stats").
                     object("field", slider.getFieldName());
 
             if(filters != null) {
                 JsonBuilder aggFilterWrapper = JsonBuilder.create().
-                        object(slider.getName() + "_filter_wrapper").
+                        object(slider.getId() + "_filter_wrapper").
                         stash().
                         object("filter").
                         json(filters).
@@ -227,7 +227,7 @@ public class AggregationMapper {
         try {
             JsonBuilder jsonBuilder = new JsonBuilder();
             jsonBuilder.
-                    object(rangeFacet.getName()).
+                    object(rangeFacet.getId()).
                     object("range").
                     object("keyed", Boolean.FALSE).
                     object("field", rangeFacet.getFieldName());
@@ -256,7 +256,7 @@ public class AggregationMapper {
 
             if(filters != null) {
                 JsonBuilder aggFilterWrapper = JsonBuilder.create().
-                        object(rangeFacet.getName() + "_filter_wrapper").
+                        object(rangeFacet.getId() + "_filter_wrapper").
                         stash().
                         object("filter").
                         json(filters).

@@ -71,13 +71,15 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterRule("(.+)", "$1.keyword");
         Facet facet = new Facet();
         facet.setName("supplierName");
-        facet.setId("supplierName.keyword");
+        facet.setId("supplierName");
+        facet.setFieldName("supplierName.keyword");
         facet.setOperator(FilterOperator.OR);
 
 
         Facet subFacet = new Facet();
         subFacet.setName("category");
-        subFacet.setId("category.keyword");
+        subFacet.setId("category");
+        subFacet.setFieldName("category.keyword");
         subFacet.setOperator(FilterOperator.OR);
 
         facet.setChildren(subFacet);
@@ -86,6 +88,35 @@ public class ElasticQsfqlQueryTransformerTest {
         return transformer;
     }
 
+
+    @DisplayName("Transform defined range facet")
+    @Test
+    public void testDefinedRangeFacet() throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.matchAll());
+        transformer.setMultiSelectFilter(true);
+        transformer.addFilterRule("(.+)", "$1.keyword");
+
+        RangeFacet facet = new RangeFacet();
+        facet.setName("created_at");
+        facet.setId("created_at_attachments");
+        facet.setFieldName("created_at");
+        facet.setType("range");
+        //facet.setOperator(FilterOperator.OR);
+
+
+        Range lastWeek = new Range("last week", "now-1w/w", "now/w");
+        Range lastMonth = new Range("last month", "now-1M/M", "now/M");
+
+        facet.setRanges(Arrays.asList(lastWeek, lastMonth));
+
+        transformer.setAggregations(Arrays.asList(facet));
+        ObjectNode elasticQuery = transform(transformer,
+                "q=*"
+        );
+        assertQuery(elasticQuery, "defined-range-facet.json");
+
+    }
 
     @DisplayName("Transform range facet")
     @Test
@@ -741,6 +772,7 @@ public class ElasticQsfqlQueryTransformerTest {
 
         Facet accountId = new Facet();
         accountId.setId("accountId");
+        accountId.setFieldName("accountId");
         accountId.setName("accountId");
         SearchFilter searchFilter = SearchFilterBuilder.create().withId("accountId").value("1234").build();
 
@@ -770,19 +802,22 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setMultiSelectFilter(true);
 
         Facet brand = new Facet();
-        brand.setId("brandElasticField");
+        brand.setId("brand");
+        brand.setFieldName("brandElasticField");
         brand.setName("brand");
         brand.setOperator(FilterOperator.OR);
         transformer.addAggregation(brand);
 
         Facet stock = new Facet();
-        stock.setId("stockElasticField");
+        stock.setId("stock");
+        stock.setFieldName("stockElasticField");
         stock.setName("stock");
         stock.setOperator(FilterOperator.OR);
         transformer.addAggregation(stock);
 
         Facet type = new Facet();
-        type.setId("typeElasticField");
+        type.setId("type");
+        type.setFieldName("typeElasticField");
         type.setName("type");
         type.setOperator(FilterOperator.OR);
         transformer.addAggregation(type);
@@ -804,19 +839,22 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setMultiSelectFilter(true);
 
         Facet brand = new Facet();
-        brand.setId("brandElasticField");
+        brand.setId("brand");
+        brand.setFieldName("brandElasticField");
         brand.setName("brand");
         brand.setOperator(FilterOperator.AND);
         transformer.addAggregation(brand);
 
         Facet stock = new Facet();
-        stock.setId("stockElasticField");
+        stock.setId("stock");
+        stock.setFieldName("stockElasticField");
         stock.setName("stock");
         stock.setOperator(FilterOperator.AND);
         transformer.addAggregation(stock);
 
         Facet type = new Facet();
-        type.setId("typeElasticField");
+        type.setId("type");
+        type.setFieldName("typeElasticField");
         type.setName("type");
         type.setOperator(FilterOperator.AND);
         transformer.addAggregation(type);
@@ -912,7 +950,8 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setProfile(Profiles.matchAll());
 
         Facet facet = new Facet();
-        facet.setId("timestamp");
+        facet.setId("searchQueries");
+        facet.setFieldName("timestamp");
         facet.setName("searchQueries");
         facet.setType("date_histogram");
         transformer.addAggregation(facet);

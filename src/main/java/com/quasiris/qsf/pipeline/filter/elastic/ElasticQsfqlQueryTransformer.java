@@ -175,8 +175,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             // add facet for total doc count
             String fieldName;
             Facet aggregation = new Facet();
-            aggregation.setId(getVariantId() +".keyword");
-            aggregation.setName(QsfIntegrationConstants.TOTAL_COUNT_AGGREGATION_NAME);
+            aggregation.setFieldName(getVariantId() +".keyword");
+            aggregation.setId(QsfIntegrationConstants.TOTAL_COUNT_AGGREGATION_NAME);
             aggregation.setOperator(FilterOperator.OR);
             aggregation.setType("cardinality");
             Set<String> excludeIds = new HashSet<>();

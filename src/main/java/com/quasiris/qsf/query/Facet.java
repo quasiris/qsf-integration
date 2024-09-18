@@ -187,6 +187,7 @@ public class Facet implements Serializable {
 
     public static final class Builder {
         private String id;
+        private String fieldName;
         private String name;
         private String type = "terms";
         private Integer size;
@@ -202,6 +203,11 @@ public class Facet implements Serializable {
 
         public Builder id(String id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder fieldName(String fieldName) {
+            this.fieldName = fieldName;
             return this;
         }
 
@@ -233,6 +239,7 @@ public class Facet implements Serializable {
         public Facet build() {
             Facet facet = new Facet();
             facet.setId(id);
+            facet.setFieldName(fieldName);
             facet.setName(name);
             facet.setType(type);
             facet.setSize(size);

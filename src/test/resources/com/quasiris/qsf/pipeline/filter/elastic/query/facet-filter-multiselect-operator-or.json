@@ -23,11 +23,6 @@
               "must" : [
                 {
                   "term" : {
-                    "brandElasticField" : "waldschuh"
-                  }
-                },
-                {
-                  "term" : {
                     "stockElasticField" : "true"
                   }
                 }
@@ -49,11 +44,6 @@
                 {
                   "term" : {
                     "brandElasticField" : "waldschuh"
-                  }
-                },
-                {
-                  "term" : {
-                    "stockElasticField" : "true"
                   }
                 }
               ]

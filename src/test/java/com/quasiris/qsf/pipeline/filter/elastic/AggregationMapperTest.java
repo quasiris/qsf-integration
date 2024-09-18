@@ -18,7 +18,8 @@ class AggregationMapperTest {
     void createAgg() throws JsonBuilderException, IOException {
         // given
         Facet facet = new Facet();
-        facet.setId("attr_farbe.keyword");
+        facet.setId("attr_farbe");
+        facet.setFieldName("attr_farbe.keyword");
         facet.setName("attr_farbe");
         facet.setType("terms");
         facet.setSize(5);
@@ -41,7 +42,8 @@ class AggregationMapperTest {
     void createAggForVariant() throws JsonBuilderException, IOException {
         // given
         Facet facet = new Facet();
-        facet.setId("attr_farbe.keyword");
+        facet.setId("attr_farbe");
+        facet.setFieldName("attr_farbe.keyword");
         facet.setName("attr_farbe");
         facet.setType("terms");
         facet.setSize(5);
@@ -64,7 +66,8 @@ class AggregationMapperTest {
     void createAggForVariantWithFilter() throws JsonBuilderException, IOException {
         // given
         Facet facet = new Facet();
-        facet.setId("attr_farbe.keyword");
+        facet.setId("attr_farbe");
+        facet.setFieldName("attr_farbe.keyword");
         facet.setName("attr_farbe");
         facet.setType("terms");
         facet.setSize(5);

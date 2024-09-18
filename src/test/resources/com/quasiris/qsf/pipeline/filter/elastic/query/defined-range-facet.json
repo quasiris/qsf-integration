@@ -1,0 +1,41 @@
+{
+    "from" : 0,
+    "size" : 10,
+    "track_total_hits" : true,
+    "query" : {
+        "bool" : {
+            "must" : [
+                {
+                    "match_all" : { }
+                }
+            ]
+        }
+    },
+    "aggs" : {
+        "qsc_filtered" : {
+            "filter" : {
+                "bool" : { }
+            },
+            "aggs" : {
+                "created_at_attachments" : {
+                    "range" : {
+                        "keyed" : false,
+                        "field" : "created_at",
+                        "ranges" : [
+                            {
+                                "from" : "now-1w/w",
+                                "key" : "last week",
+                                "to" : "now/w"
+                            },
+                            {
+                                "from" : "now-1M/M",
+                                "key" : "last month",
+                                "to" : "now/M"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
