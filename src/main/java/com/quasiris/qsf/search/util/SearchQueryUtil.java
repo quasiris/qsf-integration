@@ -1,6 +1,7 @@
 package com.quasiris.qsf.search.util;
 
 import com.quasiris.qsf.dto.query.*;
+import com.quasiris.qsf.query.SearchFilter;
 import com.quasiris.qsf.query.SearchQuery;
 
 import java.util.Objects;
@@ -99,5 +100,16 @@ public class SearchQueryUtil {
     public static String getParameterAsString(String parameterName, SearchQuery searchQuery) {
         return getParameterAsString(parameterName, searchQuery, null);
 
+    }
+
+    public static String getFilterValue(String filterId, SearchQuery searchQuery) {
+        SearchFilter searchFilter = searchQuery.getSearchFilterById(filterId);
+        if(searchFilter == null) {
+            return null;
+        }
+        if(searchFilter.getValues() != null && !searchFilter.getValues().isEmpty()) {
+            return searchFilter.getValues().get(0);
+        }
+        return null;
     }
 }
