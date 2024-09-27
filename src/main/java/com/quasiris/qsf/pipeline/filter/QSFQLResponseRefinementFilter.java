@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter;
 
+import com.quasiris.qsf.commons.util.UrlUtil;
 import com.quasiris.qsf.paging.PagingBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.exception.PipelineConfigException;
@@ -83,9 +84,10 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
                     facet.setSelected(Boolean.TRUE);
                     if(searchFilter.getValues() != null) {
                         for (String filterValue : searchFilter.getValues()) {
-                            FacetValue facetValue = facet.getFacetValueByValue(filterValue);
-                            if (facetValue != null) {
-                                facetValue.setSelected(Boolean.TRUE);
+                            String filterValueEncoded = facet.getFilterName() + "=" + UrlUtil.encode(filterValue);
+
+                            for(FacetValue facetValue : facet.getValues()) {
+                                refineFacetValue(facetValue, filterValueEncoded);
                             }
                         }
                     } else if (searchFilter.getMinValue() != null && searchFilter.getRangeValue(Double.class).getMinValue() instanceof Double) {
@@ -95,6 +97,25 @@ public class QSFQLResponseRefinementFilter extends AbstractFilter {
                     }
                 }
             }
+        }
+    }
+
+
+    void refineFacetValue(FacetValue facetValue, String filterValue) {
+        if(facetValue == null) {
+            return;
+        }
+
+        if(facetValue.getFilter().equals(filterValue)) {
+            facetValue.setSelected(Boolean.TRUE);
+        }
+
+        if(facetValue.getChildren() == null) {
+            return;
+        }
+
+        for(FacetValue childFacetValue : facetValue.getChildren().getValues()) {
+            refineFacetValue(childFacetValue, filterValue);
         }
     }
 
