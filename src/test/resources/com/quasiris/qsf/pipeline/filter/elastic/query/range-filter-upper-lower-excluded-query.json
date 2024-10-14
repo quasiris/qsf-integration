@@ -1,0 +1,80 @@
+{
+  "size" : 10,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "dis_max" : {
+            "queries" : [
+              {
+                "query_string" : {
+                  "_name" : "dismax",
+                  "query" : "${qsfql.q.escaped}",
+                  "default_operator" : "OR",
+                  "fields" : [
+                    "name"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "bool" : {
+            "should" : [
+              {
+                "term" : {
+                  "place" : "city"
+                }
+              },
+              {
+                "term" : {
+                  "place" : "suburb"
+                }
+              },
+              {
+                "term" : {
+                  "place" : "town"
+                }
+              },
+              {
+                "term" : {
+                  "place" : "village"
+                }
+              },
+              {
+                "term" : {
+                  "place" : "residential"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "filter" : {
+        "bool" : {
+          "must" : [
+            {
+              "range" : {
+                "priceElasticField" : {
+                  "gt" : 3.0,
+                  "lt" : 5.0
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "highlight" : {
+    "fields" : {
+      "name" : {
+        "fragment_size" : 150,
+        "number_of_fragments" : 3,
+        "no_match_size" : 150
+      }
+    }
+  },
+  "from" : 0
+}

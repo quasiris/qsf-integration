@@ -1,0 +1,28 @@
+{
+  "from" : 0,
+  "size" : 10,
+  "track_total_hits" : true,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "match_all" : { }
+        }
+      ],
+      "filter" : {
+        "bool" : {
+          "must" : [
+            {
+              "range" : {
+                "timestamp" : {
+                  "gte" : "2021-01-02T23:00:00Z",
+                  "lte" : "2021-02-05T20:59:38Z"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

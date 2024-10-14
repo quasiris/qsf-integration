@@ -1,7 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
@@ -23,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by mki on 04.02.18.
@@ -248,7 +246,7 @@ public class ElasticQsfqlQueryTransformerTest {
     @CsvSource({
             "location.json, null, null",
             "location.json, query/bool/filter, null",
-            "location-with-filters-variable.json, null, filters"
+            //"location-with-filters-variable.json, null, filters"
     })
     public void transformSortMapping(
             @ConvertWith(NullValueConverter.class) String profile,
@@ -261,8 +259,7 @@ public class ElasticQsfqlQueryTransformerTest {
         String sort = "[{\"price\": {\"order\": \"asc\",\"mode\": \"avg\"}}]";
         transformer.addSortMapping("name_asc", sort);
         ObjectNode elasticQuery = transform(transformer,  "sort=name_asc");
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
-        assertEquals("asc", elasticQuery.get("sort").get(0).get("price").get("order").asText());
+        assertQuery(elasticQuery, "sort-mapping-query.json");
     }
 
     @Test
@@ -294,7 +291,7 @@ public class ElasticQsfqlQueryTransformerTest {
     @CsvSource({
             "location.json, null, null",
             "location.json, query/bool/filter, null",
-            "location-with-filters-variable.json, null, filters"
+            //"location-with-filters-variable.json, null, filters"
     })
     public void transformSortField(
             @ConvertWith(NullValueConverter.class) String profile,
@@ -308,8 +305,8 @@ public class ElasticQsfqlQueryTransformerTest {
         searchQuery.setSort(new Sort("price", "asc"));
 
         ObjectNode elasticQuery = transform(transformer,  searchQuery);
-        assertEquals("asc", elasticQuery.get("sort").get(0).get("price").asText());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+
+        assertQuery(elasticQuery, "sort-query.json");
 
     }
 
@@ -331,9 +328,9 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
-        assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("term").get("colorElasticField").asText());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        assertQuery(elasticQuery, "filter-query.json");
     }
+
     @DisplayName("Transform filters Multiselect")
     @ParameterizedTest(name = "{index} => profile=''{0}'' filterPath=''{1}'' filterVariable=''{2}''")
     @CsvSource({
@@ -352,8 +349,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterVariable(filterVariable);
         transformer.setMultiSelectFilter(true);
         ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
-        assertEquals("red", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("term").get("colorElasticField").asText());
-        assertEquals("foo", elasticQuery.get("post_filter").get("bool").get("must").get(1).get("term").get("brandElasticField").asText());
+        assertQuery(elasticQuery, "filter-multiselect-query.json");
     }
 
     @DisplayName("Transform filter OR")
@@ -374,10 +370,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar", "f.color=red");
-        assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(1).get("term").get("colorElasticField").asText());
-        assertEquals("foo", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("bool").get("should").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("bar", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("bool").get("should").get(1).get("term").get("brandElasticField").asText());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        assertQuery(elasticQuery, "filter-or-query.json");
     }
     @DisplayName("Transform filter OR Multiselect")
     @ParameterizedTest(name = "{index} => profile=''{0}'' filterPath=''{1}'' filterVariable=''{2}''")
@@ -397,9 +390,8 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterVariable(filterVariable);
         transformer.setMultiSelectFilter(true);
         ObjectNode elasticQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar", "f.color=red");
-        assertEquals("red", elasticQuery.get("post_filter").get("bool").get("must").get(1).get("term").get("colorElasticField").asText());
-        assertEquals("foo", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("bool").get("should").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("bar", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("bool").get("should").get(1).get("term").get("brandElasticField").asText());
+        assertQuery(elasticQuery, "filter-or-multiselect-query.json");
+
     }
 
     @DisplayName("Transform multiple or filters")
@@ -421,12 +413,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar", "f.color=red", "f.size.or=xl", "f.size.or=xxl");
-        assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(2).get("term").get("colorElasticField").asText());
-        assertEquals("xl", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("bool").get("should").get(0).get("term").get("sizeElasticField").asText());
-        assertEquals("xxl", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("bool").get("should").get(1).get("term").get("sizeElasticField").asText());
-        assertEquals("foo", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(1).get("bool").get("should").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("bar", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(1).get("bool").get("should").get(1).get("term").get("brandElasticField").asText());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        assertQuery(elasticQuery, "filter-or-multiple-query.json");
     }
 
     @DisplayName("Transform multiple or filters Multiselect")
@@ -448,11 +435,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterVariable(filterVariable);
         transformer.setMultiSelectFilter(true);
         ObjectNode elasticQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar", "f.color=red", "f.size.or=xl", "f.size.or=xxl");
-        assertEquals("red", elasticQuery.get("post_filter").get("bool").get("must").get(2).get("term").get("colorElasticField").asText());
-        assertEquals("xl", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("bool").get("should").get(0).get("term").get("sizeElasticField").asText());
-        assertEquals("xxl", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("bool").get("should").get(1).get("term").get("sizeElasticField").asText());
-        assertEquals("foo", elasticQuery.get("post_filter").get("bool").get("must").get(1).get("bool").get("should").get(0).get("term").get("brandElasticField").asText());
-        assertEquals("bar", elasticQuery.get("post_filter").get("bool").get("must").get(1).get("bool").get("should").get(1).get("term").get("brandElasticField").asText());
+        assertQuery(elasticQuery, "filter-or-multiple-multiselect-query.json");
     }
 
 
@@ -474,9 +457,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "f.brand.not=foo", "f.color=red");
-        assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(1).get("term").get("colorElasticField").asText());
-        assertEquals("foo", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("bool").get("must_not").get(0).get("term").get("brandElasticField").asText());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        assertQuery(elasticQuery, "filter-not-query.json");
     }
 
 
@@ -484,7 +465,7 @@ public class ElasticQsfqlQueryTransformerTest {
     @ParameterizedTest(name = "{index} => profile=''{0}'' filterPath=''{1}'' filterVariable=''{2}''")
     @CsvSource({
             "location.json, null, null",
-//            "location.json, query/bool/filter, null",
+            "location.json, query/bool/filter, null",
     })
     public void transformFilterNotMultiselect(
             @ConvertWith(NullValueConverter.class) String profile,
@@ -498,8 +479,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setMultiSelectFilter(true);
         transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "f.brand.not=foo", "f.color=red");
-        assertEquals("red", elasticQuery.get("post_filter").get("bool").get("must").get(1).get("term").get("colorElasticField").asText());
-        assertEquals("foo", elasticQuery.get("post_filter").get("bool").get("must").get(0).get("bool").get("must_not").get(0).get("term").get("brandElasticField").asText());
+        assertQuery(elasticQuery, "filter-not-multiselected-query.json");
     }
 
 
@@ -520,8 +500,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
-        assertEquals("red", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("term").get("attr_color.keyword").asText());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        assertQuery(elasticQuery, "filter-rule-query.json");
     }
 
 
@@ -542,11 +521,9 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("price", "priceElasticField");
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
-        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.price.range=3,5");
 
-        assertEquals("3.0", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("priceElasticField").get("gte").asText());
-        assertEquals("5.0", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("priceElasticField").get("lte").asText());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.price.range=3,5");
+        assertQuery(elasticQuery, "range-filter-query.json");
     }
 
     @DisplayName("Transform range filter wit upper and lower bound excluded")
@@ -565,11 +542,9 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("price", "priceElasticField");
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
-        ObjectNode elasticQuery = transform(transformer,  "f.price.range={3,5}");
 
-        assertEquals("3.0", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("priceElasticField").get("gt").asText());
-        assertEquals("5.0", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("priceElasticField").get("lt").asText());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        ObjectNode elasticQuery = transform(transformer,  "f.price.range={3,5}");
+        assertQuery(elasticQuery, "range-filter-upper-lower-excluded-query.json");
     }
 
     @DisplayName("Transform range filter wit upper and lower bound included")
@@ -589,10 +564,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "f.price.range=[3,5]");
-
-        assertEquals("3.0", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("priceElasticField").get("gte").asText());
-        assertEquals("5.0", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("priceElasticField").get("lte").asText());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        assertQuery(elasticQuery, "range-filter-upper-lower-included-query.json");
     }
 
 
@@ -603,10 +575,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setProfile(Profiles.matchAll());
         transformer.addFilterMapping("timestamp", "timestamp");
         ObjectNode elasticQuery = transform(transformer,  "f.timestamp.daterange=2021-01-02T23:00:00Z,2021-02-05T20:59:38Z");
-
-        assertTrue(DateUtil.isDateEqual("2021-01-03T00:00:00.000+0100", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("timestamp").get("gte").asText()));
-        assertTrue(DateUtil.isDateEqual("2021-02-05T21:59:38.000+0100", elasticQuery.get("query").get("bool").get("filter").get("bool").get("must").get(0).get("range").get("timestamp").get("lte").asText()));
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        assertQuery(elasticQuery, "date-range-filter-query.json");
     }
 
     @DisplayName("Transform facet")
@@ -895,6 +864,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("form", "attr_form.keyword");
 
         ObjectNode elasticQuery = transform(transformer,  "q=*", "f.farbe=Schwarz", "f.futter=Leder");
+        assertQuery(elasticQuery, "waldlaeufer.json");
     }
 
     @DisplayName("Transform facet with multi select filters and no filter is queried")

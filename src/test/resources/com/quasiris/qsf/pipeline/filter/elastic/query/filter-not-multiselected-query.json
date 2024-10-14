@@ -1,0 +1,95 @@
+{
+  "size" : 10,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "dis_max" : {
+            "queries" : [
+              {
+                "query_string" : {
+                  "_name" : "dismax",
+                  "query" : "${qsfql.q.escaped}",
+                  "default_operator" : "OR",
+                  "fields" : [
+                    "name"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "bool" : {
+            "should" : [
+              {
+                "term" : {
+                  "place" : "city"
+                }
+              },
+              {
+                "term" : {
+                  "place" : "suburb"
+                }
+              },
+              {
+                "term" : {
+                  "place" : "town"
+                }
+              },
+              {
+                "term" : {
+                  "place" : "village"
+                }
+              },
+              {
+                "term" : {
+                  "place" : "residential"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "highlight" : {
+    "fields" : {
+      "name" : {
+        "fragment_size" : 150,
+        "number_of_fragments" : 3,
+        "no_match_size" : 150
+      }
+    }
+  },
+  "aggs" : {
+    "qsc_filtered" : {
+      "filter" : {
+        "bool" : { }
+      }
+    }
+  },
+  "post_filter" : {
+    "bool" : {
+      "must" : [
+        {
+          "bool" : {
+            "must_not" : [
+              {
+                "term" : {
+                  "brandElasticField" : "foo"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "term" : {
+            "colorElasticField" : "red"
+          }
+        }
+      ]
+    }
+  },
+  "from" : 0
+}

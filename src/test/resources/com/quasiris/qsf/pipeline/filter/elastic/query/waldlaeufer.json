@@ -1,0 +1,114 @@
+{
+  "from" : 0,
+  "size" : 10,
+  "track_total_hits" : true,
+  "query" : {
+    "bool" : {
+      "must" : [
+        {
+          "match_all" : { }
+        }
+      ]
+    }
+  },
+  "aggs" : {
+    "qsc_filtered" : {
+      "filter" : {
+        "bool" : { }
+      },
+      "aggs" : {
+        "attr_farbe.keyword_filter_wrapper" : {
+          "filter" : {
+            "bool" : {
+              "must" : [
+                {
+                  "term" : {
+                    "attr_farbe.keyword" : "Schwarz"
+                  }
+                },
+                {
+                  "term" : {
+                    "attr_futter.keyword" : "Leder"
+                  }
+                }
+              ]
+            }
+          },
+          "aggs" : {
+            "attr_farbe.keyword" : {
+              "terms" : {
+                "field" : "attr_farbe.keyword"
+              }
+            }
+          }
+        },
+        "attr_futter.keyword_filter_wrapper" : {
+          "filter" : {
+            "bool" : {
+              "must" : [
+                {
+                  "term" : {
+                    "attr_farbe.keyword" : "Schwarz"
+                  }
+                },
+                {
+                  "term" : {
+                    "attr_futter.keyword" : "Leder"
+                  }
+                }
+              ]
+            }
+          },
+          "aggs" : {
+            "attr_futter.keyword" : {
+              "terms" : {
+                "field" : "attr_futter.keyword"
+              }
+            }
+          }
+        },
+        "attr_form.keyword_filter_wrapper" : {
+          "filter" : {
+            "bool" : {
+              "must" : [
+                {
+                  "term" : {
+                    "attr_farbe.keyword" : "Schwarz"
+                  }
+                },
+                {
+                  "term" : {
+                    "attr_futter.keyword" : "Leder"
+                  }
+                }
+              ]
+            }
+          },
+          "aggs" : {
+            "attr_form.keyword" : {
+              "terms" : {
+                "field" : "attr_form.keyword"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post_filter" : {
+    "bool" : {
+      "must" : [
+        {
+          "term" : {
+            "attr_farbe.keyword" : "Schwarz"
+          }
+        },
+        {
+          "term" : {
+            "attr_futter.keyword" : "Leder"
+          }
+        }
+      ]
+    }
+  }
+}
