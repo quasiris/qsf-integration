@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
+import com.quasiris.qsf.mapping.ParameterMapper;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.web.RequestParser;
@@ -33,7 +34,10 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     protected ObjectNode elasticQuery;
 
     protected String profile;
+
     protected Map<String, Object> profileParameter = new HashMap<>();
+
+    private ParameterMapper parameterMapper;
 
     protected List<Facet> aggregations = new ArrayList<>();
 
@@ -66,8 +70,10 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     public void replaceParameters() throws JsonBuilderException {
         elasticQuery = (ObjectNode) JsonBuilder.create().
+                // TODO
                 valueMap("query", searchQuery.getQ()).
                 valueMap(searchQuery.getParameters()).
+
                 newJson(elasticQuery).
                 replace().
                 get();
@@ -125,9 +131,10 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     }
 
-    public void transformParameter() {
+    private Map<String, Object> loadParameterDeprecated() {
         Map<String, Object> rawValues = new HashMap<>();
         rawValues.putAll(RequestParser.getRequestParameter(pipelineContainer));
+
 
 
         for(Map.Entry<String, Object> param :profileParameter.entrySet()) {
@@ -152,6 +159,18 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
         Map<String, Object> replaceMap = ProfileLoader.encodeParameters(rawValues);
 
+        return replaceMap;
+
+    }
+
+    public void transformParameter() {
+        Map<String, Object> replaceMap;
+        if(parameterMapper == null) {
+            replaceMap = loadParameterDeprecated();
+        } else {
+            replaceMap = new HashMap<>();
+        }
+
 
         String request = "";
         try {
@@ -167,7 +186,6 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         catch (Exception e) {
             if(pipelineContainer.isDebugEnabled()) {
                 pipelineContainer.debug("profile", DebugType.STRING, request);
-                pipelineContainer.debug("replaceMap", DebugType.OBJECT, replaceMap);
             }
             throw new RuntimeException("Could not load elastic query from profile: " + profile + " " + e.getMessage(), e);
         }
@@ -295,5 +313,9 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     public void setVariantId(String variantId) {
         this.variantId = variantId;
+    }
+
+    public void setParameterMapper(ParameterMapper parameterMapper) {
+        this.parameterMapper = parameterMapper;
     }
 }

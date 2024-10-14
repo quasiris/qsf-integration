@@ -1,0 +1,6 @@
+{
+  "mapping" : {
+    "q" : "searchQuery.q",
+    "qsfql.q.escaped" : "searchQuery.q"
+  }
+}

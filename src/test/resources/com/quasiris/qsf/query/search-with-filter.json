@@ -1,0 +1,39 @@
+{
+  "q" : "my query",
+  "rows": 16,
+  "parameters" : {
+    "docId" : "my-doc-id"
+  },
+  "searchFilters": [
+
+    {
+      "id": "sku",
+      "filterOperator": "OR",
+      "values": [
+        "0123456789"
+      ]
+    },
+    {
+      "id": "sku-with-operator-and",
+      "filterOperator": "AND",
+      "values": [
+        "0123456789"
+      ]
+    },
+    {
+      "id": "sku-with-operator-from-facet-config",
+      "values": [
+        "0123456789"
+      ]
+    },
+    {
+      "id": "sku-with-operator-default",
+      "values": [
+        "0123456789"
+      ]
+    }
+  ],
+  "sort" : {
+    "sort" : "lastPublication_asc"
+  }
+}

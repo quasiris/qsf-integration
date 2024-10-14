@@ -980,7 +980,7 @@ public class ElasticQsfqlQueryTransformerTest {
     protected ObjectNode transform(ElasticQsfqlQueryTransformer transformer, SearchQuery searchQuery) throws PipelineContainerException {
         PipelineContainer pipelineContainer = new PipelineContainer(null, null);
         pipelineContainer.setSearchQuery(searchQuery);
-
+        transformer.setParameterMapper(getParameterMapper(pipelineContainer));
         transformer.transform(pipelineContainer);
 
         ObjectNode elasticQuery = transformer.getElasticQuery();
@@ -994,6 +994,10 @@ public class ElasticQsfqlQueryTransformerTest {
 
     private void assertQuery(ObjectNode elasticQuery, String file) throws IOException {
         JsonAssert.assertJsonFile("classpath://com/quasiris/qsf/pipeline/filter/elastic/query/" + file, elasticQuery);
+    }
+
+    protected ParameterMapper getParameterMapper(PipelineContainer pipelineContainer) {
+        return null;
     }
 
 }
