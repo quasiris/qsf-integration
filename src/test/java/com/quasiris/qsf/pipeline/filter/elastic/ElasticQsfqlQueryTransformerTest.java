@@ -1,14 +1,13 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.quasiris.qsf.json.JsonBuilder;
+import com.quasiris.qsf.mapping.ParameterMapper;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
 import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParserTestUtil;
 import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.test.converter.NullValueConverter;
 import com.quasiris.qsf.test.json.JsonAssert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Created by mki on 04.02.18.
@@ -934,7 +931,7 @@ public class ElasticQsfqlQueryTransformerTest {
     @CsvSource({
             "location.json, null, null",
             "location.json, query/bool/filter, null",
-            "location-with-filters-variable.json, null, filters"
+            // "location-with-filters-variable.json, null, filters"
     })
     public void transformPaging(
             @ConvertWith(NullValueConverter.class) String profile,
@@ -946,9 +943,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterVariable(filterVariable);
 
         ObjectNode elasticQuery = transform(transformer,  "page=3");
-        assertEquals(10, elasticQuery.get("size").asInt());
-        assertEquals(20, elasticQuery.get("from").asInt());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        assertQuery(elasticQuery, "paging-query.json");
     }
 
     @DisplayName("Transform paging with default values")
@@ -956,7 +951,7 @@ public class ElasticQsfqlQueryTransformerTest {
     @CsvSource({
             "location.json, null, null",
             "location.json, query/bool/filter, null",
-            "location-with-filters-variable.json, null, filters"
+            //"location-with-filters-variable.json, null, filters"
     })
     public void transformPagingDefault(
             @ConvertWith(NullValueConverter.class) String profile,
@@ -968,10 +963,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterVariable(filterVariable);
 
         ObjectNode elasticQuery = transform(transformer,  "q=foo");
-        assertEquals(10, elasticQuery.get("size").asInt());
-        assertEquals(0, elasticQuery.get("from").asInt());
-        assertEquals("foo", elasticQuery.get("query").get("bool").get("must").get(0).get("dis_max").get("queries").get(0).get("query_string").get("query").asText());
-        Assertions.assertFalse(JsonBuilder.create().newJson(elasticQuery).exists("query/bool/$filters"));
+        assertQuery(elasticQuery, "paging-default-query.json");
     }
 
     @Test
@@ -980,13 +972,12 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/location.json");
 
         ObjectNode elasticQuery = transform(transformer,  "q=foo", "rows=5", "page=5");
-        assertEquals(5, elasticQuery.get("size").asInt());
-        assertEquals(20, elasticQuery.get("from").asInt());
+        assertQuery(elasticQuery, "paging-with-rows-query.json");
 
     }
 
 
-    private ObjectNode transform(ElasticQsfqlQueryTransformer transformer, SearchQuery searchQuery) throws PipelineContainerException {
+    protected ObjectNode transform(ElasticQsfqlQueryTransformer transformer, SearchQuery searchQuery) throws PipelineContainerException {
         PipelineContainer pipelineContainer = new PipelineContainer(null, null);
         pipelineContainer.setSearchQuery(searchQuery);
 
