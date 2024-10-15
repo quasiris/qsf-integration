@@ -37,6 +37,7 @@ public class ParameterMapper {
         data.put("searchQuery", pipelineContainer.getSearchQuery());
         data.put("searchResults", pipelineContainer.getSearchResults());
         data.put("context", pipelineContainer.getContext());
+        data.put("custom", new HashMap<>());
 
         this.pipelineContainer = pipelineContainer;
     }
@@ -64,9 +65,12 @@ public class ParameterMapper {
     private Map<String, ? super Object> map() {
         if(mappedData == null) {
             Map<String, ? super Object> ret = new HashMap<>();
+            ret.putAll(getCustomData());
             for (ParameterMappingDTO mapping : mappings) {
                 Object value = getValue(mapping.getFrom());
-                ret.put(mapping.getTo(), value);
+                if(value != null) {
+                    ret.put(mapping.getTo(), value);
+                }
             }
             mappedData = ret;
         }
@@ -105,6 +109,9 @@ public class ParameterMapper {
         return value;
     }
 
+    public Map<String, ? super Object> getMappedData() {
+        return  map();
+    }
 
     Object getValue(String from) {
         if("searchQuery.q".equals(from)) {
@@ -151,5 +158,23 @@ public class ParameterMapper {
             }
         }
         return null;
+    }
+
+    public Map<String, Object> getCustomData() {
+        Map<String, Object> custom = (Map<String, Object>) data.get("custom");
+        if(custom == null) {
+            custom = new HashMap<>();
+        }
+        return custom;
+    }
+
+    public void addCustomData(String key, Object value) {
+        Map<String, Object> custom = getCustomData();
+        custom.put(key, value);
+    }
+
+    public void addCustomData(Map<String, Object> data) {
+        Map<String, Object> custom = getCustomData();
+        custom.putAll(data);
     }
 }

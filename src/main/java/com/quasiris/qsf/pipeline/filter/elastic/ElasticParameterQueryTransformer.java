@@ -160,7 +160,6 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         Map<String, Object> replaceMap = ProfileLoader.encodeParameters(rawValues);
 
         return replaceMap;
-
     }
 
     public void transformParameter() {
@@ -168,7 +167,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         if(parameterMapper == null) {
             replaceMap = loadParameterDeprecated();
         } else {
-            replaceMap = new HashMap<>();
+            replaceMap = parameterMapper.getMappedData();
         }
 
 
@@ -317,5 +316,19 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     public void setParameterMapper(ParameterMapper parameterMapper) {
         this.parameterMapper = parameterMapper;
+    }
+
+    public void addCustomParameter(String key, Object value) {
+        if(parameterMapper == null) {
+            return;
+        }
+        parameterMapper.addCustomData(key, value);
+    }
+
+    public void addCustomParameter(Map<String, Object> parameters) {
+        if(parameterMapper == null) {
+            return;
+        }
+        parameterMapper.addCustomData(parameters);
     }
 }
