@@ -7,7 +7,7 @@
       "must": [
         {
           "query_string" : {
-            "query" : "${qsfql.q.encoded}"
+            "query" : "$qsfql.q.encoded"
           }
         }
       ]

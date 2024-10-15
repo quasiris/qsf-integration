@@ -255,7 +255,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterVariable(filterVariable);
         String sort = "[{\"price\": {\"order\": \"asc\",\"mode\": \"avg\"}}]";
         transformer.addSortMapping("name_asc", sort);
-        ObjectNode elasticQuery = transform(transformer,  "sort=name_asc");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "sort=name_asc");
         assertQuery(elasticQuery, "sort-mapping-query.json");
     }
 
@@ -299,6 +299,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
         SearchQuery searchQuery = new SearchQuery();
+        searchQuery.setQ("myQuery");
         searchQuery.setSort(new Sort("price", "asc"));
 
         ObjectNode elasticQuery = transform(transformer,  searchQuery);
@@ -324,7 +325,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("color", "colorElasticField");
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
-        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand=foo", "f.color=red");
         assertQuery(elasticQuery, "filter-query.json");
     }
 
@@ -345,7 +346,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
         transformer.setMultiSelectFilter(true);
-        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand=foo", "f.color=red");
         assertQuery(elasticQuery, "filter-multiselect-query.json");
     }
 
@@ -366,7 +367,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("color", "colorElasticField");
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
-        ObjectNode elasticQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar", "f.color=red");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand.or=foo", "f.brand.or=bar", "f.color=red");
         assertQuery(elasticQuery, "filter-or-query.json");
     }
     @DisplayName("Transform filter OR Multiselect")
@@ -386,7 +387,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
         transformer.setMultiSelectFilter(true);
-        ObjectNode elasticQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar", "f.color=red");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand.or=foo", "f.brand.or=bar", "f.color=red");
         assertQuery(elasticQuery, "filter-or-multiselect-query.json");
 
     }
@@ -409,7 +410,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("size", "sizeElasticField");
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
-        ObjectNode elasticQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar", "f.color=red", "f.size.or=xl", "f.size.or=xxl");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand.or=foo", "f.brand.or=bar", "f.color=red", "f.size.or=xl", "f.size.or=xxl");
         assertQuery(elasticQuery, "filter-or-multiple-query.json");
     }
 
@@ -431,7 +432,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
         transformer.setMultiSelectFilter(true);
-        ObjectNode elasticQuery = transform(transformer,  "f.brand.or=foo", "f.brand.or=bar", "f.color=red", "f.size.or=xl", "f.size.or=xxl");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand.or=foo", "f.brand.or=bar", "f.color=red", "f.size.or=xl", "f.size.or=xxl");
         assertQuery(elasticQuery, "filter-or-multiple-multiselect-query.json");
     }
 
@@ -453,7 +454,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("color", "colorElasticField");
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
-        ObjectNode elasticQuery = transform(transformer,  "f.brand.not=foo", "f.color=red");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand.not=foo", "f.color=red");
         assertQuery(elasticQuery, "filter-not-query.json");
     }
 
@@ -475,7 +476,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setMultiSelectFilter(true);
         transformer.setFilterVariable(filterVariable);
-        ObjectNode elasticQuery = transform(transformer,  "f.brand.not=foo", "f.color=red");
+        ObjectNode elasticQuery = transform(transformer, "q=myQuery", "f.brand.not=foo", "f.color=red");
         assertQuery(elasticQuery, "filter-not-multiselected-query.json");
     }
 
@@ -496,7 +497,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterRule("(.+)", "attr_$1.keyword");
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
-        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.color=red");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand=foo", "f.color=red");
         assertQuery(elasticQuery, "filter-rule-query.json");
     }
 
@@ -519,7 +520,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
 
-        ObjectNode elasticQuery = transform(transformer,  "f.brand=foo", "f.price.range=3,5");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand=foo", "f.price.range=3,5");
         assertQuery(elasticQuery, "range-filter-query.json");
     }
 
@@ -540,7 +541,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
 
-        ObjectNode elasticQuery = transform(transformer,  "f.price.range={3,5}");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.price.range={3,5}");
         assertQuery(elasticQuery, "range-filter-upper-lower-excluded-query.json");
     }
 
@@ -560,7 +561,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.addFilterMapping("price", "priceElasticField");
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
-        ObjectNode elasticQuery = transform(transformer,  "f.price.range=[3,5]");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.price.range=[3,5]");
         assertQuery(elasticQuery, "range-filter-upper-lower-included-query.json");
     }
 
@@ -942,7 +943,7 @@ public class ElasticQsfqlQueryTransformerTest {
         transformer.setFilterPath(filterPath);
         transformer.setFilterVariable(filterVariable);
 
-        ObjectNode elasticQuery = transform(transformer,  "page=3");
+        ObjectNode elasticQuery = transform(transformer,  "q=myQuery","page=3");
         assertQuery(elasticQuery, "paging-query.json");
     }
 
