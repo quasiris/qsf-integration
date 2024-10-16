@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.exception.DebugType;
+import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.mapping.ParameterMapper;
@@ -166,8 +167,10 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         Map<String, Object> replaceMap;
         if(parameterMapper == null) {
             replaceMap = loadParameterDeprecated();
+            ExplainContextHolder.getContext().explainJson("loadParameterDeprecated", replaceMap);
         } else {
             replaceMap = parameterMapper.getMappedData();
+            ExplainContextHolder.getContext().explainJson("parameterMapper", replaceMap);
         }
 
 
