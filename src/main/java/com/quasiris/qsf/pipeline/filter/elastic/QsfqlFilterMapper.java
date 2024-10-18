@@ -34,12 +34,12 @@ public class QsfqlFilterMapper {
     public ArrayNode computeFilter(List<SearchFilter> searchFilterList) throws JsonBuilderException {
         JsonBuilder filters = JsonBuilder.create().array();
         for (SearchFilter searchFilter : searchFilterList) {
-            filters.stash();
             ArrayNode filter = computeFilter(searchFilter);
             if(filter != null) {
+                filters.stash();
                 filters.addJson(filter);
+                filters.unstash();
             }
-            filters.unstash();
         }
         return (ArrayNode) filters.get();
     }
@@ -81,6 +81,9 @@ public class QsfqlFilterMapper {
     }
 
     protected static ArrayNode transformTermsFilter(SearchFilter searchFilter, String elasticField) throws JsonBuilderException {
+        if(searchFilter.getValues() == null | searchFilter.getValues().isEmpty()) {
+            return null;
+        }
         if(elasticField == null) {
             elasticField = searchFilter.getId();
         }

@@ -177,6 +177,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         String request = "";
         try {
             request = loadProfile(replaceMap);
+            ExplainContextHolder.getContext().explainJson("request", request);
             JsonBuilder jsonBuilder = new JsonBuilder();
             jsonBuilder.string(request);
             for(Map.Entry<String, Object> e : replaceMap.entrySet()) {
