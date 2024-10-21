@@ -4,6 +4,7 @@ import com.quasiris.qsf.commons.util.JsonUtil;
 import com.quasiris.qsf.mapping.ParameterMapper;
 import com.quasiris.qsf.mapping.SimpleParameterMappingDTO;
 import com.quasiris.qsf.pipeline.PipelineContainer;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +23,11 @@ public class ElasticQsfqlQueryTransformerParameterMapperTest extends ElasticQsfq
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public void transformSortMappingWithParameter() throws Exception {
+        // TODO fix this test
     }
 
 

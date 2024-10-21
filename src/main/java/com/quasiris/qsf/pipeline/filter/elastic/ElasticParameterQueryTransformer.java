@@ -61,7 +61,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             transformSourceFields();
             transformDebug();
             transformAggregations();
-            replaceParameters();
+            replaceParametersDeprecated();
         } catch (JsonBuilderException e){
             throw new RuntimeException(e);
         }
@@ -69,17 +69,19 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         return elasticQuery;
     }
 
-    public void replaceParameters() throws JsonBuilderException {
-        elasticQuery = (ObjectNode) JsonBuilder.create().
-                // TODO
-                valueMap("query", searchQuery.getQ()).
-                valueMap(searchQuery.getParameters()).
+    public void replaceParametersDeprecated() throws JsonBuilderException {
+        if(parameterMapper == null) {
+            elasticQuery = (ObjectNode) JsonBuilder.create().
+                    // TODO
+                            valueMap("query", searchQuery.getQ()).
+                    valueMap(searchQuery.getParameters()).
 
-                newJson(elasticQuery).
-                replace().
-                get();
-
+                    newJson(elasticQuery).
+                    replace().
+                    get();
+        }
     }
+
     public void transformSourceFields() throws JsonBuilderException {
         if(sourceFields == null) {
             return;

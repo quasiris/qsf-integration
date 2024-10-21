@@ -988,12 +988,12 @@ public class ElasticQsfqlQueryTransformerTest {
         return elasticQuery;
     }
 
-    private ObjectNode transform(ElasticQsfqlQueryTransformer transformer, String... parameters) throws Exception {
+    protected ObjectNode transform(ElasticQsfqlQueryTransformer transformer, String... parameters) throws Exception {
         SearchQuery searchQuery = QsfqlParserTestUtil.createQuery(parameters);
         return transform(transformer, searchQuery);
     }
 
-    private void assertQuery(ObjectNode elasticQuery, String file) throws IOException {
+    protected void assertQuery(ObjectNode elasticQuery, String file) throws IOException {
         JsonAssert.assertJsonFile("classpath://com/quasiris/qsf/pipeline/filter/elastic/query/" + file, elasticQuery);
     }
 
