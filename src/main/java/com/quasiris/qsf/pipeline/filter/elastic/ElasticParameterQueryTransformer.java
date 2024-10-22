@@ -69,17 +69,24 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         return elasticQuery;
     }
 
+    // necessary to replace parameters in sorting scripts
     public void replaceParametersDeprecated() throws JsonBuilderException {
+        Map<String, Object> valueMap;
         if(parameterMapper == null) {
-            elasticQuery = (ObjectNode) JsonBuilder.create().
-                    // TODO
-                            valueMap("query", searchQuery.getQ()).
-                    valueMap(searchQuery.getParameters()).
-
-                    newJson(elasticQuery).
-                    replace().
-                    get();
+            valueMap = new HashMap<>();
+            if(searchQuery.getParameters() != null) {
+                valueMap.putAll(searchQuery.getParameters());
+            }
+            valueMap.put("query", searchQuery.getQ());
+        } else {
+            valueMap = parameterMapper.getMappedData();
         }
+
+        elasticQuery = (ObjectNode) JsonBuilder.create().
+                valueMap(valueMap).
+                newJson(elasticQuery).
+                replace().
+                get();
     }
 
     public void transformSourceFields() throws JsonBuilderException {

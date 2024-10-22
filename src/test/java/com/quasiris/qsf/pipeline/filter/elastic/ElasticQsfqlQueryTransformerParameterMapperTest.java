@@ -25,12 +25,6 @@ public class ElasticQsfqlQueryTransformerParameterMapperTest extends ElasticQsfq
         }
     }
 
-    @Test
-    public void transformSortMappingWithParameter() throws Exception {
-        // TODO fix this test
-    }
-
-
     public SimpleParameterMappingDTO readSimpleParameterMappingDTOFromFile(String fileName) throws IOException {
         SimpleParameterMappingDTO simpleParameterMappingDTO = JsonUtil.defaultMapper()
                 .readValue(new File(fileName), SimpleParameterMappingDTO.class);

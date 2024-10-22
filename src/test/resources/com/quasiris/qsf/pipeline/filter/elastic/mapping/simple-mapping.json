@@ -1,6 +1,7 @@
 {
   "mapping" : {
     "q" : "searchQuery.q",
-    "qsfql.q.escaped" : "searchQuery.q"
+    "qsfql.q.escaped" : "searchQuery.q",
+    "query.f.customerId" : "searchQuery.filters.customerId"
   }
 }
