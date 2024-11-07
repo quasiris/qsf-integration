@@ -1,11 +1,16 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.quasiris.qsf.commons.elasticsearch.client.ElasticSearchClient;
+import com.quasiris.qsf.config.DisplayDTO;
+import com.quasiris.qsf.config.DisplayMappingDTO;
+import com.quasiris.qsf.config.QsfSearchConfigDTO;
+import com.quasiris.qsf.config.QsfSearchConfigUtil;
 import com.quasiris.qsf.pipeline.filter.elastic.client.ElasticClientIF;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetFilterMapper;
 import com.quasiris.qsf.pipeline.filter.mapper.FacetKeyMapper;
 import com.quasiris.qsf.query.Facet;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,8 +31,9 @@ public class ElasticFilterBuilder {
 
     private Class<?> queryTransformer = ElasticQsfqlQueryTransformer.class;
 
-    private Set<String> sourceFields;
-    private Set<String> sourceFieldExcludes = new HashSet<>();
+    private QsfSearchConfigDTO searchConfig = new QsfSearchConfigDTO();
+
+    //private Set<String> sourceFieldExcludes = new HashSet<>();
 
     public static ElasticFilterBuilder create() {
         ElasticFilterBuilder builder = new ElasticFilterBuilder();
@@ -59,15 +65,11 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilter build() {
-        if(sourceFields != null) {
-            sourceFields.removeAll(sourceFieldExcludes);
-        }
-
         if(queryTransformer.equals(ElasticQsfqlQueryTransformer.class)) {
-            elasticQsfqlQueryTransformer.setSourceFields(sourceFields);
+            elasticQsfqlQueryTransformer.setSearchConfig(searchConfig);
             elasticFilter.setQueryTransformer(elasticQsfqlQueryTransformer);
         } else if(queryTransformer.equals(ElasticParameterQueryTransformer.class)) {
-            elasticParameterQueryTransformer.setSourceFields(sourceFields);
+            elasticParameterQueryTransformer.setSearchConfig(searchConfig);
             elasticFilter.setQueryTransformer(elasticParameterQueryTransformer);
         } else {
             try {
@@ -121,16 +123,11 @@ public class ElasticFilterBuilder {
         return this;
     }
 
-    public ElasticFilterBuilder excludeSourceField(String fieldName) {
-        sourceFieldExcludes.add(fieldName);
-        return this;
-    }
-
     public ElasticFilterBuilder addSourceField(String fieldName) {
-        if(this.sourceFields == null) {
-            this.sourceFields = new HashSet<>();
-        }
-        this.sourceFields.add(fieldName);
+        DisplayMappingDTO mapping = new DisplayMappingDTO();
+        mapping.setFrom(fieldName);
+        mapping.setTo(fieldName);
+        this.searchConfig.getDisplay().getMapping().add(mapping);
         return this;
     }
 

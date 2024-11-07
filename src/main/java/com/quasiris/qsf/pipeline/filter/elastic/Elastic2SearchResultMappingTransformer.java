@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.category.dto.CategoryDTO;
-import com.quasiris.qsf.commons.util.UrlUtil;
+import com.quasiris.qsf.config.DisplayMappingDTO;
+import com.quasiris.qsf.config.QsfSearchConfigDTO;
+import com.quasiris.qsf.config.QsfSearchConfigUtil;
 import com.quasiris.qsf.dto.response.*;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.*;
@@ -17,13 +19,14 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by mki on 04.11.17.
  */
 public class Elastic2SearchResultMappingTransformer implements SearchResultTransformerIF {
 
-    private Map<String, List<String>> fieldMapping = new LinkedHashMap<>();
+    private QsfSearchConfigDTO searchConfigDTO = new QsfSearchConfigDTO();
 
     // mapping for innerhits to a field, if there are multiple inner hits, that belong to one field
     private Map<String, String> innerhitsMapping = new HashMap<>();
@@ -386,15 +389,13 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         ObjectMapper mapper = new ObjectMapper();
         try {
             Map fields = mapper.readValue(objectNode.toString(), Map.class);
-
-            if(fieldMapping.size() == 0) {
+            if (!QsfSearchConfigUtil.hasDisplayMapping(searchConfigDTO)) {
                 document.getDocument().putAll(fields);
             } else {
-                for(Map.Entry<String, List<String>> mapping : fieldMapping.entrySet()) {
-                    String key = mapping.getKey();
-                    if(key.endsWith("*")) {
+                for(DisplayMappingDTO mapping : searchConfigDTO.getDisplay().getMapping()) {
+                    if(mapping.getFrom().endsWith("*")) {
                         mapPrefixFields(mapping, fields, document);
-                    } else if(key.contains(".")) {
+                    } else if(mapping.getFrom().contains(".")) {
                         mapNestedField(mapping, fields, document);
                     } else {
                         mapField(mapping, fields, document, hit);
@@ -433,15 +434,15 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
      * @param fields with values
      * @param document target
      */
-    public void mapNestedField(Map.Entry<String, List<String>> mapping, Map fields, Document document) {
-        String[] keyParts = mapping.getKey().split("\\.");
+    public void mapNestedField(DisplayMappingDTO mapping, Map fields, Document document) {
+        String[] keyParts = mapping.getFrom().split("\\.");
         String nestedField = keyParts.length > 1 ? keyParts[0] : null;
         Object mappedValue = fields.get(nestedField);
         mapValue(document, nestedField, mappedValue);
     }
 
-    public void mapField(Map.Entry<String, List<String>> mapping, Map fields, Document document, Hit hit) {
-        String key = mapping.getKey();
+    public void mapField(DisplayMappingDTO mapping, Map fields, Document document, Hit hit) {
+        String key = mapping.getFrom();
         Object mappedValue = fields.get(key);
 
         if (mappedValue == null && "_score".equals(key)) {
@@ -453,27 +454,27 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
 
         if(mappedValue != null) {
-            for(String mappedKey: mapping.getValue()) {
-                mapValue(document, mappedKey, mappedValue);
-            }
+
+            mapValue(document, mapping.getTo(), mappedValue);
+
         }
     }
 
-    public void mapPrefixFields(Map.Entry<String, List<String>> mapping, Map fields, Document document) {
-        String from = mapping.getKey();
+    public void mapPrefixFields(DisplayMappingDTO mapping, Map fields, Document document) {
+        String from = mapping.getFrom();
         String prefix = from.substring(0, from.length() - 1);
         for(Object elasticKeyObject : fields.keySet()) {
             String elasticKey = (String) elasticKeyObject;
             if(elasticKey.startsWith(prefix)) {
-                for(String mappedKeyPrefix: mapping.getValue()) {
-                    if(mappedKeyPrefix.endsWith("*")) {
+                String mappedKeyPrefix = mapping.getTo();
+                if(mappedKeyPrefix != null) {
+                    if (mappedKeyPrefix.endsWith("*")) {
                         mappedKeyPrefix = mappedKeyPrefix.substring(0, mappedKeyPrefix.length() - 1);
                         String mappedKey = elasticKey.replaceFirst(prefix, mappedKeyPrefix);
                         mapValue(document, mappedKey, fields.get(elasticKey));
                     } else {
                         mapValue(document, mappedKeyPrefix, fields.get(elasticKey));
                     }
-
                 }
             }
 
@@ -486,13 +487,23 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         ObjectMapper objectMapper = new ObjectMapper();
         for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
             String innerHitsName = entry.getKey();
-            String fieldName = innerHitsName;
+            String fieldName;
             if(innerhitsMapping != null && innerhitsMapping.get(innerHitsName) != null) {
                 fieldName = innerhitsMapping.get(innerHitsName);
+            } else {
+                fieldName = innerHitsName;
             }
             List<Map<String, Object>> values = (List) fields.get(fieldName);
 
-            List<String> mappedFieldNames = fieldMapping.get(fieldName);
+            List<String> mappedFieldNames = null;
+
+            if(QsfSearchConfigUtil.hasDisplayMapping(searchConfigDTO)) {
+                mappedFieldNames = searchConfigDTO.getDisplay().getMapping().stream().
+                        filter(m -> m.getFrom().equals(fieldName)).
+                        map(DisplayMappingDTO::getFrom).
+                        collect(Collectors.toList());
+            }
+
             if(groupInnerhitsMapping != null) {
                 for(Map.Entry<String, List<String>> groupInnerhitsMappingEntry : groupInnerhitsMapping.entrySet()) {
                     String innerhitsFieldName = groupInnerhitsMappingEntry.getKey();
@@ -537,7 +548,9 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     public void mapValue(Document document, String key, Object value) {
-        document.getDocument().put(key, value);
+        if(key != null) {
+            document.getDocument().put(key, value);
+        }
     }
 
 
@@ -585,14 +598,14 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
 
-    public void addFieldMapping(String from, String to) {
-        List<String> mapping = fieldMapping.get(from);
-        if(mapping == null) {
-            mapping = new ArrayList<>();
-        }
-        mapping.add(to);
 
-        fieldMapping.put(from, mapping);
+
+    public void addFieldMapping(String from, String to) {
+        QsfSearchConfigUtil.initDisplayMapping(searchConfigDTO);
+        DisplayMappingDTO mapping = new DisplayMappingDTO();
+        mapping.setFrom(from);
+        mapping.setTo(to);
+        this.searchConfigDTO.getDisplay().getMapping().add(mapping);
     }
 
     public void addFacetTypeMapping(String id, String type) {
@@ -624,14 +637,6 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     public void addFacetFilterMapper(String id, FacetFilterMapper facetFilterMapper) {
         FacetMapping facetMapping = getOrCreateFacetMapping(id);
         facetMapping.setFacetFilterMapper(facetFilterMapper);
-    }
-
-    public Map<String, List<String>> getFieldMapping() {
-        return fieldMapping;
-    }
-
-    public void setFieldMapping(Map<String, List<String>> fieldMapping) {
-        this.fieldMapping = fieldMapping;
     }
 
     public Map<String, FacetMapping> getFacetMapping() {
@@ -670,5 +675,13 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     public void setInnerhitsMapping(Map<String, String> innerhitsMapping) {
         this.innerhitsMapping = innerhitsMapping;
+    }
+
+    public QsfSearchConfigDTO getSearchConfigDTO() {
+        return searchConfigDTO;
+    }
+
+    public void setSearchConfigDTO(QsfSearchConfigDTO searchConfigDTO) {
+        this.searchConfigDTO = searchConfigDTO;
     }
 }

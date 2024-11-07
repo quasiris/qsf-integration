@@ -3,6 +3,9 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.config.DisplayMappingDTO;
+import com.quasiris.qsf.config.QsfSearchConfigDTO;
+import com.quasiris.qsf.config.QsfSearchConfigUtil;
 import com.quasiris.qsf.exception.DebugType;
 import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.json.JsonBuilder;
@@ -22,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by mki on 04.02.17.
@@ -34,6 +38,8 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     protected ObjectNode elasticQuery;
 
+    private QsfSearchConfigDTO searchConfig = new QsfSearchConfigDTO();
+
     protected String profile;
 
     protected Map<String, Object> profileParameter = new HashMap<>();
@@ -43,8 +49,6 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     protected List<Facet> aggregations = new ArrayList<>();
 
     protected ObjectMapper objectMapper = new ObjectMapper();
-
-    protected Set<String> sourceFields;
 
     protected String variantId;
 
@@ -90,15 +94,19 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     }
 
     public void transformSourceFields() throws JsonBuilderException {
-        if(sourceFields == null) {
+        if(!QsfSearchConfigUtil.hasDisplayMapping(searchConfig)) {
             return;
         }
+
+        Set<String> sourceFields = searchConfig.getDisplay().getMapping().stream().
+                map(DisplayMappingDTO::getFrom).
+                collect(Collectors.toSet());
 
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.array();
 
-        for(String field : sourceFields) {
-            jsonBuilder.addValue(field);
+        for(String sourceField : sourceFields) {
+            jsonBuilder.addValue(sourceField);
         }
         elasticQuery.set("_source", jsonBuilder.get());
     }
@@ -296,19 +304,6 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         return profile;
     }
 
-    public Set<String> getSourceFields() {
-        return sourceFields;
-    }
-
-    /**
-     * Setter for property 'sourceFields'.
-     *
-     * @param sourceFields Value to set for property 'sourceFields'.
-     */
-    public void setSourceFields(Set<String> sourceFields) {
-        this.sourceFields = sourceFields;
-    }
-
     /**
      * Setter for property 'searchQuery'.
      *
@@ -343,5 +338,17 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
             return;
         }
         parameterMapper.addCustomData(parameters);
+    }
+
+    public void setSearchConfig(QsfSearchConfigDTO searchConfig) {
+        this.searchConfig = searchConfig;
+    }
+
+    public void addSourceField(String sourceField) {
+        QsfSearchConfigUtil.initDisplayMapping(searchConfig);
+        DisplayMappingDTO mapping = new DisplayMappingDTO();
+        mapping.setTo(sourceField);
+        mapping.setFrom(sourceField);
+        searchConfig.getDisplay().getMapping().add(mapping);
     }
 }
