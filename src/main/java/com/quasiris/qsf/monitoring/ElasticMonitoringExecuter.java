@@ -9,6 +9,7 @@ import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.Facet;
 import com.quasiris.qsf.dto.response.MonitoringResponse;
 import com.quasiris.qsf.dto.response.SearchResult;
+import com.quasiris.qsf.query.builder.FacetBuilder;
 import com.quasiris.qsf.response.MonitoringResponseFactory;
 import com.quasiris.qsf.commons.util.DateUtil;
 
@@ -178,7 +179,11 @@ public class ElasticMonitoringExecuter {
 
             if(monitoringDocument.getType().equals("facet")) {
                 elasticFilterBuilder.
-                        addAggregation(monitoringDocument.getFieldName(),monitoringDocument.getId(),  monitoringDocument.getFieldName(), aggSize);
+                        addAggregation(FacetBuilder.create().
+                                id(monitoringDocument.getId()).
+                                name(monitoringDocument.getFieldName()).
+                                size(aggSize).
+                                build());
             }
         }
 

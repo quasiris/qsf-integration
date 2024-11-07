@@ -1,6 +1,8 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.config.QsfSearchConfigDTO;
+import com.quasiris.qsf.config.QsfSearchConfigUtil;
 import com.quasiris.qsf.mapping.ParameterMapper;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineContainerException;
@@ -61,8 +63,12 @@ public class ElasticQsfqlQueryTransformerTest {
 
     private ElasticQsfqlQueryTransformer createSubFacetTransformer() {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
         transformer.addFilterRule("(.+)", "$1.keyword");
         Facet facet = new Facet();
         facet.setName("supplierName");
@@ -78,8 +84,7 @@ public class ElasticQsfqlQueryTransformerTest {
         subFacet.setOperator(FilterOperator.OR);
 
         facet.setChildren(subFacet);
-
-        transformer.setAggregations(Arrays.asList(facet));
+        transformer.addAggregation(facet);
         return transformer;
     }
 
@@ -88,8 +93,13 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void testDefinedRangeFacet() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
+
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
         transformer.addFilterRule("(.+)", "$1.keyword");
 
         RangeFacet facet = new RangeFacet();
@@ -104,8 +114,7 @@ public class ElasticQsfqlQueryTransformerTest {
         Range lastMonth = new Range("last month", "now-1M/M", "now/M");
 
         facet.setRanges(Arrays.asList(lastWeek, lastMonth));
-
-        transformer.setAggregations(Arrays.asList(facet));
+        transformer.addAggregation(facet);
         ObjectNode elasticQuery = transform(transformer,
                 "q=*"
         );
@@ -117,8 +126,12 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void testRangeFacet() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
         transformer.addFilterRule("(.+)", "$1.keyword");
 
         RangeFacet facet = new RangeFacet();
@@ -132,7 +145,7 @@ public class ElasticQsfqlQueryTransformerTest {
 
         facet.setRanges(Arrays.asList(rangeNotInStock, rangeCriticalStock, rangeInStock));
 
-        transformer.setAggregations(Arrays.asList(facet));
+        transformer.addAggregation(facet);
         ObjectNode elasticQuery = transform(transformer,
                 "q=*"
         );
@@ -143,8 +156,12 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformFacetCategorySElect() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
         transformer.addFilterRule("(.+)", "$1.keyword");
 
         Facet facet = new Facet();
@@ -156,7 +173,7 @@ public class ElasticQsfqlQueryTransformerTest {
 
         //SearchFilter gfmCategory0 = SearchFilterBuilder.create().withId("gfmCategory0").value("237030|-|2|-|Änderung").build();
 
-        transformer.setAggregations(Arrays.asList(facet));
+        transformer.addAggregation(facet);
         ObjectNode elasticQuery = transform(transformer,
                 "q=*",
                 //"f.gfmCategoryTree0=237030|-|2|-|Änderung"
@@ -178,7 +195,7 @@ public class ElasticQsfqlQueryTransformerTest {
         facet.setName("price");
         facet.setId("price");
 
-        transformer.setAggregations(Arrays.asList(facet));
+        transformer.addAggregation(facet);
         ObjectNode elasticQuery = transform(transformer,  "q=*");
         assertQuery(elasticQuery, "slider.json");
 
@@ -188,6 +205,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformSliderMultiSelectNoFilter() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
 
         Facet facet = new Facet();
@@ -195,8 +217,7 @@ public class ElasticQsfqlQueryTransformerTest {
         facet.setName("price");
         facet.setId("price");
 
-        transformer.setAggregations(Arrays.asList(facet));
-        transformer.setMultiSelectFilter(true);
+        transformer.addAggregation(facet);
         ObjectNode elasticQuery = transform(transformer,  "q=*");
         assertQuery(elasticQuery, "slider-multiselect-no-filter.json");
 
@@ -206,6 +227,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformSliderMultiSelectWithFilter() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
 
         Facet facet = new Facet();
@@ -213,8 +239,7 @@ public class ElasticQsfqlQueryTransformerTest {
         facet.setName("price");
         facet.setId("price");
 
-        transformer.setAggregations(Arrays.asList(facet));
-        transformer.setMultiSelectFilter(true);
+        transformer.addAggregation(facet);
         ObjectNode elasticQuery = transform(transformer,  "q=*", "f.color=red");
         assertQuery(elasticQuery, "slider-multiselect-with-filter.json");
 
@@ -224,6 +249,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformSliderMultiSelectWithRangeFilter() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
 
         Facet facet = new Facet();
@@ -232,8 +262,7 @@ public class ElasticQsfqlQueryTransformerTest {
         facet.setId("price");
         facet.setOperator(FilterOperator.OR);
 
-        transformer.setAggregations(Arrays.asList(facet));
-        transformer.setMultiSelectFilter(true);
+        transformer.addAggregation(facet);
         ObjectNode elasticQuery = transform(transformer,  "q=*", "f.color=red", "f.price.range=49,170");
         assertQuery(elasticQuery, "slider-multiselect-with-range-filter.json");
     }
@@ -250,9 +279,13 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
         String sort = "[{\"price\": {\"order\": \"asc\",\"mode\": \"avg\"}}]";
         transformer.addSortMapping("name_asc", sort);
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "sort=name_asc");
@@ -295,9 +328,13 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
+
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQ("myQuery");
         searchQuery.setSort(new Sort("price", "asc"));
@@ -320,11 +357,14 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("brand", "brandElasticField");
         transformer.addFilterMapping("color", "colorElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand=foo", "f.color=red");
         assertQuery(elasticQuery, "filter-query.json");
     }
@@ -340,12 +380,15 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("brand", "brandElasticField");
         transformer.addFilterMapping("color", "colorElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
-        transformer.setMultiSelectFilter(true);
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand=foo", "f.color=red");
         assertQuery(elasticQuery, "filter-multiselect-query.json");
     }
@@ -362,11 +405,14 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("brand", "brandElasticField");
         transformer.addFilterMapping("color", "colorElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand.or=foo", "f.brand.or=bar", "f.color=red");
         assertQuery(elasticQuery, "filter-or-query.json");
     }
@@ -381,12 +427,15 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("brand", "brandElasticField");
         transformer.addFilterMapping("color", "colorElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
-        transformer.setMultiSelectFilter(true);
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand.or=foo", "f.brand.or=bar", "f.color=red");
         assertQuery(elasticQuery, "filter-or-multiselect-query.json");
 
@@ -404,12 +453,15 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("brand", "brandElasticField");
         transformer.addFilterMapping("color", "colorElasticField");
         transformer.addFilterMapping("size", "sizeElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand.or=foo", "f.brand.or=bar", "f.color=red", "f.size.or=xl", "f.size.or=xxl");
         assertQuery(elasticQuery, "filter-or-multiple-query.json");
     }
@@ -425,13 +477,16 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("brand", "brandElasticField");
         transformer.addFilterMapping("color", "colorElasticField");
         transformer.addFilterMapping("size", "sizeElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
-        transformer.setMultiSelectFilter(true);
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand.or=foo", "f.brand.or=bar", "f.color=red", "f.size.or=xl", "f.size.or=xxl");
         assertQuery(elasticQuery, "filter-or-multiple-multiselect-query.json");
     }
@@ -449,11 +504,14 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("brand", "brandElasticField");
         transformer.addFilterMapping("color", "colorElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand.not=foo", "f.color=red");
         assertQuery(elasticQuery, "filter-not-query.json");
     }
@@ -470,12 +528,15 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("brand", "brandElasticField");
         transformer.addFilterMapping("color", "colorElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setMultiSelectFilter(true);
-        transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer, "q=myQuery", "f.brand.not=foo", "f.color=red");
         assertQuery(elasticQuery, "filter-not-multiselected-query.json");
     }
@@ -493,10 +554,13 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterRule("(.+)", "attr_$1.keyword");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand=foo", "f.color=red");
         assertQuery(elasticQuery, "filter-rule-query.json");
     }
@@ -514,11 +578,14 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("brand", "brandElasticField");
         transformer.addFilterMapping("price", "priceElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
 
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.brand=foo", "f.price.range=3,5");
         assertQuery(elasticQuery, "range-filter-query.json");
@@ -536,10 +603,13 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("price", "priceElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
 
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.price.range={3,5}");
         assertQuery(elasticQuery, "range-filter-upper-lower-excluded-query.json");
@@ -557,10 +627,13 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
         transformer.addFilterMapping("price", "priceElasticField");
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery", "f.price.range=[3,5]");
         assertQuery(elasticQuery, "range-filter-upper-lower-included-query.json");
     }
@@ -601,8 +674,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformFacetWithFilter() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
 
         Facet accountId = new Facet();
         accountId.setId("accountId");
@@ -631,8 +707,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformFacetWithFilterAndVariantId() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
         transformer.setVariantId("variantId");
 
         Facet accountId = new Facet();
@@ -661,8 +740,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformVariantId() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
         transformer.setVariantId("variantId");
 
         SearchQuery searchQuery = new SearchQuery();
@@ -676,8 +758,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformVariantIdAndSource() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
         transformer.setVariantId("variantId");
         Set<String> innerHitsSourceFields = new HashSet<>();
         innerHitsSourceFields.add("productDetails");
@@ -694,8 +779,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformVariantIdAndSourceAndSize() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
         transformer.setVariantId("variantId");
         Set<String> innerHitsSourceFields = new HashSet<>();
         innerHitsSourceFields.add("productDetails");
@@ -713,8 +801,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformVariantIdAndSourceAndSort() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
         transformer.setVariantId("variantId");
         Set<String> innerHitsSourceFields = new HashSet<>();
         innerHitsSourceFields.add("productDetails");
@@ -732,8 +823,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformFacetWithFilterAndVariantIdAndSourceFields() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
         transformer.setVariantId("variantId");
         transformer.setInnerHitsSourceFields(new HashSet<>(Arrays.asList("variantObject")));
 
@@ -765,8 +859,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformFacetFilterMultiselectOperatorOr() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
 
         Facet brand = new Facet();
         brand.setId("brand");
@@ -802,8 +899,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformFacetFilterMultiselectOperatorAnd() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+       QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+       config.getFilter().setMultiSelectFilter(true);
+
+       transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
 
         Facet brand = new Facet();
         brand.setId("brand");
@@ -839,8 +939,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformWaldlaufer() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
 
         Facet farbe = new Facet();
         farbe.setId("attr_farbe.keyword");
@@ -869,8 +972,11 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void transformFacetFilterMultiselectNoFilterInQuery() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setMultiSelectFilter(true);
 
         Facet brand = new Facet();
         brand.setId("brand");
@@ -939,9 +1045,12 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
 
         ObjectNode elasticQuery = transform(transformer,  "q=myQuery","page=3");
         assertQuery(elasticQuery, "paging-query.json");
@@ -959,9 +1068,12 @@ public class ElasticQsfqlQueryTransformerTest {
             @ConvertWith(NullValueConverter.class) String filterPath,
             @ConvertWith(NullValueConverter.class) String filterVariable) throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setFilterPath(filterPath);
+        config.getFilter().setFilterVariable(filterVariable);
+
+        transformer.setSearchConfig(config);
         transformer.setProfile("classpath://com/quasiris/qsf/elastic/profiles/" + profile);
-        transformer.setFilterPath(filterPath);
-        transformer.setFilterVariable(filterVariable);
 
         ObjectNode elasticQuery = transform(transformer,  "q=foo");
         assertQuery(elasticQuery, "paging-default-query.json");

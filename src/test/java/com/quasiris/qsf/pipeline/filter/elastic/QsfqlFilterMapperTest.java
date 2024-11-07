@@ -2,6 +2,8 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.config.QsfSearchConfigDTO;
+import com.quasiris.qsf.config.QsfSearchConfigUtil;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.test.json.JsonAssert;
@@ -32,14 +34,18 @@ class QsfqlFilterMapperTest {
         filters.add(searchFilter1);
 
 
-        // when
-        QsfqlFilterMapper mapper = new QsfqlFilterMapper();
         Map<String, Range> definedFilterMapping = new HashMap<>();
         Range inStockRange = new Range("In Stock", 1, null);
         Range notnStockRange = new Range("Not in Stock", null, 1);
         definedFilterMapping.put(searchFilter1.getId() + "." + inStockRange.getValue() , inStockRange);
         definedFilterMapping.put(searchFilter1.getId() + "." + notnStockRange.getValue() , notnStockRange);
-        mapper.setDefinedRangeFilterMapping(definedFilterMapping);
+
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
+        searchConfig.getFilter().getDefinedRangeFilterMapping().putAll(definedFilterMapping);
+        // when
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
+
+
         JsonNode filtersOr = mapper.buildFiltersJson(filters);
         JsonAssert.assertJsonFile(testBasePackage + "defined-range-filter-query-multiple-filter.json", filtersOr);
 
@@ -58,14 +64,18 @@ class QsfqlFilterMapperTest {
         filters.add(searchFilter1);
 
 
-        // when
-        QsfqlFilterMapper mapper = new QsfqlFilterMapper();
         Map<String, Range> definedFilterMapping = new HashMap<>();
         Range inStockRange = new Range("In Stock", 1, null);
         Range notnStockRange = new Range("Not in Stock", null, 1);
         definedFilterMapping.put(searchFilter1.getId() + "." + inStockRange.getValue() , inStockRange);
         definedFilterMapping.put(searchFilter1.getId() + "." + notnStockRange.getValue() , notnStockRange);
-        mapper.setDefinedRangeFilterMapping(definedFilterMapping);
+
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
+        searchConfig.getFilter().getDefinedRangeFilterMapping().putAll(definedFilterMapping);
+
+        // when
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
+
         JsonNode filtersOr = mapper.buildFiltersJson(filters);
         JsonAssert.assertJsonFile(testBasePackage + "defined-range-filter-query.json", filtersOr);
 
@@ -102,8 +112,10 @@ class QsfqlFilterMapperTest {
         searchFilter4.setValues(Arrays.asList("new"));
         filters.add(searchFilter4);
 
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
+
         // when
-        QsfqlFilterMapper mapper = new QsfqlFilterMapper();
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
         JsonNode filtersOr = mapper.buildFiltersJson(filters);
         JsonAssert.assertJsonFile(testBasePackage + "create-filters-elastic-query.json", filtersOr);
 
@@ -115,10 +127,11 @@ class QsfqlFilterMapperTest {
         SearchQuery searchQuery = mockSearchQuery();
         searchQuery.getSearchFilterList().add(new BoolSearchFilter());
 
-        QsfqlFilterMapper filterMapper = new QsfqlFilterMapper();
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
 
         // when
-        ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
+        ObjectNode node = mapper.buildFiltersJson(searchQuery.getSearchFilterList());
         JsonAssert.assertJsonFile(testBasePackage + "search-filter-with-empty-bool-filter.json", node);
 
     }
@@ -130,10 +143,11 @@ class QsfqlFilterMapperTest {
         searchQuery.setSearchFilterList(new ArrayList<>());
         searchQuery.getSearchFilterList().add(new BoolSearchFilter());
 
-        QsfqlFilterMapper filterMapper = new QsfqlFilterMapper();
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
 
         // when
-        ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
+        ObjectNode node = mapper.buildFiltersJson(searchQuery.getSearchFilterList());
 
         JsonAssert.assertJsonFile(testBasePackage + "empty-bool-filter.json", node);
     }
@@ -144,10 +158,11 @@ class QsfqlFilterMapperTest {
         SearchQuery searchQuery = mockSearchQuery();
         searchQuery.setSearchFilterList(null);
 
-        QsfqlFilterMapper filterMapper = new QsfqlFilterMapper();
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
 
         // when
-        ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
+        ObjectNode node = mapper.buildFiltersJson(searchQuery.getSearchFilterList());
         JsonAssert.assertJsonFile(testBasePackage + "empty-bool-filter.json", node);
     }
 
@@ -157,10 +172,11 @@ class QsfqlFilterMapperTest {
         SearchQuery searchQuery = mockSearchQuery();
         searchQuery.setSearchFilterList(new ArrayList<>());
 
-        QsfqlFilterMapper filterMapper = new QsfqlFilterMapper();
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
 
         // when
-        ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
+        ObjectNode node = mapper.buildFiltersJson(searchQuery.getSearchFilterList());
         JsonAssert.assertJsonFile(testBasePackage + "empty-bool-filter.json", node);
     }
 
@@ -169,10 +185,11 @@ class QsfqlFilterMapperTest {
         // given
         SearchQuery searchQuery = mockSearchQuery();
 
-        QsfqlFilterMapper filterMapper = new QsfqlFilterMapper();
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
 
         // when
-        ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
+        ObjectNode node = mapper.buildFiltersJson(searchQuery.getSearchFilterList());
         JsonAssert.assertJsonFile(testBasePackage + "search-filter.json", node);
     }
 
@@ -188,10 +205,11 @@ class QsfqlFilterMapperTest {
         boolSearchFilter.getFilters().add(searchQuery.getSearchFilterList().get(1));
         searchQuery.getSearchFilterList().add(boolSearchFilter);
 
-        QsfqlFilterMapper filterMapper = new QsfqlFilterMapper();
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
 
         // when
-        ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
+        ObjectNode node = mapper.buildFiltersJson(searchQuery.getSearchFilterList());
         JsonAssert.assertJsonFile(testBasePackage + "search-filter-and-bool-filters.json", node);
 
     }
@@ -221,10 +239,11 @@ class QsfqlFilterMapperTest {
 
         searchQuery.getSearchFilterList().add(boolSearchFilter2);
 
-        QsfqlFilterMapper filterMapper = new QsfqlFilterMapper();
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
 
         // when
-        ObjectNode node = filterMapper.buildFiltersJson(searchQuery.getSearchFilterList());
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
+        ObjectNode node = mapper.buildFiltersJson(searchQuery.getSearchFilterList());
         JsonAssert.assertJsonFile(testBasePackage + "bool-filter-complex.json", node);
 
 

@@ -11,6 +11,7 @@ import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.PipelineExecuter;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
 import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.builder.FacetBuilder;
 import com.quasiris.qsf.test.AbstractPipelineTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -45,9 +46,9 @@ public class QsfqlElasticFilterTest extends AbstractPipelineTest {
                             client(mockElasticClient).
                             baseUrl(baseUrl).
                             profile("classpath://com/quasiris/qsf/elastic/profiles/" + profile ).
-                            addAggregation("places", "place", "place.keyword").
+                            addAggregation(FacetBuilder.create().id("place").fieldName("place.keyword").build()).
                             mapAggregationName("places", "Places").
-                            addAggregation("tag", "tagkey_is_in", "tagkey_is_in.keyword").
+                            addAggregation(FacetBuilder.create().id("tag").name("tagkey_is_in").fieldName("tagkey_is_in.keyword").build()).
                             mapFilter("place", "tagkey_place").
                             mapField("id","id").
                             mapAggregation("tag", "tag").

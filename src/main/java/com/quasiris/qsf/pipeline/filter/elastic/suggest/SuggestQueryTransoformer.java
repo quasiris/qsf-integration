@@ -35,7 +35,8 @@ public class SuggestQueryTransoformer extends ElasticParameterQueryTransformer {
         QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
                 getObjectMapper(),
                 getElasticQuery(),
-                getSearchQuery()
+                getSearchQuery(),
+                getSearchConfig()
         );
         filterTransformer.transformFilters();
     }

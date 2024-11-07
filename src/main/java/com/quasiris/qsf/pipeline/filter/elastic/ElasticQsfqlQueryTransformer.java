@@ -25,10 +25,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     private Map<String, String> sortMapping = new HashMap<>();
     private String defaultSort;
-    private Map<String, String> filterMapping = new HashMap<>();
 
-    private Map<String, Range> definedRangeFilterMapping = new HashMap<>();
-    private Map<String, String> filterRules = new HashMap<>();
     private Map<String, String> sortRules = new HashMap<>();
     private Integer defaultRows = 10;
     private Integer rows;
@@ -36,10 +33,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     private Integer elasticVersion = 6;
 
-    private String filterPath;
-    private String filterVariable;
-
-    private boolean multiSelectFilter;
     private String variantId;
     protected Set<String> innerHitsSourceFields;
 
@@ -78,7 +71,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             return;
         }
 
-        Map<String, Facet> aggregationsMap = aggregations.stream().
+        Map<String, Facet> aggregationsMap = getSearchConfig().getFacet().getFacets().stream().
                 collect(Collectors.toMap(Facet::getId, Function.identity()));
         if(getSearchQuery().getFacetList() != null) {
             for(Facet facet : getSearchQuery().getFacetList()) {
@@ -95,7 +88,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         }
 
         if(Control.isLoadMoreFacets(searchQuery)) {
-            for(Facet facet : aggregations) {
+            for(Facet facet : getSearchConfig().getFacet().getFacets()) {
                 if(hasLoadMoreFacetsAndSortByNameTag(facet)) {
                     facet.setSize(1000);
                     facet.setSortBy("_key");
@@ -104,7 +97,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             }
         }
 
-        if(multiSelectFilter) {
+        if(getSearchConfig().getFilter().getMultiSelectFilter()) {
             transformAggregationsMultiSelect();
         } else {
             super.transformAggregations();
@@ -121,15 +114,12 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
     public void transformAggregationsMultiSelect() throws JsonBuilderException {
-        QsfqlFilterMapper filterMapper = new QsfqlFilterMapper();
-        filterMapper.setFilterMapping(this.filterMapping);
-        filterMapper.setDefinedRangeFilterMapping(this.definedRangeFilterMapping);
-        filterMapper.setFilterRules(this.filterRules);
+        QsfqlFilterMapper filterMapper = new QsfqlFilterMapper(getSearchConfig());
 
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object();
         boolean hasAggs = false;
-        for (Facet aggregation : aggregations) {
+        for (Facet aggregation : getSearchConfig().getFacet().getFacets()) {
             if("slider".equals(aggregation.getType())) {
                 Set<String> excludedFacetIds = new HashSet<>();
                 excludedFacetIds.add(aggregation.getId());
@@ -156,7 +146,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 Set<String> excludedFacetIds = new HashSet<>();
                 if (aggregation.getExcludeTags() != null) {
                     for (String excludedTag : aggregation.getExcludeTags()) {
-                        List<String> excludedIsForTag = aggregations.stream().
+                        List<String> excludedIsForTag = getSearchConfig().getFacet().getFacets().stream().
                                 filter(f -> f.getTags() != null).
                                 filter(f -> f.getTags().contains(excludedTag)).
                                 map(f -> f.getId()).collect(Collectors.toList());
@@ -355,16 +345,10 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public void transformFilters() throws JsonBuilderException {
         QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
-                elasticVersion,
                 getObjectMapper(),
                 getElasticQuery(),
                 getSearchQuery(),
-                getFilterRules(),
-                getFilterMapping(),
-                getDefinedRangeFilterMapping(),
-                filterPath,
-                filterVariable,
-                multiSelectFilter
+                getSearchConfig()
         );
         filterTransformer.transformFilters();
     }
@@ -429,12 +413,12 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
     public void addFilterMapping(String from, String to) {
-        filterMapping.put(from, to);
+        getSearchConfig().getFilter().getFilterMapping().put(from, to);
     }
 
 
     public void addFilterRule(String pattern, String replacement) {
-        filterRules.put(pattern, replacement);
+        getSearchConfig().getFilter().getFilterRules().put(pattern, replacement);
     }
 
     public void addSortRule(String pattern, String replacement) {
@@ -455,14 +439,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public void setDefaultSort(String defaultSort) {
         this.defaultSort = defaultSort;
-    }
-
-    public Map<String, String> getFilterMapping() {
-        return filterMapping;
-    }
-
-    public void setFilterMapping(Map<String, String> filterMapping) {
-        this.filterMapping = filterMapping;
     }
 
     public Integer getDefaultRows() {
@@ -487,24 +463,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public void setElasticVersion(Integer elasticVersion) {
         this.elasticVersion = elasticVersion;
-    }
-
-    /**
-     * Getter for property 'filterRules'.
-     *
-     * @return Value for property 'filterRules'.
-     */
-    public Map<String, String> getFilterRules() {
-        return filterRules;
-    }
-
-    /**
-     * Setter for property 'filterRules'.
-     *
-     * @param filterRules Value to set for property 'filterRules'.
-     */
-    public void setFilterRules(Map<String, String> filterRules) {
-        this.filterRules = filterRules;
     }
 
     /**
@@ -543,60 +501,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         this.rows = rows;
     }
 
-    /**
-     * Getter for property 'filterPath'.
-     *
-     * @return Value for property 'filterPath'.
-     */
-    public String getFilterPath() {
-        return filterPath;
-    }
-
-    /**
-     * Setter for property 'filterPath'.
-     *
-     * @param filterPath Value to set for property 'filterPath'.
-     */
-    public void setFilterPath(String filterPath) {
-        this.filterPath = filterPath;
-    }
-
-    /**
-     * Getter for property 'filterVariable'.
-     *
-     * @return Value for property 'filterVariable'.
-     */
-    public String getFilterVariable() {
-        return filterVariable;
-    }
-
-    /**
-     * Setter for property 'filterVariable'.
-     *
-     * @param filterVariable Value to set for property 'filterVariable'.
-     */
-    public void setFilterVariable(String filterVariable) {
-        this.filterVariable = filterVariable;
-    }
-
-    /**
-     * Getter for property 'multiSelectFilter'.
-     *
-     * @return Value for property 'multiSelectFilter'.
-     */
-    public boolean isMultiSelectFilter() {
-        return multiSelectFilter;
-    }
-
-    /**
-     * Setter for property 'multiSelectFilter'.
-     *
-     * @param multiSelectFilter Value to set for property 'multiSelectFilter'.
-     */
-    public void setMultiSelectFilter(boolean multiSelectFilter) {
-        this.multiSelectFilter = multiSelectFilter;
-    }
-
     public String getVariantId() {
         return variantId;
     }
@@ -611,14 +515,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public void setInnerHitsSourceFields(Set<String> innerHitsSourceFields) {
         this.innerHitsSourceFields = innerHitsSourceFields;
-    }
-
-    public Map<String, Range> getDefinedRangeFilterMapping() {
-        return definedRangeFilterMapping;
-    }
-
-    public void setDefinedRangeFilterMapping(Map<String, Range> definedRangeFilterMapping) {
-        this.definedRangeFilterMapping = definedRangeFilterMapping;
     }
 
     public String getVariantSort() {

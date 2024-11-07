@@ -31,7 +31,7 @@ public class ElasticFilterBuilder {
 
     private Class<?> queryTransformer = ElasticQsfqlQueryTransformer.class;
 
-    private QsfSearchConfigDTO searchConfig = new QsfSearchConfigDTO();
+    private QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
 
     //private Set<String> sourceFieldExcludes = new HashSet<>();
 
@@ -138,24 +138,7 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilterBuilder addAggregation(Facet facet) {
-        getElasticParameterQueryTransformer().addAggregation(facet);
-        getElasticQsfqlQueryTransformer().addAggregation(facet);
-
-
-        return this;
-    }
-
-    public ElasticFilterBuilder addAggregation(String name, String id, String field) {
-
-        getElasticParameterQueryTransformer().addAggregation(name, id, field);
-        getElasticQsfqlQueryTransformer().addAggregation(name, id, field);
-        mapAggregationType(name, "terms");
-        return this;
-    }
-
-    public ElasticFilterBuilder addAggregation(String name, String id, String field, int size) {
-        getElasticParameterQueryTransformer().addAggregation(name, id, field, size);
-        getElasticQsfqlQueryTransformer().addAggregation(name, id, field, size);
+        searchConfig.getFacet().getFacets().add(facet);
         return this;
     }
 
@@ -284,7 +267,7 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilterBuilder filterVariable(String filterVariable) {
-        getElasticQsfqlQueryTransformer().setFilterVariable(filterVariable);
+        searchConfig.getFilter().setFilterVariable(filterVariable);
         return this;
     }
 
@@ -293,7 +276,7 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilterBuilder filterPath(String filterPath) {
-        getElasticQsfqlQueryTransformer().setFilterPath(filterPath);
+        searchConfig.getFilter().setFilterPath(filterPath);
         return this;
     }
 

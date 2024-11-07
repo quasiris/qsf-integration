@@ -4,39 +4,34 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.commons.util.IOUtils;
+import com.quasiris.qsf.config.QsfSearchConfigDTO;
+import com.quasiris.qsf.config.QsfSearchConfigUtil;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
-import com.quasiris.qsf.query.*;
+import com.quasiris.qsf.query.FilterDataType;
+import com.quasiris.qsf.query.FilterType;
+import com.quasiris.qsf.query.SearchFilter;
+import com.quasiris.qsf.query.SearchQuery;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class QsfqlFilterTransformerTest {
-    private Integer elasticVersion = 7;
     private ObjectMapper objectMapper = new ObjectMapper();
-    private Map<String, String> filterRules = new HashMap<>();
-    private Map<String, String> filterMapping = new HashMap<>();
-    private Map<String, Range> definedFilterMapping = new HashMap<>();
-    private String filterPath = null;
 
     @Test
     void transformFilters() throws JsonBuilderException, IOException {
         // given
         SearchQuery searchQuery = mockSearchQuery();
         ObjectNode queryNode = mockQuery(Profiles.matchAll().replace("classpath:/", ""));
-        String filterVariable = null;
-        boolean multiSelectFilter = false;
 
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
         // when
         QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
-                elasticVersion, objectMapper,
-                queryNode.deepCopy(), searchQuery,
-                filterRules, filterMapping, definedFilterMapping, filterPath,
-                filterVariable, multiSelectFilter);
+                objectMapper,
+                queryNode.deepCopy(), searchQuery, config);
         filterTransformer.transformFilters();
 
         // then
@@ -83,15 +78,16 @@ public class QsfqlFilterTransformerTest {
         // given
         SearchQuery searchQuery = mockSearchQuery();
         ObjectNode queryNode = mockQuery("/com/quasiris/qsf/elastic/profiles/match-all-profile-with-filtervariable.json");
-        String filterVariable = "myFilter";
-        boolean multiSelectFilter = false;
+
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(false);
+        config.getFilter().setFilterVariable("myFilter");
 
         // when
         QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
-                elasticVersion, objectMapper,
-                queryNode.deepCopy(), searchQuery,
-                filterRules, filterMapping, definedFilterMapping, filterPath,
-                filterVariable, multiSelectFilter);
+                objectMapper,
+                queryNode.deepCopy(), searchQuery, config);
+
         filterTransformer.transformFilters();
 
         // then
@@ -141,15 +137,14 @@ public class QsfqlFilterTransformerTest {
         // given
         SearchQuery searchQuery = mockSearchQuery();
         ObjectNode queryNode = mockQuery(Profiles.matchAll().replace("classpath:/", ""));
-        String filterVariable = null;
-        boolean multiSelectFilter = true;
 
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+        config.getFilter().setFilterVariable(null);
         // when
         QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
-                elasticVersion, objectMapper,
-                queryNode.deepCopy(), searchQuery,
-                filterRules, filterMapping, definedFilterMapping, filterPath,
-                filterVariable, multiSelectFilter);
+                objectMapper,
+                queryNode.deepCopy(), searchQuery, config);
         filterTransformer.transformFilters();
 
         // then
@@ -196,15 +191,14 @@ public class QsfqlFilterTransformerTest {
         // given
         SearchQuery searchQuery = mockSearchQuery();
         ObjectNode queryNode = mockQuery("/com/quasiris/qsf/elastic/profiles/match-all-profile-with-filtervariable.json");
-        String filterVariable = "myFilter";
-        boolean multiSelectFilter = true;
 
+        QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
+        config.getFilter().setMultiSelectFilter(true);
+        config.getFilter().setFilterVariable("myFilter");
         // when
         QsfqlFilterTransformer filterTransformer = new QsfqlFilterTransformer(
-                elasticVersion, objectMapper,
-                queryNode.deepCopy(), searchQuery,
-                filterRules, filterMapping, definedFilterMapping, filterPath,
-                filterVariable, multiSelectFilter);
+                objectMapper,
+                queryNode.deepCopy(), searchQuery, config);
         filterTransformer.transformFilters();
 
         // then

@@ -38,15 +38,13 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     protected ObjectNode elasticQuery;
 
-    private QsfSearchConfigDTO searchConfig = new QsfSearchConfigDTO();
+    private QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
 
     protected String profile;
 
     protected Map<String, Object> profileParameter = new HashMap<>();
 
     private ParameterMapper parameterMapper;
-
-    protected List<Facet> aggregations = new ArrayList<>();
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 
@@ -131,7 +129,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object();
         boolean hasAggs = false;
-        for (Facet aggregation : aggregations) {
+        for (Facet aggregation : searchConfig.getFacet().getFacets()) {
             if("slider".equals(aggregation.getType())) {
                 JsonNode agg = AggregationMapper.createSlider(aggregation);
                 jsonBuilder.json(agg);
@@ -258,46 +256,11 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         return elasticQuery;
     }
 
-    public void addAggregation(String name, String id, String field) {
-        Facet facet = new Facet();
-        facet.setName(name);
-        facet.setId(id);
-        facet.setFieldName(field);
-        aggregations.add(facet);
-    }
 
-    public void addAggregation(String name, String id, String field, int size) {
-        Facet facet = new Facet();
-        facet.setName(name);
-        facet.setId(id);
-        facet.setFieldName(field);
-        facet.setSize(size);
-        aggregations.add(facet);
-    }
 
     public void addAggregation(Facet facet) {
-        aggregations.add(facet);
+        searchConfig.getFacet().getFacets().add(facet);
 
-    }
-
-    public void addAggregation(String name, String id, String field, int size, String sortOrder, String sortBy, String type) {
-        Facet facet = new Facet();
-        facet.setName(name);
-        facet.setId(id);
-        facet.setFieldName(field);
-        facet.setSortBy(sortBy);
-        facet.setSortOrder(sortOrder);
-        facet.setSize(size);
-        facet.setType(type);
-        aggregations.add(facet);
-    }
-
-    public List<Facet> getAggregations() {
-        return aggregations;
-    }
-
-    public void setAggregations(List<Facet> aggregations) {
-        this.aggregations = aggregations;
     }
 
     public String getProfile() {
@@ -342,6 +305,10 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     public void setSearchConfig(QsfSearchConfigDTO searchConfig) {
         this.searchConfig = searchConfig;
+    }
+
+    public QsfSearchConfigDTO getSearchConfig() {
+        return searchConfig;
     }
 
     public void addSourceField(String sourceField) {

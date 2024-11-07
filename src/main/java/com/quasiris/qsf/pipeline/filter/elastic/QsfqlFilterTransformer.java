@@ -3,6 +3,7 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.config.QsfSearchConfigDTO;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.BaseSearchFilter;
@@ -17,79 +18,27 @@ import java.util.Map;
 
 public class QsfqlFilterTransformer {
 
-    private String filterPath;
-
-    private String filterVariable;
-
-    private Integer elasticVersion = 6;
-
     private ObjectMapper objectMapper;
 
     private ObjectNode elasticQuery;
 
     private SearchQuery searchQuery;
 
-    private Map<String, String> filterRules;
-
-    private Map<String, String> filterMapping;
-
+    private QsfSearchConfigDTO searchConfig;
 
     private QsfqlFilterMapper filterMapper;
 
-    private boolean multiSelectFilter;
-
-
-    public QsfqlFilterTransformer(ObjectMapper objectMapper, ObjectNode elasticQuery, SearchQuery searchQuery) {
+    public QsfqlFilterTransformer(ObjectMapper objectMapper, ObjectNode elasticQuery, SearchQuery searchQuery, QsfSearchConfigDTO searchConfig) {
         this.objectMapper = objectMapper;
         this.elasticQuery = elasticQuery;
         this.searchQuery = SearchQueryFactory.deepCopy(searchQuery);
-        this.filterMapper = new QsfqlFilterMapper();
+        this.filterMapper = new QsfqlFilterMapper(searchConfig);
+        this.searchConfig = searchConfig;
     }
-
-
-    public QsfqlFilterTransformer(Integer elasticVersion,
-                                  ObjectMapper objectMapper,
-                                  ObjectNode elasticQuery,
-                                  SearchQuery searchQuery,
-                                  Map<String, String> filterRules,
-                                  Map<String, String> filterMapping,
-                                  Map<String, Range> definedRangeFilterMapping,
-                                  String filterPath,
-                                  String filterVariable,
-                                  boolean multiSelectFilter
-    ) {
-        this.elasticVersion = elasticVersion;
-        this.objectMapper = objectMapper;
-        this.elasticQuery = elasticQuery;
-        this.searchQuery = SearchQueryFactory.deepCopy(searchQuery);
-        this.filterRules = filterRules;
-        this.filterMapping = filterMapping;
-        this.filterPath = filterPath;
-        this.filterVariable = filterVariable;
-
-        this.filterMapper = new QsfqlFilterMapper();
-        this.filterMapper.setFilterMapping(filterMapping);
-        this.filterMapper.setDefinedRangeFilterMapping(definedRangeFilterMapping);
-        this.filterMapper.setFilterRules(filterRules);
-
-        this.multiSelectFilter = multiSelectFilter;
-    }
-
-
-    public Map<String, String> getFilterRules() {
-        return filterRules;
-    }
-
 
     public ObjectMapper getObjectMapper() {
         return objectMapper;
     }
-
-    public Map<String, String> getFilterMapping() {
-        return filterMapping;
-    }
-
-
 
 
     public void transformFilters() throws JsonBuilderException {
@@ -97,7 +46,7 @@ public class QsfqlFilterTransformer {
 
         // post filters
         List<BaseSearchFilter> postFilters = new ArrayList<>();
-        if(multiSelectFilter) {
+        if(searchConfig.getFilter().getMultiSelectFilter()) {
             transformFiltersMultiselect(postFilters);
         }
         if(postFilters.size() > 0) {
@@ -111,10 +60,10 @@ public class QsfqlFilterTransformer {
             ObjectNode filters = compileFilters(searchQuery.getSearchFilterList());
 
             // apply filters to query
-            if (StringUtils.isNotBlank(filterVariable)) {
+            if (StringUtils.isNotBlank(searchConfig.getFilter().getFilterVariable())) {
                 // put filters into filtersVariable placeholder
                 ObjectNode filterObj = filters != null ? filters : (ObjectNode) JsonBuilder.create().object().get();
-                resultJsonBuilder.valueMap(filterVariable, JsonBuilder.create().object("filter", filterObj).get());
+                resultJsonBuilder.valueMap(searchConfig.getFilter().getFilterVariable(), JsonBuilder.create().object("filter", filterObj).get());
             } else if(searchQuery.getSearchFilterList().size() > 0) {
                 // append filters to defined path
                 if(resultJsonBuilder.exists("query/bool/filter")) {

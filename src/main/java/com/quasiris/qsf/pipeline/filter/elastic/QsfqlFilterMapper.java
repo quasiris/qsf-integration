@@ -1,32 +1,27 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
+import com.quasiris.qsf.config.QsfSearchConfigDTO;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.*;
-import com.quasiris.qsf.commons.util.DateUtil;
 import com.quasiris.qsf.util.SerializationUtils;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class QsfqlFilterMapper {
 
+    private QsfSearchConfigDTO searchConfig;
 
-    private Map<String, String> filterRules = new HashMap<>();
-
-    private Map<String, String> filterMapping = new HashMap<>();
-    private Map<String, Range> definedRangeFilterMapping = new HashMap<>();
-
-    public QsfqlFilterMapper() {
+    public QsfqlFilterMapper(QsfSearchConfigDTO searchConfig) {
+        this.searchConfig = searchConfig;
     }
 
     // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html
@@ -106,12 +101,12 @@ public class QsfqlFilterMapper {
         if(fieldName == null) {
             return null;
         }
-        String elasticField = getFilterMapping().get(fieldName);
+        String elasticField = searchConfig.getFilter().getFilterMapping().get(fieldName);
         if(!Strings.isNullOrEmpty(elasticField)) {
             return elasticField;
         }
 
-        for(Map.Entry<String, String> rule : getFilterRules().entrySet()) {
+        for(Map.Entry<String, String> rule : searchConfig.getFilter().getFilterRules().entrySet()) {
             String pattern = rule.getKey();
             String replacement = rule.getValue();
             elasticField = fieldName.replaceAll(pattern, replacement);
@@ -128,7 +123,7 @@ public class QsfqlFilterMapper {
 
         for(String filterValue : searchFilter.getValues()) {
 
-            Range range = definedRangeFilterMapping.get(searchFilter.getId() + "." + filterValue);
+            Range range = searchConfig.getFilter().getDefinedRangeFilterMapping().get(searchFilter.getId() + "." + filterValue);
             ArrayNode an = transformDefinedRangeFilterForDefinedRange(searchFilter, elasticField, range);
             if(an != null) {
                 jsonBuilder.stash();
@@ -281,47 +276,4 @@ public class QsfqlFilterMapper {
         return (ObjectNode) builder.get();
     }
 
-    /**
-     * Getter for property 'filterRules'.
-     *
-     * @return Value for property 'filterRules'.
-     */
-    public Map<String, String> getFilterRules() {
-        return filterRules;
-    }
-
-    /**
-     * Setter for property 'filterRules'.
-     *
-     * @param filterRules Value to set for property 'filterRules'.
-     */
-    public void setFilterRules(Map<String, String> filterRules) {
-        this.filterRules = filterRules;
-    }
-
-    /**
-     * Getter for property 'filterMapping'.
-     *
-     * @return Value for property 'filterMapping'.
-     */
-    public Map<String, String> getFilterMapping() {
-        return filterMapping;
-    }
-
-    /**
-     * Setter for property 'filterMapping'.
-     *
-     * @param filterMapping Value to set for property 'filterMapping'.
-     */
-    public void setFilterMapping(Map<String, String> filterMapping) {
-        this.filterMapping = filterMapping;
-    }
-
-    public Map<String, Range> getDefinedRangeFilterMapping() {
-        return definedRangeFilterMapping;
-    }
-
-    public void setDefinedRangeFilterMapping(Map<String, Range> definedRangeFilterMapping) {
-        this.definedRangeFilterMapping = definedRangeFilterMapping;
-    }
 }

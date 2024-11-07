@@ -3,19 +3,14 @@ package com.quasiris.qsf.pipeline.filter;
 import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.mock.Mockfactory;
-import com.quasiris.qsf.pipeline.Pipeline;
-import com.quasiris.qsf.pipeline.PipelineBuilder;
-import com.quasiris.qsf.pipeline.PipelineContainer;
-import com.quasiris.qsf.pipeline.PipelineContainerException;
-import com.quasiris.qsf.pipeline.PipelineExecuter;
+import com.quasiris.qsf.pipeline.*;
 import com.quasiris.qsf.pipeline.filter.elastic.ElasticFilterBuilder;
-import com.quasiris.qsf.pipeline.filter.elastic.MockElasticClient;
 import com.quasiris.qsf.pipeline.filter.elastic.MockElasticSearchClient;
 import com.quasiris.qsf.pipeline.filter.qsql.QSQLRequestFilter;
+import com.quasiris.qsf.query.builder.FacetBuilder;
 import com.quasiris.qsf.test.AbstractPipelineTest;
-import org.junit.jupiter.api.Test;
-
 import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,8 +42,8 @@ public class SearchIntentLocationTest extends AbstractPipelineTest {
                         client(mockElasticClient).
                         baseUrl("http://localhost:9214/osm").
                         profile("classpath://com/quasiris/qsf/elastic/profiles/location.json").
-                        addAggregation("places", "place", "place.keyword").
-                        addAggregation("tag", "tagkey_is_in", "tagkey_is_in.keyword").
+                        addAggregation(FacetBuilder.create().id("place").fieldName("place.keyword").build()).
+                        addAggregation(FacetBuilder.create().id("tagkey_is_in").name("tag").fieldName("tagkey_is_in.keyword").build()).
                         //filterPrefix("f.").
                         //mapFilter("farbe", "attrFarbe").
                         //mapField("url","url").
