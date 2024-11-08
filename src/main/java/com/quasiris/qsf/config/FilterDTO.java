@@ -11,6 +11,7 @@ public class FilterDTO {
     private Boolean multiSelectFilter;
     private String filterVariable;
     private String filterPath;
+    private String filterPrefix;
 
     public Map<String, Range> getDefinedRangeFilterMapping() {
         return definedRangeFilterMapping;
@@ -61,5 +62,16 @@ public class FilterDTO {
 
     public void setFilterPath(String filterPath) {
         this.filterPath = filterPath;
+    }
+
+    public String getFilterPrefix() {
+        if(filterPrefix == null) {
+            return "";
+        }
+        return filterPrefix;
+    }
+
+    public void setFilterPrefix(String filterPrefix) {
+        this.filterPrefix = filterPrefix;
     }
 }

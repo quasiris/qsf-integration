@@ -1,9 +1,10 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.quasiris.qsf.config.QsfSearchConfigDTO;
+import com.quasiris.qsf.config.QsfSearchConfigUtil;
 import com.quasiris.qsf.dto.response.Document;
 import com.quasiris.qsf.dto.response.Facet;
-import com.quasiris.qsf.dto.response.FacetValue;
 import com.quasiris.qsf.dto.response.SearchResult;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
@@ -54,7 +55,10 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void testSubFacet() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
-        transformer.setFilterPrefix("f.");
+        QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
+        qsfSearchConfigDTO.getFilter().setFilterPrefix("f.");
+        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+
         ElasticResult elasticResult = readElasticResultFromFile("sub-facet.json");
         String facetId = "supplierName";
         String facetName = "Hersteller";
@@ -169,7 +173,10 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void testFieldGrouping() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
-        transformer.addInnerhitsGroupMapping("variantObject", "variantObject");
+        QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
+        QsfSearchConfigUtil.addInnerhitsGroupMapping(qsfSearchConfigDTO, "variantObject", "variantObject");
+        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+
         ElasticResult elasticResult = readElasticResultFromFile("field-grouping.json");
         SearchResult searchResult = transformer.transform(elasticResult);
         Document document = searchResult.getDocuments().get(0);
@@ -237,6 +244,10 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void testVariantCountHotfix() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
+        qsfSearchConfigDTO.getVariant().setVariantId("variantId");
+        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+
         PipelineContainer pipelineContainer = new PipelineContainer();
         pipelineContainer.setSearchQuery(new SearchQuery());
         transformer.init(pipelineContainer);
@@ -244,7 +255,6 @@ class Elastic2SearchResultMappingTransformerTest {
         transformer.addFieldMapping("title", "title");
         transformer.addFieldMapping("description", "description");
         transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
-        transformer.setVariantId("variantId");
         ElasticResult elasticResult = readElasticResultFromFile("variant-count.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 
@@ -301,8 +311,11 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void transformMultipleInnerhits() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
-        transformer.addInnerhitsMapping("lineItems_positions", "lineItems");
-        transformer.addInnerhitsMapping("lineItems_order", "lineItems");
+        QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
+        qsfSearchConfigDTO.getDisplay().getInnerhitsMapping().put("lineItems_positions", "lineItems");
+        qsfSearchConfigDTO.getDisplay().getInnerhitsMapping().put("lineItems_order", "lineItems");
+        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+
         ElasticResult elasticResult = readElasticResultFromFile("multiple-innerhits.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 
@@ -385,11 +398,13 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void updateTotalDocumentsWhenUseVariantIdAndHasAggregationDocCount() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
+        qsfSearchConfigDTO.getVariant().setVariantId("variantId");
+        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
         transformer.addFieldMapping("id", "id");
         transformer.addFieldMapping("title", "title");
         transformer.addFieldMapping("description", "description");
         transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
-        transformer.setVariantId("variantId");
         ElasticResult elasticResult = readElasticResultFromFile("filtered-agg-doc_count.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 
@@ -399,11 +414,13 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void updateTotalDocumentsWhenUseVariantIdAndNotHasAggregationDocCount() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
+        qsfSearchConfigDTO.getVariant().setVariantId("variantId");
+        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
         transformer.addFieldMapping("id", "id");
         transformer.addFieldMapping("title", "title");
         transformer.addFieldMapping("description", "description");
         transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
-        transformer.setVariantId("variantId");
         ElasticResult elasticResult = readElasticResultFromFile("filtered-agg.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 
@@ -426,11 +443,14 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void updateTotalDocumentsWhenUseVariantIdAndHasAggregationDocCountHigherThanTotal() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
+        qsfSearchConfigDTO.getVariant().setVariantId("variantId");
+        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+
         transformer.addFieldMapping("id", "id");
         transformer.addFieldMapping("title", "title");
         transformer.addFieldMapping("description", "description");
         transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
-        transformer.setVariantId("variantId");
         ElasticResult elasticResult = readElasticResultFromFile("filtered-agg-doc_count-higher.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 

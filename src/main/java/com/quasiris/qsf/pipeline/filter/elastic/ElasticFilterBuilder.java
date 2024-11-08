@@ -229,7 +229,7 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilterBuilder filterPrefix(String filterPrefix) {
-        getMappingTransformer().filterPrefix(filterPrefix);
+        searchConfig.getFilter().setFilterPrefix(filterPrefix);
         return this;
     }
 

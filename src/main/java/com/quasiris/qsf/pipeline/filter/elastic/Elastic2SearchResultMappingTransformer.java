@@ -26,17 +26,7 @@ import java.util.stream.Collectors;
  */
 public class Elastic2SearchResultMappingTransformer implements SearchResultTransformerIF {
 
-    private QsfSearchConfigDTO searchConfigDTO = new QsfSearchConfigDTO();
-
-    // mapping for innerhits to a field, if there are multiple inner hits, that belong to one field
-    private Map<String, String> innerhitsMapping = new HashMap<>();
-
-    private Map<String, FacetMapping> facetMapping = new LinkedHashMap<>();
-
-    private String filterPrefix = "";
-    private String variantId;
-
-    private Map<String, List<String>> groupInnerhitsMapping;
+    private QsfSearchConfigDTO searchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
 
     private SearchQuery searchQuery;
 
@@ -98,7 +88,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     protected void updateTotalDocuments(ElasticResult elasticResult, SearchResult searchResult) {
-        if(elasticResult.getAggregations() != null && StringUtils.isNotEmpty(getVariantId())) {
+        String varianId = searchConfigDTO.getVariant().getVariantId();
+        if(elasticResult.getAggregations() != null && StringUtils.isNotEmpty(varianId)) {
             Long totalCount = getTotalCountAggregation(elasticResult.getAggregations());
             if(totalCount != null) {
                 // TODO totalVariants = total;
@@ -130,21 +121,22 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             return;
         }
 
+        Map<String, FacetMapping> facetMappingMap = getSearchConfigDTO().getFacet().getFacetMapping();
         Map<String, Aggregation> aggregationMap = new HashMap<>();
         traverseAggsWithBuckets(aggregationMap, elasticResult.getAggregations());
 
         // for backward compatibility
         // if no mapping is defined for a aggregation a default facet mapping is configured
         for(Map.Entry<String, Aggregation> aggregation : aggregationMap.entrySet()) {
-            if(!facetMapping.containsKey(aggregation.getKey())) {
+            if(!facetMappingMap.containsKey(aggregation.getKey())) {
                 FacetMapping mapping = new FacetMapping();
                 mapping.setId(aggregation.getKey());
                 mapping.setName(aggregation.getKey());
-                facetMapping.put(aggregation.getKey(), mapping);
+                facetMappingMap.put(aggregation.getKey(), mapping);
             }
         }
 
-        for(Map.Entry<String, FacetMapping> mapping : facetMapping.entrySet()) {
+        for(Map.Entry<String, FacetMapping> mapping : facetMappingMap.entrySet()) {
             FacetMapping facetMapping = mapping.getValue();
             Aggregation aggregation = aggregationMap.get(mapping.getKey());
             if(aggregation == null) {
@@ -156,6 +148,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     protected Facet mapAggregation(String facetId, Aggregation aggregation) {
+        Map<String, FacetMapping> facetMapping = getSearchConfigDTO().getFacet().getFacetMapping();
         FacetMapping mapping = facetMapping.get(facetId);
 
         if ("slider".equals(mapping.getType())) {
@@ -200,6 +193,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
 
     protected Facet mapAggregationToFacet(String facetId, Aggregation aggregation, FacetFilterMapper facetFilterMapper, int level) {
+        Map<String, FacetMapping> facetMapping = getSearchConfigDTO().getFacet().getFacetMapping();
+        String filterPrefix = getSearchConfigDTO().getFilter().getFilterPrefix();
         Facet facet = new Facet();
         facet.setValues(new ArrayList<>());
         FacetMapping mapping = facetMapping.get(facetId);
@@ -284,6 +279,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     private FacetFilterMapper getFacetFilterMapper(FacetMapping mapping, FacetFilterMapper defaultFacetFilterMapper) {
+        String filterPrefix = getSearchConfigDTO().getFilter().getFilterPrefix();
         FacetFilterMapper facetFilterMapper = mapping.getFacetFilterMapper();
         if(facetFilterMapper == null) {
             facetFilterMapper = defaultFacetFilterMapper;
@@ -336,6 +332,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                 return left.getData().getPosition().compareTo(right.getData().getPosition());
             }
         });
+
+        String filterPrefix = getSearchConfigDTO().getFilter().getFilterPrefix();
         Facet facet = new Facet();
         facet.setFilterName(filterPrefix + filterName);
         facet.setValues(new ArrayList<>());
@@ -360,6 +358,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     protected Facet mapAggregationToSlider(String id, Aggregation aggregation, FacetMapping mapping) {
+        String filterPrefix = getSearchConfigDTO().getFilter().getFilterPrefix();
         Facet facet = new Facet();
 
         facet.setId(id);
@@ -488,6 +487,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
             String innerHitsName = entry.getKey();
             String fieldName;
+
+            Map<String, String> innerhitsMapping = searchConfigDTO.getDisplay().getInnerhitsMapping();
             if(innerhitsMapping != null && innerhitsMapping.get(innerHitsName) != null) {
                 fieldName = innerhitsMapping.get(innerHitsName);
             } else {
@@ -504,6 +505,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                         collect(Collectors.toList());
             }
 
+            Map<String, List<String>>  groupInnerhitsMapping = getSearchConfigDTO().getDisplay().getGroupInnerhitsMapping();
             if(groupInnerhitsMapping != null) {
                 for(Map.Entry<String, List<String>> groupInnerhitsMappingEntry : groupInnerhitsMapping.entrySet()) {
                     String innerhitsFieldName = groupInnerhitsMappingEntry.getKey();
@@ -580,26 +582,6 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         return new StringBuilder("TODO");
     }
 
-    public void filterPrefix(String filterPrefix) {
-        this.filterPrefix=filterPrefix;
-    }
-
-    public void addInnerhitsGroupMapping(String from, String to) {
-        if(groupInnerhitsMapping == null) {
-            groupInnerhitsMapping = new HashMap<>();
-        }
-        List<String> mapping = groupInnerhitsMapping.get(from);
-        if(mapping == null) {
-            mapping = new ArrayList<>();
-        }
-        mapping.add(to);
-
-        groupInnerhitsMapping.put(from, mapping);
-    }
-
-
-
-
     public void addFieldMapping(String from, String to) {
         QsfSearchConfigUtil.initDisplayMapping(searchConfigDTO);
         DisplayMappingDTO mapping = new DisplayMappingDTO();
@@ -619,12 +601,13 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     FacetMapping getOrCreateFacetMapping(String id) {
-        FacetMapping facetMapping = this.facetMapping.get(id);
+        Map<String, FacetMapping> facetMappingMap = getSearchConfigDTO().getFacet().getFacetMapping();
+        FacetMapping facetMapping = facetMappingMap.get(id);
         if(facetMapping == null) {
             facetMapping = new FacetMapping();
             facetMapping.setId(id);
             facetMapping.setName(id);
-            this.facetMapping.put(id, facetMapping);
+            facetMappingMap.put(id, facetMapping);
         }
         return facetMapping;
     }
@@ -640,41 +623,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     public Map<String, FacetMapping> getFacetMapping() {
-        return facetMapping;
-    }
-
-    public void setFacetMapping(Map<String, FacetMapping> facetMapping) {
-        this.facetMapping = facetMapping;
-    }
-
-    public String getFilterPrefix() {
-        return filterPrefix;
-    }
-
-    public void setFilterPrefix(String filterPrefix) {
-        this.filterPrefix = filterPrefix;
-    }
-
-    public String getVariantId() {
-        return variantId;
-    }
-
-    public void setVariantId(String variantId) {
-        this.variantId = variantId;
-    }
-
-    public void addInnerhitsMapping(String from, String to) {
-        if(innerhitsMapping == null) {
-            innerhitsMapping = new HashMap<>();
-        }
-        innerhitsMapping.put(from, to);
-    }
-    public Map<String, String> getInnerhitsMapping() {
-        return innerhitsMapping;
-    }
-
-    public void setInnerhitsMapping(Map<String, String> innerhitsMapping) {
-        this.innerhitsMapping = innerhitsMapping;
+        Map<String, FacetMapping> facetMappingMap = getSearchConfigDTO().getFacet().getFacetMapping();
+        return facetMappingMap;
     }
 
     public QsfSearchConfigDTO getSearchConfigDTO() {

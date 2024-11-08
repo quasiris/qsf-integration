@@ -2,6 +2,8 @@ package com.quasiris.qsf.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class QsfSearchConfigUtil {
 
@@ -93,5 +95,20 @@ public class QsfSearchConfigUtil {
         if(qsfSearchConfigDTO.getVariant() == null) {
             qsfSearchConfigDTO.setVariant(new VariantDTO());
         }
+    }
+
+    public static void addInnerhitsGroupMapping(QsfSearchConfigDTO searchConfigDTO, String from, String to) {
+        Map<String, List<String>> groupInnerhitsMapping =  searchConfigDTO.getDisplay().getGroupInnerhitsMapping();
+        if(groupInnerhitsMapping == null) {
+            groupInnerhitsMapping = new HashMap<>();
+            searchConfigDTO.getDisplay().setGroupInnerhitsMapping(groupInnerhitsMapping);
+        }
+        List<String> mapping = groupInnerhitsMapping.get(from);
+        if(mapping == null) {
+            mapping = new ArrayList<>();
+        }
+        mapping.add(to);
+
+        groupInnerhitsMapping.put(from, mapping);
     }
 }
