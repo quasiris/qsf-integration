@@ -1,10 +1,11 @@
 package com.quasiris.qsf.config;
 
+import java.util.Set;
+
 public class QsfSearchConfigDTO {
 
-    private Object sort;
-    private Object paging;
-    private Object variant;
+
+
 
     // profiles with conditions
     private Object profiles;
@@ -12,6 +13,9 @@ public class QsfSearchConfigDTO {
     private DisplayDTO display;
     private FacetDTO facet;
     private FilterDTO filter;
+    private SortDTO sort;
+    private PagingDTO paging;
+    private VariantDTO variant;
 
 
     public DisplayDTO getDisplay() {
@@ -36,5 +40,29 @@ public class QsfSearchConfigDTO {
 
     public void setFilter(FilterDTO filter) {
         this.filter = filter;
+    }
+
+    public SortDTO getSort() {
+        return sort;
+    }
+
+    public void setSort(SortDTO sort) {
+        this.sort = sort;
+    }
+
+    public PagingDTO getPaging() {
+        return paging;
+    }
+
+    public void setPaging(PagingDTO paging) {
+        this.paging = paging;
+    }
+
+    public VariantDTO getVariant() {
+        return variant;
+    }
+
+    public void setVariant(VariantDTO variant) {
+        this.variant = variant;
     }
 }

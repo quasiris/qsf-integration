@@ -23,23 +23,6 @@ import java.util.stream.Collectors;
  */
 public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransformer implements QueryTransformerIF {
 
-    private Map<String, String> sortMapping = new HashMap<>();
-    private String defaultSort;
-
-    private Map<String, String> sortRules = new HashMap<>();
-    private Integer defaultRows = 10;
-    private Integer rows;
-    private Integer defaultPage = 1;
-
-    private Integer elasticVersion = 6;
-
-    private String variantId;
-    protected Set<String> innerHitsSourceFields;
-
-    protected String variantSort;
-    protected Integer variantSize;
-
-
     @Override
     public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
         this.pipelineContainer = pipelineContainer;
@@ -116,6 +99,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public void transformAggregationsMultiSelect() throws JsonBuilderException {
         QsfqlFilterMapper filterMapper = new QsfqlFilterMapper(getSearchConfig());
 
+        String variantId = getSearchConfig().getVariant().getVariantId();
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object();
         boolean hasAggs = false;
@@ -161,11 +145,11 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                 hasAggs = true;
             }
         }
-        if(StringUtils.isNotEmpty(getVariantId())) {
+        if(StringUtils.isNotEmpty(variantId)) {
             // add facet for total doc count
             String fieldName;
             Facet aggregation = new Facet();
-            aggregation.setFieldName(getVariantId() +".keyword");
+            aggregation.setFieldName(variantId +".keyword");
             aggregation.setId(QsfIntegrationConstants.TOTAL_COUNT_AGGREGATION_NAME);
             aggregation.setOperator(FilterOperator.OR);
             aggregation.setType("cardinality");
@@ -194,6 +178,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     void createCategorySelectFacet(Facet aggregation, QsfqlFilterMapper filterMapper, JsonBuilder jsonBuilder, int level) throws JsonBuilderException {
         Facet categoryTree = new Facet();
         categoryTree.setName(aggregation.getName() + level);
+
+        String variantId = getSearchConfig().getVariant().getVariantId();
 
         String filterId = filterMapper.mapFilterField(aggregation.getId() + level);
         categoryTree.setId(filterId);
@@ -274,6 +260,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public void transformSort() {
         try {
             Sort sort = getSearchQuery().getSort();
+            String defaultSort = getSearchConfig().getSort().getDefaultSort();
             if(sort == null && defaultSort == null) {
                 return;
             }
@@ -314,7 +301,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
     public String mapSortField(String fieldName) {
-        for(Map.Entry<String, String> rule : getSortRules().entrySet()) {
+        for(Map.Entry<String, String> rule : getSearchConfig().getSort().getSortRules().entrySet()) {
             String pattern = rule.getKey();
             String replacement = rule.getValue();
             String elasticField = fieldName.replaceAll(pattern, replacement);
@@ -323,7 +310,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             }
         }
 
-        String sortTargetField = sortMapping.get(fieldName);
+        String sortTargetField = getSearchConfig().getSort().getSortMapping().get(fieldName);
         if(sortTargetField != null) {
             return sortTargetField;
         }
@@ -334,7 +321,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
         if(sort == null || sort.getSort() == null) {
             return null;
         }
-        String sortJson = sortMapping.get(sort.getSort());
+        String sortJson = getSearchConfig().getSort().getSortMapping().get(sort.getSort());
         if(sortJson == null) {
             return null;
         }
@@ -354,6 +341,8 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
     public void transformPaging() {
+        Integer defaultPage = getSearchConfig().getPaging().getDefaultPage();
+        Integer defaultRows = getSearchConfig().getPaging().getDefaultRows();
         transformPaging(getElasticQuery(), searchQuery, defaultPage, defaultRows);
     }
 
@@ -374,22 +363,27 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
 
     public void collapseResults() {
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/collapse-search-results.html
-        if(StringUtils.isNotEmpty(getVariantId())) {
+        String variantId = getSearchConfig().getVariant().getVariantId();
+        if(StringUtils.isNotEmpty(variantId)) {
             try {
-                String elasticField = getVariantId()+".keyword";
+                String elasticField = variantId+".keyword";
                 JsonBuilder jsonBuilder = new JsonBuilder().
                         object("field", elasticField);
 
+                Integer variantSize = getSearchConfig().getVariant().getVariantSize();
                 int size = 100;
                 if(variantSize != null) {
                     size = variantSize;
                 }
 
+                Set<String> innerHitsSourceFields = getSearchConfig().getVariant().getInnerHitsSourceFields();
+                String variantSort = getSearchConfig().getVariant().getVariantSort();
                 if(innerHitsSourceFields != null) {
                     jsonBuilder.object("inner_hits").
                             object("name", "most_recent").
                             object("size", size).
                             object("_source", innerHitsSourceFields);
+
 
                     if(variantSort != null) {
                         jsonBuilder.string("sort", variantSort);
@@ -409,7 +403,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
     public void addSortMapping(String from, String to) {
-        sortMapping.put(from, to);
+        getSearchConfig().getSort().getSortMapping().put(from, to);
     }
 
     public void addFilterMapping(String from, String to) {
@@ -422,115 +416,6 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     }
 
     public void addSortRule(String pattern, String replacement) {
-        sortRules.put(pattern, replacement);
-    }
-
-    public Map<String, String> getSortMapping() {
-        return sortMapping;
-    }
-
-    public void setSortMapping(Map<String, String> sortMapping) {
-        this.sortMapping = sortMapping;
-    }
-
-    public String getDefaultSort() {
-        return defaultSort;
-    }
-
-    public void setDefaultSort(String defaultSort) {
-        this.defaultSort = defaultSort;
-    }
-
-    public Integer getDefaultRows() {
-        return defaultRows;
-    }
-
-    public void setDefaultRows(Integer defaultRows) {
-        this.defaultRows = defaultRows;
-    }
-
-    public Integer getDefaultPage() {
-        return defaultPage;
-    }
-
-    public void setDefaultPage(Integer defaultPage) {
-        this.defaultPage = defaultPage;
-    }
-
-    public Integer getElasticVersion() {
-        return elasticVersion;
-    }
-
-    public void setElasticVersion(Integer elasticVersion) {
-        this.elasticVersion = elasticVersion;
-    }
-
-    /**
-     * Getter for property 'sortRules'.
-     *
-     * @return Value for property 'sortRules'.
-     */
-    public Map<String, String> getSortRules() {
-        return sortRules;
-    }
-
-    /**
-     * Setter for property 'sortRules'.
-     *
-     * @param sortRules Value to set for property 'sortRules'.
-     */
-    public void setSortRules(Map<String, String> sortRules) {
-        this.sortRules = sortRules;
-    }
-
-    /**
-     * Getter for property 'rows'.
-     *
-     * @return Value for property 'rows'.
-     */
-    public Integer getRows() {
-        return rows;
-    }
-
-    /**
-     * Setter for property 'rows'.
-     *
-     * @param rows Value to set for property 'rows'.
-     */
-    public void setRows(Integer rows) {
-        this.rows = rows;
-    }
-
-    public String getVariantId() {
-        return variantId;
-    }
-
-    public void setVariantId(String variantId) {
-        this.variantId = variantId;
-    }
-
-    public Set<String> getInnerHitsSourceFields() {
-        return innerHitsSourceFields;
-    }
-
-    public void setInnerHitsSourceFields(Set<String> innerHitsSourceFields) {
-        this.innerHitsSourceFields = innerHitsSourceFields;
-    }
-
-    public String getVariantSort() {
-        return variantSort;
-    }
-
-    public void setVariantSort(String variantSort) {
-        this.variantSort = variantSort;
-    }
-
-
-    public Integer getVariantSize() {
-        return variantSize;
-    }
-
-    public void setVariantSize(Integer variantSize) {
-        this.variantSize = variantSize;
+        getSearchConfig().getSort().getSortRules().put(pattern, replacement);
     }
 }

@@ -48,8 +48,6 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 
-    protected String variantId;
-
     @Override
     public ObjectNode transform(PipelineContainer pipelineContainer) throws PipelineContainerException {
         this.pipelineContainer = pipelineContainer;
@@ -125,7 +123,7 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         if(checkFacetDisabled()) {
             return;
         }
-
+        String variantId = searchConfig.getVariant().getVariantId();
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.object();
         boolean hasAggs = false;
@@ -275,14 +273,6 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     @Transient
     public void setSearchQuery(SearchQuery searchQuery) {
         this.searchQuery = searchQuery;
-    }
-
-    public String getVariantId() {
-        return variantId;
-    }
-
-    public void setVariantId(String variantId) {
-        this.variantId = variantId;
     }
 
     public void setParameterMapper(ParameterMapper parameterMapper) {

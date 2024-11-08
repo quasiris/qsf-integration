@@ -11,6 +11,9 @@ public class QsfSearchConfigUtil {
         initDisplay(qsfSearchConfigDTO);
         initFacet(qsfSearchConfigDTO);
         initFilter(qsfSearchConfigDTO);
+        initSort(qsfSearchConfigDTO);
+        initPaging(qsfSearchConfigDTO);
+        initVariant(qsfSearchConfigDTO);
         return qsfSearchConfigDTO;
     }
 
@@ -69,6 +72,26 @@ public class QsfSearchConfigUtil {
         initDisplay(qsfSearchConfigDTO);
         if(qsfSearchConfigDTO.getDisplay().getMapping() == null) {
             qsfSearchConfigDTO.getDisplay().setMapping(new ArrayList<>());
+        }
+    }
+
+    public static void initSort(QsfSearchConfigDTO qsfSearchConfigDTO) {
+
+        if(qsfSearchConfigDTO.getSort() == null) {
+            qsfSearchConfigDTO.setSort(new SortDTO());
+        }
+    }
+
+    public static void initPaging(QsfSearchConfigDTO qsfSearchConfigDTO) {
+
+        if(qsfSearchConfigDTO.getPaging() == null) {
+            qsfSearchConfigDTO.setPaging(new PagingDTO());
+        }
+    }
+    public static void initVariant(QsfSearchConfigDTO qsfSearchConfigDTO) {
+
+        if(qsfSearchConfigDTO.getVariant() == null) {
+            qsfSearchConfigDTO.setVariant(new VariantDTO());
         }
     }
 }

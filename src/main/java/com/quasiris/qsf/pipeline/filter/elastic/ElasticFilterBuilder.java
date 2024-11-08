@@ -58,12 +58,6 @@ public class ElasticFilterBuilder {
         return this;
     }
 
-
-    public ElasticFilterBuilder elasticVersion(int elasticVersion) {
-        getElasticQsfqlQueryTransformer().setElasticVersion(elasticVersion);
-        return this;
-    }
-
     public ElasticFilter build() {
         if(queryTransformer.equals(ElasticQsfqlQueryTransformer.class)) {
             elasticQsfqlQueryTransformer.setSearchConfig(searchConfig);
@@ -93,14 +87,12 @@ public class ElasticFilterBuilder {
         if(elastic2SearchResultMappingTransformer == null) {
             elastic2SearchResultMappingTransformer = new Elastic2SearchResultMappingTransformer();
         }
-        elastic2SearchResultMappingTransformer.setVariantId(getElasticQsfqlQueryTransformer().getVariantId());
         return elastic2SearchResultMappingTransformer;
     }
 
     private ElasticParameterQueryTransformer getElasticParameterQueryTransformer() {
         if(elasticParameterQueryTransformer == null) {
             elasticParameterQueryTransformer = new ElasticParameterQueryTransformer();
-            elasticParameterQueryTransformer.setVariantId(getElasticQsfqlQueryTransformer().getVariantId());
         }
         return elasticParameterQueryTransformer;
     }
@@ -242,27 +234,27 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilterBuilder mapSort(String from, String to) {
-        getElasticQsfqlQueryTransformer().addSortMapping(from, to);
+        searchConfig.getSort().getSortMapping().put(from, to);
         return this;
     }
 
     public ElasticFilterBuilder defaultSort(String defaultSort) {
-        getElasticQsfqlQueryTransformer().setDefaultSort(defaultSort);
+        searchConfig.getSort().setDefaultSort(defaultSort);
         return this;
     }
 
     public ElasticFilterBuilder defaultRows(int defaultRows) {
-        getElasticQsfqlQueryTransformer().setDefaultRows(defaultRows);
+        searchConfig.getPaging().setDefaultRows(defaultRows);
         return this;
     }
 
     public ElasticFilterBuilder rows(int rows) {
-        getElasticQsfqlQueryTransformer().setRows(rows);
+        searchConfig.getPaging().setRows(rows);
         return this;
     }
 
     public ElasticFilterBuilder defaultPage(int defaultPage) {
-        getElasticQsfqlQueryTransformer().setDefaultPage(defaultPage);
+        searchConfig.getPaging().setDefaultPage(defaultPage);
         return this;
     }
 

@@ -29,7 +29,7 @@
     "field" : "variantId.keyword",
     "inner_hits" : {
       "name" : "most_recent",
-      "size" : 100,
+      "size" : 12,
       "_source" : [
         "productDetails"
       ],

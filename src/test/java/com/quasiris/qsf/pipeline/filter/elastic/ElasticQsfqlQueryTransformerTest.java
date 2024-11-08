@@ -32,7 +32,7 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void testSubFacetWithVariantIdAndFilter() throws Exception {
         ElasticQsfqlQueryTransformer transformer = createSubFacetTransformer();
-        transformer.setVariantId("myVariantId");
+        transformer.getSearchConfig().getVariant().setVariantId("myVariantId");
         ObjectNode elasticQuery = transform(transformer,
                 "q=*","f.sku=1234"
         );
@@ -43,7 +43,7 @@ public class ElasticQsfqlQueryTransformerTest {
     @Test
     public void testSubFacetWithVariantId() throws Exception {
         ElasticQsfqlQueryTransformer transformer = createSubFacetTransformer();
-        transformer.setVariantId("myVariantId");
+        transformer.getSearchConfig().getVariant().setVariantId("myVariantId");
         ObjectNode elasticQuery = transform(transformer,
                 "q=*"
         );
@@ -709,10 +709,10 @@ public class ElasticQsfqlQueryTransformerTest {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
         QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
         config.getFilter().setMultiSelectFilter(true);
+        config.getVariant().setVariantId("variantId");
 
         transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setVariantId("variantId");
 
         Facet accountId = new Facet();
         accountId.setId("accountId");
@@ -742,10 +742,10 @@ public class ElasticQsfqlQueryTransformerTest {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
         QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
         config.getFilter().setMultiSelectFilter(true);
+        config.getVariant().setVariantId("variantId");
 
         transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setVariantId("variantId");
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQ("*");
@@ -760,13 +760,14 @@ public class ElasticQsfqlQueryTransformerTest {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
         QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
         config.getFilter().setMultiSelectFilter(true);
+        config.getVariant().setVariantId("variantId");
+
+        Set<String> innerHitsSourceFields = new HashSet<>();
+        innerHitsSourceFields.add("productDetails");
+        config.getVariant().setInnerHitsSourceFields(innerHitsSourceFields);
 
         transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setVariantId("variantId");
-        Set<String> innerHitsSourceFields = new HashSet<>();
-        innerHitsSourceFields.add("productDetails");
-        transformer.setInnerHitsSourceFields(innerHitsSourceFields);
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQ("*");
@@ -781,14 +782,15 @@ public class ElasticQsfqlQueryTransformerTest {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
         QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
         config.getFilter().setMultiSelectFilter(true);
+        config.getVariant().setVariantId("variantId");
+        config.getVariant().setVariantSize(12);
+
+        Set<String> innerHitsSourceFields = new HashSet<>();
+        innerHitsSourceFields.add("productDetails");
+        config.getVariant().setInnerHitsSourceFields(innerHitsSourceFields);
 
         transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setVariantId("variantId");
-        Set<String> innerHitsSourceFields = new HashSet<>();
-        innerHitsSourceFields.add("productDetails");
-        transformer.setInnerHitsSourceFields(innerHitsSourceFields);
-        transformer.setVariantSize(12);
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQ("*");
@@ -803,14 +805,16 @@ public class ElasticQsfqlQueryTransformerTest {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
         QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
         config.getFilter().setMultiSelectFilter(true);
+        config.getVariant().setVariantId("variantId");
+        config.getVariant().setVariantSize(12);
+        config.getVariant().setVariantSort("[ { \"productPosition\": \"desc\" } ]");
+
+        Set<String> innerHitsSourceFields = new HashSet<>();
+        innerHitsSourceFields.add("productDetails");
+        config.getVariant().setInnerHitsSourceFields(innerHitsSourceFields);
 
         transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setVariantId("variantId");
-        Set<String> innerHitsSourceFields = new HashSet<>();
-        innerHitsSourceFields.add("productDetails");
-        transformer.setInnerHitsSourceFields(innerHitsSourceFields);
-        transformer.setVariantSort("[ { \"productPosition\": \"desc\" } ]");
 
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQ("*");
@@ -825,11 +829,12 @@ public class ElasticQsfqlQueryTransformerTest {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
         QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
         config.getFilter().setMultiSelectFilter(true);
+        config.getVariant().setVariantId("variantId");
+
+        config.getVariant().setInnerHitsSourceFields(new HashSet<>(Arrays.asList("variantObject")));
 
         transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
-        transformer.setVariantId("variantId");
-        transformer.setInnerHitsSourceFields(new HashSet<>(Arrays.asList("variantObject")));
 
         Facet accountId = new Facet();
         accountId.setId("accountId");
