@@ -276,6 +276,9 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     }
 
     public void setParameterMapper(ParameterMapper parameterMapper) {
+        if(parameterMapper != null && getProfileParameter() != null) {
+            parameterMapper.getCustomData().putAll(getProfileParameter());
+        }
         this.parameterMapper = parameterMapper;
     }
 

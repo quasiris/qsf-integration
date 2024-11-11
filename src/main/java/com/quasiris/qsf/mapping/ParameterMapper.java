@@ -157,6 +157,16 @@ public class ParameterMapper {
                 return null;
             }
         }
+        if(from.startsWith("custom.")) {
+            String[] splitted = from.split("\\.");
+            String contextId = splitted[1];
+            if(pipelineContainer.getContext() != null) {
+                Object value = pipelineContainer.getContext().get(contextId);
+                return value;
+            } else {
+                return null;
+            }
+        }
         return null;
     }
 
