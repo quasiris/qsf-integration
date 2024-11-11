@@ -294,6 +294,7 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void transformInnerhitsAppendScores() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        transformer.addFieldMapping("snippets", "snippets");
         ElasticResult elasticResult = readElasticResultFromFile("innerhits-append-scores.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 

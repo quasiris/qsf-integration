@@ -524,9 +524,11 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             }
             if(values == null && mappedFieldNames != null) {
                 for(Hit hit : entry.getValue().getHits().getHits()) {
-                    Document innerDocument = transformHit(hit);
-                    for(String mappedFieldName : mappedFieldNames) {
-                        document.addChildDocument(mappedFieldName, innerDocument);
+                    if(hit.get_source() != null) {
+                        Document innerDocument = transformHit(hit);
+                        for (String mappedFieldName : mappedFieldNames) {
+                            document.addChildDocument(mappedFieldName, innerDocument);
+                        }
                     }
                 }
             } else if(values != null) {
