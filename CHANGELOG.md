@@ -3,6 +3,15 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+
+### Changed
+
+
+### Breaking Changes
+
+
+## [7.0.0]
+### Added
 - support display facets
 
 ### Changed
