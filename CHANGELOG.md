@@ -8,6 +8,16 @@ All notable changes qsf-integration project will be documented in this file.
 
 
 ### Breaking Changes
+
+
+## [7.1.0]
+### Added
+
+### Changed
+- use Apache License 2.0
+
+
+### Breaking Changes
 - remove JavaScript support because of Security reasons
 
 
