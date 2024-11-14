@@ -115,16 +115,6 @@ public class ElasticFilterBuilder {
         mapping.setFrom(from);
         mapping.setTo(to);
         this.searchConfig.getDisplay().getMapping().add(mapping);
-        addSourceField(from);
-        return this;
-    }
-
-    public ElasticFilterBuilder addSourceField(String fieldName) {
-        QsfSearchConfigUtil.initDisplayMapping(searchConfig);
-        DisplayMappingDTO mapping = new DisplayMappingDTO();
-        mapping.setFrom(fieldName);
-        mapping.setTo(fieldName);
-        this.searchConfig.getDisplay().getMapping().add(mapping);
         return this;
     }
 
