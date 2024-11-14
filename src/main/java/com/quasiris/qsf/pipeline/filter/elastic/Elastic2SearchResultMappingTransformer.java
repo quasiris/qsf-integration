@@ -593,17 +593,17 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     public void addFacetTypeMapping(String id, String type) {
-        FacetMapping facetMapping = getOrCreateFacetMapping(id);
+        FacetMapping facetMapping = getOrCreateFacetMapping(this.searchConfigDTO, id);
         facetMapping.setType(type);
     }
 
     public void addFacetNameMapping(String id, String name) {
-        FacetMapping facetMapping = getOrCreateFacetMapping(id);
+        FacetMapping facetMapping = getOrCreateFacetMapping(this.searchConfigDTO, id);
         facetMapping.setName(name);
     }
 
-    FacetMapping getOrCreateFacetMapping(String id) {
-        Map<String, FacetMapping> facetMappingMap = getSearchConfigDTO().getFacet().getFacetMapping();
+    public static FacetMapping getOrCreateFacetMapping(QsfSearchConfigDTO config, String id) {
+        Map<String, FacetMapping> facetMappingMap = config.getFacet().getFacetMapping();
         FacetMapping facetMapping = facetMappingMap.get(id);
         if(facetMapping == null) {
             facetMapping = new FacetMapping();
@@ -615,12 +615,14 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
     }
 
     public void addFacetKeyMapper(String id, FacetKeyMapper facetKeyMapper) {
-        FacetMapping facetMapping = getOrCreateFacetMapping(id);
+        FacetMapping facetMapping = getOrCreateFacetMapping(this.searchConfigDTO, id);
         facetMapping.setFacetKeyMapper(facetKeyMapper);
     }
 
+
+
     public void addFacetFilterMapper(String id, FacetFilterMapper facetFilterMapper) {
-        FacetMapping facetMapping = getOrCreateFacetMapping(id);
+        FacetMapping facetMapping = getOrCreateFacetMapping(this.searchConfigDTO, id);
         facetMapping.setFacetFilterMapper(facetFilterMapper);
     }
 

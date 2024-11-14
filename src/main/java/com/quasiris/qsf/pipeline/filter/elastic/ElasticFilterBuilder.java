@@ -12,6 +12,7 @@ import com.quasiris.qsf.query.Facet;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -109,9 +110,12 @@ public class ElasticFilterBuilder {
     }
 
     public ElasticFilterBuilder mapField(String from, String to) {
-        getMappingTransformer().addFieldMapping(from, to);
+        QsfSearchConfigUtil.initDisplayMapping(this.searchConfig);
+        DisplayMappingDTO mapping = new DisplayMappingDTO();
+        mapping.setFrom(from);
+        mapping.setTo(to);
+        this.searchConfig.getDisplay().getMapping().add(mapping);
         addSourceField(from);
-        //getElasticParameterQueryTransformer().addFieldListValue(from);
         return this;
     }
 
@@ -134,44 +138,10 @@ public class ElasticFilterBuilder {
         return this;
     }
 
-    public ElasticFilterBuilder mapAggregation(String from, String to) {
-        //getMappingTransformer().addFacetMapping(from, to);
-        return this;
-    }
-    public ElasticFilterBuilder mapAggregationName(String from, String to) {
-        getMappingTransformer().addFacetNameMapping(from, to);
-        return this;
-    }
-    public ElasticFilterBuilder mapAggregationType(String id, String type) {
-        getMappingTransformer().addFacetTypeMapping(id, type);
-        return this;
-    }
-
-    public ElasticFilterBuilder facetKeyMapper(String id, FacetKeyMapper facetKeyMapper) {
-        getMappingTransformer().addFacetKeyMapper(id, facetKeyMapper);
-        return this;
-    }
-
-    public ElasticFilterBuilder facetFilterMapper(String id, FacetFilterMapper facetFilterMapper) {
-        getMappingTransformer().addFacetFilterMapper(id, facetFilterMapper);
-        return this;
-    }
-
-
-    public ElasticFilterBuilder mapFilter(String from, String to) {
-        getElasticQsfqlQueryTransformer().addFilterMapping(from, to);
-        return this;
-    }
-
     public ElasticFilterBuilder addFilterRule(String pattern, String replacement) {
-        getElasticQsfqlQueryTransformer().addFilterRule(pattern, replacement);
+        this.searchConfig.getFilter().getFilterRules().put(pattern, replacement);
         return this;
     }
-    public ElasticFilterBuilder addSortRule(String pattern, String replacement) {
-        getElasticQsfqlQueryTransformer().addSortRule(pattern, replacement);
-        return this;
-    }
-
     public ElasticFilterBuilder queryTransformer(QueryTransformerIF queryTransformer) {
         if( queryTransformer instanceof ElasticQsfqlQueryTransformer) {
             this.elasticQsfqlQueryTransformer = (ElasticQsfqlQueryTransformer) queryTransformer;
@@ -212,11 +182,6 @@ public class ElasticFilterBuilder {
         return this;
     }
 
-    public ElasticFilterBuilder resultField(String resultFieldName, String value) {
-        //getMappingTransformer().addResultField(resultFieldName, value);
-        return this;
-    }
-
     @Deprecated
     public ElasticFilterBuilder client(ElasticClientIF elasticClient) {
         elasticFilter.setElasticClient(elasticClient);
@@ -230,6 +195,25 @@ public class ElasticFilterBuilder {
 
     public ElasticFilterBuilder filterPrefix(String filterPrefix) {
         searchConfig.getFilter().setFilterPrefix(filterPrefix);
+        return this;
+    }
+
+    public ElasticFilterBuilder mapFilter(String from, String to) {
+        this.searchConfig.getFilter().getFilterMapping().put(from, to);
+        return this;
+    }
+
+    public ElasticFilterBuilder facetKeyMapper(String id, FacetKeyMapper facetKeyMapper) {
+        FacetMapping facetMapping = Elastic2SearchResultMappingTransformer.getOrCreateFacetMapping(searchConfig, id);
+        facetMapping.setFacetKeyMapper(facetKeyMapper);
+        return this;
+    }
+
+    public ElasticFilterBuilder facetFilterMapper(String id, FacetFilterMapper facetFilterMapper) {
+        FacetMapping facetMapping = Elastic2SearchResultMappingTransformer.getOrCreateFacetMapping(searchConfig, id);
+        facetMapping.setFacetFilterMapper(facetFilterMapper);
+
+        getMappingTransformer().addFacetFilterMapper(id, facetFilterMapper);
         return this;
     }
 
