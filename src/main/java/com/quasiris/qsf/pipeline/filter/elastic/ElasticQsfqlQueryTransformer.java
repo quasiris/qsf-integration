@@ -54,8 +54,12 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             return;
         }
 
-        Map<String, Facet> aggregationsMap = getSearchConfig().getFacet().getFacets().stream().
-                collect(Collectors.toMap(Facet::getId, Function.identity()));
+        Map<String, Facet> aggregationsMap = getSearchConfig().getFacet().getFacets().stream()
+                .collect(Collectors.toMap(
+                        Facet::getId,
+                        Function.identity(),
+                        (existing, duplicate) -> existing // Keep the first occurrence and ignore duplicates
+                ));
         if(getSearchQuery().getFacetList() != null) {
             for(Facet facet : getSearchQuery().getFacetList()) {
                 Facet aggregation = aggregationsMap.get(facet.getId());
