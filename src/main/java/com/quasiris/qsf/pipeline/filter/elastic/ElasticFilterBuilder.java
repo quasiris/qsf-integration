@@ -77,6 +77,7 @@ public class ElasticFilterBuilder {
         }
 
         if(searchResultTransformer != null) {
+            searchResultTransformer.setSearchConfig(searchConfig);
             elasticFilter.setSearchResultTransformer(searchResultTransformer);
         } else {
             elasticFilter.setSearchResultTransformer(getMappingTransformer());
@@ -87,6 +88,7 @@ public class ElasticFilterBuilder {
     private Elastic2SearchResultMappingTransformer getMappingTransformer() {
         if(elastic2SearchResultMappingTransformer == null) {
             elastic2SearchResultMappingTransformer = new Elastic2SearchResultMappingTransformer();
+            elastic2SearchResultMappingTransformer.setSearchConfig(searchConfig);
         }
         return elastic2SearchResultMappingTransformer;
     }

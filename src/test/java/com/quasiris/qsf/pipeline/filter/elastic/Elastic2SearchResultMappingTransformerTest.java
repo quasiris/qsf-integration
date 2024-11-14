@@ -57,7 +57,7 @@ class Elastic2SearchResultMappingTransformerTest {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
         qsfSearchConfigDTO.getFilter().setFilterPrefix("f.");
-        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+        transformer.setSearchConfig(qsfSearchConfigDTO);
 
         ElasticResult elasticResult = readElasticResultFromFile("sub-facet.json");
         String facetId = "supplierName";
@@ -175,7 +175,7 @@ class Elastic2SearchResultMappingTransformerTest {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
         QsfSearchConfigUtil.addInnerhitsGroupMapping(qsfSearchConfigDTO, "variantObject", "variantObject");
-        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+        transformer.setSearchConfig(qsfSearchConfigDTO);
 
         ElasticResult elasticResult = readElasticResultFromFile("field-grouping.json");
         SearchResult searchResult = transformer.transform(elasticResult);
@@ -246,7 +246,7 @@ class Elastic2SearchResultMappingTransformerTest {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
         qsfSearchConfigDTO.getVariant().setVariantId("variantId");
-        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+        transformer.setSearchConfig(qsfSearchConfigDTO);
 
         PipelineContainer pipelineContainer = new PipelineContainer();
         pipelineContainer.setSearchQuery(new SearchQuery());
@@ -315,7 +315,7 @@ class Elastic2SearchResultMappingTransformerTest {
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
         qsfSearchConfigDTO.getDisplay().getInnerhitsMapping().put("lineItems_positions", "lineItems");
         qsfSearchConfigDTO.getDisplay().getInnerhitsMapping().put("lineItems_order", "lineItems");
-        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+        transformer.setSearchConfig(qsfSearchConfigDTO);
 
         ElasticResult elasticResult = readElasticResultFromFile("multiple-innerhits.json");
         SearchResult searchResult = transformer.transform(elasticResult);
@@ -401,7 +401,7 @@ class Elastic2SearchResultMappingTransformerTest {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
         qsfSearchConfigDTO.getVariant().setVariantId("variantId");
-        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+        transformer.setSearchConfig(qsfSearchConfigDTO);
         transformer.addFieldMapping("id", "id");
         transformer.addFieldMapping("title", "title");
         transformer.addFieldMapping("description", "description");
@@ -417,7 +417,7 @@ class Elastic2SearchResultMappingTransformerTest {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
         qsfSearchConfigDTO.getVariant().setVariantId("variantId");
-        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+        transformer.setSearchConfig(qsfSearchConfigDTO);
         transformer.addFieldMapping("id", "id");
         transformer.addFieldMapping("title", "title");
         transformer.addFieldMapping("description", "description");
@@ -446,7 +446,7 @@ class Elastic2SearchResultMappingTransformerTest {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
         qsfSearchConfigDTO.getVariant().setVariantId("variantId");
-        transformer.setSearchConfigDTO(qsfSearchConfigDTO);
+        transformer.setSearchConfig(qsfSearchConfigDTO);
 
         transformer.addFieldMapping("id", "id");
         transformer.addFieldMapping("title", "title");

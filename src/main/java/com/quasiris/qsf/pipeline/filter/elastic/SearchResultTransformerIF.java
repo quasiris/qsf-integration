@@ -1,5 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
+import com.quasiris.qsf.config.QsfSearchConfigDTO;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.ElasticResult;
 import com.quasiris.qsf.pipeline.filter.elastic.bean.Hit;
@@ -18,4 +19,6 @@ public interface SearchResultTransformerIF {
     Document transformHit(Hit hit);
 
     StringBuilder print(String indent);
+
+    void setSearchConfig(QsfSearchConfigDTO config);
 }

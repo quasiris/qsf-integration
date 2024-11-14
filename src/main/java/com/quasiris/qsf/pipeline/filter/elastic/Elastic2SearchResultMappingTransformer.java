@@ -635,7 +635,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         return searchConfigDTO;
     }
 
-    public void setSearchConfigDTO(QsfSearchConfigDTO searchConfigDTO) {
+    public void setSearchConfig(QsfSearchConfigDTO searchConfigDTO) {
         this.searchConfigDTO = searchConfigDTO;
     }
 }
