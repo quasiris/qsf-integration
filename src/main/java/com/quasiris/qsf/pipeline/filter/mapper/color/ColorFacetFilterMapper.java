@@ -24,7 +24,7 @@ public class ColorFacetFilterMapper extends DefaultFacetFilterMapper implements 
     public void map(FacetValue value) {
         super.map(value);
         String color = value.getValue().toString();
-        String hex = colorMappingDTO.getColorMappings().get(color);
+        String hex = colorMappingDTO.getColorMappings().get(color.toLowerCase().trim());
         if(hex == null) {
             hex = "#FFFFFF";
         }
