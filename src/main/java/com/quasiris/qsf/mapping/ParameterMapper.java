@@ -118,6 +118,9 @@ public class ParameterMapper {
             return pipelineContainer.getSearchQuery().getRows();
         }
         if(from.startsWith("searchQuery.filters")) {
+            if(!(from.endsWith(".value") || from.endsWith(".values"))) {
+                from = from + ".value";
+            }
             String[] splitted = from.split("\\.");
             String filterId = String.join(".", Arrays.copyOfRange(splitted, 2, splitted.length-1));
             SearchFilter searchFilter = pipelineContainer.getSearchQuery().getSearchFilterById(filterId);
