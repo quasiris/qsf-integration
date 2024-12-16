@@ -3,10 +3,7 @@ package com.quasiris.qsf.mapping;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.query.SearchFilter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ParameterMapper {
 
@@ -122,24 +119,24 @@ public class ParameterMapper {
         }
         if(from.startsWith("searchQuery.filters")) {
             String[] splitted = from.split("\\.");
-            String filterId = splitted[2];
+            String filterId = String.join(".", Arrays.copyOfRange(splitted, 2, splitted.length-1));
             SearchFilter searchFilter = pipelineContainer.getSearchQuery().getSearchFilterById(filterId);
             if(searchFilter != null) {
-                String filterObject = "value";
-                if(splitted.length > 3) {
-                    filterObject = splitted[3];
-                }
+
+                String filterObject = splitted[splitted.length-1];
+
                 if("value".startsWith(filterObject)) {
                     return searchFilter.getValues().get(0);
                 }
                 if("values".startsWith(filterObject)) {
                     return searchFilter.getValues();
                 }
+                return searchFilter.getValues().get(0);
             }
         }
         if(from.startsWith("searchQuery.parameters")) {
             String[] splitted = from.split("\\.");
-            String parameterId = splitted[2];
+            String parameterId = String.join(".", Arrays.copyOfRange(splitted, 2, splitted.length));
             if(pipelineContainer.getSearchQuery().getParameters() != null) {
                 Object value = pipelineContainer.getSearchQuery().getParameters().get(parameterId);
                 return value;
@@ -149,7 +146,7 @@ public class ParameterMapper {
         }
         if(from.startsWith("context.")) {
             String[] splitted = from.split("\\.");
-            String contextId = splitted[1];
+            String contextId = String.join(".", Arrays.copyOfRange(splitted, 1, splitted.length));
             if(pipelineContainer.getContext() != null) {
                 Object value = pipelineContainer.getContext().get(contextId);
                 return value;
@@ -159,7 +156,7 @@ public class ParameterMapper {
         }
         if(from.startsWith("custom.")) {
             String[] splitted = from.split("\\.");
-            String contextId = splitted[1];
+            String contextId = String.join(".", Arrays.copyOfRange(splitted, 1, splitted.length));
             if(pipelineContainer.getContext() != null) {
                 Object value = pipelineContainer.getContext().get(contextId);
                 return value;

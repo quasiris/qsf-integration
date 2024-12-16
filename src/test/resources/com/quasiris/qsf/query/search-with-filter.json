@@ -2,10 +2,17 @@
   "q" : "my query",
   "rows": 16,
   "parameters" : {
-    "docId" : "my-doc-id"
+    "docId" : "my-doc-id",
+    "my.docId" : "my-doc-id-with-dot"
   },
   "searchFilters": [
-
+    {
+      "id": "my.sku",
+      "filterOperator": "OR",
+      "values": [
+        "9876543210"
+      ]
+    },
     {
       "id": "sku",
       "filterOperator": "OR",
