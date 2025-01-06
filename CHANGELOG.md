@@ -3,8 +3,11 @@ All notable changes qsf-integration project will be documented in this file.
 
 ## [UNRELEASED]
 ### Added
+- implement a query hasher
 
 ### Changed
+- lower case matching for color mapping
+- support dots in parameter mapper
 
 
 ### Breaking Changes
