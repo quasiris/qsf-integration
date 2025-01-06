@@ -299,7 +299,12 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                 category.setId(splitted[0]);
                 category.setPosition(Integer.valueOf(splitted[1]));
                 category.setName(splitted[2]);
-                category.setCount(bucket.getDoc_count());
+
+                Long count = bucket.getDoc_count();
+                if(bucket.getVariant_count() != null && bucket.getVariant_count().getValue() != null) {
+                    count = bucket.getVariant_count().getValue();
+                }
+                category.setCount(count);
                 category.setFilter(bucket.getKey().toString());
                 current = current.addChildIfNotExists(category);
             }
