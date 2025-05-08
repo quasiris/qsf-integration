@@ -4,6 +4,7 @@ import com.quasiris.qsf.commons.util.YamlFactory;
 import com.quasiris.qsf.explain.Explain;
 import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.explain.ExplainPipelineAutoClosable;
+import com.quasiris.qsf.pipeline.exception.PipelinePassThroughException;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.query.SearchQuery;
 import jakarta.servlet.http.HttpServletRequest;
@@ -130,6 +131,8 @@ public class PipelineExecuter {
         } catch (InterruptedException | ExecutionException e) {
             if(e.getCause() instanceof PipelineRestartException) {
                 throw (PipelineRestartException) e.getCause();
+            } else if (e.getCause() instanceof PipelinePassThroughException) {
+                throw (PipelinePassThroughException) e.getCause();
             }
             pipelineContainer.error(e);
             PipelineExecuterService.failOnError(pipelineContainer);

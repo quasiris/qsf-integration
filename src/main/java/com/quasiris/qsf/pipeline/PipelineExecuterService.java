@@ -4,6 +4,7 @@ import com.quasiris.qsf.exception.Debug;
 import com.quasiris.qsf.explain.Explain;
 import com.quasiris.qsf.explain.ExplainContextHolder;
 import com.quasiris.qsf.explain.ExplainFilter;
+import com.quasiris.qsf.pipeline.exception.PipelinePassThroughException;
 import com.quasiris.qsf.pipeline.exception.PipelineRestartException;
 import com.quasiris.qsf.pipeline.exception.PipelineStopException;
 import com.quasiris.qsf.pipeline.filter.Filter;
@@ -85,6 +86,14 @@ public class PipelineExecuterService {
                 ExplainContextHolder.getContext().explain("stopPipeline", "pipeline.stop", "pipeline.stop");
 
                 return pipelineContainer;
+            } catch (PipelinePassThroughException e){
+                LOG.debug("The filter: " + filter.getId() + " failed with an error: " + e.getMessage());
+                if(pipelineContainer.isDebugEnabled()) {
+                    debugRuntime(pipelineContainer, filter);
+                }
+                filter.onError(pipelineContainer, e);
+                ExplainContextHolder.getContext().explain("exception", filter.getId() + ".error", e.getMessage());
+                throw e;
             } catch(PipelineRestartException restart)  {
                 LOG.debug("The filter: " + filter.getId() + " initiated a restart of the pipeline.");
                 if(pipelineContainer.isDebugEnabled()) {
