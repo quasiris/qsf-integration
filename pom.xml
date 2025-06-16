@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.quasiris.qsf</groupId>
             <artifactId>qsf-commons</artifactId>
-            <version>7.3.0</version>
+            <version>7.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -252,6 +252,15 @@
                     </instrumentation>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.7.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -261,10 +270,6 @@
             <name>Quasiris Snapshot Repository</name>
             <url>${nexus.base.url}/repository/maven-snapshots/</url>
         </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
     </distributionManagement>
     <licenses>
         <license>
