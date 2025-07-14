@@ -549,7 +549,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                     break;
                 }
             }
-        } else {
+        } else if (searchConfigDTO.getVariant().getVariantResultField() != null){
             for(Hit hit : innerHitResult.getHits().getHits()) {
                 if(hit.get_source() != null) {
                     Map fields = getFieldsFromHit(hit);

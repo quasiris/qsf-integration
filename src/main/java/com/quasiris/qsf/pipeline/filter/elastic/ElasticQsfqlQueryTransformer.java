@@ -368,6 +368,11 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
     public void collapseResults() {
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/collapse-search-results.html
         String variantId = getSearchConfig().getVariant().getVariantId();
+        String innerhitsResultField = getSearchConfig().getVariant().getVariantResultField();
+        if(innerhitsResultField == null) {
+            // Deprecated just for backward compatibility
+            innerhitsResultField = "most_recent";
+        }
         if(StringUtils.isNotEmpty(variantId)) {
             try {
                 String elasticField = variantId+".keyword";
@@ -402,7 +407,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                     }
 
                     jsonBuilder.object("inner_hits").
-                            object("name", "most_recent").
+                            object("name", innerhitsResultField).
                             object("size", size).
                             object("_source", innerHitsSourceFields);
 
