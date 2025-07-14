@@ -1,9 +1,6 @@
 package com.quasiris.qsf.config;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class QsfSearchConfigUtil {
 
@@ -109,5 +106,15 @@ public class QsfSearchConfigUtil {
         displayMappingDTO.setFrom(from);
         displayMappingDTO.setTo(to);
         variantMapping.add(displayMappingDTO);
+    }
+
+    public static void addVariantOptions(QsfSearchConfigDTO qsfSearchConfigDTO, String option) {
+        initVariant(qsfSearchConfigDTO);
+        Set<String> options = qsfSearchConfigDTO.getVariant().getOptions();
+        if(options == null) {
+            options = new HashSet<>();
+            qsfSearchConfigDTO.getVariant().setOptions(options);
+        }
+        options.add(option);
     }
 }

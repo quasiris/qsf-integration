@@ -527,9 +527,24 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             return document;
         }
 
+        Set<String> options = searchConfigDTO.getVariant().getOptions();
+        if(options == null) {
+            options = new HashSet<>();
+        }
+
+        if(options.contains("replaceFirstVariant")) {
+            for(Hit hit : innerHitResult.getHits().getHits()) {
+                if(hit.get_source() != null) {
+                    Map fields = getFieldsFromHit(hit);
+                    Document innerDocument = mapHit2Document(hit, fields);
+                    document = innerDocument;
+                    break;
+                }
+            }
+        }
 
         // Deprecated - just implemented for backward compatibility
-        if("fieldToList".equals(searchConfigDTO.getVariant().getMappingType())) {
+        if(options.contains("fieldToList")) {
             for(DisplayMappingDTO mapping : searchConfigDTO.getVariant().getMapping() ) {
                 List<Object> l = new ArrayList<>();
                 for(Hit hit : innerHitResult.getHits().getHits()) {
@@ -540,16 +555,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                 }
                 document.setValue(mapping.getTo(), l);
             }
-        } else if("replaceFirstVariant".equals(searchConfigDTO.getVariant().getMappingType())) {
-            for(Hit hit : innerHitResult.getHits().getHits()) {
-                if(hit.get_source() != null) {
-                    Map fields = getFieldsFromHit(hit);
-                    Document innerDocument = mapHit2Document(hit, fields);
-                    document = innerDocument;
-                    break;
-                }
-            }
-        } else if (searchConfigDTO.getVariant().getVariantResultField() != null){
+        }
+       if (options.contains("groupChilds") && searchConfigDTO.getVariant().getVariantResultField() != null){
             for(Hit hit : innerHitResult.getHits().getHits()) {
                 if(hit.get_source() != null) {
                     Map fields = getFieldsFromHit(hit);

@@ -1,6 +1,7 @@
 package com.quasiris.qsf.config;
 
 import java.util.List;
+import java.util.Set;
 
 public class VariantDTO {
 
@@ -13,7 +14,7 @@ public class VariantDTO {
 
     private List<DisplayMappingDTO> mapping;
 
-    private String mappingType;
+    private Set<String> options;
 
 
     public List<DisplayMappingDTO> getMapping() {
@@ -56,11 +57,11 @@ public class VariantDTO {
         this.variantResultField = variantResultField;
     }
 
-    public String getMappingType() {
-        return mappingType;
+    public Set<String> getOptions() {
+        return options;
     }
 
-    public void setMappingType(String mappingType) {
-        this.mappingType = mappingType;
+    public void setOptions(Set<String> options) {
+        this.options = options;
     }
 }
