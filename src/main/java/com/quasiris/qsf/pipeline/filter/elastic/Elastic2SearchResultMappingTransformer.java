@@ -1,6 +1,6 @@
 package com.quasiris.qsf.pipeline.filter.elastic;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quasiris.qsf.category.dto.CategoryDTO;
@@ -383,51 +383,70 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     }
 
-    @Override
-    public Document transformHit(Hit hit) {
+
+
+    Document mapHit2Document(Hit hit, Map fields) throws JsonProcessingException {
         String id = hit.get_id();
-        ObjectNode objectNode = hit.get_source();
-        LinkedHashMap<String, InnerHitResult> innerHits = hit.getInner_hits();
-
         Document document = new Document(id);
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Map fields = mapper.readValue(objectNode.toString(), Map.class);
-            if (!QsfSearchConfigUtil.hasDisplayMapping(searchConfigDTO)) {
-                document.getDocument().putAll(fields);
-            } else {
-                for(DisplayMappingDTO mapping : searchConfigDTO.getDisplay().getMapping()) {
-                    if(mapping.getFrom().endsWith("*")) {
-                        mapPrefixFields(mapping, fields, document);
-                    } else if(mapping.getFrom().contains(".")) {
-                        mapNestedField(mapping, fields, document);
-                    } else {
-                        mapField(mapping, fields, document, hit);
-                    }
+
+        if (!QsfSearchConfigUtil.hasDisplayMapping(searchConfigDTO)) {
+            document.getDocument().putAll(fields);
+        } else {
+            for (DisplayMappingDTO mapping : searchConfigDTO.getDisplay().getMapping()) {
+                if (mapping.getFrom().endsWith("*")) {
+                    mapPrefixFields(mapping, fields, document);
+                } else if (mapping.getFrom().contains(".")) {
+                    mapNestedField(mapping, fields, document);
+                } else {
+                    mapField(mapping, fields, document, hit);
                 }
             }
-
-            if(innerHits != null) {
-                transformInnerHits(document, fields, innerHits);
-            }
-
-            if(hit.getFields() != null) {
-                for(Map.Entry<String, List<Object>> field :  hit.getFields().entrySet()) {
-                    if(field.getValue() != null && field.getValue().size() > 0 && field.getValue().get(0) != null) {
-                        document.setValue(field.getKey(), field.getValue());
-                    }
-                }
-            }
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
         transformHighlight(hit, document);
         transformExplanation(hit, document);
         return document;
+    }
+
+    private Map getFieldsFromHit(Hit hit) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode objectNode = hit.get_source();
+
+        Map fields = mapper.readValue(objectNode.toString(), Map.class);
+        return fields;
+    }
+
+    @Override
+    public Document transformHit(Hit hit) {
+
+        try {
+            Map fields = getFieldsFromHit(hit);
+            mapInnerhitsScores(hit, fields);
+            Document document = mapHit2Document(hit, fields);
+
+
+
+            document = mapVariants(document, hit);
+
+
+            //transformInnerHits(document, hit, fields);
+
+            mapScriptedField(document, hit);
+
+            return document;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    void mapScriptedField(Document document, Hit hit) {
+        // map scripted fields
+        if(hit.getFields() != null) {
+            for(Map.Entry<String, List<Object>> field :  hit.getFields().entrySet()) {
+                if(field.getValue() != null && field.getValue().size() > 0 && field.getValue().get(0) != null) {
+                    document.setValue(field.getKey(), field.getValue());
+                }
+            }
+        }
     }
 
     /**
@@ -486,21 +505,112 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
     }
 
+    public Document mapVariants(Document document, Hit parentHit) throws JsonProcessingException {
+        if(searchConfigDTO.getVariant() == null) {
+            return document;
+        }
 
-    public void transformInnerHits(Document document,Map fields, LinkedHashMap<String, InnerHitResult> innerHits) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        if(parentHit.getInner_hits() == null) {
+            return document;
+        }
+
+        String variantResultField = searchConfigDTO.getVariant().getVariantResultField();
+        if(variantResultField == null) {
+            // deprecated - just for backward compatibility
+            variantResultField = "most_recent";
+        }
+
+
+
+        InnerHitResult innerHitResult = parentHit.getInner_hits().get(variantResultField);
+        if(innerHitResult == null) {
+            return document;
+        }
+
+
+        // Deprecated - just implemented for backward compatibility
+        if("fieldToList".equals(searchConfigDTO.getVariant().getMappingType())) {
+            for(DisplayMappingDTO mapping : searchConfigDTO.getVariant().getMapping() ) {
+                List<Object> l = new ArrayList<>();
+                for(Hit hit : innerHitResult.getHits().getHits()) {
+                    if(hit.get_source() != null) {
+                        Map fields = getFieldsFromHit(hit);
+                        l.add(fields.get(mapping.getFrom()));
+                    }
+                }
+                document.setValue(mapping.getTo(), l);
+            }
+        } else if("replaceFirstVariant".equals(searchConfigDTO.getVariant().getMappingType())) {
+            for(Hit hit : innerHitResult.getHits().getHits()) {
+                if(hit.get_source() != null) {
+                    Map fields = getFieldsFromHit(hit);
+                    Document innerDocument = mapHit2Document(hit, fields);
+                    document = innerDocument;
+                    break;
+                }
+            }
+        } else {
+            for(Hit hit : innerHitResult.getHits().getHits()) {
+                if(hit.get_source() != null) {
+                    Map fields = getFieldsFromHit(hit);
+                    Document innerDocument = mapHit2Document(hit, fields);
+                    document.addChildDocument(searchConfigDTO.getVariant().getVariantResultField(), innerDocument);
+                }
+            }
+        }
+
+
+
+        return document;
+    }
+
+    public Map mapInnerhitsScores(Hit parentHit, Map fields) throws JsonProcessingException {
+        LinkedHashMap<String, InnerHitResult> innerHits = parentHit.getInner_hits();
+        if(innerHits == null) {
+            return fields;
+        }
+
+        for(Map.Entry<String, String> scoreMapping : searchConfigDTO.getDisplay().getScoreMapping().entrySet()) {
+
+            InnerHitResult innerHitResult = innerHits.get(scoreMapping.getKey());
+            if(innerHitResult == null) {
+                continue;
+            }
+
+            List<Map<String, Object>> values = (List) fields.get(scoreMapping.getValue());
+            if(values == null) {
+                continue;
+            }
+
+            int valueOffset = 0;
+            for (Map<String, Object> value : values) {
+                if(value.get("_found") == null) {
+                    value.put("_score", 0.0);
+                    value.put("_offset", valueOffset++);
+                    value.put("_found", false);
+                }
+            }
+            for (Hit innerHit : innerHitResult.getHits().getHits()) {
+                Integer offset = innerHit.get_nested().getOffset();
+                Double score = innerHit.get_score();
+                values.get(offset).put("_score", score);
+                values.get(offset).put("_found", true);
+
+            }
+        }
+        return fields;
+    }
+
+    public void transformInnerHits(Document document, Hit parentHit, Map fields) throws JsonProcessingException {
+        LinkedHashMap<String, InnerHitResult> innerHits = parentHit.getInner_hits();
+        if(innerHits == null) {
+            return;
+        }
+
         for (Map.Entry<String, InnerHitResult> entry : innerHits.entrySet()) {
             String innerHitsName = entry.getKey();
-            String fieldName;
-
-            Map<String, String> innerhitsMapping = searchConfigDTO.getDisplay().getInnerhitsMapping();
-            if(innerhitsMapping != null && innerhitsMapping.get(innerHitsName) != null) {
-                fieldName = innerhitsMapping.get(innerHitsName);
-            } else {
-                fieldName = innerHitsName;
-            }
+            String fieldName = innerHitsName;
             List<Map<String, Object>> values = (List) fields.get(fieldName);
-
             List<String> mappedFieldNames = null;
 
             if(QsfSearchConfigUtil.hasDisplayMapping(searchConfigDTO)) {
@@ -510,23 +620,6 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                         collect(Collectors.toList());
             }
 
-            Map<String, List<String>>  groupInnerhitsMapping = getSearchConfigDTO().getDisplay().getGroupInnerhitsMapping();
-            if(groupInnerhitsMapping != null) {
-                for(Map.Entry<String, List<String>> groupInnerhitsMappingEntry : groupInnerhitsMapping.entrySet()) {
-                    String innerhitsFieldName = groupInnerhitsMappingEntry.getKey();
-                    List<Object> grouped = new ArrayList<>();
-                    for (Hit hit : entry.getValue().getHits().getHits()) {
-                        Map<String, Object> innerHitsFields = objectMapper.convertValue(hit.get_source(), new TypeReference<Map<String, Object>>() {});
-                        Object groupedObject = innerHitsFields.get(innerhitsFieldName);
-                        if (groupedObject != null) {
-                            grouped.add(groupedObject);
-                        }
-                    }
-                    for(String resultFieldName: groupInnerhitsMappingEntry.getValue()) {
-                        document.getDocument().put(resultFieldName, grouped);
-                    }
-                }
-            }
             if(values == null && mappedFieldNames != null) {
                 for(Hit hit : entry.getValue().getHits().getHits()) {
                     if(hit.get_source() != null) {
@@ -535,22 +628,6 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                             document.addChildDocument(mappedFieldName, innerDocument);
                         }
                     }
-                }
-            } else if(values != null) {
-                int valueOffset = 0;
-                for (Map<String, Object> value : values) {
-                    if(value.get("_found") == null) {
-                        value.put("_score", 0.0);
-                        value.put("_offset", valueOffset++);
-                        value.put("_found", false);
-                    }
-                }
-                for (Hit innerHit : entry.getValue().getHits().getHits()) {
-                    Integer offset = innerHit.get_nested().getOffset();
-                    Double score = innerHit.get_score();
-                    values.get(offset).put("_score", score);
-                    values.get(offset).put("_found", true);
-
                 }
             }
         }

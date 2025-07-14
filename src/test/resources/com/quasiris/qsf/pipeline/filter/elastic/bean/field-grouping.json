@@ -20,6 +20,7 @@
                 "_id": "237462:236444",
                 "_score": null,
                 "_source": {
+                    "id": "237462:236444",
                     "title": "Quasiris Phone XXL"
                 },
                 "fields": {
@@ -45,6 +46,7 @@
                                     "_id": "237462:237458",
                                     "_score": 1,
                                     "_source": {
+                                        "id" : "237462:237458",
                                         "title": "Quasiris Phone XXL",
                                         "titleVariant": "Quasiris Phone XXL in grün mit 256GB",
                                         "variantObject": {
@@ -59,6 +61,7 @@
                                     "_id": "237462:237370",
                                     "_score": 1,
                                     "_source": {
+                                        "id": "237462:237370",
                                         "title": "Quasiris Phone XXL",
                                         "titleVariant": "Quasiris Phone XXL in blau mit 256GB",
                                         "variantObject": {
@@ -73,6 +76,7 @@
                                     "_id": "237462:237460",
                                     "_score": 1,
                                     "_source": {
+                                        "id": "237462:237460",
                                         "title": "Quasiris Phone XXL",
                                         "titleVariant": "Quasiris Phone XXL in grau mit 256GB",
                                         "variantObject": {
@@ -87,6 +91,7 @@
                                     "_id": "237462:236444",
                                     "_score": 1,
                                     "_source": {
+                                        "id": "237462:236444",
                                         "title": "Quasiris Phone XXL",
                                         "titleVariant": "Quasiris Phone XXL in gelb mit 256GB",
                                         "variantObject": {
@@ -106,6 +111,7 @@
                 "_id": "236442:236444",
                 "_score": null,
                 "_source": {
+                    "id": "236442:236444",
                     "title": "Quasiris SuperPhone"
                 },
                 "fields": {
@@ -131,6 +137,7 @@
                                     "_id": "236442:237370",
                                     "_score": 1,
                                     "_source": {
+                                        "id": "236442:237370",
                                         "title": "Quasiris SuperPhone",
                                         "titleVariant": "Quasiris SuperPhone in grün mit 256GB",
                                         "variantObject": {
@@ -145,6 +152,7 @@
                                     "_id": "236442:237458",
                                     "_score": 1,
                                     "_source": {
+                                        "id": "236442:237458",
                                         "title": "Quasiris SuperPhone",
                                         "titleVariant": "Quasiris SuperPhone in metallic mit 256GB",
                                         "variantObject": {
@@ -159,6 +167,7 @@
                                     "_id": "236442:237460",
                                     "_score": 1,
                                     "_source": {
+                                        "id": "236442:237460",
                                         "title": "Quasiris SuperPhone",
                                         "titleVariant": "Quasiris SuperPhone in kiesgrau mit 256GB",
                                         "variantObject": {
@@ -173,6 +182,7 @@
                                     "_id": "236442:236444",
                                     "_score": 1,
                                     "_source": {
+                                        "id": "236442:236444",
                                         "title": "Quasiris SuperPhone",
                                         "titleVariant": "Quasiris SuperPhone in blau mit 256GB",
                                         "variantObject": {

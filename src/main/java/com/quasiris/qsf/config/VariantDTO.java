@@ -1,21 +1,27 @@
 package com.quasiris.qsf.config;
 
-import java.util.Set;
+import java.util.List;
 
 public class VariantDTO {
 
     private String variantId;
-    protected Set<String> innerHitsSourceFields;
 
     protected String variantSort;
     protected Integer variantSize;
 
-    public Set<String> getInnerHitsSourceFields() {
-        return innerHitsSourceFields;
+    private String variantResultField;
+
+    private List<DisplayMappingDTO> mapping;
+
+    private String mappingType;
+
+
+    public List<DisplayMappingDTO> getMapping() {
+        return mapping;
     }
 
-    public void setInnerHitsSourceFields(Set<String> innerHitsSourceFields) {
-        this.innerHitsSourceFields = innerHitsSourceFields;
+    public void setMapping(List<DisplayMappingDTO> mapping) {
+        this.mapping = mapping;
     }
 
     public String getVariantId() {
@@ -40,5 +46,21 @@ public class VariantDTO {
 
     public void setVariantSort(String variantSort) {
         this.variantSort = variantSort;
+    }
+
+    public String getVariantResultField() {
+        return variantResultField;
+    }
+
+    public void setVariantResultField(String variantResultField) {
+        this.variantResultField = variantResultField;
+    }
+
+    public String getMappingType() {
+        return mappingType;
+    }
+
+    public void setMappingType(String mappingType) {
+        this.mappingType = mappingType;
     }
 }

@@ -174,17 +174,35 @@ class Elastic2SearchResultMappingTransformerTest {
     void testFieldGrouping() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
-        QsfSearchConfigUtil.addInnerhitsGroupMapping(qsfSearchConfigDTO, "variantObject", "variantObject");
+
+        QsfSearchConfigUtil.addVariantMapping(qsfSearchConfigDTO, "variantObject", "variantObject");
+        QsfSearchConfigUtil.addVariantMapping(qsfSearchConfigDTO, "id", "variantIds");
+        qsfSearchConfigDTO.getVariant().setMappingType("fieldToList");
         transformer.setSearchConfig(qsfSearchConfigDTO);
 
         ElasticResult elasticResult = readElasticResultFromFile("field-grouping.json");
         SearchResult searchResult = transformer.transform(elasticResult);
         Document document = searchResult.getDocuments().get(0);
+        assertEquals("237462:236444", document.getDocument().get("id"));
+
         List<Object> variantObjects = (List<Object>) document.getDocument().get("variantObject");
         assertEquals(4, variantObjects.size());
         Map<String, Object> variantObject = (Map<String, Object>) variantObjects.get(0);
         assertEquals("grün", variantObject.get("farbe"));
         assertEquals("Quasiris Phone XXL", document.getFieldValue("title"));
+    }
+
+    @Test
+    void testFieldGroupingWithVariantSort() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
+        qsfSearchConfigDTO.getVariant().setMappingType("replaceFirstVariant");
+        transformer.setSearchConfig(qsfSearchConfigDTO);
+
+        ElasticResult elasticResult = readElasticResultFromFile("field-grouping.json");
+        SearchResult searchResult = transformer.transform(elasticResult);
+        Document document = searchResult.getDocuments().get(0);
+        assertEquals("237462:237458", document.getDocument().get("id"));
     }
 
     @Test
@@ -295,6 +313,11 @@ class Elastic2SearchResultMappingTransformerTest {
     void transformInnerhitsAppendScores() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         transformer.addFieldMapping("snippets", "snippets");
+
+        QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
+        qsfSearchConfigDTO.getDisplay().getScoreMapping().put("snippets", "snippets");
+        transformer.setSearchConfig(qsfSearchConfigDTO);
+
         ElasticResult elasticResult = readElasticResultFromFile("innerhits-append-scores.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 
@@ -313,8 +336,8 @@ class Elastic2SearchResultMappingTransformerTest {
     void transformMultipleInnerhits() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
-        qsfSearchConfigDTO.getDisplay().getInnerhitsMapping().put("lineItems_positions", "lineItems");
-        qsfSearchConfigDTO.getDisplay().getInnerhitsMapping().put("lineItems_order", "lineItems");
+        qsfSearchConfigDTO.getDisplay().getScoreMapping().put("lineItems_positions", "lineItems");
+        qsfSearchConfigDTO.getDisplay().getScoreMapping().put("lineItems_order", "lineItems");
         transformer.setSearchConfig(qsfSearchConfigDTO);
 
         ElasticResult elasticResult = readElasticResultFromFile("multiple-innerhits.json");
@@ -369,6 +392,13 @@ class Elastic2SearchResultMappingTransformerTest {
         transformer.addFieldMapping("title", "title");
         transformer.addFieldMapping("description", "description");
         transformer.addFieldMapping("product_type_grouped", "product_type_grouped");
+
+        QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
+        qsfSearchConfigDTO.getVariant().setVariantId("variantId");
+        qsfSearchConfigDTO.getVariant().setVariantResultField("product_type_grouped");
+
+        transformer.setSearchConfig(qsfSearchConfigDTO);
+
         ElasticResult elasticResult = readElasticResultFromFile("innerhits-collapse.json");
         SearchResult searchResult = transformer.transform(elasticResult);
 

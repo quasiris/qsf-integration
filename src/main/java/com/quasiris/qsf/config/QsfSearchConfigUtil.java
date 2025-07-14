@@ -97,18 +97,17 @@ public class QsfSearchConfigUtil {
         }
     }
 
-    public static void addInnerhitsGroupMapping(QsfSearchConfigDTO searchConfigDTO, String from, String to) {
-        Map<String, List<String>> groupInnerhitsMapping =  searchConfigDTO.getDisplay().getGroupInnerhitsMapping();
-        if(groupInnerhitsMapping == null) {
-            groupInnerhitsMapping = new HashMap<>();
-            searchConfigDTO.getDisplay().setGroupInnerhitsMapping(groupInnerhitsMapping);
-        }
-        List<String> mapping = groupInnerhitsMapping.get(from);
-        if(mapping == null) {
-            mapping = new ArrayList<>();
-        }
-        mapping.add(to);
+    public static void addVariantMapping(QsfSearchConfigDTO qsfSearchConfigDTO, String from, String to) {
+        initVariant(qsfSearchConfigDTO);
 
-        groupInnerhitsMapping.put(from, mapping);
+        List<DisplayMappingDTO> variantMapping = qsfSearchConfigDTO.getVariant().getMapping();
+        if(variantMapping == null) {
+            variantMapping = new ArrayList<>();
+            qsfSearchConfigDTO.getVariant().setMapping(variantMapping);
+        }
+        DisplayMappingDTO displayMappingDTO = new DisplayMappingDTO();
+        displayMappingDTO.setFrom(from);
+        displayMappingDTO.setTo(to);
+        variantMapping.add(displayMappingDTO);
     }
 }

@@ -762,9 +762,7 @@ public class ElasticQsfqlQueryTransformerTest {
         config.getFilter().setMultiSelectFilter(true);
         config.getVariant().setVariantId("variantId");
 
-        Set<String> innerHitsSourceFields = new HashSet<>();
-        innerHitsSourceFields.add("productDetails");
-        config.getVariant().setInnerHitsSourceFields(innerHitsSourceFields);
+        QsfSearchConfigUtil.addVariantMapping(config, "productDetails", "productDetails");
 
         transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
@@ -787,7 +785,8 @@ public class ElasticQsfqlQueryTransformerTest {
 
         Set<String> innerHitsSourceFields = new HashSet<>();
         innerHitsSourceFields.add("productDetails");
-        config.getVariant().setInnerHitsSourceFields(innerHitsSourceFields);
+
+        QsfSearchConfigUtil.addVariantMapping(config, "productDetails", "productDetails");
 
         transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
@@ -809,9 +808,7 @@ public class ElasticQsfqlQueryTransformerTest {
         config.getVariant().setVariantSize(12);
         config.getVariant().setVariantSort("[ { \"productPosition\": \"desc\" } ]");
 
-        Set<String> innerHitsSourceFields = new HashSet<>();
-        innerHitsSourceFields.add("productDetails");
-        config.getVariant().setInnerHitsSourceFields(innerHitsSourceFields);
+        QsfSearchConfigUtil.addVariantMapping(config, "productDetails", "productDetails");
 
         transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());
@@ -830,8 +827,7 @@ public class ElasticQsfqlQueryTransformerTest {
         QsfSearchConfigDTO config = QsfSearchConfigUtil.initSearchConfig();
         config.getFilter().setMultiSelectFilter(true);
         config.getVariant().setVariantId("variantId");
-
-        config.getVariant().setInnerHitsSourceFields(new HashSet<>(Arrays.asList("variantObject")));
+        QsfSearchConfigUtil.addVariantMapping(config, "variantObject", "variantObject");
 
         transformer.setSearchConfig(config);
         transformer.setProfile(Profiles.matchAll());

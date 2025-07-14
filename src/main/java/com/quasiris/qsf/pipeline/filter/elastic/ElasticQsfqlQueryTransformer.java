@@ -375,24 +375,43 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                         object("field", elasticField);
 
                 Integer variantSize = getSearchConfig().getVariant().getVariantSize();
-                int size = 100;
-                if(variantSize != null) {
-                    size = variantSize;
+                JsonNode innerHitsSourceFields = getVariantSourceFields();
+                String variantSort = getSearchConfig().getVariant().getVariantSort();
+                boolean queryInnerhits = false;
+
+                if(variantSort != null) {
+                    queryInnerhits = true;
                 }
 
-                Set<String> innerHitsSourceFields = getSearchConfig().getVariant().getInnerHitsSourceFields();
-                String variantSort = getSearchConfig().getVariant().getVariantSort();
-                if(innerHitsSourceFields != null) {
+                if(innerHitsSourceFields != null ) {
+                    queryInnerhits = true;
+                }
+
+                if(variantSize != null && variantSize > 1 ) {
+                    queryInnerhits = true;
+                }
+
+                if(queryInnerhits) {
+                    int size = 100;
+                    if(variantSize != null) {
+                        size = variantSize;
+                    }
+
+                    if(innerHitsSourceFields == null) {
+                        innerHitsSourceFields = getSourceFields();
+                    }
+
                     jsonBuilder.object("inner_hits").
                             object("name", "most_recent").
                             object("size", size).
                             object("_source", innerHitsSourceFields);
 
-
                     if(variantSort != null) {
                         jsonBuilder.string("sort", variantSort);
                     }
+
                 }
+
 
                 elasticQuery.set("collapse", jsonBuilder.get());
             } catch (JsonBuilderException ignored) {
