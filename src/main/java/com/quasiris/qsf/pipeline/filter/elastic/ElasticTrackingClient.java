@@ -17,7 +17,7 @@ public class ElasticTrackingClient {
         NONE, DAILY, HOURLY, MONTHLY, YEARLY
     }
 
-    private ROTATION rotation = ROTATION.DAILY;
+    private ROTATION rotation = ROTATION.NONE;
 
     private String baseUrl;
 

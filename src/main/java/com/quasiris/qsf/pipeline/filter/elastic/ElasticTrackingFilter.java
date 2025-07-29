@@ -12,7 +12,7 @@ public class ElasticTrackingFilter extends TrackingFilter {
 
 
 
-    private String rotation = "daily";
+    private String rotation = "none";
 
     private String baseUrl;
 
