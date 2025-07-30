@@ -12,6 +12,12 @@ All notable changes qsf-integration project will be documented in this file.
 
 ### Breaking Changes
 
+## [7.7]
+
+### Breaking Changes
+- use 'none' rotation for `com.quasiris.qsf.pipeline.filter.elastic.ElasticTrackingClient`. If you want the same behavior please set `rotation` property to `daily` manually.
+- use 'none' rotation for `com.quasiris.qsf.pipeline.filter.elastic.ElasticTrackingFilter`. If you want the same behavior please set `rotation` property to `daily` manually by code or through a search pipeline.
+
 
 ## [7.1.0]
 ### Added
