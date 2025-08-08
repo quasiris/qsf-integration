@@ -422,7 +422,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             Map fields = getFieldsFromHit(hit);
             mapInnerhitsScores(hit, fields);
             Document document = mapHit2Document(hit, fields);
-
+            mapScriptedField(document, hit);
 
 
             document = mapVariants(document, hit);
@@ -430,7 +430,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
             //transformInnerHits(document, hit, fields);
 
-            mapScriptedField(document, hit);
+
 
             return document;
         } catch (IOException e) {
@@ -510,6 +510,8 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             return document;
         }
 
+        document.getDocument().remove(searchConfigDTO.getVariant().getVariantId() + ".keyword");
+
         if(parentHit.getInner_hits() == null) {
             return document;
         }
@@ -544,7 +546,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
 
         // Deprecated - just implemented for backward compatibility
-        if(options.contains("fieldToList")) {
+        if(options.contains("groupField")) {
             for(DisplayMappingDTO mapping : searchConfigDTO.getVariant().getMapping() ) {
                 List<Object> l = new ArrayList<>();
                 for(Hit hit : innerHitResult.getHits().getHits()) {
@@ -556,7 +558,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                 document.setValue(mapping.getTo(), l);
             }
         }
-       if (options.contains("groupChilds") && searchConfigDTO.getVariant().getVariantResultField() != null){
+       if (options.contains("groupDocument") && searchConfigDTO.getVariant().getVariantResultField() != null){
             for(Hit hit : innerHitResult.getHits().getHits()) {
                 if(hit.get_source() != null) {
                     Map fields = getFieldsFromHit(hit);
@@ -567,6 +569,9 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         }
 
 
+        if(searchConfigDTO.getVariant().getVariantCountField() != null) {
+            document.setValue(searchConfigDTO.getVariant().getVariantCountField(), innerHitResult.getHits().getTotal());
+        }
 
         return document;
     }

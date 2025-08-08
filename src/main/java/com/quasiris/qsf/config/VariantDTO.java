@@ -11,6 +11,7 @@ public class VariantDTO {
     protected Integer variantSize;
 
     private String variantResultField;
+    private String variantCountField;
 
     private List<DisplayMappingDTO> mapping;
 
@@ -63,5 +64,13 @@ public class VariantDTO {
 
     public void setOptions(Set<String> options) {
         this.options = options;
+    }
+
+    public String getVariantCountField() {
+        return variantCountField;
+    }
+
+    public void setVariantCountField(String variantCountField) {
+        this.variantCountField = variantCountField;
     }
 }

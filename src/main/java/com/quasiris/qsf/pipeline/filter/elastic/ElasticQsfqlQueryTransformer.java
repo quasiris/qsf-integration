@@ -374,13 +374,21 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
             innerhitsResultField = "most_recent";
         }
         if(StringUtils.isNotEmpty(variantId)) {
+            if(getSearchConfig().getVariant().getOptions() == null) {
+                getSearchConfig().getVariant().setOptions(new HashSet<>());
+            }
             try {
                 String elasticField = variantId+".keyword";
                 JsonBuilder jsonBuilder = new JsonBuilder().
                         object("field", elasticField);
 
                 Integer variantSize = getSearchConfig().getVariant().getVariantSize();
-                JsonNode innerHitsSourceFields = getVariantSourceFields();
+                Set<String> innerHitsSourceFields = getVariantSourceFields();
+
+
+                if(getSearchConfig().getVariant().getOptions().contains("replaceFirstVariant")) {
+                    innerHitsSourceFields.addAll(getSourceFields());
+                }
                 String variantSort = getSearchConfig().getVariant().getVariantSort();
                 boolean queryInnerhits = false;
 
@@ -388,7 +396,7 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                     queryInnerhits = true;
                 }
 
-                if(innerHitsSourceFields != null ) {
+                if(!innerHitsSourceFields.isEmpty() ) {
                     queryInnerhits = true;
                 }
 
@@ -406,10 +414,11 @@ public class ElasticQsfqlQueryTransformer extends  ElasticParameterQueryTransfor
                         innerHitsSourceFields = getSourceFields();
                     }
 
+                    JsonNode innerHitsSourceFieldsJson = buildJsonForSourceFields(innerHitsSourceFields);
                     jsonBuilder.object("inner_hits").
                             object("name", innerhitsResultField).
                             object("size", size).
-                            object("_source", innerHitsSourceFields);
+                            object("_source", innerHitsSourceFieldsJson);
 
                     if(variantSort != null) {
                         jsonBuilder.string("sort", variantSort);

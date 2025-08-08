@@ -20,11 +20,7 @@ import com.quasiris.qsf.util.PrintUtil;
 
 import java.beans.Transient;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -90,15 +86,22 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
     }
 
 
-    protected JsonNode getSourceFields() throws JsonBuilderException {
+    protected Set<String> getSourceFields() throws JsonBuilderException {
         if(searchConfig.getDisplay() == null || searchConfig.getDisplay().getMapping() == null) {
-            return null;
+            return new HashSet<>();
         }
 
         Set<String> sourceFields = searchConfig.getDisplay().getMapping().stream().
                 map(DisplayMappingDTO::getFrom).
                 collect(Collectors.toSet());
 
+        return sourceFields;
+    }
+
+    protected JsonNode buildJsonForSourceFields(Set<String> sourceFields) throws JsonBuilderException {
+        if(sourceFields == null || sourceFields.isEmpty()) {
+            return null;
+        }
         JsonBuilder jsonBuilder = new JsonBuilder();
         jsonBuilder.array();
 
@@ -109,30 +112,24 @@ public class ElasticParameterQueryTransformer implements QueryTransformerIF {
         return jsonBuilder.get();
     }
 
-    protected JsonNode getVariantSourceFields() throws JsonBuilderException {
+
+    protected Set<String> getVariantSourceFields() throws JsonBuilderException {
         if(searchConfig.getVariant() == null || searchConfig.getVariant().getMapping() == null) {
-            return null;
+            return new HashSet<>();
         }
 
         Set<String> sourceFields = searchConfig.getVariant().getMapping().stream().
                 map(DisplayMappingDTO::getFrom).
                 collect(Collectors.toSet());
 
-        JsonBuilder jsonBuilder = new JsonBuilder();
-        jsonBuilder.array();
-
-        for (String sourceField : sourceFields) {
-            jsonBuilder.addValue(sourceField);
-        }
-
-        return jsonBuilder.get();
+        return sourceFields;
     }
 
     public void transformSourceFields() throws JsonBuilderException {
         if(!QsfSearchConfigUtil.hasDisplayMapping(searchConfig)) {
             return;
         }
-        JsonNode sourceFields = getSourceFields();
+        JsonNode sourceFields = buildJsonForSourceFields(getSourceFields());
         elasticQuery.set("_source", sourceFields);
     }
 

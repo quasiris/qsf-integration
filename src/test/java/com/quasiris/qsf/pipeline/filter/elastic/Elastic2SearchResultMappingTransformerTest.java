@@ -177,7 +177,7 @@ class Elastic2SearchResultMappingTransformerTest {
 
         QsfSearchConfigUtil.addVariantMapping(qsfSearchConfigDTO, "variantObject", "variantObject");
         QsfSearchConfigUtil.addVariantMapping(qsfSearchConfigDTO, "id", "variantIds");
-        QsfSearchConfigUtil.addVariantOptions(qsfSearchConfigDTO, "fieldToList");
+        QsfSearchConfigUtil.addVariantOptions(qsfSearchConfigDTO, "groupField");
         transformer.setSearchConfig(qsfSearchConfigDTO);
 
         ElasticResult elasticResult = readElasticResultFromFile("field-grouping.json");
@@ -396,7 +396,7 @@ class Elastic2SearchResultMappingTransformerTest {
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
         qsfSearchConfigDTO.getVariant().setVariantId("variantId");
         qsfSearchConfigDTO.getVariant().setVariantResultField("product_type_grouped");
-        QsfSearchConfigUtil.addVariantOptions(qsfSearchConfigDTO, "groupChilds");
+        QsfSearchConfigUtil.addVariantOptions(qsfSearchConfigDTO, "groupDocument");
 
         transformer.setSearchConfig(qsfSearchConfigDTO);
 
