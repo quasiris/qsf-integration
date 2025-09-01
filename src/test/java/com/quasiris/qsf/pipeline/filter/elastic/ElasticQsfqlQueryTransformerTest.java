@@ -260,9 +260,11 @@ public class ElasticQsfqlQueryTransformerTest {
         facet.setType("slider");
         facet.setName("price");
         facet.setId("price");
+        facet.setFieldName("attr_prices_double");
         facet.setOperator(FilterOperator.OR);
 
         transformer.addAggregation(facet);
+        transformer.addFilterMapping(facet.getId(), facet.getFieldName());
         ObjectNode elasticQuery = transform(transformer,  "q=*", "f.color=red", "f.price.range=49,170");
         assertQuery(elasticQuery, "slider-multiselect-with-range-filter.json");
     }

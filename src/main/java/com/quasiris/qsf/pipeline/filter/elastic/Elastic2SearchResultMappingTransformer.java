@@ -385,14 +385,14 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
 
 
 
-    Document mapHit2Document(Hit hit, Map fields) throws JsonProcessingException {
+    Document mapHit2Document(Hit hit, Map fields, List<DisplayMappingDTO> mappings) throws JsonProcessingException {
         String id = hit.get_id();
         Document document = new Document(id);
 
-        if (!QsfSearchConfigUtil.hasDisplayMapping(searchConfigDTO)) {
+        if (mappings == null) {
             document.getDocument().putAll(fields);
         } else {
-            for (DisplayMappingDTO mapping : searchConfigDTO.getDisplay().getMapping()) {
+            for (DisplayMappingDTO mapping : mappings) {
                 if (mapping.getFrom().endsWith("*")) {
                     mapPrefixFields(mapping, fields, document);
                 } else if (mapping.getFrom().contains(".")) {
@@ -421,7 +421,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
         try {
             Map fields = getFieldsFromHit(hit);
             mapInnerhitsScores(hit, fields);
-            Document document = mapHit2Document(hit, fields);
+            Document document = mapHit2Document(hit, fields, QsfSearchConfigUtil.getDisplayMapping(searchConfigDTO));
             mapScriptedField(document, hit);
 
 
@@ -538,7 +538,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             for(Hit hit : innerHitResult.getHits().getHits()) {
                 if(hit.get_source() != null) {
                     Map fields = getFieldsFromHit(hit);
-                    Document innerDocument = mapHit2Document(hit, fields);
+                    Document innerDocument = mapHit2Document(hit, fields,  QsfSearchConfigUtil.getDisplayMapping(searchConfigDTO));
                     document = innerDocument;
                     break;
                 }
@@ -562,7 +562,7 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
             for(Hit hit : innerHitResult.getHits().getHits()) {
                 if(hit.get_source() != null) {
                     Map fields = getFieldsFromHit(hit);
-                    Document innerDocument = mapHit2Document(hit, fields);
+                    Document innerDocument = mapHit2Document(hit, fields, searchConfigDTO.getVariant().getMapping());
                     document.addChildDocument(searchConfigDTO.getVariant().getVariantResultField(), innerDocument);
                 }
             }

@@ -16,6 +16,16 @@ public class QsfSearchConfigUtil {
         return qsfSearchConfigDTO;
     }
 
+
+    public static List<DisplayMappingDTO> getDisplayMapping(QsfSearchConfigDTO qsfSearchConfigDTO) {
+        if(hasDisplayMapping(qsfSearchConfigDTO)) {
+            return qsfSearchConfigDTO.getDisplay().getMapping();
+        }
+
+        return null;
+
+
+    }
     public static boolean hasDisplayMapping(QsfSearchConfigDTO qsfSearchConfigDTO) {
         if(qsfSearchConfigDTO == null) {
             return false;

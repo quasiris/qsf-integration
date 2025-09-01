@@ -32,7 +32,7 @@
           "aggs" : {
             "price" : {
               "stats" : {
-                "field" : "price"
+                "field" : "attr_prices_double"
               }
             }
           }
@@ -45,7 +45,7 @@
       "must" : [
         {
           "range" : {
-            "price" : {
+            "attr_prices_double" : {
               "gte" : 49.0,
               "lte" : 170.0
             }
