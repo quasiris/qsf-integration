@@ -268,7 +268,7 @@
         <snapshotRepository>
             <id>quasiris-snapshots</id>
             <name>Quasiris Snapshot Repository</name>
-            <url>${nexus.base.url}/repository/maven-snapshots/</url>
+            <url>${quasiris.snapshots.url}</url>
         </snapshotRepository>
     </distributionManagement>
     <licenses>
