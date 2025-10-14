@@ -66,6 +66,9 @@ public class QsfSearchQueryParser {
         if(ctrl != null && ctrl.size() > 0) {
             searchQuery.setCtrl(ctrl);
         }
+        if (searchQuery.getPage() != null && searchQuery.getPage() < 1) {
+            searchQuery.setPage(1);
+        }
         return searchQuery;
     }
 
