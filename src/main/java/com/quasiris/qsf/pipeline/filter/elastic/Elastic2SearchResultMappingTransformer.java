@@ -539,6 +539,12 @@ public class Elastic2SearchResultMappingTransformer implements SearchResultTrans
                 if(hit.get_source() != null) {
                     Map fields = getFieldsFromHit(hit);
                     Document innerDocument = mapHit2Document(hit, fields,  QsfSearchConfigUtil.getDisplayMapping(searchConfigDTO));
+
+                    if(searchQuery.isCtrl("trace")) {
+                        innerDocument.setValue("_explanation", document.getFieldValueAsObject("_explanation"));
+                        innerDocument.setValue("_matched_queries", document.getFieldValueAsObject("_matched_queries"));
+                        // don't map the score
+                    }
                     document = innerDocument;
                     break;
                 }
