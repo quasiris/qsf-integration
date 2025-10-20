@@ -195,6 +195,7 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void testFieldGroupingWithVariantSort() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        init(transformer);
         QsfSearchConfigDTO qsfSearchConfigDTO = QsfSearchConfigUtil.initSearchConfig();
         QsfSearchConfigUtil.addVariantOptions(qsfSearchConfigDTO, "replaceFirstVariant");
         transformer.setSearchConfig(qsfSearchConfigDTO);
@@ -229,10 +230,7 @@ class Elastic2SearchResultMappingTransformerTest {
     @Test
     void testScoreMapping() throws Exception {
         Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
-        PipelineContainer pipelineContainer = new PipelineContainer();
-        pipelineContainer.setSearchQuery(new SearchQuery());
-        pipelineContainer.getSearchQuery().setCtrl(new HashSet<>());
-        transformer.init(pipelineContainer);
+        init(transformer);
         transformer.addFieldMapping("id", "id");
         transformer.addFieldMapping("_score", "myScore");
         transformer.addFieldMapping("_matched_queries", "myQueries");
@@ -498,5 +496,12 @@ class Elastic2SearchResultMappingTransformerTest {
 
     private void assertSearchResult(SearchResult searchResult, String file) throws IOException {
         JsonAssert.assertJsonFile("classpath://com/quasiris/qsf/pipeline/filter/elastic/searchresult/" + file, searchResult);
+    }
+
+    void init(Elastic2SearchResultMappingTransformer transformer) {
+        PipelineContainer pipelineContainer = new PipelineContainer();
+        pipelineContainer.setSearchQuery(new SearchQuery());
+        pipelineContainer.getSearchQuery().setCtrl(new HashSet<>());
+        transformer.init(pipelineContainer);
     }
 }

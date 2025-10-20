@@ -13,6 +13,7 @@ public class SearchQuery {
     private boolean queryChanged = false;
     private List<String> queryChangedReasons;
     private Boolean tracking;
+    private Locale locale;
 
     private List<String> trackingTags;
 
@@ -474,6 +475,14 @@ public class SearchQuery {
 
     public void setNextPageToken(String nextPageToken) {
         this.nextPageToken = nextPageToken;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 
     @Override

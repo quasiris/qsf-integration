@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Set;
 
 public class QsfSearchQueryParser {
@@ -25,6 +26,13 @@ public class QsfSearchQueryParser {
         } else {
             searchQuery = handleGETRequest(httpServletRequest);
         }
+
+        String localeHeader = httpServletRequest.getHeader("X-QSC-Locale");
+        if(localeHeader != null) {
+            Locale locale = Locale.forLanguageTag(localeHeader.trim());
+            searchQuery.setLocale(locale);
+        }
+
         return searchQuery;
     }
 
