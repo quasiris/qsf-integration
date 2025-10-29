@@ -6,6 +6,7 @@ import com.quasiris.qsf.dto.query.SearchQueryDTO;
 import com.quasiris.qsf.pipeline.filter.qsql.parser.QsfqlParser;
 import com.quasiris.qsf.query.SearchQuery;
 import com.quasiris.qsf.query.SearchQueryMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +28,14 @@ public class QsfSearchQueryParser {
             searchQuery = handleGETRequest(httpServletRequest);
         }
 
-        String localeHeader = httpServletRequest.getHeader("X-QSC-Locale");
-        if(localeHeader != null) {
-            Locale locale = Locale.forLanguageTag(localeHeader.trim());
-            searchQuery.setLocale(locale);
+        String locale = httpServletRequest.getHeader("X-QSC-Locale");
+        if (StringUtils.isBlank(locale) &&
+            !StringUtils.isBlank(httpServletRequest.getParameter("locale"))) {
+            locale = httpServletRequest.getParameter("locale");
+        }
+        if (locale != null) {
+            Locale localeObj = Locale.forLanguageTag(locale.trim());
+            searchQuery.setLocale(localeObj);
         }
 
         return searchQuery;
