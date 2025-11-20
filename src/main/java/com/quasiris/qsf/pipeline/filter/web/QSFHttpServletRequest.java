@@ -102,7 +102,7 @@ public class QSFHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getHeader(String s) {
-        throw new UnsupportedOperationException("The method is not implemented yet.");
+        return null;
     }
 
     @Override
