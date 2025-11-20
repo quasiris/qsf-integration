@@ -5,10 +5,7 @@ import com.quasiris.qsf.commons.text.date.SupportedDateFormatsParser;
 import com.quasiris.qsf.dto.error.SearchQueryException;
 import com.quasiris.qsf.dto.query.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class SearchQueryMapper {
 
@@ -23,6 +20,10 @@ public class SearchQueryMapper {
         SearchQuery searchQuery = new SearchQuery();
         searchQuery.setQ(searchQueryDTO.getQ());
         searchQuery.setTracking(searchQueryDTO.getTracking());
+        if (searchQueryDTO.getLocale() != null) {
+            Locale localeObj = Locale.forLanguageTag(searchQueryDTO.getLocale().trim());
+            searchQuery.setLocale(localeObj);
+        }
         searchQuery.setRequestOrigin(searchQueryDTO.getRequestOrigin());
         searchQuery.setRows(searchQueryDTO.getRows());
         if(searchQueryDTO.getTrackingTags() != null) {

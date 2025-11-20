@@ -27,17 +27,6 @@ public class QsfSearchQueryParser {
         } else {
             searchQuery = handleGETRequest(httpServletRequest);
         }
-
-        String locale = httpServletRequest.getHeader("X-QSC-Locale");
-        if (StringUtils.isBlank(locale) &&
-            !StringUtils.isBlank(httpServletRequest.getParameter("locale"))) {
-            locale = httpServletRequest.getParameter("locale");
-        }
-        if (locale != null) {
-            Locale localeObj = Locale.forLanguageTag(locale.trim());
-            searchQuery.setLocale(localeObj);
-        }
-
         return searchQuery;
     }
 
@@ -81,6 +70,11 @@ public class QsfSearchQueryParser {
         }
         if (searchQuery.getPage() != null && searchQuery.getPage() < 1) {
             searchQuery.setPage(1);
+        }
+        String locale = httpServletRequest.getHeader("X-QSC-Locale");
+        if (locale != null) {
+            Locale localeObj = Locale.forLanguageTag(locale.trim());
+            searchQuery.setLocale(localeObj);
         }
         return searchQuery;
     }

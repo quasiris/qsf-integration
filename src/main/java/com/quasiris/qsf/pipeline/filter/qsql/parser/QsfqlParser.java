@@ -14,6 +14,8 @@ import com.quasiris.qsf.text.Splitter;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -54,7 +56,20 @@ public class QsfqlParser {
         parseTracking(query);
         parseResultDisplayFields(query);
         parseResultDisplayFacets(query);
+        parseLocale(query);
         return query;
+    }
+
+    private void parseLocale(SearchQuery query) {
+        String locale = httpServletRequest.getHeader("X-QSC-Locale");
+        if (StringUtils.isBlank(locale) &&
+            !StringUtils.isBlank(httpServletRequest.getParameter("locale"))) {
+            locale = httpServletRequest.getParameter("locale");
+        }
+        if (locale != null) {
+            Locale localeObj = Locale.forLanguageTag(locale.trim());
+            query.setLocale(localeObj);
+        }
     }
 
     void parseResultDisplayFields(SearchQuery query) {
