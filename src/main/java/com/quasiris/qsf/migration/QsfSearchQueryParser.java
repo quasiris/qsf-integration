@@ -30,6 +30,22 @@ public class QsfSearchQueryParser {
         return searchQuery;
     }
 
+    public static Locale parseLocale(HttpServletRequest httpServletRequest, String postRequestLocaleValue){
+        String locale = httpServletRequest.getHeader("X-QSC-Locale");
+        if (StringUtils.isBlank(locale)){
+            if("POST".equals(httpServletRequest.getMethod())) {
+                locale = postRequestLocaleValue;
+            } else {
+                if (!StringUtils.isBlank(httpServletRequest.getParameter("locale"))) {
+                    locale = httpServletRequest.getParameter("locale");
+                }
+            }
+        }
+        if (locale != null) {
+            return Locale.forLanguageTag(locale.trim());
+        }
+        return null;
+    }
 
     protected SearchQuery handlePOSTRequest(HttpServletRequest httpServletRequest) {
         try {
