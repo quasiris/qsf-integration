@@ -87,6 +87,7 @@ public class SearchQuery {
         if(searchQuery.getParameters() != null) {
             this.parameters = new HashMap<>(searchQuery.getParameters());
         }
+        this.locale = searchQuery.getLocale();
     }
 
 
