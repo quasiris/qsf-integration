@@ -39,6 +39,7 @@ public class SearchQueryFactory {
         searchQueryCopy.setRows(searchQuery.getRows());
         searchQueryCopy.setDebug(searchQuery.isDebug());
         searchQueryCopy.setRequestOrigin(searchQuery.getRequestOrigin());
+        searchQueryCopy.setLocale(searchQuery.getLocale());
 
         // TODO implement deep copy
         if(searchQuery.getParameters() != null) {
