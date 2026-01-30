@@ -166,8 +166,10 @@ public class QsfqlFilterMapper {
      */
     protected ArrayNode transformDateRangeInPeriodFilter(SearchFilter searchFilter, String elasticField) throws JsonBuilderException {
         String filterName = searchFilter.getName();
-        String startField = mapFilterField(filterName + "StartDate");
-        String endField = mapFilterField(filterName + "EndDate");
+        String capitalizedFilterName =
+                filterName.substring(0, 1).toUpperCase() + filterName.substring(1);
+        String startField = mapFilterField("start" + capitalizedFilterName);
+        String endField = mapFilterField("end" + capitalizedFilterName);
 
         RangeFilterValue<String> rangeFilterValue = searchFilter.getRangeValue(String.class);
         String periodStart = rangeFilterValue.getMinValue();
