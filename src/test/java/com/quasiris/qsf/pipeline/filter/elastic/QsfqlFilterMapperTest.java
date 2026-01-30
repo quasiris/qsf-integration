@@ -248,4 +248,32 @@ class QsfqlFilterMapperTest {
 
 
     }
+
+    @Test
+    void createDateRangeInPeriodFilter() throws JsonBuilderException, IOException {
+        // given
+        List<SearchFilter> filters = new ArrayList<>();
+        SearchFilter searchFilter = new SearchFilter();
+        searchFilter.setFilterOperator(FilterOperator.AND);
+        searchFilter.setFilterType(FilterType.DATE_RANGE_IN_PERIOD);
+        searchFilter.setFilterDataType(FilterDataType.DATE);
+        searchFilter.setId("date");
+        searchFilter.setName("date");
+        RangeFilterValue<String> rangeFilterValue = new RangeFilterValue<>();
+        rangeFilterValue.setMinValue("2026-02-09T00:00:00Z");
+        rangeFilterValue.setMaxValue("2026-02-15T23:59:59Z");
+        rangeFilterValue.setLowerBound(UpperLowerBound.LOWER_INCLUDED);
+        rangeFilterValue.setUpperBound(UpperLowerBound.UPPER_INCLUDED);
+        searchFilter.setRangeValue(rangeFilterValue);
+        filters.add(searchFilter);
+
+        QsfSearchConfigDTO searchConfig = QsfSearchConfigUtil.initSearchConfig();
+        searchConfig.getFilter().getFilterMapping().put("dateStartDate", "startDate");
+        searchConfig.getFilter().getFilterMapping().put("dateEndDate", "endDate");
+
+        // when
+        QsfqlFilterMapper mapper = new QsfqlFilterMapper(searchConfig);
+        JsonNode result = mapper.buildFiltersJson(filters);
+        JsonAssert.assertJsonFile(testBasePackage + "date-range-in-period-filter-query.json", result);
+    }
 }

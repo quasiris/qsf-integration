@@ -62,6 +62,9 @@ public class QsfqlFilterMapper {
             case RANGE:
                 filter = transformRangeFilter(searchFilter, elasticField);
                 break;
+            case DATE_RANGE_IN_PERIOD:
+                filter = transformDateRangeInPeriodFilter(searchFilter, elasticField);
+                break;
             case DEFINED_RANGE:
                 filter = transformDefinedRangeFilter(searchFilter, elasticField);
                 break;
@@ -149,6 +152,48 @@ public class QsfqlFilterMapper {
         rangeFilter.setRangeValue(rangeFilterValue);
         return transformRangeFilter(rangeFilter, elasticField);
 
+    }
+
+    /**
+     * Transforms a dateRangeInPeriod filter into an Elasticsearch bool query
+     * that finds documents whose date range overlaps with the query period.
+     *
+     * For a field name "date", the mapped Elasticsearch fields are resolved as
+     * "dateStartDate" and "dateEndDate" via filterMapping (with fallback to
+     * fieldName + "StartDate" / fieldName + "EndDate").
+     *
+     * The overlap condition is: startField <= periodEnd AND endField >= periodStart
+     */
+    protected ArrayNode transformDateRangeInPeriodFilter(SearchFilter searchFilter, String elasticField) throws JsonBuilderException {
+        String filterName = searchFilter.getName();
+        String startField = mapFilterField(filterName + "StartDate");
+        String endField = mapFilterField(filterName + "EndDate");
+
+        RangeFilterValue<String> rangeFilterValue = searchFilter.getRangeValue(String.class);
+        String periodStart = rangeFilterValue.getMinValue();
+        String periodEnd = rangeFilterValue.getMaxValue();
+
+        // startField <= periodEnd
+        JsonBuilder startRange = JsonBuilder.create().
+                object("range").
+                object(startField).
+                object(rangeFilterValue.getUpperBound().getOperator(), periodEnd);
+
+        // endField >= periodStart
+        JsonBuilder endRange = JsonBuilder.create().
+                object("range").
+                object(endField).
+                object(rangeFilterValue.getLowerBound().getOperator(), periodStart);
+
+        JsonBuilder boolBuilder = JsonBuilder.create().array();
+        boolBuilder.addJson(JsonBuilder.create().
+                object("bool").
+                array("must").
+                addJson(startRange.root().get()).
+                addJson(endRange.root().get()).
+                root().get());
+
+        return (ArrayNode) boolBuilder.get();
     }
 
     protected static ArrayNode transformRangeFilter(SearchFilter searchFilter, String elasticField) throws JsonBuilderException {

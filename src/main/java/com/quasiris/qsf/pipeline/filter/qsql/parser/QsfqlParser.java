@@ -530,6 +530,11 @@ public class QsfqlParser {
                     searchFilter.setFilterType(FilterType.RANGE);
                     searchFilter.setFilterDataType(FilterDataType.DATE);
                     query.getSearchFilterList().add(searchFilter);
+                } else if (".dateRangeInPeriod".equals(filterType)) {
+                    SearchFilter searchFilter = createDateRangeFilter(filterName, filterValues);
+                    searchFilter.setFilterType(FilterType.DATE_RANGE_IN_PERIOD);
+                    searchFilter.setFilterDataType(FilterDataType.DATE);
+                    query.getSearchFilterList().add(searchFilter);
                 } else if (".humandate".equals(filterType) && filterValues.length == 1) {
                     HumanDateParser humanDateParser = new HumanDateParser(filterValues[0]);
                     SearchFilter searchFilter = createHumanDateFilter(filterName, humanDateParser.getStart(), humanDateParser.getEnd());

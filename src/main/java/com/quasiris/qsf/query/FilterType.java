@@ -12,7 +12,8 @@ public enum FilterType {
     RANGE("range"),
     DEFINED_RANGE("defined_range"),
     SLIDER("slider"),
-    TREE("tree");
+    TREE("tree"),
+    DATE_RANGE_IN_PERIOD("date_range_in_period");
 
 
     private final String code;

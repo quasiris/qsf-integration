@@ -362,4 +362,17 @@ public class QsfqlParserTest {
         assertEquals(((SearchFilter)facet.getFacetFilters().get(0)).getValues().get(0), "1234");
     }
 
+    @Test
+    public void testDateRangeInPeriodFilter() throws Exception {
+        SearchQuery query = createQuery("f.date.dateRangeInPeriod=2026-02-09T00:00:00Z,2026-02-15T23:59:59Z");
+        SearchFilter searchFilter = (SearchFilter) query.getSearchFilterList().get(0);
+        assertEquals("date", searchFilter.getName());
+        assertEquals("2026-02-09T00:00:00Z", searchFilter.getRangeValue(String.class).getMinValue());
+        assertEquals("2026-02-15T23:59:59Z", searchFilter.getRangeValue(String.class).getMaxValue());
+        assertEquals(FilterType.DATE_RANGE_IN_PERIOD, searchFilter.getFilterType());
+        assertEquals(FilterDataType.DATE, searchFilter.getFilterDataType());
+        assertEquals(UpperLowerBound.LOWER_INCLUDED, searchFilter.getRangeValue(String.class).getLowerBound());
+        assertEquals(UpperLowerBound.UPPER_INCLUDED, searchFilter.getRangeValue(String.class).getUpperBound());
+    }
+
 }
