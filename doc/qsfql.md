@@ -57,6 +57,53 @@ f.price.range=[min,10]
 f.price.range=[5,max]
 f.price.slider=[5,10]
 
+### Date Range Filter
+Filter documents by a single date field within a date range.
+
+```
+f.fieldName.daterange=minDate,maxDate
+```
+
+Examples:
+```
+f.timestamp.daterange=2021-01-02T23:00:00Z,2021-02-05T20:59:38Z
+f.timestamp.daterange=NOW,*
+f.timestamp.daterange=[NOW,2021-02-05]
+f.timestamp.daterange={2021-01-01,*}
+```
+
+Boundary notation:
+- `[` / `]` — inclusive (gte / lte)
+- `{` / `}` — exclusive (gt / lt)
+- `*` — open-ended (min or max date)
+- `NOW` — current timestamp
+
+### Date Range In Period Filter
+Filter documents whose date range overlaps with a given period.
+This is useful for calendar-like queries where documents have a start and end date,
+and you want all documents that are active within a specific time window.
+
+For `f.date.dateRangeInPeriod` the fields `startDate` and `endDate` are used for the overlap check: `startDate <= periodEnd AND endDate >= periodStart`
+
+**GET API:**
+```
+f.date.dateRangeInPeriod=2026-02-09T00:00:00Z,2026-02-15T23:59:59Z
+```
+
+**POST API:**
+```json
+{
+  "searchFilters": [
+    {
+      "id": "date",
+      "filterType": "dateRangeInPeriod",
+      "minValue": "2026-02-09T00:00:00Z",
+      "maxValue": "2026-02-15T23:59:59Z"
+    }
+  ]
+}
+```
+
 ## Faceting
 
 ## Sorting

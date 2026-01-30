@@ -117,6 +117,7 @@ public class SearchQueryMapper {
         mapRangeFilter(searchFilterDTO, searchFilter);
         mapDateRangeFilter(searchFilterDTO, searchFilter);
         mapRelativeDateRangeFilter(searchFilterDTO, searchFilter);
+        mapDateRangeInPeriodFilter(searchFilterDTO, searchFilter);
 
         return searchFilter;
     }
@@ -214,6 +215,25 @@ public class SearchQueryMapper {
             return false;
         }
         return value instanceof String;
+    }
+
+    public static void mapDateRangeInPeriodFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
+        if(searchFilterDTO.getFilterType() != null &&
+                searchFilterDTO.getFilterType().isDateRangeInPeriod()) {
+            RangeFilterValue<String> rangeFilterValue = new RangeFilterValue<>();
+
+            if (searchFilterDTO.getMinValue() != null) {
+                rangeFilterValue.setMinValue(SupportedDateFormatsParser.requireFromString(searchFilterDTO.getMinValue().toString()));
+            }
+
+            if (searchFilterDTO.getMaxValue() != null) {
+                rangeFilterValue.setMaxValue(SupportedDateFormatsParser.requireFromString(searchFilterDTO.getMaxValue().toString()));
+            }
+
+            searchFilter.setRangeValue(rangeFilterValue);
+            searchFilter.setFilterType(FilterType.DATE_RANGE_IN_PERIOD);
+            searchFilter.setFilterDataType(FilterDataType.DATE);
+        }
     }
 
     public static void mapRelativeDateRangeFilter(SearchFilterDTO searchFilterDTO, SearchFilter searchFilter) {
