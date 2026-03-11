@@ -3,14 +3,19 @@ package com.quasiris.qsf.pipeline.filter;
 import com.quasiris.qsf.dto.error.SearchQueryException;
 import com.quasiris.qsf.pipeline.PipelineContainer;
 import com.quasiris.qsf.pipeline.exception.PipelinePassThroughException;
-import com.quasiris.qsf.query.SearchFilter;
-import com.quasiris.qsf.query.SearchQuery;
+import com.quasiris.qsf.query.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Validates basic search query structure and filter syntax.
+ * Applies base defaults and validates basic search query structure and filter syntax.
+ *
+ * Defaults (applied before validation):
+ * - filter name defaults to filter id
+ * - filter type defaults to TERM
+ * - filter data type defaults to STRING
+ * - filter operator defaults to OR
  *
  * Checks:
  * - page >= 0 (if set)
@@ -22,7 +27,8 @@ import java.util.List;
  * - numeric range filters have parseable min/max values
  *
  * Throws a 400 error via PipelinePassThroughException on validation failure.
- * Subclasses can override {@link #validate(SearchQuery, List)} to add custom checks.
+ * Subclasses can override {@link #applyDefaults(SearchQuery)} to add custom defaults
+ * and {@link #validate(SearchQuery, List)} to add custom checks.
  */
 public class SearchQueryValidationFilter extends AbstractFilter {
 
@@ -34,6 +40,8 @@ public class SearchQueryValidationFilter extends AbstractFilter {
                     new SearchQueryException("The search query must not be null."));
         }
 
+        applyDefaults(searchQuery);
+
         List<String> errors = new ArrayList<>();
         validate(searchQuery, errors);
 
@@ -43,6 +51,28 @@ public class SearchQueryValidationFilter extends AbstractFilter {
         }
 
         return pipelineContainer;
+    }
+
+    protected void applyDefaults(SearchQuery searchQuery) {
+        List<SearchFilter> filters = searchQuery.getAllSearchFilters();
+        if (filters != null) {
+            filters.forEach(this::applyFilterDefaults);
+        }
+    }
+
+    protected void applyFilterDefaults(SearchFilter filter) {
+        if (filter.getName() == null) {
+            filter.setName(filter.getId());
+        }
+        if (filter.getFilterType() == null) {
+            filter.setFilterType(FilterType.TERM);
+        }
+        if (filter.getFilterDataType() == null) {
+            filter.setFilterDataType(FilterDataType.STRING);
+        }
+        if (filter.getFilterOperator() == null) {
+            filter.setFilterOperator(FilterOperator.OR);
+        }
     }
 
     protected void validate(SearchQuery searchQuery, List<String> errors) {
