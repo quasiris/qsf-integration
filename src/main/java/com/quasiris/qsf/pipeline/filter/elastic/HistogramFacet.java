@@ -20,12 +20,18 @@ public class HistogramFacet {
 
     public static HistogramFacetConfigDTO loadHistogramFacetConfigDTO(Map<String, Object> parameters) throws JsonBuilderException {
         HistogramFacetConfigDTO histogramFacetConfigDTO = ParameterUtils.getParameter(parameters, "config", null, HistogramFacetConfigDTO.class);
-        if(histogramFacetConfigDTO == null) {
-            histogramFacetConfigDTO = JsonBuilder.create().
-                    classpath("com/quasiris/qsf/elastic/config/default-histogram-facet-config.json").
-                    get(HistogramFacetConfigDTO.class);
+        if (histogramFacetConfigDTO == null) {
+            histogramFacetConfigDTO = loadDefaultHistogramFacetConfigDTO();
+        } else if (histogramFacetConfigDTO.getIntervals() == null) {
+            histogramFacetConfigDTO.setIntervals(loadDefaultHistogramFacetConfigDTO().getIntervals());
         }
         return histogramFacetConfigDTO;
+    }
+
+    public static HistogramFacetConfigDTO loadDefaultHistogramFacetConfigDTO() throws JsonBuilderException {
+        return JsonBuilder.create()
+                .classpath("com/quasiris/qsf/elastic/config/default-histogram-facet-config.json")
+                .get(HistogramFacetConfigDTO.class);
     }
 
     public static JsonNode getIntervalJson(SearchFilter timestampFilter, List<IntervalDTO> intervalConfigList) throws JsonBuilderException {

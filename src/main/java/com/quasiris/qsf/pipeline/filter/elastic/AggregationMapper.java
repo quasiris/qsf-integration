@@ -3,15 +3,19 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.quasiris.qsf.commons.util.ParameterUtils;
 import com.quasiris.qsf.dto.query.HistogramFacetConfigDTO;
+import com.quasiris.qsf.dto.query.MetricDTO;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.*;
 import com.quasiris.qsf.util.QsfIntegrationConstants;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class AggregationMapper {
+
     @Deprecated // TODO remove this
     public static JsonNode createAgg(Facet facet, boolean isSubFacet, SearchQuery searchQuery) {
         return createAgg(facet, isSubFacet, null, null, searchQuery);
@@ -67,24 +71,22 @@ public class AggregationMapper {
             } else if("date_histogram".equals(facet.getType())) {
                 // https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#fixed_intervals
                 HistogramFacetConfigDTO histogramFacetConfigDTO = HistogramFacet.loadHistogramFacetConfigDTO(facet.getParameters());
-                SearchFilter timestampFilter = searchQuery.getSearchFilterById(facet.getId());
+                SearchFilter timestampFilter = searchQuery != null ? searchQuery.getSearchFilterById(facet.getId()) : null;
                 JsonNode interval = HistogramFacet.getIntervalJson(timestampFilter, histogramFacetConfigDTO.getIntervals());
-                String timeZone = histogramFacetConfigDTO.getTimeZone();
-                if(timeZone == null) {
-                    timeZone = "Europe/Berlin";
-                }
-                Integer minDocCount = histogramFacetConfigDTO.getMinDocCount();
-                if(minDocCount == null) {
-                    minDocCount = 0;
-                }
+                String timeZone = histogramFacetConfigDTO.getTimeZone() != null ? histogramFacetConfigDTO.getTimeZone() : "Europe/Berlin";
+                Integer minDocCount = histogramFacetConfigDTO.getMinDocCount() != null ? histogramFacetConfigDTO.getMinDocCount() : 0;
                 if(histogramFacetConfigDTO.getQuery() != null) {
                     return JsonBuilder.create().json(histogramFacetConfigDTO.getQuery()).valueMap("interval", interval).replace().get();
-                } else {
-                    // deprecated ... used in the old qsc dashboard
-                    jsonBuilder.json(interval);
-                    jsonBuilder.
-                            object("time_zone", getValueOrDefault(facet.getParameters(), "time_zone", timeZone)).
-                            object("min_doc_count", minDocCount);
+                }
+                jsonBuilder.json(interval).object("time_zone", timeZone).object("min_doc_count", minDocCount);
+                if (histogramFacetConfigDTO.getMetrics() != null && !histogramFacetConfigDTO.getMetrics().isEmpty()) {
+                    JsonNode metricsAggsNode = buildMetricsAggs(histogramFacetConfigDTO.getMetrics());
+                    if (metricsAggsNode.size() > 0) {
+                        jsonBuilder = JsonBuilder.create()
+                                .newJson(jsonBuilder.replace().get())
+                                .pathsForceCreate(name + "/aggs")
+                                .json(metricsAggsNode);
+                    }
                 }
             } else if ("year".equals(facet.getType())) {
                 jsonBuilder.
@@ -110,7 +112,11 @@ public class AggregationMapper {
 
             if(facet.getChildren() != null) {
                 jsonBuilder.root().path(name);
-                JsonNode subAggs = createAgg(facet.getChildren(), true, null, variantId, searchQuery);
+                // Metrics aggs (percentiles, avg, etc.) are not bucket aggs — use their own ID, not "subFacet"
+                // Metrics aggs also cannot have sub-aggs, so never forward variantId into them
+                boolean childIsMetrics = isMetricsAggType(facet.getChildren().getType());
+                String childVariantId = childIsMetrics ? null : variantId;
+                JsonNode subAggs = createAgg(facet.getChildren(), !childIsMetrics, null, childVariantId, searchQuery);
                 jsonBuilder.json("aggs", subAggs);
             }
 
@@ -152,6 +158,30 @@ public class AggregationMapper {
         } catch (JsonBuilderException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static boolean isMetricsAggType(String type) {
+        return "percentiles".equals(type) || "avg".equals(type) || "sum".equals(type)
+                || "min".equals(type) || "max".equals(type) || "cardinality".equals(type);
+    }
+
+    private static JsonNode buildMetricsAggs(List<MetricDTO> metrics) throws JsonBuilderException {
+        JsonBuilder aggsBuilder = new JsonBuilder().object();
+        for (MetricDTO metric : metrics) {
+            if (metric.getType() == null || "count".equals(metric.getType())) {
+                continue;
+            }
+            String id = metric.getId() != null ? metric.getId() : metric.getType();
+            JsonBuilder metricBuilder = new JsonBuilder()
+                    .object(id)
+                    .object(metric.getType())
+                    .object("field", metric.getFieldName());
+            if ("percentiles".equals(metric.getType())) {
+                metricBuilder.object("percents", metric.getPercents());
+            }
+            aggsBuilder.json(metricBuilder.get());
+        }
+        return aggsBuilder.get();
     }
 
     @SuppressWarnings("unchecked")

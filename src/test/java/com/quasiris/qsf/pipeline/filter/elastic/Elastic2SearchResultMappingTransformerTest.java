@@ -487,6 +487,24 @@ class Elastic2SearchResultMappingTransformerTest {
         assertEquals(8, searchResult.getTotal());
     }
 
+    @Test
+    void transformDateHistogramWithMultipleMetrics() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        ElasticResult elasticResult = readElasticResultFromFile("date-histogram-with-multiple-metrics.json");
+
+        SearchResult searchResult = transformer.transform(elasticResult);
+        assertSearchResult(searchResult, "date-histogram-with-multiple-metrics.json");
+    }
+
+    @Test
+    void transformDateHistogramWithPercentiles() throws Exception {
+        Elastic2SearchResultMappingTransformer transformer = new Elastic2SearchResultMappingTransformer();
+        ElasticResult elasticResult = readElasticResultFromFile("date-histogram-with-percentiles.json");
+
+        SearchResult searchResult = transformer.transform(elasticResult);
+        assertSearchResult(searchResult, "date-histogram-with-percentiles.json");
+    }
+
     public ElasticResult readElasticResultFromFile(String fileName) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String file = "src/test/resources/com/quasiris/qsf/pipeline/filter/elastic/bean/" + fileName;

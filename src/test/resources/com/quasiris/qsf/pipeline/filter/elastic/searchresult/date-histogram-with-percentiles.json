@@ -1,0 +1,39 @@
+{
+  "statusCode" : 200,
+  "statusMessage" : "OK",
+  "documents" : [ ],
+  "time" : 5,
+  "total" : 500,
+  "facets" : [ {
+    "name" : "duration_over_time",
+    "id" : "duration_over_time",
+    "filterName" : "duration_over_time",
+    "count" : 2,
+    "resultCount" : 350,
+    "values" : [ {
+      "value" : 1704067200000,
+      "count" : 150,
+      "filter" : "duration_over_time=1704067200000",
+      "customData" : {
+        "duration_percentiles" : {
+          "50.0" : 100.5,
+          "90.0" : 250.3,
+          "95.0" : 320.1,
+          "99.0" : 450.8
+        }
+      }
+    }, {
+      "value" : 1706745600000,
+      "count" : 200,
+      "filter" : "duration_over_time=1706745600000",
+      "customData" : {
+        "duration_percentiles" : {
+          "50.0" : 110.0,
+          "90.0" : 270.0,
+          "95.0" : 340.0,
+          "99.0" : 480.0
+        }
+      }
+    } ]
+  } ]
+}

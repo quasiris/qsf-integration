@@ -1,0 +1,51 @@
+{
+  "statusCode" : 200,
+  "statusMessage" : "OK",
+  "documents" : [ ],
+  "time" : 8,
+  "total" : 750,
+  "facets" : [ {
+    "name" : "requests_over_time",
+    "id" : "requests_over_time",
+    "filterName" : "requests_over_time",
+    "count" : 2,
+    "resultCount" : 750,
+    "values" : [ {
+      "value" : 1704067200000,
+      "count" : 300,
+      "filter" : "requests_over_time=1704067200000",
+      "customData" : {
+        "size_percentiles" : {
+          "50.0" : 512.0,
+          "90.0" : 2048.0,
+          "95.0" : 4096.0,
+          "99.0" : 8192.0
+        },
+        "duration_percentiles" : {
+          "50.0" : 120.5,
+          "90.0" : 310.3,
+          "95.0" : 420.1,
+          "99.0" : 550.8
+        }
+      }
+    }, {
+      "value" : 1706745600000,
+      "count" : 450,
+      "filter" : "requests_over_time=1706745600000",
+      "customData" : {
+        "size_percentiles" : {
+          "50.0" : 768.0,
+          "90.0" : 3072.0,
+          "95.0" : 6144.0,
+          "99.0" : 10240.0
+        },
+        "duration_percentiles" : {
+          "50.0" : 95.0,
+          "90.0" : 280.0,
+          "95.0" : 390.0,
+          "99.0" : 510.0
+        }
+      }
+    } ]
+  } ]
+}

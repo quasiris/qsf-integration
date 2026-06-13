@@ -1,0 +1,18 @@
+{
+  "duration_over_time" : {
+    "date_histogram" : {
+      "field" : "timestamp",
+      "calendar_interval" : "month",
+      "time_zone" : "Europe/Berlin",
+      "min_doc_count" : 0
+    },
+    "aggs" : {
+      "duration_percentiles" : {
+        "percentiles" : {
+          "field" : "duration",
+          "percents" : [ 50, 90, 95, 99 ]
+        }
+      }
+    }
+  }
+}

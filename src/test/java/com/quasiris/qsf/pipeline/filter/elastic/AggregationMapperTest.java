@@ -2,6 +2,9 @@ package com.quasiris.qsf.pipeline.filter.elastic;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quasiris.qsf.dto.query.HistogramFacetConfigDTO;
+import com.quasiris.qsf.dto.query.IntervalDTO;
+import com.quasiris.qsf.dto.query.MetricDTO;
 import com.quasiris.qsf.json.JsonBuilder;
 import com.quasiris.qsf.json.JsonBuilderException;
 import com.quasiris.qsf.query.Facet;
@@ -10,6 +13,7 @@ import com.quasiris.qsf.test.TestUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -60,6 +64,40 @@ class AggregationMapperTest {
         // then
         ObjectNode queryNode = TestUtils.mockQuery("/com/quasiris/qsf/pipeline/filter/elastic/query/single-facet-with-variant.json");
         assertEquals(queryNode.toPrettyString(), agg.toPrettyString());
+    }
+
+    @Test
+    void createDateHistogramWithPercentiles() throws JsonBuilderException, IOException {
+        // given — date_histogram configured via HistogramFacetConfigDTO with metrics
+        Facet facet = new Facet();
+        facet.setId("duration_over_time");
+        facet.setFieldName("timestamp");
+        facet.setType("date_histogram");
+
+        IntervalDTO intervalDTO = new IntervalDTO();
+        intervalDTO.setType("calendar_interval");
+        intervalDTO.setInterval("month");
+
+        MetricDTO countMetric = new MetricDTO();
+        countMetric.setType("count");
+
+        MetricDTO percentilesMetric = new MetricDTO();
+        percentilesMetric.setType("percentiles");
+        percentilesMetric.setId("duration_percentiles");
+        percentilesMetric.setFieldName("duration");
+        percentilesMetric.setPercents(Arrays.asList(50, 90, 95, 99));
+
+        HistogramFacetConfigDTO config = new HistogramFacetConfigDTO();
+        config.setIntervals(Arrays.asList(intervalDTO));
+        config.setMetrics(Arrays.asList(countMetric, percentilesMetric));
+        facet.addParameter("config", config);
+
+        // when
+        JsonNode agg = AggregationMapper.createAgg(facet, false, null, null, null);
+
+        // then
+        ObjectNode expected = TestUtils.mockQuery("/com/quasiris/qsf/pipeline/filter/elastic/query/date-histogram-with-percentiles.json");
+        assertEquals(expected.toPrettyString(), agg.toPrettyString());
     }
 
     @Test
