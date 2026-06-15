@@ -81,11 +81,12 @@ public class AggregationMapper {
                 jsonBuilder.json(interval).object("time_zone", timeZone).object("min_doc_count", minDocCount);
                 if (histogramFacetConfigDTO.getMetrics() != null && !histogramFacetConfigDTO.getMetrics().isEmpty()) {
                     JsonNode metricsAggsNode = buildMetricsAggs(histogramFacetConfigDTO.getMetrics());
-                    if (metricsAggsNode.size() > 0) {
-                        jsonBuilder = JsonBuilder.create()
-                                .newJson(jsonBuilder.replace().get())
-                                .pathsForceCreate(name + "/aggs")
-                                .json(metricsAggsNode);
+                    if (!metricsAggsNode.isEmpty()) {
+                        jsonBuilder.
+                                root().
+                                path(name).
+                                object("aggs").
+                                json(metricsAggsNode);
                     }
                 }
             } else if ("year".equals(facet.getType())) {

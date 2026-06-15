@@ -101,6 +101,46 @@ class AggregationMapperTest {
     }
 
     @Test
+    void createDateHistogramWithMultipleMetrics() throws JsonBuilderException, IOException {
+        // given
+        Facet facet = new Facet();
+        facet.setId("duration_over_time");
+        facet.setFieldName("timestamp");
+        facet.setType("date_histogram");
+
+        IntervalDTO intervalDTO = new IntervalDTO();
+        intervalDTO.setType("calendar_interval");
+        intervalDTO.setInterval("month");
+
+        MetricDTO countMetric = new MetricDTO();
+        countMetric.setType("count");
+
+        MetricDTO durationPercentiles = new MetricDTO();
+        durationPercentiles.setType("percentiles");
+        durationPercentiles.setId("duration_percentiles");
+        durationPercentiles.setFieldName("duration");
+        durationPercentiles.setPercents(Arrays.asList(50, 90, 95, 99));
+
+        MetricDTO sizePercentiles = new MetricDTO();
+        sizePercentiles.setType("percentiles");
+        sizePercentiles.setId("size_percentiles");
+        sizePercentiles.setFieldName("size");
+        sizePercentiles.setPercents(Arrays.asList(1, 50, 90, 95, 99));
+
+        HistogramFacetConfigDTO config = new HistogramFacetConfigDTO();
+        config.setIntervals(Arrays.asList(intervalDTO));
+        config.setMetrics(Arrays.asList(countMetric, durationPercentiles, sizePercentiles));
+        facet.addParameter("config", config);
+
+        // when
+        JsonNode agg = AggregationMapper.createAgg(facet, false, null, null, null);
+
+        // then
+        ObjectNode expected = TestUtils.mockQuery("/com/quasiris/qsf/pipeline/filter/elastic/query/date-histogram-with-multiple-metrics.json");
+        assertEquals(expected.toPrettyString(), agg.toPrettyString());
+    }
+
+    @Test
     void createAggForVariantWithFilter() throws JsonBuilderException, IOException {
         // given
         Facet facet = new Facet();
