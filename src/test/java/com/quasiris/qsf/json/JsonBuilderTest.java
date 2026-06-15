@@ -305,6 +305,19 @@ public class JsonBuilderTest {
 
 
     @Test
+    public void testJsonMultipleKeys() throws Exception {
+        JsonNode jsonNode = new JsonBuilder()
+                .object("foo").object("name", "test").root()
+                .object("baz").root()
+                .get();
+
+        JsonBuilder jsonBuilder = new JsonBuilder();
+        jsonBuilder.object("bar").json(jsonNode);
+
+        JsonAssert.assertJson("{\"bar\":{\"foo\":{\"name\":\"test\"},\"baz\":{}}}", jsonBuilder.get());
+    }
+
+    @Test
     public void testJsonWithArray() throws Exception {
         Assertions.assertThrows(JsonBuilderException.class, () -> {
             JsonBuilder jsonBuilder = new JsonBuilder();

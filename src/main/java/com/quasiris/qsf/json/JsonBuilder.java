@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Pattern;
@@ -125,8 +126,15 @@ public class JsonBuilder {
     }
 
     public JsonBuilder json(JsonNode jsonNode)  throws JsonBuilderException {
-        String key = jsonNode.fieldNames().next();
-        return json(key, jsonNode.get(key));
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+        while (fields.hasNext()) {
+            Map.Entry<String, JsonNode> entry = fields.next();
+            if (entry.getValue() == current) {
+                continue;
+            }
+            json(entry.getKey(), entry.getValue());
+        }
+        return this;
     }
 
     public JsonBuilder newJson(JsonNode jsonNode) {
