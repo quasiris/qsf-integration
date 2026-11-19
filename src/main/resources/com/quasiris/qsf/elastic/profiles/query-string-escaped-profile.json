@@ -1,0 +1,16 @@
+{
+  "from": 0,
+  "size": 10,
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "query_string" : {
+            "query" : "${qsfql.q.escaped}"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Created by mki on 04.02.18.
  */
@@ -1080,6 +1082,22 @@ public class ElasticQsfqlQueryTransformerTest {
 
         ObjectNode elasticQuery = transform(transformer,  "q=foo");
         assertQuery(elasticQuery, "paging-default-query.json");
+    }
+
+    @DisplayName("Transform a query with lucene reserved characters with the escaped query string profile")
+    @ParameterizedTest(name = "{index} => q=''{0}'' escaped=''{1}''")
+    @CsvSource({
+            "'/', '\\/'",
+            "'foo:bar', 'foo\\:bar'",
+            "'foo (bar', 'foo \\(bar'"
+    })
+    public void transformQueryStringEscaped(String q, String escaped) throws Exception {
+        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
+        transformer.setProfile(Profiles.queryStringEscaped());
+
+        ObjectNode elasticQuery = transform(transformer, "q=" + q);
+
+        assertEquals(escaped, elasticQuery.at("/query/bool/must/0/query_string/query").asText());
     }
 
     @Test
