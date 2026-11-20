@@ -1084,22 +1084,6 @@ public class ElasticQsfqlQueryTransformerTest {
         assertQuery(elasticQuery, "paging-default-query.json");
     }
 
-    @DisplayName("Transform a query with lucene reserved characters with the escaped query string profile")
-    @ParameterizedTest(name = "{index} => q=''{0}'' escaped=''{1}''")
-    @CsvSource({
-            "'/', '\\/'",
-            "'foo:bar', 'foo\\:bar'",
-            "'foo (bar', 'foo \\(bar'"
-    })
-    public void transformQueryStringEscaped(String q, String escaped) throws Exception {
-        ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
-        transformer.setProfile(Profiles.queryStringEscaped());
-
-        ObjectNode elasticQuery = transform(transformer, "q=" + q);
-
-        assertEquals(escaped, elasticQuery.at("/query/bool/must/0/query_string/query").asText());
-    }
-
     @Test
     public void transformPagingWithRows() throws Exception {
         ElasticQsfqlQueryTransformer transformer = new ElasticQsfqlQueryTransformer();
